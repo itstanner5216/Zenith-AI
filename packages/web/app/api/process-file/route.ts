@@ -102,9 +102,9 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
       textContent = "[PDF Content - Processing Pending Implementation]";
       tokensUsed = 0;
     } else if (fileType.startsWith("image/")) {
-      // We pass the public blobUrl directly to gpt-4o
+      // We pass the public blobUrl directly to the vision model
       console.log(
-        `Processing Image (${fileId}) using gpt-4o with URL: ${fileRecord.blobUrl}`
+        `Processing Image (${fileId}) using vision model with URL: ${fileRecord.blobUrl}`
       );
       if (!fileRecord.blobUrl) {
         throw new Error(`Missing blobUrl for image file ID ${fileId}`);

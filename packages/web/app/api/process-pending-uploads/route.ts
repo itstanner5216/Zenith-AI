@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
+import { processImageWithVision } from '@/lib/vision';
 
 export const maxDuration = 800; // This function can run for a maximum of 5 seconds
 // --- OpenAI Client for Image Generation ---
@@ -73,8 +74,6 @@ async function downloadFromR2(key: string): Promise<Buffer> {
     throw new Error(`Failed to download file from R2: ${key}`);
   }
 }
-
-import { processImageWithVision } from '@/lib/vision';
 
 // Re-add uploadToR2 helper function
 async function uploadToR2(

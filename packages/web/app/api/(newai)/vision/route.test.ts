@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateText } from 'ai';
 import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
-import { getModel } from '@/lib/models';
+import { getVisionModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
@@ -14,7 +14,7 @@ jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
 }));
 
 jest.mock('@/lib/models', () => ({
-  getModel: jest.fn(),
+  getVisionModel: jest.fn(),
 }));
 
 jest.mock('@/lib/handleAuthorization', () => ({
@@ -24,7 +24,7 @@ jest.mock('@/lib/handleAuthorization', () => ({
 describe('POST /api/(newai)/vision', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
+    (getVisionModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
     (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
       remaining: 1000,
       usageError: false,
@@ -53,6 +53,7 @@ describe('POST /api/(newai)/vision', () => {
       expect(response.status).toBe(200);
       expect(data.text).toBe('Extracted text from image');
       expect(generateText).toHaveBeenCalled();
+      expect(getVisionModel).toHaveBeenCalled();
       expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
         'test-user-id',
         200

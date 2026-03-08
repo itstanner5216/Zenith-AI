@@ -8,7 +8,7 @@ export async function processImageWithVision(
   try {
     const model = getVisionModel();
     const { object, usage } = await generateObject({
-      model: model as any,
+      model,
       schema: z.object({ markdown: z.string() }),
       messages: [
         {
