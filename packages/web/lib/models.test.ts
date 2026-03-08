@@ -1,7 +1,8 @@
 // Mock OpenAI SDK BEFORE importing models
 jest.mock('@ai-sdk/openai', () => {
   const mockProvider = jest.fn(() => ({ modelId: 'gpt-4o-mini' }));
-  const mockOpenAI = jest.fn(() => ({ modelId: 'gpt-4o-mini' })) as any;
+  const mockOpenAI = jest.fn(() => ({ modelId: 'gpt-4o-mini' }));
+  // @ts-ignore - adding responses property to mock
   // Add responses property for getResponsesModel
   mockOpenAI.responses = jest.fn(() => ({ modelId: 'gpt-4o-mini' }));
   return {
@@ -10,7 +11,7 @@ jest.mock('@ai-sdk/openai', () => {
   };
 });
 
-import { getModel, getResponsesModel } from './models';
+import { getModel, getResponsesModel, getVisionModel } from './models';
 import { createOpenAI } from '@ai-sdk/openai';
 
 describe('models', () => {
@@ -92,6 +93,14 @@ describe('models', () => {
       const responsesModel = getResponsesModel();
 
       expect(regularModel.modelId).toBe(responsesModel.modelId);
+    });
+  });
+
+  describe('getVisionModel', () => {
+    it('should return a model', () => {
+      const model = getVisionModel();
+      expect(model).toBeDefined();
+      expect(model.modelId).toBe('gpt-4o-mini');
     });
   });
 });
