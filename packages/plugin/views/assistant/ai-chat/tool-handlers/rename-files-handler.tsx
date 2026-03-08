@@ -22,33 +22,29 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
     const { files } = toolInvocation.args;
     const renameResults: string[] = [];
 
-    for (const fileData of files) {
-      try {
-        const existingFile = plugin.app.vault.getAbstractFileByPath(fileData.oldPath);
-        if (existingFile && existingFile instanceof TFile) {
-          // Remove .md extension if present (tool description says it will be added automatically)
-          let newName = fileData.newName;
-          if (newName.endsWith('.md')) {
-            newName = newName.slice(0, -3);
+    await Promise.all(
+      files.map(async (fileData) => {
+        try {
+          const existingFile = plugin.app.vault.getAbstractFileByPath(fileData.oldPath);
+          if (existingFile && existingFile instanceof TFile) {
+            let newName = fileData.newName;
+            if (newName.endsWith('.md')) {
+              newName = newName.slice(0, -3);
+            }
+            newName = sanitizeFileName(newName);
+            const folderPath = existingFile.parent?.path || '';
+            const newPath = folderPath ? `${folderPath}/${newName}.md` : `${newName}.md`;
+            await plugin.app.fileManager.renameFile(existingFile, newPath);
+            renameResults.push(`✅ Renamed: ${existingFile.path} → ${newPath}`);
+          } else {
+            renameResults.push(`❌ Could not find file: ${fileData.oldPath}`);
           }
-
-          // Sanitize the filename to remove invalid characters
-          newName = sanitizeFileName(newName);
-
-          // Build new path: replace just the filename part, keeping the folder structure
-          const folderPath = existingFile.parent?.path || '';
-          const newPath = folderPath ? `${folderPath}/${newName}.md` : `${newName}.md`;
-
-          await plugin.app.fileManager.renameFile(existingFile, newPath);
-          renameResults.push(`✅ Renamed: ${existingFile.path} → ${newPath}`);
-        } else {
-          renameResults.push(`❌ Could not find file: ${fileData.oldPath}`);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          renameResults.push(`❌ Error: ${errorMessage}`);
         }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        renameResults.push(`❌ Error: ${errorMessage}`);
-      }
-    }
+      })
+    );
 
     setResults(renameResults);
     setIsDone(true);

@@ -75,10 +75,9 @@ export function MergeFilesHandler({
     const run = async () => {
       const { separator = "\n\n---\n\n" } = toolInvocation.args;
       try {
-        const contents: string[] = [];
-        for (const file of validFiles) {
-          contents.push(await app.vault.read(file));
-        }
+        const contents = await Promise.all(
+          validFiles.map((file) => app.vault.read(file))
+        );
         const mergedContent = contents.join(separator);
         await app.vault.create(outputPath, mergedContent);
         setIsDone(true);
@@ -119,12 +118,9 @@ export function MergeFilesHandler({
     } = toolInvocation.args;
 
     try {
-      // Read all file contents
-      const contents: string[] = [];
-      for (const file of validFiles) {
-        const content = await app.vault.read(file);
-        contents.push(content);
-      }
+      const contents = await Promise.all(
+        validFiles.map((file) => app.vault.read(file))
+      );
 
       // Merge contents
       const mergedContent = contents.join(separator);
@@ -159,9 +155,7 @@ export function MergeFilesHandler({
 
       // Delete source files if requested
       if (deleteSource) {
-        for (const file of validFiles) {
-          await app.vault.trash(file, false);
-        }
+        await Promise.all(validFiles.map((file) => app.vault.trash(file, false)));
       }
 
       setIsDone(true);
