@@ -93,50 +93,55 @@ export function BulkFindReplaceHandler({
     let totalMatches = 0;
     const errors: string[] = [];
 
-    for (const file of validFiles) {
-      try {
-        const content = await app.vault.read(file);
-        let newContent: string;
-        let fileMatches = 0;
+    const opResults = await Promise.all(
+      validFiles.map(async (file) => {
+        try {
+          const content = await app.vault.read(file);
+          let newContent: string;
+          let fileMatches = 0;
 
-        if (useRegex) {
-          const flags = caseSensitive ? "g" : "gi";
-          const regex = new RegExp(find, flags);
-          const matches = content.match(regex);
-          fileMatches = matches ? matches.length : 0;
-          newContent = content.replace(regex, replace);
-        } else {
-          const searchText = caseSensitive ? content : content.toLowerCase();
-          const findText = caseSensitive ? find : find.toLowerCase();
-          
-          // Count matches first
-          let pos = 0;
-          while ((pos = searchText.indexOf(findText, pos)) !== -1) {
-            fileMatches++;
-            pos += findText.length;
-          }
-
-          // Perform replacement
-          if (caseSensitive) {
-            newContent = content.split(find).join(replace);
-          } else {
-            // Case-insensitive replacement is complex, use regex
-            const regex = new RegExp(
-              find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-              "gi"
-            );
+          if (useRegex) {
+            const flags = caseSensitive ? "g" : "gi";
+            const regex = new RegExp(find, flags);
+            const matches = content.match(regex);
+            fileMatches = matches ? matches.length : 0;
             newContent = content.replace(regex, replace);
-          }
-        }
+          } else {
+            const searchText = caseSensitive ? content : content.toLowerCase();
+            const findText = caseSensitive ? find : find.toLowerCase();
 
-        if (newContent !== content) {
-          await app.vault.modify(file, newContent);
-          filesModified++;
-          totalMatches += fileMatches;
+            let pos = 0;
+            while ((pos = searchText.indexOf(findText, pos)) !== -1) {
+              fileMatches++;
+              pos += findText.length;
+            }
+
+            if (caseSensitive) {
+              newContent = content.split(find).join(replace);
+            } else {
+              const regex = new RegExp(
+                find.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+                "gi"
+              );
+              newContent = content.replace(regex, replace);
+            }
+          }
+
+          if (newContent !== content) {
+            await app.vault.modify(file, newContent);
+            return { modified: true, matches: fileMatches, error: null };
+          }
+          return { modified: false, matches: 0, error: null };
+        } catch (error) {
+          return { modified: false, matches: 0, error: `${file.path}: ${error.message}` };
         }
-      } catch (error) {
-        errors.push(`${file.path}: ${error.message}`);
-      }
+      })
+    );
+
+    for (const r of opResults) {
+      if (r.error) errors.push(r.error);
+      if (r.modified) filesModified++;
+      totalMatches += r.matches;
     }
 
     setIsDone(true);

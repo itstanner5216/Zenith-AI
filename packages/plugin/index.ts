@@ -880,8 +880,7 @@ export default class FileOrganizer extends Plugin {
     content: string,
     classifications: string[]
   ): Promise<string> {
-    const cutoff = this.settings.contentCutoffChars;
-    const trimmedContent = content.slice(0, cutoff);
+    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
 
     // Check if local LLM should be used (same logic as chat component)
     // Use local LLM if showLocalLLMInChat is enabled and model is not a cloud model
@@ -1246,8 +1245,7 @@ export default class FileOrganizer extends Plugin {
   ): Promise<
     Array<{ score: number; tag: string; reason: string; isNew: boolean }>
   > {
-    const cutoff = this.settings.contentCutoffChars;
-    const trimmedContent = content.slice(0, cutoff);
+    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
 
     // Check if local LLM should be used (same logic as chat component)
     const isCloudModel = this.settings.selectedModel === "gpt-4o-mini";
@@ -1381,8 +1379,7 @@ export default class FileOrganizer extends Plugin {
     fileName: string
   ): Promise<FolderSuggestion[]> {
     const customInstructions = this.settings.customFolderInstructions;
-    const cutoff = this.settings.contentCutoffChars;
-    const trimmedContent = content.slice(0, cutoff);
+    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
 
     const folders = this.getAllUserFolders();
 
@@ -1542,6 +1539,36 @@ export default class FileOrganizer extends Plugin {
       await this.app.vault.append(file, `\n\n${formattedTag}`);
     } else {
       await this.app.vault.append(file, `\n${formattedTag}`);
+    }
+  }
+
+  async appendTags(file: TFile, tags: string[]) {
+    if (!tags?.length) return;
+
+    const fileContent = await this.app.vault.read(file);
+    const metadata = this.app.metadataCache.getFileCache(file);
+
+    const newTags = tags
+      .map(sanitizeTag)
+      .filter((tag) => {
+        const bare = tag.replace("#", "");
+        const hasFrontmatter = metadata?.frontmatter?.tags?.includes(bare);
+        const hasInline = fileContent.includes(tag);
+        return !hasFrontmatter && !hasInline;
+      });
+
+    if (!newTags.length) return;
+
+    if (this.settings.useSimilarTagsInFrontmatter) {
+      await this.app.fileManager.processFrontMatter(file, (fm) => {
+        fm.tags = fm.tags || [];
+        for (const tag of newTags) {
+          fm.tags.push(tag.replace("#", ""));
+        }
+      });
+    } else {
+      const prefix = fileContent.includes("#") ? "\n" : "\n\n";
+      await this.app.vault.append(file, prefix + newTags.join("\n"));
     }
   }
 
@@ -2022,9 +2049,7 @@ export default class FileOrganizer extends Plugin {
     content: string,
     fileName: string
   ): Promise<TitleSuggestion[]> {
-    // cutoff
-    const cutoff = this.settings.contentCutoffChars;
-    const trimmedContent = content.slice(0, cutoff);
+    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
 
     const customInstructions = this.settings.renameInstructions;
     const response = await fetch(`${this.getServerUrl()}/api/title/v2`, {

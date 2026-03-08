@@ -72,28 +72,32 @@ export function MoveFilesHandler({
     const { moves } = toolInvocation.args;
     const results: string[] = [];
 
-    for (const move of moves) {
-      try {
-        // Get matching files for this move operation
-        const matchingFiles = getMatchingFiles(move);
+    await Promise.all(
+      moves.map(async (move) => {
+        try {
+          const matchingFiles = getMatchingFiles(move);
+          await plugin.app.vault.createFolder(move.destinationPath).catch((err) => {
+            if (!err.message?.includes("already exists")) {
+              console.warn(`Could not create folder ${move.destinationPath}: ${err.message}`);
+            }
+          });
 
-        // Create destination folder if it doesn't exist
-        await plugin.app.vault.createFolder(move.destinationPath).catch(() => {});
+          await Promise.all(
+            matchingFiles.map(async (file) => {
+              const newPath = `${move.destinationPath}/${file.name}`;
+              await plugin.app.fileManager.renameFile(file, newPath);
+              results.push(`✅ Moved: ${file.path} → ${newPath}`);
+            })
+          );
 
-        // Move each matching file
-        for (const file of matchingFiles) {
-          const newPath = `${move.destinationPath}/${file.name}`;
-          await plugin.app.fileManager.renameFile(file, newPath);
-          results.push(`✅ Moved: ${file.path} → ${newPath}`);
+          if (matchingFiles.length === 0) {
+            results.push(`ℹ️ No files found matching criteria for ${move.sourcePath}`);
+          }
+        } catch (error) {
+          results.push(`❌ Error: ${error.message}`);
         }
-
-        if (matchingFiles.length === 0) {
-          results.push(`ℹ️ No files found matching criteria for ${move.sourcePath}`);
-        }
-      } catch (error) {
-        results.push(`❌ Error: ${error.message}`);
-      }
-    }
+      })
+    );
 
     setMoveResults(results);
     setIsValidated(true);

@@ -329,6 +329,7 @@ export class Inbox {
     };
 
     try {
+      // Critical steps — must succeed
       await executeStep(
         context,
         startProcessing,
@@ -366,9 +367,8 @@ export class Inbox {
         Action.ERROR_CLEANUP
       );
 
-      // Only process YouTube if content contains a YouTube URL
       if (await shouldProcessYouTube(context)) {
-        await executeStep(
+        await safeExecuteStep(
           context,
           fetchYouTubeTranscriptStep,
           Action.FETCH_YOUTUBE,
@@ -376,25 +376,15 @@ export class Inbox {
         );
       }
 
-      await executeStep(
-        context,
-        recommendClassificationStep,
-        Action.CLASSIFY,
-        Action.ERROR_CLASSIFY
-      );
-      await executeStep(
-        context,
-        recommendFolderStep,
-        Action.MOVING,
-        Action.ERROR_MOVING
-      );
-      await executeStep(
-        context,
-        recommendNameStep,
-        Action.RENAME,
-        Action.ERROR_RENAME
-      );
-      await executeStep(
+      // Independent API calls — run concurrently
+      await Promise.all([
+        safeExecuteStep(context, recommendClassificationStep, Action.CLASSIFY, Action.ERROR_CLASSIFY),
+        safeExecuteStep(context, recommendFolderStep, Action.MOVING, Action.ERROR_MOVING),
+        safeExecuteStep(context, recommendNameStep, Action.RENAME, Action.ERROR_RENAME),
+      ]);
+
+      // These depend on results above or are local operations
+      await safeExecuteStep(
         context,
         formatContentStep,
         Action.FORMATTING,
@@ -406,7 +396,7 @@ export class Inbox {
         Action.APPEND,
         Action.ERROR_APPEND
       );
-      await executeStep(
+      await safeExecuteStep(
         context,
         recommendTagsStep,
         Action.TAGGING,
@@ -838,9 +828,7 @@ async function recommendTagsStep(
   context.tags = tags?.map(t => t.tag);
   // for each tag, append it to the file
   if (context.tags && context.containerFile) {
-    for (const tag of context.tags) {
-      await context.plugin.appendTag(context.containerFile, tag);
-    }
+    await context.plugin.appendTags(context.containerFile, context.tags);
   }
   context.recordManager.setTags(context.hash, context.tags);
   return context;
@@ -1154,6 +1142,20 @@ async function executeStep(
       stack: error.stack,
     });
     throw error;
+  }
+}
+
+async function safeExecuteStep(
+  context: ProcessingContext,
+  step: (context: ProcessingContext) => Promise<ProcessingContext>,
+  action: Action,
+  errorAction: Action
+): Promise<ProcessingContext> {
+  try {
+    return await executeStep(context, step, action, errorAction);
+  } catch (error) {
+    logger.warn(`Optional step ${action} failed, continuing pipeline: ${error.message}`);
+    return context;
   }
 }
 

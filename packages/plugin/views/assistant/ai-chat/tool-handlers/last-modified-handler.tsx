@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { App } from "obsidian";
 import { logger } from "../../../../services/logger";
 import { addFileReference, useContextItems } from "../use-context-items";
@@ -28,34 +28,37 @@ export function LastModifiedHandler({
   const hasFetchedRef = useRef(false);
   const clearAll = useContextItems(state => state.clearAll);
   const files = useContextItems(state => state.files);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
 
   const getLastModifiedFiles = async (count: number): Promise<FileResult[]> => {
     const MAX_FILES = 20;
     const PREVIEW_LENGTH = 300;
     
-    // Limit count to prevent context overload
     const limitedCount = Math.min(count, MAX_FILES);
     
-    const files = app.vault.getMarkdownFiles();
-    const sortedFiles = files.sort((a, b) => b.stat.mtime - a.stat.mtime);
+    const allFiles = app.vault.getMarkdownFiles();
+    const sortedFiles = allFiles.sort((a, b) => b.stat.mtime - a.stat.mtime);
     const lastModifiedFiles = sortedFiles.slice(0, limitedCount);
 
-    return Promise.all(
-      lastModifiedFiles.map(async file => {
-        const content = await app.vault.read(file);
-        return {
-          title: file.basename,
-          content: content, // Keep for UI context
-          contentPreview: content.slice(0, PREVIEW_LENGTH) + (content.length > PREVIEW_LENGTH ? '...' : ''),
-          contentLength: content.length,
-          wordCount: content.split(/\s+/).length,
-          path: file.path,
-          modified: file.stat.mtime,
-          modifiedDate: new Date(file.stat.mtime).toLocaleString(),
-          reference: `Last modified: ${new Date(file.stat.mtime).toLocaleString()}`
-        };
-      })
-    );
+    setProgress({ done: 0, total: lastModifiedFiles.length });
+
+    const results: FileResult[] = [];
+    for (const file of lastModifiedFiles) {
+      const content = await app.vault.read(file);
+      results.push({
+        title: file.basename,
+        content: content,
+        contentPreview: content.slice(0, PREVIEW_LENGTH) + (content.length > PREVIEW_LENGTH ? '...' : ''),
+        contentLength: content.length,
+        wordCount: content.split(/\s+/).length,
+        path: file.path,
+        modified: file.stat.mtime,
+        modifiedDate: new Date(file.stat.mtime).toLocaleString(),
+        reference: `Last modified: ${new Date(file.stat.mtime).toLocaleString()}`
+      });
+      setProgress(prev => ({ ...prev, done: prev.done + 1 }));
+    }
+    return results;
   };
 
   React.useEffect(() => {
@@ -67,11 +70,8 @@ export function LastModifiedHandler({
         try {
           const searchResults = await getLastModifiedFiles(count);
           
-          // Clear existing context before adding new results
           clearAll();
           
-          // Add ONLY metadata to context (reference-based, ephemeral)
-          // Full content is NOT stored in context
           searchResults.forEach(file => {
             addFileReference({
               path: file.path,
@@ -84,7 +84,6 @@ export function LastModifiedHandler({
             });
           });
           
-          // Send minimal data to AI (metadata only, no full content)
           const minimalResults = searchResults.map(({ content, ...rest }) => rest);
           
           handleAddResult(JSON.stringify({
@@ -105,17 +104,15 @@ export function LastModifiedHandler({
     handleLastModifiedSearch();
   }, [toolInvocation, handleAddResult, app, clearAll]);
 
-  // Use the files object directly from context instead of items
   const fileCount = Object.keys(files).length;
   
-  // Get the actual result to show proper count
   const result = ("result" in toolInvocation) ? JSON.parse(toolInvocation.result as string) : null;
   const resultCount = result?.count || 0;
 
   return (
     <div className="text-sm text-[--text-muted]">
       {!("result" in toolInvocation) ? (
-        "Fetching last modified files..."
+        `Fetching last modified files... ${progress.total > 0 ? `(${progress.done}/${progress.total})` : ""}`
       ) : resultCount > 0 ? (
         `Found ${resultCount} recently modified files`
       ) : (
