@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import {  generateText } from "ai";
-import { getModel } from "@/lib/models";
+import { getVisionModel } from "@/lib/models";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
 import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 
@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     const payload = await request.json();
     const { userId } = await handleAuthorizationV2(request);
-    const model = getModel();
+    const model = getVisionModel();
 
     const defaultInstruction = "Extract all text from the image comprehensively, preserving formatting. Focus only on extracting readable text, not describing visual elements.";
     const responseInstruction = "Respond with only the extracted text.";

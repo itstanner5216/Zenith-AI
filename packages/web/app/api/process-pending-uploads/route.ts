@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, uploadedFiles, UploadedFile } from '@/drizzle/schema';
-import { eq, or } from 'drizzle-orm';
+import { eq, or, and } from 'drizzle-orm';
 import {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
-import { createOpenAI } from '@ai-sdk/openai';
 import OpenAI, { toFile } from 'openai';
-import { generateObject } from 'ai';
-import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
@@ -77,44 +74,7 @@ async function downloadFromR2(key: string): Promise<Buffer> {
   }
 }
 
-// Helper function to process image with gpt-4o
-async function processImageWithGPT4one(
-  imageUrl: string
-): Promise<{ textContent: string; tokensUsed: number }> {
-  try {
-    console.log('Processing image with gpt-4o for OCR...');
-    const openai = createOpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      baseURL: process.env.OPENAI_API_BASE || 'https://api.openai.com/v1',
-    });
-    console.log(`Processing OCR for image: ${imageUrl}`);
-    const { object, usage } = await generateObject({
-      model: openai('gpt-4o') as any, // Type assertion for AI SDK v1/v2 compatibility
-      schema: z.object({ markdown: z.string() }),
-      messages: [
-        {
-          role: 'system',
-          content: 'Extract all text comprehensively, preserving formatting.',
-        },
-        { role: 'user', content: [{ type: 'image', image: imageUrl }] },
-      ],
-    });
-    const textContent = object.markdown || '';
-    const tokensUsed = usage?.totalTokens ?? Math.ceil(textContent.length / 4);
-    console.log(
-      `gpt-4o OCR extracted ${textContent.length} chars, used approx ${tokensUsed} tokens`
-    );
-    return { textContent, tokensUsed };
-  } catch (error) {
-    console.error('Error processing image with gpt-4o OCR:', error);
-    return {
-      textContent: `Error processing image OCR: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-      tokensUsed: 0,
-    };
-  }
-}
+import { processImageWithVision } from '@/lib/vision';
 
 // Re-add uploadToR2 helper function
 async function uploadToR2(
@@ -378,7 +338,7 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
     console.log(`Processing type: ${processType}, File type: ${fileType}`);
 
     // Download is now only needed for magic-diagram before calling its function.
-    // processImageWithGPT4one uses the blobUrl directly.
+    // processImageWithVision uses the blobUrl directly.
 
     // --- Processing Logic ---
     console.log(`Processing file ${fileId} with processType: ${processType}`);
@@ -415,7 +375,7 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
       console.log(
         `Processing Standard OCR for ${fileId} using blobUrl: ${fileRecord.blobUrl}`
       );
-      const result = await processImageWithGPT4one(fileRecord.blobUrl);
+      const result = await processImageWithVision(fileRecord.blobUrl);
       textContent = result.textContent;
       tokensUsed = result.tokensUsed;
       if (textContent?.startsWith('Error processing image OCR')) {
@@ -550,14 +510,24 @@ export async function GET(request: NextRequest) {
       const userId = fileRecord.userId;
 
       try {
-        // Optimistically update status to processing *before* heavy lifting
-        // This helps identify files that might timeout during processing
+        // Atomically claim this file — prevents duplicate processing by concurrent workers
         if (fileRecord.status !== 'processing') {
-          await db
+          const [claimed] = await db
             .update(uploadedFiles)
-            .set({ status: 'processing', updatedAt: new Date(), error: null }) // Clear previous error on retry
-            .where(eq(uploadedFiles.id, fileId));
-          console.log(`Marked file ${fileId} as processing.`);
+            .set({ status: 'processing', updatedAt: new Date(), error: null })
+            .where(
+              and(
+                eq(uploadedFiles.id, fileId),
+                eq(uploadedFiles.status, 'pending')
+              )
+            )
+            .returning({ id: uploadedFiles.id });
+
+          if (!claimed) {
+            console.log(`File ${fileId} already claimed by another worker, skipping.`);
+            continue;
+          }
+          console.log(`Claimed file ${fileId} for processing.`);
         } else {
           console.log(
             `File ${fileId} was already marked as processing, retrying...`

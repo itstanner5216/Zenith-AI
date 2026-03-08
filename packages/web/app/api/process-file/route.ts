@@ -4,9 +4,7 @@ import { eq, or, and } from "drizzle-orm";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import sharp from "sharp";
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateObject } from "ai";
-import { z } from "zod";
+import { processImageWithVision } from "@/lib/vision";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
 export const maxDuration = 800; // This function can run for a maximum of 5 seconds
 
@@ -50,51 +48,6 @@ async function downloadFromR2(key: string): Promise<Buffer> {
   } catch (error) {
     console.error(`Error downloading ${key} from R2:`, error);
     throw new Error(`Failed to download file from R2: ${key}`);
-  }
-}
-
-// Helper function to process image with gpt-4o
-async function processImageWithGPT4one(
-  imageUrl: string
-): Promise<{ textContent: string; tokensUsed: number }> {
-  // Keep the existing implementation from process-file/route.ts (or the improved one from process-pending-uploads if different)
-  try {
-    console.log("Processing image with gpt-4o..."); // Use gpt-4o consistently
-    const { getModel } = await import("@/lib/models");
-    const model = getModel("gpt-4o");
-
-    console.log(`Processing image URL: ${imageUrl}`); // Log the URL being sent
-    const { object, usage } = await generateObject({
-      model: model as any, // Type cast for AI SDK v2 compatibility
-      schema: z.object({ markdown: z.string() }),
-      messages: [
-        {
-          role: "system",
-          content: "Extract all text comprehensively, preserving formatting.",
-        },
-        { role: "user", content: [{ type: "image", image: imageUrl }] },
-      ],
-    });
-    const textContent = object.markdown || "";
-    const tokensUsed = usage?.totalTokens ?? Math.ceil(textContent.length / 4);
-    console.log(
-      `gpt-4o extracted ${textContent.length} chars, used approx ${tokensUsed} tokens`
-    );
-    return { textContent, tokensUsed };
-  } catch (error) {
-    console.error("Error processing image with gpt-4o:", error);
-    // Check if it's an API error with details
-    if (error && typeof error === "object" && "message" in error) {
-      // Potentially extract more specific error details if available from the SDK error object
-      return {
-        textContent: `Error processing image with gpt-4o: ${error.message}`,
-        tokensUsed: 0,
-      };
-    }
-    return {
-      textContent: `Error processing image with gpt-4o: ${String(error)}`,
-      tokensUsed: 0,
-    };
   }
 }
 
@@ -156,7 +109,7 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
       if (!fileRecord.blobUrl) {
         throw new Error(`Missing blobUrl for image file ID ${fileId}`);
       }
-      const result = await processImageWithGPT4one(fileRecord.blobUrl);
+      const result = await processImageWithVision(fileRecord.blobUrl);
       textContent = result.textContent;
       tokensUsed = result.tokensUsed;
       if (textContent.startsWith("Error processing image")) {
