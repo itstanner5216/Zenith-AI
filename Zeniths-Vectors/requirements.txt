@@ -15,7 +15,7 @@ google-auth-oauthlib==1.2.1
 google-auth-httplib2==0.2.0
 
 # Multipart form support
-python-multipart==0.0.20
+python-multipart==0.0.22
 
 # Redis client for session storage
 redis==5.2.1
