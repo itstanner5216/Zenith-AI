@@ -54,9 +54,12 @@ jest.mock('openai', () => ({
 }));
 
 const mockSplitAudioFileBySizeHeuristic = jest.fn();
+const mockNormalizeAudioForWhisper = jest.fn();
 jest.mock('@/lib/audio/split-audio', () => ({
   splitAudioFileBySizeHeuristic: (...args: unknown[]) =>
     mockSplitAudioFileBySizeHeuristic(...args),
+  normalizeAudioForWhisper: (...args: unknown[]) =>
+    mockNormalizeAudioForWhisper(...args),
 }));
 
 // Mock fs operations
@@ -117,6 +120,12 @@ describe('POST /api/(newai)/transcribe', () => {
 
     mockOpenAICreate.mockResolvedValue({
       text: 'This is a test transcription. It has multiple sentences.',
+    });
+
+    // Mock normalizeAudioForWhisper to return the same path with no cleanup needed
+    mockNormalizeAudioForWhisper.mockResolvedValue({
+      path: tempFilePath,
+      cleanup: false,
     });
   });
 

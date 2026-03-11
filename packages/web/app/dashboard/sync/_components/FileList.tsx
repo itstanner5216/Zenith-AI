@@ -481,7 +481,6 @@ export function FileList({ pageSize = 12 }: FileListProps) {
                     selectedFile.textContent.includes('- ') ||
                     selectedFile.textContent.includes('```') ||
                     selectedFile.originalName.endsWith('.md') ? (
-                      // @ts-expect-error - react-markdown types not fully compatible with React 19
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {selectedFile.textContent}
                       </ReactMarkdown>
