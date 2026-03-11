@@ -1,0 +1,57 @@
+name: Validate agents.yaml
+
+on:
+  pull_request:
+    paths:
+      - .github/agents.yaml
+  push:
+    branches:
+      - master
+    paths:
+      - .github/agents.yaml
+
+jobs:
+  validate:
+    name: Validate .github/agents.yaml
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check file exists
+        run: |
+          if [ ! -f ".github/agents.yaml" ]; then
+            echo "ERROR: .github/agents.yaml does not exist"
+            exit 1
+          fi
+          echo "OK: .github/agents.yaml found"
+
+      - name: Validate YAML syntax and required top-level keys
+        run: |
+          python3 - <<'EOF'
+          import sys
+          import yaml
+
+          path = ".github/agents.yaml"
+
+          with open(path, "r") as fh:
+              try:
+                  data = yaml.safe_load(fh)
+              except yaml.YAMLError as exc:
+                  print(f"ERROR: YAML syntax error in {path}:\n{exc}")
+                  sys.exit(1)
+
+          if not isinstance(data, dict):
+              print("ERROR: agents.yaml must be a YAML mapping at the top level")
+              sys.exit(1)
+
+          required_keys = {"project", "packages", "rules", "workflows"}
+          missing = required_keys - set(data.keys())
+          if missing:
+              print(f"ERROR: Missing required top-level keys: {sorted(missing)}")
+              sys.exit(1)
+
+          print("OK: YAML is valid and contains all required top-level keys")
+          print(f"    Found keys: {sorted(data.keys())}")
+          EOF

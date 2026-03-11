@@ -1,0 +1,480 @@
+# ============================================================
+# Zenith-AI — AI Agent Configuration
+# ============================================================
+# This file is the single source of truth for any AI coding
+# agent (GitHub Copilot, Claude Code, Cursor, etc.) working
+# in this repository.
+#
+# Deep-dive reference: AGENTS.MD (42 KB comprehensive guide)
+# Cursor IDE rules:    .cursorrules
+# Claude Code config:  .claude/settings.local.json
+# ============================================================
+
+# ------------------------------------------------------------
+# 1. PROJECT METADATA
+# ------------------------------------------------------------
+project:
+  name: Zenith-AI
+  former_name: Note Companion
+  description: >
+    AI-powered document transcription and organisation system.
+    Bridges analog/physical content (handwritten notes, PDFs,
+    voice memos) with an organised Obsidian vault via an
+    Obsidian plugin, a Next.js web backend, and a mobile app.
+  repository_type: monorepo
+  package_manager: pnpm@10.8.1
+  node_version: ">=18"
+  main_branch: master
+  workspace_config: pnpm-workspace.yaml
+  build_orchestrator: turbo  # turbo.json
+
+# ------------------------------------------------------------
+# 2. PACKAGE DEFINITIONS
+# ------------------------------------------------------------
+packages:
+
+  plugin:
+    path: packages/plugin
+    description: Obsidian plugin — core file organisation, inbox monitoring, AI chat UI
+    tech_stack:
+      language: TypeScript
+      bundler: esbuild
+      ui: React 19
+      styling: TailwindCSS (Obsidian CSS variables — see styling_rules.plugin below)
+    entry_points:
+      main: packages/plugin/index.ts
+      settings: packages/plugin/settings.ts
+    scripts:
+      dev: node esbuild.config.mjs
+      build: node esbuild.config.mjs production
+      test: jest
+      test_watch: jest --watch
+      release: node release.js
+    key_dirs:
+      - packages/plugin/views/       # UI views (AI chat, assistant)
+      - packages/plugin/components/  # Reusable UI components
+      - packages/plugin/handlers/    # Event / file handlers
+
+  web:
+    path: packages/web
+    description: Next.js App Router backend — AI endpoints, auth, billing, database
+    tech_stack:
+      language: TypeScript
+      framework: "Next.js (App Router)"
+      orm: Drizzle ORM
+      auth: Clerk
+      payments: Stripe
+      ai_sdk: "Vercel AI SDK v4+"
+      storage: "Cloudflare R2"
+      database: "PostgreSQL (Neon)"
+    entry_points:
+      app_router: packages/web/app/
+      api_ai: packages/web/app/api/(newai)/
+      schema: packages/web/drizzle/schema.ts
+    scripts:
+      dev: "PORT=3010 pnpm next dev"   # http://localhost:3010
+      build: pnpm run db:migrate && pnpm next build
+      build_ci: pnpm next build
+      build_self_host: pnpm next build
+      test: jest
+      test_watch: jest --watch
+      lint: pnpm next lint
+      ts_check: pnpm tsc --noEmit
+      db_generate: pnpm drizzle-kit generate
+      db_migrate: "pnpm dotenv -c -- drizzle-kit migrate"
+      db_studio: "pnpm dotenv -c -- drizzle-kit studio"
+    key_files:
+      - packages/web/app/api/(newai)/chat/route.ts
+      - packages/web/app/api/(newai)/chat/tools.ts
+      - packages/web/app/api/(newai)/transcribe/route.ts
+      - packages/web/app/api/create-upload-url/route.ts
+      - packages/web/app/api/record-upload/route.ts
+      - packages/web/app/api/process-file/route.ts
+      - packages/web/app/api/get-upload-status/[fileId]/route.ts
+      - packages/web/middleware.ts
+
+  mobile:
+    path: packages/mobile
+    description: React Native / Expo 52 cross-platform app (iOS & Android)
+    tech_stack:
+      language: TypeScript
+      framework: "React Native / Expo 52"
+      auth: Clerk
+      styling: "React Native StyleSheet / NativeWind"
+    scripts:
+      dev: expo start
+      start: expo start
+      android: expo run:android
+      ios: expo run:ios
+      lint: eslint .
+      typecheck: tsc --noEmit
+      build_ios: eas build --platform ios --local --profile production --non-interactive
+      build_android: eas build --platform android --local
+    key_files:
+      - packages/mobile/app/(tabs)/index.tsx   # Main UI + upload initiation
+      - packages/mobile/utils/file-handler.ts  # Core upload logic, polling, queue
+      - packages/mobile/constants/config.ts    # API URL configuration
+
+  landing:
+    path: packages/landing
+    description: Next.js marketing and documentation website
+    tech_stack:
+      language: TypeScript
+      framework: "Next.js"
+      styling: TailwindCSS
+    scripts:
+      dev: "PORT=3011 next dev"   # http://localhost:3011
+      build: next build
+      lint: next lint
+      ts_check: tsc --noEmit
+
+  release_notes:
+    path: packages/release-notes
+    description: TypeScript utility for generating release notes
+    tech_stack:
+      language: TypeScript
+
+# ------------------------------------------------------------
+# 3. DEVELOPMENT WORKFLOW
+# ------------------------------------------------------------
+workflows:
+  install: pnpm install
+  build_all: pnpm build           # Turborepo orchestrates all packages
+  dev_all: pnpm dev               # Turborepo runs all dev servers
+  lint_all: pnpm lint
+  test_all: pnpm test
+  clean: "git clean -xdf node_modules"
+
+  per_package:
+    web_dev:    cd packages/web && pnpm dev        # port 3010
+    plugin_dev: cd packages/plugin && pnpm dev
+    mobile_dev: cd packages/mobile && pnpm start
+    landing_dev: cd packages/landing && pnpm dev   # port 3011
+
+  ci_reference: .github/workflows/build.yml
+
+# ------------------------------------------------------------
+# 4. RULES
+# ------------------------------------------------------------
+rules:
+
+  # 4a. Code Quality
+  code_quality:
+    file_naming: kebab-case
+    typescript:
+      strict_mode: true
+      no_any: prefer_avoid
+    react_version: "19"
+    no_commit_secrets: true       # Never commit API keys or credentials
+    env_files_never_commit:
+      - "**/.env"
+      - "**/.env.local"
+      - "**/.env.production.local"
+      - "**/.env.*.local"
+
+  # 4b. Styling
+  # CRITICAL: Read the full "Obsidian Native Protocol" in AGENTS.MD before
+  # touching any plugin UI component.
+  styling:
+    plugin:
+      framework: TailwindCSS
+      wrapper_required: StyledContainer   # Always wrap root in <StyledContainer>
+      classname_helper: tw()              # Always use tw() for className merging
+      immutable_laws:
+        - "NO hardcoded colors (no hex, no Tailwind color names like bg-white or text-gray-800)"
+        - "NO box shadows (no shadow-lg, no drop-shadow)"
+        - "NO excessive spacing (max 24 px padding)"
+        - "ALWAYS use Obsidian CSS variables: var(--text-normal), var(--background-primary), etc."
+        - "DENSITY-FIRST: tight lists (32 px row height), small fonts, high information density"
+      css_variable_groups:
+        backgrounds:
+          - "--background-primary"
+          - "--background-secondary"
+          - "--background-modifier-form-field"
+          - "--background-modifier-hover"
+          - "--background-modifier-active-hover"
+          - "--background-modifier-border"
+        typography:
+          - "--text-normal"
+          - "--text-muted"
+          - "--text-error"
+          - "--text-accent"
+          - "--font-interface"
+          - "--font-ui-smaller"
+        interactive:
+          - "--interactive-accent"
+          - "--interactive-accent-hover"
+          - "--tag-background"
+          - "--tag-color"
+          - "--icon-size"
+          - "--radius-s"
+      theme_test_matrix:
+        - Default
+        - Minimal      # Tests for bloat / overstyling
+        - Cyberpunk    # Tests for colour handling
+        - Dark         # Tests for contrast
+
+    web:
+      framework: TailwindCSS
+      notes: Standard Tailwind — no Obsidian variable restrictions
+
+    landing:
+      framework: TailwindCSS
+      notes: Standard Tailwind
+
+    mobile:
+      framework: "React Native StyleSheet / NativeWind"
+
+  # 4c. API Backward Compatibility
+  # We cannot control when users update the plugin.
+  # Breaking API changes will break users who haven't updated yet.
+  api_compatibility:
+    policy: >
+      When changing a backend API endpoint, always support both the old and new
+      parameter/response formats simultaneously for at least 3 months.
+      Accept old fields, provide sensible defaults for missing new fields,
+      and never remove fields until the migration period has elapsed.
+    deprecated_field_removal_months: 3
+    example_pattern: |
+      // BAD — old plugins will break
+      const { newRequiredField } = await req.json();
+
+      // GOOD — backward compatible
+      const { newRequiredField, oldField } = await req.json();
+      const value = newRequiredField ?? oldField ?? 'sensible-default';
+
+  # 4d. AI & Token Usage
+  ai_integration:
+    sdk: "Vercel AI SDK v4+"
+    supported_providers:
+      - OpenAI
+      - Anthropic
+      - Google
+      - Mistral
+      - Groq
+      - DeepSeek
+      - "Amazon Bedrock"
+    primary_models:
+      reasoning: o3-mini
+      document_processing: claude-3-5-sonnet-20241022
+      general_fast: gpt-4o-mini
+      general_quality: gpt-4o
+    token_tracking:
+      required: true
+      note: All AI endpoints MUST track and record token usage in the database.
+    structured_output_pattern: |
+      const { object } = await generateObject({
+        model,
+        schema: z.object({ ... }),
+        prompt: '...',
+      });
+    streaming_pattern: |
+      return createDataStreamResponse({
+        execute: async (dataStream) => {
+          const result = await streamText({ model, tools, messages });
+          result.mergeIntoDataStream(dataStream);
+        },
+      });
+
+  # 4e. Chatbot — Local Tool Execution Pattern
+  # Server DEFINES tools; client EXECUTES them (Obsidian vault access).
+  chatbot_tools:
+    pattern: server-defined, client-executed
+    why: >
+      Tools need access to the local Obsidian vault, which never leaves the
+      user's machine.  The AI model on the server decides which tool to call;
+      the client executes it using the Obsidian API and sends the result back.
+    server_definition_file: packages/web/app/api/(newai)/chat/tools.ts
+    client_handler_dir: packages/plugin/views/assistant/ai-chat/tool-handlers/
+    server_rule: >
+      Tool objects on the server have ONLY description and parameters (Zod schema).
+      NO execute function on the server.
+    client_rule: >
+      Each handler component uses useRef(false) to prevent double-execution and
+      checks !("result" in toolInvocation) before running.
+    available_tools:
+      search_discovery:
+        - getSearchQuery
+        - searchByName
+        - getLastModifiedFiles
+      content_manipulation:
+        - appendContentToFile
+        - addTextToDocument
+        - modifyDocumentText
+      file_organisation:
+        - moveFiles
+        - renameFiles
+        - executeActionsOnFileBasedOnPrompt
+      vault_management:
+        - analyzeVaultStructure
+        - generateSettings
+      media:
+        - getYoutubeVideoId
+    adding_new_tool_steps:
+      - "1. Add definition (description + parameters only) to tools.ts"
+      - "2. Add handler mapping in tool-invocation-handler.tsx"
+      - "3. Create handler component in tool-handlers/ (use hasFetchedRef pattern)"
+      - "4. Add tool title to getToolTitle() in tool-invocation-handler.tsx"
+
+  # 4f. File Upload Architecture
+  file_upload:
+    strategy_by_size:
+      small_lt_4mb:
+        method: "direct multipart/form-data"
+        endpoint: /api/transcribe
+      large_gte_4mb:
+        method: presigned URL → R2 → backend notification
+        endpoints:
+          - POST /api/create-upload-url   # Generate presigned URL
+          - PUT  <r2_presigned_url>        # Client uploads directly to R2
+          - POST /api/record-upload        # Notify backend
+          - POST /api/process-file         # Trigger processing
+          - GET  /api/get-upload-status/{fileId}  # Poll for result
+        why: Bypasses Vercel 4.5 MB body size limit
+    upload_flow_reference: AGENTS.MD §2 "File Upload Flow"
+
+  # 4g. Audio Transcription
+  audio_transcription:
+    whisper_per_request_limit_mb: 25
+    guardrails:
+      max_upload_bytes_mb: 250
+      max_audio_minutes: 180
+      user_facing_message: >
+        "This file is too long to process in one request."
+        (Do NOT mention the 25 MB Whisper limit to users.)
+    server_side_chunking:
+      enabled_above_mb: 25
+      splitter: packages/web/lib/audio/split-audio.ts
+      function: splitAudioFileBySizeHeuristic()
+      method: ffprobe for duration → ffmpeg time-based split (chunks < 24 MB)
+    ffmpeg_config:
+      local_dev: Set FFMPEG_PATH and FFPROBE_PATH in packages/web/.env.local
+      vercel: Do NOT set those env vars; code falls back to ffmpeg-static / @ffprobe-installer
+    quota: Checked and incremented once per full file (not per chunk)
+    route_runtime: nodejs   # Required for ffmpeg, /tmp, child_process
+
+  # 4h. Database
+  database:
+    orm: Drizzle ORM
+    provider: "PostgreSQL (Neon)"
+    schema: packages/web/drizzle/schema.ts
+    migrations_dir: packages/web/drizzle/
+    migration_command: pnpm dotenv -c -- drizzle-kit migrate
+
+  # 4i. Authentication & Payments
+  auth:
+    provider: Clerk
+    env_vars:
+      - CLERK_SECRET_KEY
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+  payments:
+    provider: Stripe
+    env_vars:
+      - STRIPE_SECRET_KEY
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+  # 4j. Testing
+  testing:
+    unit:
+      framework: Jest
+      packages: [plugin, web]
+    e2e:
+      framework: Playwright
+      packages: [web, landing]
+    mobile:
+      platforms: [iOS, Android]
+      note: Test on both platforms before merging mobile changes
+    plugin:
+      theme_matrix: [Default, Minimal, Cyberpunk, Dark]
+      note: Test UI components with all four themes before merging plugin UI changes
+
+  # 4k. Security
+  security:
+    never_commit:
+      - "**/.env*"
+      - "**/secrets.*"
+      - API keys or credentials of any kind
+    sensitive_patterns:
+      - "sk-[a-zA-Z0-9]+"         # OpenAI key
+      - "ANTHROPIC_API_KEY"
+      - "STRIPE_SECRET_KEY"
+      - "CLERK_SECRET_KEY"
+      - "R2_SECRET_ACCESS_KEY"
+    reference_gitignore: .gitignore
+    reference_dockerignore: .dockerignore
+    rate_limiting: Required on all public AI endpoints
+    input_validation: Required on all API endpoints
+
+# ------------------------------------------------------------
+# 5. ENVIRONMENT VARIABLES REFERENCE
+# ------------------------------------------------------------
+environment:
+  web:
+    database:
+      - DATABASE_URL
+    auth:
+      - CLERK_SECRET_KEY
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    ai:
+      - OPENAI_API_KEY
+      - ANTHROPIC_API_KEY
+      - MODEL_NAME           # e.g. claude-3-opus-20240229
+    payments:
+      - STRIPE_SECRET_KEY
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    storage:
+      - R2_ACCOUNT_ID
+      - R2_ACCESS_KEY_ID
+      - R2_SECRET_ACCESS_KEY
+      - R2_BUCKET_NAME
+    ffmpeg_local_only:
+      - FFMPEG_PATH          # e.g. /opt/homebrew/bin/ffmpeg
+      - FFPROBE_PATH         # e.g. /opt/homebrew/bin/ffprobe
+  mobile:
+    - API_URL                # https://your-backend.com
+
+# ------------------------------------------------------------
+# 6. PR / REVIEW GUIDELINES
+# ------------------------------------------------------------
+pr_guidelines:
+  required_to_pass:
+    - CI build (.github/workflows/build.yml)
+    - "No hardcoded colours in plugin code (use Obsidian CSS variables)"
+    - "No API backward-compatibility breakage"
+    - "Token usage tracked for new AI endpoints"
+  required_to_include:
+    - Tests for new features
+    - Documentation updates for API changes
+    - Theme testing evidence for plugin UI changes
+  checklist:
+    - "[ ] CI passes"
+    - "[ ] No hardcoded colours in plugin (grep: bg-white, text-gray, #[0-9a-fA-F])"
+    - "[ ] API changes are backward compatible"
+    - "[ ] Token usage tracked if new AI endpoint added"
+    - "[ ] Tests added / updated"
+    - "[ ] Docs updated for API changes"
+    - "[ ] Plugin UI tested on Default, Minimal, Cyberpunk, Dark themes"
+
+# ------------------------------------------------------------
+# 7. AGENT REFERENCE DOCUMENTS
+# ------------------------------------------------------------
+agent_references:
+  primary_guide:
+    path: AGENTS.MD
+    description: >
+      42 KB comprehensive guide covering architecture, styling protocol,
+      upload flows, audio transcription, AI integration, chatbot tools,
+      and troubleshooting.  READ THIS FIRST before making non-trivial changes.
+  cursor_rules:
+    path: .cursorrules
+    description: Cursor IDE-specific coding rules and preferences
+  claude_settings:
+    path: .claude/settings.local.json
+    description: Claude Code agent settings
+  turbo_pipeline:
+    path: turbo.json
+    description: Turborepo task pipeline (build/dev/lint/test dependencies)
+  workspace_catalog:
+    path: pnpm-workspace.yaml
+    description: Shared dependency version catalog for the monorepo
