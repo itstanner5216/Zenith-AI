@@ -20,7 +20,7 @@ export default function TopUpSuccess() {
           <div className="flex flex-col gap-4 mt-8">
             <Button asChild>
               <Link href="obsidian://open" className="w-full">
-                You can now go back to Obsidian and use Note Companion.
+                You can now go back to Obsidian and use Zenith-AI.
               </Link>
             </Button>
           </div>

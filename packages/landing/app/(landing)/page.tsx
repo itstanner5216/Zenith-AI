@@ -32,7 +32,7 @@ export default function Page() {
       {/* Name Change Banner */}
       <div className="w-full bg-primary/5 border-b border-transparent bg-transparent ">
         <div className="max-w-7xl mx-auto px-6 py-2 text-center text-sm bg-background">
-          File Organizer 2000 is now Note Companion
+          File Organizer 2000 is now Zenith-AI
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export default function Page() {
             <div className="h-[1px] w-8 bg-muted-foreground/20"></div>
           </div>
           <p className="mt-6 text-lg leading-8">
-            Note Companion is an AI-powered Obsidian plugin that improves your
+            Zenith-AI is an AI-powered Obsidian plugin that improves your
             workflow by automatically organizing and formatting your notes—so
             you don't have to.
           </p>
@@ -143,7 +143,7 @@ export default function Page() {
                 <br />
                 {/* Drag and drop your notes into the dedicated "Inbox" folder for instant organization.
               Or get more control by choosing suggestions in the organizer sidepanel. */}
-                {/* Note Companion automatically detects relevant tags and suggests the best folder for your note.
+                {/* Zenith-AI automatically detects relevant tags and suggests the best folder for your note.
         Drag and drop your notes into the dedicated "Inbox" folder for instant organization.
         Or get more control by choosing suggestions in the organizer sidepanel. */}
               </p>
@@ -255,11 +255,11 @@ export default function Page() {
         </section>
       </div>
 
-      {/* Why Note Companion */}
+      {/* Why Zenith-AI */}
       {/* <div className="w-full py-24 bg-transparent">
         <div className="mx-auto max-w-7xl px-6">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-12 text-center">
-            Why Note Companion?
+            Why Zenith-AI?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="space-y-4">
@@ -297,7 +297,7 @@ export default function Page() {
             What it looks like in your vault
           </h2>
           <p className="text-lg">
-            Experience how Note Companion transforms your workflow
+            Experience how Zenith-AI transforms your workflow
           </p>
         </div>
         <Demo />
@@ -415,7 +415,7 @@ export default function Page() {
               Messy vault?
             </h2>
             <p className="text-lg text-muted-foreground mb-10">
-              Focus on building knowledge, not managing it. Note Companion
+              Focus on building knowledge, not managing it. Zenith-AI
               maintains your vault organized and amplifies your thinking.
             </p>
             <div className="flex items-center justify-center gap-x-6">
@@ -489,7 +489,7 @@ const testimonials = [
     name: 'izzy',
     handle: '@izzy',
     quote:
-      'Note Companion AI has now automatically organized 3,642 notes for me. I love it. It saves me so much time, and it does a great job with classifying tags, and folder selection.',
+      'Zenith-AI AI has now automatically organized 3,642 notes for me. I love it. It saves me so much time, and it does a great job with classifying tags, and folder selection.',
     avatar:
       'https://framerusercontent.com/images/aZNudzX3wJdKLGtCDHuJSM4jDc.png',
   },

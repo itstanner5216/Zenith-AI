@@ -1,5 +1,5 @@
 import { App, TFolder, TFile, normalizePath, parseYaml } from "obsidian";
-import { FileOrganizerSettings } from "./settings";
+import { ZenithAISettings } from "./settings";
 import { logger } from "./services/logger";
 
 // Default template names that come with the plugin
@@ -406,7 +406,7 @@ export async function ensureFolderExists(app: App, folderPath: string) {
 
 export async function checkAndCreateFolders(
   app: App,
-  settings: FileOrganizerSettings
+  settings: ZenithAISettings
 ) {
   await ensureFolderExists(app, settings.pathToWatch);
   await ensureFolderExists(app, settings.defaultDestinationPath);
@@ -421,7 +421,7 @@ export async function checkAndCreateFolders(
 
 export async function checkAndCreateTemplates(
   app: App,
-  settings: FileOrganizerSettings
+  settings: ZenithAISettings
 ) {
   const meetingNoteTemplatePath = `${settings.templatePaths}/meeting_note.md`;
   const youtubeVideoTemplatePath = `${settings.templatePaths}/youtube_video.md`;
@@ -466,7 +466,7 @@ export async function checkAndCreateTemplates(
 // Only restores the 5 default templates, does not affect user-created templates
 export async function restoreDefaultTemplates(
   app: App,
-  settings: FileOrganizerSettings
+  settings: ZenithAISettings
 ) {
   const templatePaths = {
     meetingNote: `${settings.templatePaths}/meeting_note.md`,

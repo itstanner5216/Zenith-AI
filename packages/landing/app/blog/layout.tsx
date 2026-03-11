@@ -43,7 +43,7 @@ export default async function BlogLayout({
                 </Link>
 
                 <a
-                  href="https://github.com/Nexus-JPF/note-companion"
+                  href="https://github.com/Nexus-JPF/zenith-ai"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-2 bg-[#1F2937] text-white px-3 py-1.5 rounded-full text-sm font-semibold"

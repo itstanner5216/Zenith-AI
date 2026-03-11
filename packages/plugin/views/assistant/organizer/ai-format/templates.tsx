@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile, Notice } from "obsidian";
-import FileOrganizer from "../../../../index";
+import ZenithAI from "../../../../index";
 import { UserTemplates } from "./user-templates";
 import { DEFAULT_SETTINGS } from "../../../../settings";
 import { logger } from "../../../../services/logger";
@@ -10,7 +10,7 @@ import {
 } from "../../../../inbox/services/youtube-service";
 
 interface ClassificationBoxProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile | null;
   content: string;
   refreshKey: number;

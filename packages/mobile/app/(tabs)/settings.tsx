@@ -109,7 +109,7 @@ export default function SettingsScreen() {
           <ThemedView variant="elevated" style={styles.infoCard}>
             <MaterialIcons name="info-outline" size={20} color={primaryColor} style={styles.infoIcon} />
             <ThemedText colorName="textSecondary" style={styles.infoText}>
-              This is a companion app for Note Companion AI service. Your account status reflects the features available to you.
+              This is a companion app for Zenith-AI AI service. Your account status reflects the features available to you.
             </ThemedText>
           </ThemedView>
         </View>
@@ -130,7 +130,7 @@ export default function SettingsScreen() {
               {/* Disclosure for External Purchase Link */}
               <View style={styles.disclosureSection}>
                 <ThemedText style={styles.disclosureText} colorName="textSecondary">
-                  <ThemedText style={[styles.disclosureText, { fontWeight: '600' }]}>Note Companion AI - Cloud Plan</ThemedText>{'\n\n'}
+                  <ThemedText style={[styles.disclosureText, { fontWeight: '600' }]}>Zenith-AI AI - Cloud Plan</ThemedText>{'\n\n'}
                   Subscription Length: Monthly (recurring payment, cancel anytime){'\n'}
                   Price: $15.00/month{'\n\n'}
                   Tapping "Upgrade on notecompanion.ai" will take you outside the app to complete your purchase. This subscription is managed entirely through our website, not Apple.

@@ -1,7 +1,7 @@
 {
-  "name": "@file-organizer/release-notes",
+  "name": "@zenith-ai/release-notes",
   "version": "1.0.0",
-  "description": "Release notes generator for Note Companion",
+  "description": "Release notes generator for Zenith-AI",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

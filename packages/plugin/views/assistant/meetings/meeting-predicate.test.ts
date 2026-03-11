@@ -135,7 +135,7 @@ describe("isMeetingLike", () => {
       expect(
         isMeetingLike({
           app_name: "Cursor",
-          window_name: "chat.tsx — note-companion",
+          window_name: "chat.tsx — zenith-ai",
         })
       ).toBe(false);
     });

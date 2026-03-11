@@ -37,14 +37,14 @@ export const VALID_EXTENSIONS = [
 ];
 
 /**
- * Validates if a given file extension is supported by FileOrganizer
+ * Validates if a given file extension is supported by ZenithAI
  * @param extension - The file extension to validate (without the dot)
  * @returns boolean indicating if the extension is supported
  */
 export const isValidExtension = (extension: string): boolean => {
   const isSupported = VALID_EXTENSIONS.includes(extension);
   if (!isSupported) {
-    new Notice("Sorry, Note Companion does not support this file type.");
+    new Notice("Sorry, Zenith-AI does not support this file type.");
   }
   return isSupported;
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../assistant/ai-chat/button";
-import FileOrganizer from "../..";
+import ZenithAI from "../..";
 import { Notice } from "obsidian";
 import { validateApiKey } from "../../apiUtils";
 
@@ -8,7 +8,7 @@ export function TopUpMinutes({
   plugin,
   onLicenseKeyChange,
 }: {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   onLicenseKeyChange: (licenseKey: string) => void;
 }) {
   const [loading, setLoading] = useState(false);

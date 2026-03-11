@@ -8,7 +8,7 @@ import Link from 'next/link';
 import ExtraUserSettings from '@/components/user-management';
 
 export const metadata: Metadata = {
-  title: 'Note Companion - Dashboard',
+  title: 'Zenith-AI - Dashboard',
   description: 'Manage your account',
 };
 

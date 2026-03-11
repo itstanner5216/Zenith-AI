@@ -2,15 +2,15 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { MainDashboard } from "./main-dashboard"; 
 import { AppContext } from "../provider";
-import FileOrganizer from "../../../index";  // Your main plugin class
+import ZenithAI from "../../../index";  // Your main plugin class
 
 export const DASHBOARD_VIEW_TYPE = "fo2k.dashboard";
 
 export class DashboardView extends ItemView {
   root: Root | null = null;
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 
-  constructor(leaf: WorkspaceLeaf, plugin: FileOrganizer) {
+  constructor(leaf: WorkspaceLeaf, plugin: ZenithAI) {
     super(leaf);
     this.plugin = plugin;
   }

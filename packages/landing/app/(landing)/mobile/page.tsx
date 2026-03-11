@@ -6,13 +6,13 @@ import Link from "next/link";
 import { BetaRequestForm } from "../components/beta-request-form";
 
 export const metadata: Metadata = {
-  title: "Note Companion Mobile - Your AI-powered Knowledge Partner with OCR",
+  title: "Zenith-AI Mobile - Your AI-powered Knowledge Partner with OCR",
   description:
-    "Access your notes anywhere with the Note Companion mobile app. Capture text from images with our powerful OCR, manage your knowledge, and stay organized across all your devices.",
+    "Access your notes anywhere with the Zenith-AI mobile app. Capture text from images with our powerful OCR, manage your knowledge, and stay organized across all your devices.",
   openGraph: {
-    title: "Note Companion Mobile - Your AI-powered Knowledge Partner with OCR",
+    title: "Zenith-AI Mobile - Your AI-powered Knowledge Partner with OCR",
     description:
-      "Access your notes anywhere with the Note Companion mobile app. Capture text from images with our powerful OCR, manage your knowledge, and stay organized across all your devices.",
+      "Access your notes anywhere with the Zenith-AI mobile app. Capture text from images with our powerful OCR, manage your knowledge, and stay organized across all your devices.",
   },
 };
 
@@ -26,7 +26,7 @@ export default function MobilePage() {
             <Smartphone className="mx-auto h-16 w-16 text-primary" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-            <span>Note Companion</span>
+            <span>Zenith-AI</span>
             <span className="text-primary block">Mobile</span>
           </h1>
           <div className="flex items-center justify-center gap-3 mt-4">
@@ -47,7 +47,7 @@ export default function MobilePage() {
             <div className="h-[1px] w-8 bg-muted-foreground/20"></div>
           </div>
           <p className="mt-6 text-lg leading-8">
-            The Note Companion mobile app transforms how you capture and organize knowledge. With powerful OCR technology, seamless sync with Obsidian, and AI-powered organization, your notes become a truly portable knowledge ecosystem.
+            The Zenith-AI mobile app transforms how you capture and organize knowledge. With powerful OCR technology, seamless sync with Obsidian, and AI-powered organization, your notes become a truly portable knowledge ecosystem.
           </p>
           
           {/* Top CTA */}
@@ -105,7 +105,7 @@ export default function MobilePage() {
           <div className="mt-10 bg-gradient-to-r from-primary/10 to-primary/5 p-8 rounded-xl border border-primary/20">
             <h3 className="text-xl font-bold mb-3">Request Beta Access</h3>
             <p className="text-muted-foreground mb-5">
-              Be among the first to experience Note Companion Mobile. Sign up for early access and exclusive updates.
+              Be among the first to experience Zenith-AI Mobile. Sign up for early access and exclusive updates.
             </p>
             <BetaRequestForm formId="middle-beta-form" />
           </div>
@@ -162,7 +162,7 @@ export default function MobilePage() {
             Get Started Today
           </h2>
           <p className="text-xl text-muted-foreground mb-10">
-            Request access to the Note Companion mobile beta and transform how you capture, organize, and interact with your knowledge.
+            Request access to the Zenith-AI mobile beta and transform how you capture, organize, and interact with your knowledge.
           </p>
           
           {/* Secondary Beta Form */}

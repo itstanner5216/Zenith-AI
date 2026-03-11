@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Undo2 } from "lucide-react";
 import { FileRecord } from "../../../../inbox/services/record-manager";
 import { Notice } from "obsidian";
-import FileOrganizer from "../../../../index";
+import ZenithAI from "../../../../index";
 
 interface UndoButtonProps {
   record: FileRecord;
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   onUndo?: () => void;
 }
 

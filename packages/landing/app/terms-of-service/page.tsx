@@ -6,19 +6,19 @@ export default function TermsOfServicePage() {
       <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
       <div className="prose lg:prose-xl">
         <p className="mb-4">
-          These are the basic terms for using Note Companion AI. We've kept them
+          These are the basic terms for using Zenith-AI AI. We've kept them
           simple and clear.
         </p>
 
         <h2 className="text-xl font-semibold mt-6 mb-3">Our Software</h2>
         <p className="mb-4">
-          Note Companion is available as open-source software under the MIT
+          Zenith-AI is available as open-source software under the MIT
           license. The source code is available at{' '}
           <a
-            href="https://github.com/Nexus-JPF/note-companion"
+            href="https://github.com/Nexus-JPF/zenith-ai"
             className="text-blue-600 hover:underline"
           >
-            github.com/Nexus-JPF/note-companion
+            github.com/Nexus-JPF/zenith-ai
           </a>
           .
         </p>

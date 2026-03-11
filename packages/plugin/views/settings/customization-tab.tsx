@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import type FileOrganizer from '../../index';
+import type ZenithAI from '../../index';
 
 interface CustomizationTabProps {
-  plugin: InstanceType<typeof FileOrganizer>;
+  plugin: InstanceType<typeof ZenithAI>;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) => {

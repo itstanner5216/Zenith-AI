@@ -170,7 +170,7 @@ export default function DashboardPage() {
       <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-muted-foreground">
-            Welcome to Note Companion - your centralized note management hub.
+            Welcome to Zenith-AI - your centralized note management hub.
           </p>
         </div>
       </div>
@@ -307,7 +307,7 @@ export default function DashboardPage() {
           {/* New Mobile App Card */}
           <Card className="col-span-1">
             <CardHeader className="pb-2">
-              <CardTitle>Note Companion Mobile</CardTitle>
+              <CardTitle>Zenith-AI Mobile</CardTitle>
               {/* <CardDescription>Our brand new mobile experience</CardDescription> */}
             </CardHeader>
             <CardContent className="pt-2">
@@ -318,7 +318,7 @@ export default function DashboardPage() {
                 <div className="space-y-2">
                   <h3 className="text-lg font-medium">Now in Beta</h3>
                   <p className="text-sm text-muted-foreground">
-                    The Note Companion mobile app is now available for iOS.
+                    The Zenith-AI mobile app is now available for iOS.
                     Capture notes, screenshots, and sync them directly to your
                     vault with ease.
                   </p>
@@ -353,7 +353,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Recent Synced Files</CardTitle>
           <CardDescription>
-            Your most recently synced files from the Note Companion database
+            Your most recently synced files from the Zenith-AI database
           </CardDescription>
         </CardHeader>
         <CardContent>

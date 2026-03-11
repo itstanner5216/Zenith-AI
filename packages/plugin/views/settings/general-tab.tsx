@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
 import { UsageStats } from "../../components/usage-stats";
 import { TopUpCredits } from "../../views/settings/top-up-credits";
@@ -9,7 +9,7 @@ import { validateApiKey } from "../../apiUtils";
 import { FREE_TIER_TOKEN_LIMIT } from "../../constants";
 
 interface GeneralTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   userId?: string; // Make userId optional
   email?: string; // Make email optional
 }
@@ -190,15 +190,15 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
   };
 
   return (
-    <div className="file-organizer-settings space-y-6">
+    <div className="zenith-ai-settings space-y-6">
       <div className="bg-[--background-primary-alt] p-4 rounded-lg">
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-medium mb-2 mt-0">
-              Note Companion License Key
+              Zenith-AI License Key
             </h3>
             <p className="text-[--text-muted] mb-4">
-              Enter your license key to activate Note Companion.
+              Enter your license key to activate Zenith-AI.
             </p>
           </div>
 
@@ -408,8 +408,8 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       </div>
 
       <div className="bg-[--background-primary-alt] p-4 rounded-lg">
-        <p className="file-organizer-support-text mb-4">
-          Note Companion is an open-source initiative. If you find it valuable,
+        <p className="zenith-ai-support-text mb-4">
+          Zenith-AI is an open-source initiative. If you find it valuable,
           please{" "}
           <a
             href="https://notecompanion.ai/?utm_source=obsidian&utm_medium=in-app&utm_campaign=support-us"

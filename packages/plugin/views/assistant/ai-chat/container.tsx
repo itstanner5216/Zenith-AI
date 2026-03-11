@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { ChatComponent } from "./chat";
-import FileOrganizer from "../../..";
+import ZenithAI from "../../..";
 import { Card } from "./card";
 import { Button } from "./button";
 import { ChatTabs } from "./components/chat-tabs";
@@ -16,7 +16,7 @@ import {
 } from "./services/chat-history-manager";
 
 interface AIChatSidebarProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   apiKey: string;
   onTokenLimitError?: (error: string) => void;
   isChatTabActive?: boolean;

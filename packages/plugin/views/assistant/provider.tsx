@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
 import { Root } from "react-dom/client";
-import FileOrganizer from "../..";
+import ZenithAI from "../..";
 
 interface AppContextType {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   root: Root;
 }
 
@@ -17,7 +17,7 @@ export const useAppContext = (): AppContextType => {
   return context;
 };
 
-export const usePlugin = (): FileOrganizer => {
+export const usePlugin = (): ZenithAI => {
   const { plugin } = useAppContext();
   return plugin;
 };

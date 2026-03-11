@@ -152,7 +152,7 @@ export function UsageStatus({ compact = false }: UsageStatusProps) {
 
       {!compact && (
         <ThemedText style={styles.subscriptionNote}>
-          {'Thank you for being a Note Companion AI member.'}
+          {'Thank you for being a Zenith-AI AI member.'}
         </ThemedText>
       )}
     </ThemedView>

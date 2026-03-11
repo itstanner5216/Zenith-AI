@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { sanitizeTag } from "../../../someUtils";
 import { SkeletonLoader } from "./components/skeleton-loader";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,7 +14,7 @@ const ExistingTagButton = ExistingFolderButton;
 const NewTagButton = NewFolderButton;
 
 interface SimilarTagsProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile | null;
   content: string;
   refreshKey: number;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SectionHeader } from "../section-header";
 import { makeApiRequest } from "../../../apiUtils";
 import { requestUrl, Notice, TFolder } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { Button } from "../../../components/ui/button";
 import { StyledContainer } from "@/components/ui/utils";
 import { tw } from "@/lib/utils";
@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 // Storage key for downloaded files
-const DOWNLOADED_FILES_KEY = "file-organizer-downloaded-files";
+const DOWNLOADED_FILES_KEY = "zenith-ai-downloaded-files";
 
 interface RemoteFile {
   id: string;
@@ -61,7 +61,7 @@ export function SyncTab({
   plugin,
   onTokenLimitError,
 }: {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   onTokenLimitError?: (error: string) => void;
 }) {
   const [files, setFiles] = useState<RemoteFile[]>([]);
@@ -308,7 +308,7 @@ export function SyncTab({
     try {
       // Determine destination folder - use the dedicated sync folder
       const folderPath =
-        plugin.settings.syncFolderPath || "_NoteCompanion/Sync";
+        plugin.settings.syncFolderPath || "_ZenithAI/Sync";
 
       try {
         await plugin.ensureFolderExists(folderPath);

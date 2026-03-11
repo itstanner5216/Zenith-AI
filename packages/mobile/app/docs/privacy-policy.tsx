@@ -27,7 +27,7 @@ export default function PrivacyPolicyScreen() {
           
           <ThemedText style={styles.sectionTitle}>Introduction</ThemedText>
           <ThemedText style={styles.paragraph}>
-            Welcome to Note Companion. We respect your privacy and are committed to protecting your personal data. 
+            Welcome to Zenith-AI. We respect your privacy and are committed to protecting your personal data. 
             This privacy policy explains how we collect, use, and safeguard your information when you use our application.
           </ThemedText>
           
@@ -103,7 +103,7 @@ export default function PrivacyPolicyScreen() {
           <ThemedText style={styles.bulletPoint}>Email: support@notecompanion.com</ThemedText>
           
           <ThemedText style={styles.paragraph} style={styles.finalParagraph}>
-            By using Note Companion, you agree to the terms of this privacy policy.
+            By using Zenith-AI, you agree to the terms of this privacy policy.
           </ThemedText>
         </View>
       </ScrollView>

@@ -1,5 +1,5 @@
 import { logger } from "../../services/logger";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { fetchTranscript } from "youtube-transcript-plus";
 import { requestUrl } from "obsidian";
 
@@ -382,7 +382,7 @@ async function fetchYouTubeMetadata(videoId: string): Promise<YouTubeMetadata> {
  */
 export async function getYouTubeContent(
   videoId: string,
-  _plugin?: FileOrganizer
+  _plugin?: ZenithAI
 ): Promise<{
   title: string;
   transcript: string;

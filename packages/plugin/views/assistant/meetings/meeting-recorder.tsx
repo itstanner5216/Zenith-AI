@@ -2,14 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import { Button } from "../ai-chat/button";
 import { Mic, Square, Loader2 } from "lucide-react";
 import { logger } from "../../../services/logger";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { tw } from "../../../lib/utils";
 import { Notice } from "obsidian";
 import { MeetingMetadataManager } from "./meeting-metadata";
 import { getAvailablePath } from "../../../fileUtils";
 
 interface MeetingRecorderProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {

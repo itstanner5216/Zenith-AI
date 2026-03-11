@@ -1,5 +1,5 @@
 import { TFile, moment, TFolder, Vault, Notice } from "obsidian";
-import FileOrganizer from "../index";
+import ZenithAI from "../index";
 import { Queue } from "./services/queue";
 import {
   FileRecord,
@@ -77,7 +77,7 @@ interface ProcessingContext {
   newPath?: string;
   newName?: string;
   tags?: string[];
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   recordManager: RecordManager;
   idService: IdService;
   queue: Queue<TFile>;
@@ -124,7 +124,7 @@ function assertInvariant(condition: boolean, message: string) {
 
 export class Inbox {
   protected static instance: Inbox;
-  private plugin: FileOrganizer;
+  private plugin: ZenithAI;
   private activeMediaTasks = 0;
   private mediaQueue: Array<TFile> = [];
 
@@ -132,14 +132,14 @@ export class Inbox {
   private recordManager: RecordManager;
   private idService: IdService;
 
-  private constructor(plugin: FileOrganizer) {
+  private constructor(plugin: ZenithAI) {
     this.plugin = plugin;
     this.recordManager = RecordManager.getInstance(plugin.app);
     this.idService = IdService.getInstance();
     this.initializeQueue();
   }
 
-  public static initialize(plugin: FileOrganizer): Inbox {
+  public static initialize(plugin: ZenithAI): Inbox {
     if (!Inbox.instance) {
       Inbox.instance = new Inbox(plugin);
     }
@@ -239,7 +239,7 @@ export class Inbox {
       onError: (error: Error, file: TFile) => {
         logger.error("Queue processing error:", error);
         new Notice(
-          `Note Companion: Processing failed for ${file.basename}. ${error.message}`,
+          `Zenith-AI: Processing failed for ${file.basename}. ${error.message}`,
           6000
         );
       },
@@ -941,7 +941,7 @@ async function moveFileToErrorFolder(
 }
 
 // Helper functions for initialization and usage
-export function initializeInboxQueue(plugin: FileOrganizer): void {
+export function initializeInboxQueue(plugin: ZenithAI): void {
   Inbox.cleanup();
   Inbox.initialize(plugin);
 }
@@ -1098,7 +1098,7 @@ async function executeStep(
         3000
       );
 
-      context.plugin.app.workspace.trigger("file-organizer:processing-step", {
+      context.plugin.app.workspace.trigger("zenith-ai:processing-step", {
         fileName,
         action: actionName,
         hash: context.hash,

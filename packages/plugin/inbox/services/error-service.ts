@@ -42,7 +42,7 @@ export class ErrorService {
 
     // Log to console in debug mode
     if (this.isDebugEnabled) {
-      logger.error("[FileOrganizer Error]", {
+      logger.error("[ZenithAI Error]", {
         ...details,
         timestamp: new Date().toISOString()
       });
@@ -67,7 +67,7 @@ export class ErrorService {
   private showNotification(details: ErrorDetails): void {
     const duration = this.getNotificationDuration(details.severity);
     new Notice(
-      `FileOrganizer: ${details.message}`, 
+      `ZenithAI: ${details.message}`, 
       duration
     );
   }

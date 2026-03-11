@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile, Notice } from "obsidian";
-import FileOrganizer from "../../../../index";
+import ZenithAI from "../../../../index";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonLoader } from "../components/skeleton-loader";
 import { FolderSuggestion } from "../../../../index";
@@ -9,7 +9,7 @@ import { ExistingFolderButton, NewFolderButton } from "../components/suggestion-
 import { logger } from "../../../../services/logger";
 
 interface SimilarFolderBoxProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile | null;
   content: string;
   refreshKey: number;

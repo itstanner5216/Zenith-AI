@@ -14,8 +14,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ||
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Note Companion - Your AI-powered Knowledge Partner',
-    template: '%s | Note Companion',
+    default: 'Zenith-AI - Your AI-powered Knowledge Partner',
+    template: '%s | Zenith-AI',
   },
   description:
     'Your AI-powered assistant that turns scattered notes into actionable knowledge. Seamless meeting notes, instant organization, and the smartest AI chat for your Obsidian workflow.',
@@ -28,12 +28,12 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: siteUrl,
-    siteName: 'Note Companion',
+    siteName: 'Zenith-AI',
     images: ['/notecompanion.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Note Companion - Your AI-powered Knowledge Partner',
+    title: 'Zenith-AI - Your AI-powered Knowledge Partner',
     description:
       'Your AI-powered assistant that turns scattered notes into actionable knowledge. Seamless meeting notes, instant organization, and the smartest AI chat for your Obsidian workflow.',
     images: ['/notecompanion.png'],
@@ -59,7 +59,7 @@ export default async function RootLayout({
                     <span className="hidden sm:inline bg-purple-500 text-white px-1.5 py-0.5 rounded-md text-xs mr-2">
                       NEW
                     </span>
-                    Note Companion Mobile with best-in-class OCR technology
+                    Zenith-AI Mobile with best-in-class OCR technology
                     is now available
                   </p>
                 </div>
@@ -104,7 +104,7 @@ export default async function RootLayout({
                     </Link>
 
                     <a
-                      href="https://github.com/Nexus-JPF/note-companion"
+                      href="https://github.com/Nexus-JPF/zenith-ai"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center space-x-2 bg-[#1F2937] text-white px-3 py-1.5 rounded-full text-sm font-semibold"

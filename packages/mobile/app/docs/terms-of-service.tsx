@@ -27,7 +27,7 @@ export default function TermsOfServiceScreen() {
           
           <ThemedText style={styles.sectionTitle}>Introduction</ThemedText>
           <ThemedText style={styles.paragraph}>
-            Welcome to Note Companion. By using our application, you agree to these Terms of Service. 
+            Welcome to Zenith-AI. By using our application, you agree to these Terms of Service. 
             Please read them carefully.
           </ThemedText>
           
@@ -106,7 +106,7 @@ export default function TermsOfServiceScreen() {
           <ThemedText style={styles.bulletPoint}>Email: support@notecompanion.com</ThemedText>
           
           <ThemedText style={styles.paragraph} style={styles.finalParagraph}>
-            By using Note Companion, you acknowledge that you have read, understood, and agree to these Terms of Service.
+            By using Zenith-AI, you acknowledge that you have read, understood, and agree to these Terms of Service.
           </ThemedText>
         </View>
       </ScrollView>

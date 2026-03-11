@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile, WorkspaceLeaf, Notice, TAbstractFile } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { debounce } from "lodash";
 
 import { SectionHeader } from "../section-header";
@@ -19,7 +19,7 @@ import { logger } from "../../../services/logger";
 import { tw } from "../../../lib/utils";
 
 interface AssistantViewProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   leaf: WorkspaceLeaf;
   onTokenLimitError?: (error: string) => void;
 }
@@ -305,7 +305,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
           <RefreshButton onRefresh={refreshContext} />
         </div>
         <div className={tw("px-3")}>
-          <EmptyState message="To process an image or audio file, move it to the Note Companion Inbox Folder (e.g. for image text extraction or audio transcription)." />
+          <EmptyState message="To process an image or audio file, move it to the Zenith-AI Inbox Folder (e.g. for image text extraction or audio transcription)." />
         </div>
       </div>
     );

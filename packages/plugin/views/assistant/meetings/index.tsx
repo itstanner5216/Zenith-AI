@@ -1,13 +1,13 @@
 import React from "react";
 import { StyledContainer } from "../../../components/ui/utils";
 import { tw } from "../../../lib/utils";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { MeetingRecorder } from "./meeting-recorder";
 import { RecentMeetings } from "./recent-meetings";
 import { ScreenpipeMeetings } from "./screenpipe-meetings";
 
 interface MeetingsTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const MeetingsTab: React.FC<MeetingsTabProps> = ({ plugin }) => {

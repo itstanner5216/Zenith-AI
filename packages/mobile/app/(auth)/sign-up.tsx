@@ -106,7 +106,7 @@ export default function SignUpScreen() {
       >
         <View style={styles.header}>
           <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Join Note Companion AI</Text>
+          <Text style={styles.subtitle}>Join Zenith-AI AI</Text>
         </View>
 
         <View style={styles.form}>

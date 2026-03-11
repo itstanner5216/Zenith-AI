@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  DOCKERHUB_REPO: jpfong/note-companion
+  DOCKERHUB_REPO: jpfong/zenith-ai
 
 jobs:
   validate-and-extract:
@@ -78,7 +78,7 @@ jobs:
       contents: read
       packages: write
     env:
-      IMAGE: jpfong/note-companion
+      IMAGE: jpfong/zenith-ai
       VERSION: ${{ needs.validate-and-extract.outputs.version }}
       PLATFORM: ${{ matrix.platform }}
       TAG_SUFFIX: ${{ matrix.tag-suffix }}
@@ -130,7 +130,7 @@ jobs:
       contents: read
       packages: write
     env:
-      IMAGE: jpfong/note-companion
+      IMAGE: jpfong/zenith-ai
       VERSION: ${{ needs.validate-and-extract.outputs.version }}
     steps:
       - name: Set up Docker Buildx
@@ -198,7 +198,7 @@ jobs:
           echo "docker run -d \\" >> $GITHUB_STEP_SUMMARY
           echo "  -p 3000:3000 \\" >> $GITHUB_STEP_SUMMARY
           echo "  -e OPENAI_API_KEY=your-api-key \\" >> $GITHUB_STEP_SUMMARY
-          echo "  --name note-companion \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --name zenith-ai \\" >> $GITHUB_STEP_SUMMARY
           echo "  ${{ env.IMAGE }}:${{ env.VERSION }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

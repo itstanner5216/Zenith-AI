@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Notice, TFile } from "obsidian";
-import FileOrganizer from "../../../../index";
+import ZenithAI from "../../../../index";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonLoader } from "../components/skeleton-loader";
@@ -9,7 +9,7 @@ import { logMessage, sanitizeFileName } from "../../../../someUtils";
 import { logger } from "../../../../services/logger";
 
 interface RenameSuggestionProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile | null;
   content: string;
   refreshKey: number;
