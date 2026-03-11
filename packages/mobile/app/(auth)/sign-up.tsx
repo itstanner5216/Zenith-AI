@@ -60,8 +60,15 @@ export default function SignUpScreen() {
         // Handle additional verification if needed
         console.log(JSON.stringify(result, null, 2));
       }
-    } catch (err: any) {
-      Alert.alert('Error', err.errors?.[0]?.message || 'Failed to sign up');
+    } catch (err: unknown) {
+      const message =
+        typeof err === 'object' &&
+        err !== null &&
+        'errors' in err &&
+        Array.isArray((err as { errors?: Array<{ message?: string }> }).errors)
+          ? (err as { errors: Array<{ message?: string }> }).errors[0]?.message
+          : undefined;
+      Alert.alert('Error', message || 'Failed to sign up');
     } finally {
       setLoading(false);
     }
