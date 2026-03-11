@@ -1950,7 +1950,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     role="menu"
                     className={tw(
                       "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.15)]",
-                      "bg-[#1e1a2e] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)]"
+                      "bg-[#191621] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)]"
                     )}
                     style={{
                       position: "fixed",

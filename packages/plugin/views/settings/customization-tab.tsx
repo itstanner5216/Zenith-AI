@@ -184,14 +184,14 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value,
           onChange={(e) => onChange(e.target.checked)}
           className="sr-only peer"
         />
-        <div className={`w-8 h-4 rounded-full border transition-all duration-200 ${
+        <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
           value
             ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
             : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)] group-hover:border-[rgba(14,210,247,0.35)]'
         }`}>
           <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
             value
-              ? 'left-[18px] bg-[#0fb6d6]'
+              ? 'right-0.5 bg-[#0fb6d6]'
               : 'left-0.5 bg-[#45aaff] opacity-60'
           }`} />
         </div>

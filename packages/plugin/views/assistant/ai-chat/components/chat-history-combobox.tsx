@@ -165,7 +165,7 @@ export function ChatHistoryCombobox({
         <div
           className={tw(
             "absolute top-full right-0 mt-1 w-[300px] max-h-[400px]",
-            "bg-[#1e1a2e] border border-[rgba(14,210,247,0.15)]",
+            "bg-[#191621] border border-[rgba(14,210,247,0.15)]",
             "rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)] z-50 overflow-hidden"
           )}
           style={{
@@ -182,12 +182,12 @@ export function ChatHistoryCombobox({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search chats..."
-                  className={tw(
-                    "w-full pl-7 pr-2 py-1.5 text-xs rounded-md",
-                    "bg-[#0d0b12]",
-                    "text-[#bebebe] border border-[rgba(14,210,247,0.12)] placeholder:text-[#45aaff] placeholder:opacity-50",
-                    "focus:outline-none focus:border-[#0fb6d6] focus:ring-1 focus:ring-[rgba(14,210,247,0.2)] transition-all duration-150"
-                  )}
+                className={tw(
+                  "w-full pl-7 pr-2 py-1.5 text-xs rounded-md",
+                  "bg-[#0d0b12]",
+                  "text-[#bebebe] border border-[rgba(14,210,247,0.12)] placeholder:text-[#45aaff] placeholder:opacity-50",
+                  "focus:outline-none focus:border-[#0fb6d6] focus:ring-1 focus:ring-[rgba(14,210,247,0.2)] transition-all duration-150"
+                )}
               />
             </div>
           </div>
