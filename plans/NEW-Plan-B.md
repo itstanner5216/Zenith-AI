@@ -71,7 +71,7 @@ Do NOT edit any file outside of your scope. If you find a bug there, note it in 
 
 # **Vault Intelligence — Implementation Plan**
 
-**Goal:** Integrate pgvector embeddings + Vertex AI ranker into Note Companion for project-aware auto-sorting, with the model shifting from routing to generation and user dialogue.
+**Goal:** Integrate pgvector embeddings + Vertex AI ranker into Zenith-AI for project-aware auto-sorting, with the model shifting from routing to generation and user dialogue.
 
 **Architecture:** pgvector in Vertex Brain Docker → new gateway embedding endpoints → TypeScript VertexBrainClient in plugin → pipeline overhaul → LiteLLM MCP bridge. See `docs/2026-03-08-vault-intelligence-design.md` for full design.
 
@@ -85,7 +85,7 @@ Do NOT edit any file outside of your scope. If you find a bug there, note it in 
 - All thresholds user-configurable via settings
 - Graceful fallback if Brain unavailable — existing model pipeline must continue to work
 
-**Assumption:** Vertex Brain 2 production fixes (`docs/plans/2026-03-08-production-fixes.md` in Vertex_AI_Brain_2) are complete and the gateway is running at [http://localhost:8085](http://localhost:8085/). All work targets `/home/tanner/Projects/Vertex_AI_Brain_2/` — NOT Vertex_AI_Brain (the older v3.0.0 origin).
+**Assumption:** Zeniths-Vectors production fixes (`docs/plans/2026-03-08-production-fixes.md` in Zeniths-Vectors) are complete and the gateway is running at [http://localhost:8085](http://localhost:8085/). All work targets `Zeniths-Vectors/` — NOT Vertex_AI_Brain (the older v3.0.0 origin).
 
 ---
 
@@ -101,7 +101,7 @@ Do NOT edit any file outside of your scope. If you find a bug there, note it in 
 ```typescript
 import React, { useState } from "react";
 import { ToolHandlerResult } from "../types";
-import type FileOrganizerPlugin from "../../../../index";
+import type ZenithAIPlugin from "../../../../index";
 
 interface UpdateVaultStructureArgs {
   newRules: string;
@@ -110,7 +110,7 @@ interface UpdateVaultStructureArgs {
 
 export async function handleUpdateVaultStructure(
   args: UpdateVaultStructureArgs,
-  plugin: FileOrganizerPlugin
+  plugin: ZenithAIPlugin
 ): Promise<ToolHandlerResult> {
   try {
     if (!plugin.organizationPreferences) {
@@ -166,7 +166,7 @@ case "update_vault_structure":
 **Step 4: Verify TypeScript compiles**
 
 ```bash
-cd /home/tanner/Projects/.note-companion
+cd /home/tanner/Projects/Zenith-AI
 npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
 ```
 
@@ -188,7 +188,7 @@ git commit -m "feat: add update_vault_structure agent tool for Cosmic Vault Stru
 **Step 1: Find and replace old tool name references**
 
 ```bash
-cd /home/tanner/Projects/.note-companion
+cd /home/tanner/Projects/Zenith-AI
 grep -rn "update_organization_rules\|update-organization-rules\|UpdateOrganizationRules\|handleUpdateOrganizationRules\|OrganizationRulesArgs" packages/plugin/ --include="*.ts" --include="*.tsx"
 ```
 
@@ -202,7 +202,7 @@ For every match found, rename:
 **Step 2: Rename handler file if it exists**
 
 ```bash
-cd /home/tanner/Projects/.note-companion
+cd /home/tanner/Projects/Zenith-AI
 if [ -f packages/plugin/views/assistant/ai-chat/tool-handlers/update-organization-rules-handler.tsx ]; then
   git mv packages/plugin/views/assistant/ai-chat/tool-handlers/update-organization-rules-handler.tsx \
         packages/plugin/views/assistant/ai-chat/tool-handlers/update-vault-structure-handler.tsx
@@ -220,7 +220,7 @@ For every match found, update to use "Cosmic Vault Structure" in user-facing str
 **Step 4: Verify TypeScript compiles**
 
 ```bash
-cd /home/tanner/Projects/.note-companion
+cd /home/tanner/Projects/Zenith-AI
 npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
 ```
 
@@ -342,7 +342,7 @@ Find the last settings section in the file. Add a new section:
 **Step 3: Verify TypeScript compiles**
 
 ```bash
-cd /home/tanner/Projects/.note-companion
+cd /home/tanner/Projects/Zenith-AI
 npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
 ```
 
@@ -405,14 +405,14 @@ import { ProjectContextTab } from "./context";
 
 ```typescript
 import { Component, React } from "obsidian";
-import type FileOrganizerPlugin from "../../index";
+import type ZenithAIPlugin from "../../index";
 
 export class ProjectContextTab extends Component {
-  private plugin: FileOrganizerPlugin;
+  private plugin: ZenithAIPlugin;
   private activeProject: string | null = null;
   private relatedFiles: VaultSearchResult[] = [];
   
-  constructor(plugin: FileOrganizerPlugin) {
+  constructor(plugin: ZenithAIPlugin) {
     super();
     this.plugin = plugin;
   }
@@ -602,7 +602,7 @@ export const RecentMeetings = () => null; // Legacy component removed
 
 ## **Final Verification Checklist**
 
-Run from `/home/tanner/Projects/.note-companion`:
+Run from `/home/tanner/Projects/Zenith-AI`:
 
 **Step 1: TypeScript compiles clean**
 
@@ -648,7 +648,7 @@ grep "\"context\"" packages/plugin/views/assistant/view.tsx
 grep "BackgroundScribe" packages/plugin/index.ts
 ```
 
-Run from `/home/tanner/Projects/Vertex_AI_Brain_2/`:
+Run from `Zeniths-Vectors/`:
 
 **Step 8: pgvector in docker-compose**
 
