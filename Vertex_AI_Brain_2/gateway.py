@@ -47,6 +47,8 @@ VERTEX_GROUNDING_MODEL = os.environ.get("VERTEX_GROUNDING_MODEL", "gemini-2.5-fl
 VERTEX_MODEL_REASONING = os.environ.get("VERTEX_MODEL_REASONING", "gemini-2.5-pro")
 VERTEX_MODEL_BALANCED = os.environ.get("VERTEX_MODEL_BALANCED", "gemini-2.5-flash")
 VERTEX_MODEL_FAST = os.environ.get("VERTEX_MODEL_FAST", "gemini-2.5-flash-lite")
+VERTEX_EMBEDDING_MODEL = os.environ.get("VERTEX_EMBEDDING_MODEL", "text-embedding-004")
+VERTEX_EMBEDDING_LOCATION = os.environ.get("VERTEX_EMBEDDING_LOCATION", "us-central1")
 
 # =============================================================================
 # GOOGLE CLOUD CONFIGURATION
@@ -168,6 +170,14 @@ class GroundedRequest(BaseModel):
 
 class VaultWriteRequest(BaseModel):
     content: str = Field(...)
+
+class EmbedRequest(BaseModel):
+    text: str = Field(..., min_length=1)
+    task_type: str = Field(default="RETRIEVAL_DOCUMENT")
+
+class EmbedResponse(BaseModel):
+    embedding: List[float]
+    token_count: int
 
 class Citation(BaseModel):
     uri: str = ""; title: str = ""; index: int = 0
@@ -384,6 +394,23 @@ class VertexSearchClient:
         r = await self.client.post(url, headers=self._headers(token), json=body)
         r.raise_for_status()
         return self._json(r)
+
+    @with_retry()
+    async def embed(self, text: str, task_type: str = "RETRIEVAL_DOCUMENT") -> dict:
+        token = await auth_manager.get_access_token()
+        url = (
+            f"https://{VERTEX_EMBEDDING_LOCATION}-aiplatform.googleapis.com/v1"
+            f"/projects/{GOOGLE_PROJECT_NUMBER}/locations/{VERTEX_EMBEDDING_LOCATION}"
+            f"/publishers/google/models/{VERTEX_EMBEDDING_MODEL}:predict"
+        )
+        payload = {"instances": [{"content": text, "task_type": task_type}]}
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        resp = await self.client.post(url, json=payload, headers=headers)
+        resp.raise_for_status()
+        data = resp.json()
+        values = data["predictions"][0]["embeddings"]["values"]
+        token_count = data["predictions"][0]["embeddings"].get("statistics", {}).get("token_count", 0)
+        return {"embedding": values, "token_count": token_count}
 
 # =============================================================================
 # OBSIDIAN CLIENT — resilient, auto-reconnecting
@@ -927,6 +954,16 @@ async def ep_grounded(request: GroundedRequest):
         raise HTTPException(e.response.status_code, f"Grounded error: {e.response.text[:300]}")
     except Exception as e:
         raise HTTPException(500, f"Grounded generation failed: {type(e).__name__}")
+
+@app.post("/v1/embed")
+async def v1_embed(req: EmbedRequest):
+    try:
+        client = _req_vertex()
+        result = await client.embed(req.text, req.task_type)
+        return {"success": True, "embedding": result["embedding"], "token_count": result["token_count"]}
+    except Exception as e:
+        logger.error(f"Embed error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # --- Obsidian proxy endpoints ---
 
