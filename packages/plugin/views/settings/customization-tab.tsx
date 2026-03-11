@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import type FileOrganizer from '../../index';
 
@@ -15,6 +16,17 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
   const [imageInstructions, setImageInstructions] = useState(plugin.settings.imageInstructions);
   const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
+  const [vertexBrainUrl, setVertexBrainUrl] = useState(plugin.settings.vertexBrainUrl);
+  const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort);
+  const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold);
+  const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath);
+  const [generalMergeThreshold, setGeneralMergeThreshold] = useState(plugin.settings.generalMergeThreshold);
+  const [globalMergeThreshold, setGlobalMergeThreshold] = useState(plugin.settings.globalMergeThreshold);
+  const [pinnedTag, setPinnedTag] = useState(plugin.settings.pinnedTag);
+  const [projectsPath, setProjectsPath] = useState(plugin.settings.projectsPath);
+  const [autoDetectProjectContext, setAutoDetectProjectContext] = useState(plugin.settings.autoDetectProjectContext);
+  const [backgroundScribeEnabled, setBackgroundScribeEnabled] = useState(plugin.settings.backgroundScribeEnabled);
+  const [backgroundScribeOutputFile, setBackgroundScribeOutputFile] = useState(plugin.settings.backgroundScribeOutputFile);
 
   // force set user embeddings to false
   useEffect(() => {
@@ -33,6 +45,12 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const handleTextChange = async (value: string, setter: React.Dispatch<React.SetStateAction<string>>, settingKey: keyof typeof plugin.settings) => {
     setter(value);
     (plugin.settings[settingKey] as string) = value;
+    await plugin.saveSettings();
+  };
+
+  const handleNumberChange = async (value: number, setter: React.Dispatch<React.SetStateAction<number>>, settingKey: keyof typeof plugin.settings) => {
+    setter(value);
+    (plugin.settings[settingKey] as number) = value;
     await plugin.saveSettings();
   };
 
@@ -140,6 +158,88 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
           </div>
         </div>
 
+        {/* Vault Intelligence Section */}
+        <div className="mb-6">
+          <h4 className="font-medium text-[--text-normal] mb-2">Vault Intelligence</h4>
+          <div className="space-y-4">
+            <TextInputSetting
+              name="Vertex Brain URL"
+              description="Base URL for your Vertex Brain gateway service."
+              value={vertexBrainUrl}
+              onChange={(value) => handleTextChange(value, setVertexBrainUrl, 'vertexBrainUrl')}
+            />
+            <ToggleSetting
+              name="Enable Vector Auto-Sort"
+              description="Use vector similarity and ranking to automatically sort notes into project folders."
+              value={enableVectorAutoSort}
+              onChange={(value) => handleToggleChange(value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
+            />
+            <NumberInputSetting
+              name="Auto-Sort Confidence Threshold"
+              description="Minimum confidence score required before applying auto-sort."
+              value={autoSortConfidenceThreshold}
+              min={0}
+              max={1}
+              step={0.01}
+              onChange={(value) => handleNumberChange(value, setAutoSortConfidenceThreshold, 'autoSortConfidenceThreshold')}
+            />
+            <TextInputSetting
+              name="Organization Rules Path"
+              description="Path to the vault note containing organizational rules used by ranking."
+              value={organizationRulesPath}
+              onChange={(value) => handleTextChange(value, setOrganizationRulesPath, 'organizationRulesPath')}
+            />
+            <NumberInputSetting
+              name="General Merge Threshold"
+              description="Confidence threshold for moving notes from a General directory into a project folder."
+              value={generalMergeThreshold}
+              min={0}
+              max={1}
+              step={0.01}
+              onChange={(value) => handleNumberChange(value, setGeneralMergeThreshold, 'generalMergeThreshold')}
+            />
+            <NumberInputSetting
+              name="Global Merge Threshold"
+              description="Confidence threshold for moving notes from non-General folders into project folders."
+              value={globalMergeThreshold}
+              min={0}
+              max={1}
+              step={0.01}
+              onChange={(value) => handleNumberChange(value, setGlobalMergeThreshold, 'globalMergeThreshold')}
+            />
+            <TextInputSetting
+              name="Pinned Tag"
+              description="Notes with this tag are excluded from auto-sort operations."
+              value={pinnedTag}
+              onChange={(value) => handleTextChange(value, setPinnedTag, 'pinnedTag')}
+            />
+            <TextInputSetting
+              name="Projects Root Path"
+              description="Vault folder that contains your project notes for project-aware ranking."
+              value={projectsPath}
+              onChange={(value) => handleTextChange(value, setProjectsPath, 'projectsPath')}
+            />
+            <ToggleSetting
+              name="Auto-Detect Project Context"
+              description="Automatically infer active project context when sorting and chatting."
+              value={autoDetectProjectContext}
+              onChange={(value) => handleToggleChange(value, setAutoDetectProjectContext, 'autoDetectProjectContext')}
+            />
+            <ToggleSetting
+              name="Background Scribe"
+              description="Enable background capture of project context into a target note."
+              value={backgroundScribeEnabled}
+              onChange={(value) => handleToggleChange(value, setBackgroundScribeEnabled, 'backgroundScribeEnabled')}
+            />
+            <TextInputSetting
+              name="Background Scribe Output File"
+              description="Output file path for background scribe updates."
+              value={backgroundScribeOutputFile}
+              onChange={(value) => handleTextChange(value, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile')}
+            />
+          </div>
+        </div>
+
         {/* Image Processing Section */}
         <div className="mb-6">
           <h4 className="font-medium text-[--text-normal] mb-2">Image Processing</h4>
@@ -184,6 +284,53 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value,
         className="form-checkbox text-[--interactive-accent]"
       />
     </div>
+  </div>
+);
+
+
+interface TextInputSettingProps {
+  name: string;
+  description: string;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const TextInputSetting: React.FC<TextInputSettingProps> = ({ name, description, value, onChange }) => (
+  <div className="py-2">
+    <div className="font-medium text-[--text-normal]">{name}</div>
+    <div className="text-sm text-[--text-muted] mb-1">{description}</div>
+    <input
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full px-3 py-2 text-[--text-normal] bg-[--background-primary] border border-[--background-modifier-border] rounded-lg focus:outline-none focus:border-[--interactive-accent]"
+    />
+  </div>
+);
+
+interface NumberInputSettingProps {
+  name: string;
+  description: string;
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, description, value, onChange, min, max, step }) => (
+  <div className="py-2">
+    <div className="font-medium text-[--text-normal]">{name}</div>
+    <div className="text-sm text-[--text-muted] mb-1">{description}</div>
+    <input
+      type="number"
+      value={value}
+      min={min}
+      max={max}
+      step={step}
+      onChange={(e) => onChange(Number(e.target.value))}
+      className="w-full px-3 py-2 text-[--text-normal] bg-[--background-primary] border border-[--background-modifier-border] rounded-lg focus:outline-none focus:border-[--interactive-accent]"
+    />
   </div>
 );
 
