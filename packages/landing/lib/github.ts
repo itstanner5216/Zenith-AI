@@ -1,11 +1,11 @@
 export async function getGitHubStars(): Promise<number> {
   try {
     const response = await fetch(
-      'https://api.github.com/repos/Nexus-JPF/note-companion',
+      'https://api.github.com/repos/Nexus-JPF/zenith-ai',
       {
         headers: {
           'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'note-companion-landing',
+          'User-Agent': 'zenith-ai-landing',
         },
         // Cache for 1 hour to avoid hitting rate limits
         next: { revalidate: 3600 }

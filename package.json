@@ -1,5 +1,5 @@
 {
-  "name": "file-organizer-2000-monorepo",
+  "name": "zenith-ai-monorepo",
   "private": true,
   "devDependencies": {
     "@types/node": "^22.13.10",
@@ -19,9 +19,6 @@
     "ios": "expo run:ios"
   },
   "pnpm": {
-    "patchedDependencies": {
-      "xcode@3.0.1": "patches/xcode@3.0.1.patch"
-    },
     "overrides": {
       "zod": "^3.25.76"
     },

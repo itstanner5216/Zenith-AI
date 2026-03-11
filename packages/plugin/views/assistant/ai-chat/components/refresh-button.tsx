@@ -23,7 +23,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
       title="Regenerate response"
     >
-      <RefreshCw size={16} className="text-[--text-muted]" />
+      <RefreshCw size={16} className="text-[#7aa2f7] hover:text-[#0fb6d6]" />
     </button>
   );
 };

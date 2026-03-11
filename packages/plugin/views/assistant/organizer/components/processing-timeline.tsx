@@ -89,28 +89,28 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
   const getStepIcon = (status: TimelineStep["status"]) => {
     switch (status) {
       case "completed":
-        return <Check className={tw("w-4 h-4 text-[--text-success]")} />;
+        return <Check className={tw("w-4 h-4 text-[#50fa7b]")} />;
       case "processing":
-        return <Loader className={tw("w-4 h-4 text-[--interactive-accent] animate-spin")} />;
+        return <Loader className={tw("w-4 h-4 text-[#0fb6d6] animate-spin")} />;
       case "error":
-        return <AlertCircle className={tw("w-4 h-4 text-[--text-error]")} />;
+        return <AlertCircle className={tw("w-4 h-4 text-[#f4569d]")} />;
       case "skipped":
-        return <div className={tw("w-4 h-4 rounded-full bg-[--background-modifier-border]")} />;
+        return <div className={tw("w-4 h-4 rounded-full bg-[rgba(14,210,247,0.1)]")} />;
       default:
-        return <Clock className={tw("w-4 h-4 text-[--text-muted]")} />;
+        return <Clock className={tw("w-4 h-4 text-[#7aa2f7]")} />;
     }
   };
 
   const getStepColor = (status: TimelineStep["status"]) => {
     switch (status) {
       case "completed":
-        return "bg-[--text-success]";
+        return "bg-[#50fa7b]";
       case "processing":
-        return "bg-[--interactive-accent]";
+        return "bg-[#0fb6d6]";
       case "error":
-        return "bg-[--text-error]";
+        return "bg-[#f4569d]";
       default:
-        return "bg-[--background-modifier-border]";
+        return "bg-[rgba(14,210,247,0.1)]";
     }
   };
 
@@ -131,13 +131,13 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
   }
 
   return (
-    <StyledContainer className={tw("bg-[--background-secondary] rounded p-4")}>
+    <StyledContainer className={tw("bg-[#0d0b12] rounded p-4 border border-[rgba(14,210,247,0.08)]")}>
       <div className={tw("flex items-center justify-between mb-4")}>
-        <h4 className={tw("text-sm font-medium text-[--text-normal]")}>Processing Timeline</h4>
-        <div className={tw("text-xs text-[--text-muted]")}>
-          {record.status === "completed" && "✓ Completed"}
-          {record.status === "processing" && "⏳ In Progress"}
-          {record.status === "error" && "⚠ Error"}
+        <h4 className={tw("text-sm font-medium text-[#0fb6d6]")}>Processing Timeline</h4>
+        <div className={tw("text-xs")}>
+          {record.status === "completed" && <span className="text-[#50fa7b]">✓ Completed</span>}
+          {record.status === "processing" && <span className="text-[#0fb6d6]">⏳ In Progress</span>}
+          {record.status === "error" && <span className="text-[#f4569d]">⚠ Error</span>}
         </div>
       </div>
 
@@ -146,38 +146,38 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
           <div key={step.action} className={tw("flex items-start gap-3")}>
             {/* Timeline connector */}
             <div className={tw("flex flex-col items-center")}>
-              <div className={`w-8 h-8 rounded-full bg-[--background-primary] border-2 flex items-center justify-center ${
-                step.status === "completed" ? "border-[--text-success]" :
-                step.status === "error" ? "border-[--text-error]" :
-                step.status === "processing" ? "border-[--interactive-accent]" :
-                "border-[--background-modifier-border]"
+              <div className={`w-8 h-8 rounded-full bg-[#0a0910] border-2 flex items-center justify-center ${
+                step.status === "completed" ? "border-[#50fa7b]" :
+                step.status === "error" ? "border-[#f4569d]" :
+                step.status === "processing" ? "border-[#0fb6d6]" :
+                "border-[rgba(14,210,247,0.1)]"
               }`}>
                 {getStepIcon(step.status)}
               </div>
               {index < stepsWithDuration.length - 1 && (
-                <div className={`w-0.5 h-6 mt-1 ${getStepColor(step.status)}`} />
+                <div className={`w-0.5 h-6 mt-1 ${getStepColor(step.status)}`} style={{ opacity: 0.5 }} />
               )}
             </div>
 
             {/* Step details */}
             <div className={tw("flex-1 pb-2")}>
               <div className={tw("flex items-center justify-between")}>
-                <span className={tw("text-sm font-medium text-[--text-normal]")}>
+                <span className={tw("text-sm font-medium text-[#bebebe]")}>
                   {step.label}
                 </span>
                 {step.duration !== undefined && step.duration > 0 && (
-                  <span className={tw("text-xs text-[--text-muted] font-mono")}>
+                  <span className={tw("text-xs text-[#7aa2f7] font-mono")} style={{ opacity: 0.6 }}>
                     {formatDuration(step.duration)}
                   </span>
                 )}
               </div>
               {step.timestamp && (
-                <div className={tw("text-xs text-[--text-muted] mt-0.5")}>
+                <div className={tw("text-xs text-[#7aa2f7] mt-0.5")} style={{ opacity: 0.4 }}>
                   {formatTime(step.timestamp)}
                 </div>
               )}
               {step.status === "skipped" && (
-                <div className={tw("text-xs text-[--text-muted] italic mt-1")}>
+                <div className={tw("text-xs text-[#7aa2f7] italic mt-1")} style={{ opacity: 0.5 }}>
                   Skipped
                 </div>
               )}
@@ -188,10 +188,10 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
 
       {/* Summary stats */}
       {record.status === "completed" && stepsWithDuration.length > 1 && (
-        <div className={tw("mt-4 pt-4 border-t border-[--background-modifier-border]")}>
+        <div className={tw("mt-4 pt-4 border-t border-[rgba(14,210,247,0.08)]")}>
           <div className={tw("flex items-center justify-between text-xs")}>
-            <span className={tw("text-[--text-muted]")}>Total time:</span>
-            <span className={tw("text-[--text-normal] font-mono font-medium")}>
+            <span className={tw("text-[#7aa2f7]")}>Total time:</span>
+            <span className={tw("text-[#0fb6d6] font-mono font-medium")}>
               {formatDuration(
                 stepsWithDuration.reduce((sum, step) => sum + (step.duration || 0), 0)
               )}

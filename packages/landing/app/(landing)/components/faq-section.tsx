@@ -46,12 +46,12 @@ export function FaqSection() {
           <FaqItem
             question="How to use the plugin?"
             answer={`<strong>Getting Started</strong>
-1. <a href="https://obsidian.md/plugins?id=fileorganizer2000" class="text-accent underline hover:no-underline">Install the plugin from Obsidian's community plugins</a>
+1. <a href="https://obsidian.md/plugins?id=zenith-ai" class="text-accent underline hover:no-underline">Install the plugin from Obsidian's community plugins</a>
 2. Choose your preferred plan
 3. You're all set!
 
 <strong>Learn More</strong>
-• <a href="https://github.com/Nexus-JPF/note-companion/blob/master/README.md#a-ai-organizer" class="text-accent underline hover:no-underline">Read our documentation</a> for core features and setup guide
+• <a href="https://github.com/Nexus-JPF/zenith-ai/blob/master/README.md#a-ai-organizer" class="text-accent underline hover:no-underline">Read our documentation</a> for core features and setup guide
 
 <strong>Video Tutorials</strong>
 • Check out our <a href="https://www.youtube.com/playlist?list=PLgRcC-DFR5jcwwg0Dr3gNZrkZxkztraKE" class="text-accent underline hover:no-underline">comprehensive video tutorials</a> for detailed walkthroughs`}

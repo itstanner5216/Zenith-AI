@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "../ai-chat/button";
 import { FileText, Loader2, AlertCircle, RotateCcw } from "lucide-react";
 import { TFile } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { tw } from "../../../lib/utils";
 import { Notice } from "obsidian";
 import { logger } from "../../../services/logger";
@@ -10,7 +10,7 @@ import { RecordingMetadata, MeetingMetadataManager } from "./meeting-metadata";
 import { TranscribeHandler } from "./transcribe-handler";
 
 interface EnhanceNoteHandlerProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   recording: RecordingMetadata;
   metadataManager: MeetingMetadataManager;
   onEnhanced: () => void;
@@ -395,7 +395,7 @@ export const EnhanceNoteHandler: React.FC<EnhanceNoteHandlerProps> = ({
     <div className={tw("flex flex-col gap-2")}>
       {error && (
         <div
-          className={tw("flex items-center gap-2 text-xs text-[--text-error]")}
+          className={tw("flex items-center gap-2 text-xs text-[#f4569d]")}
         >
           <AlertCircle className="w-3 h-3" />
           <span className={tw("flex-1")}>{error}</span>

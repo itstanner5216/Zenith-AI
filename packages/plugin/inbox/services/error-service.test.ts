@@ -59,7 +59,7 @@ describe('ErrorService', () => {
         shouldNotify: true,
       });
 
-      expect(Notice).toHaveBeenCalledWith('FileOrganizer: Critical error', 10000);
+      expect(Notice).toHaveBeenCalledWith('ZenithAI: Critical error', 10000);
     });
 
     it('should log error with context', () => {
@@ -99,7 +99,7 @@ describe('ErrorService', () => {
       });
 
       expect(logger.error).toHaveBeenCalledWith(
-        '[FileOrganizer Error]',
+        '[ZenithAI Error]',
         expect.objectContaining({
           message: 'Debug error',
           severity: ErrorSeverity.MEDIUM,
@@ -128,7 +128,7 @@ describe('ErrorService', () => {
         shouldNotify: true,
       });
 
-      expect(Notice).toHaveBeenCalledWith('FileOrganizer: Critical', 10000);
+      expect(Notice).toHaveBeenCalledWith('ZenithAI: Critical', 10000);
     });
 
     it('should return correct duration for HIGH severity', () => {
@@ -138,7 +138,7 @@ describe('ErrorService', () => {
         shouldNotify: true,
       });
 
-      expect(Notice).toHaveBeenCalledWith('FileOrganizer: High', 5000);
+      expect(Notice).toHaveBeenCalledWith('ZenithAI: High', 5000);
     });
 
     it('should return correct duration for MEDIUM severity', () => {
@@ -148,7 +148,7 @@ describe('ErrorService', () => {
         shouldNotify: true,
       });
 
-      expect(Notice).toHaveBeenCalledWith('FileOrganizer: Medium', 3000);
+      expect(Notice).toHaveBeenCalledWith('ZenithAI: Medium', 3000);
     });
 
     it('should return correct duration for LOW severity', () => {
@@ -158,7 +158,7 @@ describe('ErrorService', () => {
         shouldNotify: true,
       });
 
-      expect(Notice).toHaveBeenCalledWith('FileOrganizer: Low', 2000);
+      expect(Notice).toHaveBeenCalledWith('ZenithAI: Low', 2000);
     });
   });
 

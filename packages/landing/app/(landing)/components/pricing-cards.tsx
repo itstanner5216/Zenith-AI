@@ -73,7 +73,7 @@ export function PricingCards() {
                 ))}
               </div>
             </div>
-            <Link href="https://github.com/Nexus-JPF/file-organizer-2000" passHref>
+            <Link href="https://github.com/Nexus-JPF/zenith-ai-2000" passHref>
               <Button variant="outline" className="w-full">
                 See Github
               </Button>

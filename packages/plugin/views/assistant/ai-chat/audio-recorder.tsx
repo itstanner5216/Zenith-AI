@@ -169,11 +169,11 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       </Button>
 
       {debug && recordings.length > 0 && (
-        <div className="flex flex-col gap-2 p-2 rounded bg-[--background-secondary]">
-          <h3 className="text-[--text-muted] text-sm">Recording History</h3>
+        <div className="flex flex-col gap-2 p-2 rounded bg-[#191621] border border-[rgba(14,210,247,0.1)]">
+          <h3 className="text-[#7aa2f7] text-sm">Recording History</h3>
           {recordings.map((recording, index) => (
             <div key={recording.timestamp} className="flex items-center gap-2">
-              <span className="text-xs text-[--text-muted]">
+              <span className="text-xs text-[#7aa2f7]">
                 {recording.timestamp}
               </span>
               <audio controls src={recording.url} className="h-8" />

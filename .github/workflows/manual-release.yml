@@ -86,7 +86,7 @@ jobs:
         run: |
           # Build all packages including release-notes
           echo "Building packages..."
-          pnpm --filter  "@file-organizer/release-notes" build
+          pnpm --filter  "@zenith-ai/release-notes" build
           
           # Create a temporary file for the release data
           echo "Preparing release data..."

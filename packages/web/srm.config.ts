@@ -68,7 +68,7 @@ const cloudFeatures = [
 export const PRODUCTS = {
   // Subscription plans
   SubscriptionMonthly: {
-    name: 'Note Companion - Cloud',
+    name: 'Zenith-AI - Cloud',
     metadata: {
       type: 'subscription',
       plan: 'monthly',
@@ -84,7 +84,7 @@ export const PRODUCTS = {
     features: cloudFeatures,
   },
   SubscriptionYearly: {
-    name: 'Note Companion - Cloud',
+    name: 'Zenith-AI - Cloud',
     metadata: {
       type: 'subscription' as PlanType,
       plan: 'subscription_yearly' as Plan,
@@ -102,7 +102,7 @@ export const PRODUCTS = {
 
   // One-time payment plans
   PayOnceTopUp: {
-    name: 'Note Companion - Top Up',
+    name: 'Zenith-AI - Top Up',
     metadata: {
       type: 'pay-once' as PlanType,
       plan: 'top_up' as Plan,
@@ -116,7 +116,7 @@ export const PRODUCTS = {
     features: ['One-time purchase of additional tokens'],
   },
   PayOnceTopUpMinutes: {
-    name: 'Note Companion - Minutes Top Up',
+    name: 'Zenith-AI - Minutes Top Up',
     metadata: {
       type: 'pay-once' as PlanType,
       plan: 'top_up_minutes' as Plan,

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import type FileOrganizer from '../../index';
+import type ZenithAI from '../../index';
 
 interface CustomizationTabProps {
-  plugin: InstanceType<typeof FileOrganizer>;
+  plugin: InstanceType<typeof ZenithAI>;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) => {
@@ -40,9 +40,9 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
     <div className="p-4 space-y-8">
       {/* Inbox Processing Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[--text-normal]">Inbox Processing</h3>
-        <div className="bg-[--background-secondary] p-4 rounded-lg mb-4">
-          <div className="text-sm text-[--text-muted]">
+        <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">Inbox Processing</h3>
+        <div className="bg-[#0d0b12] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)]">
+          <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
             These settings control how new files are automatically handled when they enter your vault through the inbox.
             Enable or disable automatic processing features and configure how the AI should handle your incoming documents.
           </div>
@@ -60,9 +60,9 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             value={enableDocumentClassification}
             onChange={(value) => handleToggleChange(value, setEnableDocumentClassification, 'enableDocumentClassification')}
           />
-          <div className="bg-[--background-secondary] p-4 rounded-lg mt-2">
-            <div className="font-medium text-[--text-normal] mb-2">Document Type Templates</div>
-            <div className="text-sm text-[--text-muted]">
+          <div className="bg-[#0d0b12] p-4 rounded-lg mt-2 border border-[rgba(14,210,247,0.08)]">
+            <div className="font-medium text-[#bebebe] mb-2">Document Type Templates</div>
+            <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
               To enable auto-formatting, create template files in the File Organizer template folder.
               Name each file according to its document type (e.g., 'workout.md', 'meeting-notes.md').
               The content of each file should contain the formatting instructions.
@@ -80,9 +80,9 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
       {/* General Settings Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[--text-normal]">General Settings</h3>
-        <div className="bg-[--background-secondary] p-4 rounded-lg mb-4">
-          <div className="text-sm text-[--text-muted]">
+        <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">General Settings</h3>
+        <div className="bg-[#0d0b12] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)]">
+          <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
             Configure how File Organizer behaves across your vault. These settings affect both manual operations
             and provide the base configuration for inbox processing. Customize naming conventions, tagging behavior,
             and folder organization to match your workflow.
@@ -91,7 +91,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
         {/* File Naming subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[--text-normal] mb-2">File Naming</h4>
+          <h4 className="font-medium text-[#bebebe] mb-2">File Naming</h4>
           <div className="space-y-4">
             <TextAreaSetting
               name="Rename Instructions"
@@ -110,7 +110,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
         {/* Tags subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[--text-normal] mb-2">Tags</h4>
+          <h4 className="font-medium text-[#bebebe] mb-2">Tags</h4>
           <div className="space-y-4">
             <ToggleSetting
               name="Use Frontmatter"
@@ -129,7 +129,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
         {/* Folder Section */}
         <div className="mb-6">
-          <h4 className="font-medium text-[--text-normal] mb-2">Folder Organization</h4>
+          <h4 className="font-medium text-[#bebebe] mb-2">Folder Organization</h4>
           <div className="space-y-4">
             <TextAreaSetting
               name="Custom Folder Determination Instructions"
@@ -142,7 +142,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
         {/* Image Processing Section */}
         <div className="mb-6">
-          <h4 className="font-medium text-[--text-normal] mb-2">Image Processing</h4>
+          <h4 className="font-medium text-[#bebebe] mb-2">Image Processing</h4>
           <div className="space-y-4">
             <TextAreaSetting
               name="Image Instructions"
@@ -150,8 +150,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               value={imageInstructions}
               onChange={(value) => handleTextChange(value, setImageInstructions, 'imageInstructions')}
             />
-            <div className="bg-[--background-secondary] p-4 rounded-lg">
-              <div className="text-sm text-[--text-muted]">
+            <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
+              <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
                 These instructions will be used to generate descriptions for images in your documents.
                 The AI will analyze the image content and create descriptions based on your specifications.
               </div>
@@ -171,17 +171,17 @@ interface ToggleSettingProps {
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value, onChange }) => (
-  <div className="flex items-center justify-between py-2">
+  <div className="flex items-center justify-between py-2 border-b border-[rgba(14,210,247,0.04)]">
     <div>
-      <div className="font-medium text-[--text-normal]">{name}</div>
-      <div className="text-sm text-[--text-muted]">{description}</div>
+      <div className="font-medium text-[#bebebe]">{name}</div>
+      <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.6 }}>{description}</div>
     </div>
     <div>
       <input
         type="checkbox"
         checked={value}
         onChange={(e) => onChange(e.target.checked)}
-        className="form-checkbox text-[--interactive-accent]"
+        className="form-checkbox text-[#0fb6d6]"
       />
     </div>
   </div>
@@ -197,13 +197,13 @@ interface TextAreaSettingProps {
 
 const TextAreaSetting: React.FC<TextAreaSettingProps> = ({ name, description, value, onChange, disabled }) => (
   <div className="py-2">
-    <div className="font-medium text-[--text-normal]">{name}</div>
-    <div className="text-sm text-[--text-muted] mb-1">{description}</div>
+    <div className="font-medium text-[#bebebe]">{name}</div>
+    <div className="text-sm text-[#7aa2f7] mb-1" style={{ opacity: 0.6 }}>{description}</div>
     <textarea
       value={value}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className="w-full px-3 py-2 text-[--text-normal] bg-[--background-primary] border border-[--background-modifier-border] rounded-lg focus:outline-none focus:border-[--interactive-accent] disabled:bg-[--background-secondary]"
+      className="w-full px-3 py-2 text-[#bebebe] bg-[#0d0b12] border border-[rgba(14,210,247,0.1)] rounded-lg focus:outline-none focus:border-[#0fb6d6] disabled:bg-[#191621] disabled:opacity-50"
       rows={4}
     />
   </div>

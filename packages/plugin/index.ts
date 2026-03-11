@@ -29,7 +29,7 @@ import {
   LinkCache,
 } from "obsidian";
 import { logMessage, sanitizeTag } from "./someUtils";
-import { FileOrganizerSettingTab } from "./views/settings/view";
+import { ZenithAISettingTab } from "./views/settings/view";
 import {
   AssistantViewWrapper,
   ORGANIZER_VIEW_TYPE,
@@ -40,7 +40,7 @@ import {
 } from "./views/assistant/dashboard/view";
 import Jimp from "jimp/es/index";
 
-import { FileOrganizerSettings, DEFAULT_SETTINGS } from "./settings";
+import { ZenithAISettings, DEFAULT_SETTINGS } from "./settings";
 
 import { registerEventHandlers } from "./handlers/eventHandlers";
 import {
@@ -124,9 +124,9 @@ export interface UsageData {
   isActive?: boolean;
 }
 
-export default class FileOrganizer extends Plugin {
+export default class ZenithAI extends Plugin {
   public inbox: Inbox;
-  settings: FileOrganizerSettings;
+  settings: ZenithAISettings;
   private statusBarItem: HTMLElement | null = null;
   private statusBarRoot: Root | null = null;
 
@@ -1085,7 +1085,7 @@ export default class FileOrganizer extends Plugin {
       this.settings.templatePaths,
       this.settings.pathToWatch,
       this.settings.errorFilePath,
-      "_NoteCompanion",
+      "_ZenithAI",
       "/",
     ];
     logMessage("ignoredFolders", ignoredFolders);
@@ -1214,7 +1214,7 @@ export default class FileOrganizer extends Plugin {
     Inbox.getInstance().enqueueFiles(pendingFiles);
     if (pendingFiles.length > 0) {
       new Notice(
-        `Note Companion: Processing ${pendingFiles.length} file(s) from inbox`
+        `Zenith-AI: Processing ${pendingFiles.length} file(s) from inbox`
       );
     }
     return;
@@ -1864,7 +1864,7 @@ export default class FileOrganizer extends Plugin {
     await this.loadSettings();
     await this.checkAndCreateFolders();
     await this.checkAndCreateTemplates();
-    this.addSettingTab(new FileOrganizerSettingTab(this.app, this));
+    this.addSettingTab(new ZenithAISettingTab(this.app, this));
   }
 
   /**

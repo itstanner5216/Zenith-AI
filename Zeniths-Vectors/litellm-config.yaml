@@ -1,0 +1,87 @@
+# =============================================================================
+# LiteLLM Proxy Configuration
+#
+# Usage:
+#   Existing LiteLLM:  Add the mcp_servers block to your running config
+#   Bundled LiteLLM:   docker compose --profile litellm up
+#
+# MCP Integration:
+#   The gateway exposes all endpoints as MCP tools at /mcp.
+#   LiteLLM connects as an MCP client, making tools available to all
+#   consumers: OpenWebUI, CLI agents, scripts, etc.
+# =============================================================================
+
+model_list:
+  # OpenAI
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: os.environ/OPENAI_API_KEY
+
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: openai/gpt-4o-mini
+      api_key: os.environ/OPENAI_API_KEY
+
+  # Anthropic
+  - model_name: claude-sonnet-4
+    litellm_params:
+      model: anthropic/claude-sonnet-4-20250514
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-haiku-3.5
+    litellm_params:
+      model: anthropic/claude-3-5-haiku-20241022
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  # Google Gemini — stable GA identifiers (no preview suffixes)
+  - model_name: gemini-2.5-pro
+    litellm_params:
+      model: gemini/gemini-2.5-pro
+      api_key: os.environ/GEMINI_API_KEY
+
+  - model_name: gemini-2.5-flash
+    litellm_params:
+      model: gemini/gemini-2.5-flash
+      api_key: os.environ/GEMINI_API_KEY
+
+  - model_name: gemini-2.0-flash
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+      api_key: os.environ/GEMINI_API_KEY
+
+# =============================================================================
+# MCP SERVERS
+#
+# Connects LiteLLM as an MCP client to the gateway's /mcp endpoint.
+# All FastAPI routes (search, answer, rank, grounded, vault ops) become
+# tools available to every LLM consumer through LiteLLM.
+#
+# Copy-paste snippet for your EXISTING LiteLLM config:
+# ─────────────────────────────────────────────────────
+#   mcp_servers:
+#     vertex_gateway:
+#       url: "http://localhost:8085/mcp"
+# ─────────────────────────────────────────────────────
+# If running inside Docker alongside the gateway:
+#   url: "http://gateway:8085/mcp"
+# =============================================================================
+mcp_servers:
+  - server_name: "vault-search"
+    server_url: "http://host.docker.internal:8085/mcp"
+
+litellm_settings:
+  log_level: INFO
+  request_timeout: 120
+
+general_settings:
+  enable_mcp_gateway: true
+
+router_settings:
+  routing_strategy: "simple-shuffle"
+  num_retries: 2
+  timeout: 120
+  retry_after: 5
+  context_window_fallbacks:
+    - {"claude-sonnet-4": ["gpt-4o", "gemini-2.5-pro"]}
+    - {"gpt-4o": ["claude-sonnet-4", "gemini-2.5-pro"]}

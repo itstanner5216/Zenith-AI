@@ -3,16 +3,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "composite": true,
     "paths": {
       "@/*": ["*"],
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"],
-  "references": [
-    { "path": "../shared" }
-  ]
+  "include": ["*.ts", "services/**/*", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -9,18 +9,18 @@ interface SettingUpdateProps {
 }
 
 const SettingUpdate = ({ setting, value, onValidate, isValidated }: SettingUpdateProps) => (
-  <div className="flex items-center justify-between p-2 border border-[--background-modifier-border] mb-2">
+  <div className="flex items-center justify-between p-2 border border-[rgba(14,210,247,0.08)] mb-2">
     <div className="flex-1">
-      <div className="font-medium text-[--text-normal]">{setting}</div>
-      <div className="text-sm text-[--text-muted] break-all">{value}</div>
+      <div className="font-medium text-[#bebebe]">{setting}</div>
+      <div className="text-sm text-[#7aa2f7] break-all">{value}</div>
     </div>
     <button
       onClick={onValidate}
       disabled={isValidated}
       className={`ml-2 px-3 py-1  ${
         isValidated 
-          ? 'bg-[--interactive-accent] text-[--text-on-accent]' 
-          : 'bg-[--interactive-normal] hover:bg-[--interactive-hover] text-[--text-normal]'
+          ? 'bg-[#0fb6d6] text-[#0d0b12]' 
+          : 'bg-[#191621] hover:bg-[rgba(14,210,247,0.08)] text-[#bebebe]'
       }`}
     >
       {isValidated ? 'Applied' : 'Apply'}
@@ -56,7 +56,7 @@ export function SettingsUpdateHandler({
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-[--text-normal] mb-2">
+      <div className="text-sm text-[#bebebe] mb-2">
         Review and apply the suggested settings:
       </div>
       {Object.entries(settings).map(([key, value]) => (

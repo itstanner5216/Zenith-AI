@@ -5,7 +5,7 @@ import { getAllPosts, getAllCategories } from '@/lib/blog';
 export const metadata: Metadata = {
   title: 'Blog',
   description:
-    'Read the latest updates, tips, and insights about Note Companion',
+    'Read the latest updates, tips, and insights about Zenith-AI',
 };
 
 export default function BlogPage() {

@@ -5,9 +5,9 @@ import { tw } from "@/lib/utils";
 // Confidence Badge Component
 const ConfidenceBadge: React.FC<{ score: number }> = ({ score }) => {
   const getConfidenceColor = (score: number) => {
-    if (score >= 80) return "bg-[--text-success] text-white";
-    if (score >= 60) return "bg-[--text-warning] text-white";
-    return "bg-[--text-muted] text-white";
+    if (score >= 80) return "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6]";
+    if (score >= 60) return "bg-[rgba(122,162,247,0.15)] text-[#7aa2f7]";
+    return "bg-[rgba(190,190,190,0.1)] text-[#bebebe]";
   };
 
   const getConfidenceLabel = (score: number) => {
@@ -35,7 +35,7 @@ const BaseFolderButton: React.FC<{
   reason?: string;
 }> = ({ folder, onClick, className, score, reason }) => (
   <motion.button
-    className={`px-3 py-1 transition-colors duration-200 ${className} flex items-center justify-between`}
+    className={`px-3 py-1 transition-colors duration-200 ${className} flex items-center justify-between rounded`}
     onClick={() => onClick(folder)}
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -57,7 +57,7 @@ export const ExistingFolderButton: React.FC<{
 }> = props => (
   <BaseFolderButton
     {...props}
-    className="bg-[--background-secondary] text-[--text-normal] hover:bg-[--interactive-accent] hover:text-[--text-on-accent] border border-solid border-[--background-modifier-border]"
+    className="bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.2)] hover:text-[#0fb6d6] border border-solid border-[rgba(14,210,247,0.3)] hover:border-[rgba(14,210,247,0.6)]"
   />
 );
 
@@ -70,6 +70,6 @@ export const NewFolderButton: React.FC<{
 }> = props => (
   <BaseFolderButton
     {...props}
-    className="bg-[--background-secondary] text-[--text-normal] hover:bg-[--interactive-accent] hover:text-[--text-on-accent] border border-dashed border-[--text-muted]"
+    className="bg-[rgba(14,210,247,0.04)] text-[#7aa2f7] hover:bg-[rgba(14,210,247,0.15)] hover:text-[#0fb6d6] border border-dashed border-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.5)]"
   />
-); 
+);

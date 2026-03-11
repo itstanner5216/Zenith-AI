@@ -50,3 +50,4 @@ build-*.apk
 *SUMMARY*.md
 *SUMMARY*.MD
 .env.production
+.cecli*

@@ -1,11 +1,11 @@
 import React from "react";
-import FileOrganizer from "../index";
+import ZenithAI from "../index";
 import { tw } from "../lib/utils";
 import { ArrowUpCircle } from "lucide-react";
 import { UsageData } from "../index";
 
 interface UpgradeButtonProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   variant?: "default" | "compact";
   showMessage?: boolean;
   className?: string;
@@ -28,7 +28,7 @@ export function UpgradeButton({
   // Generate tooltip message based on usage
   const getTooltip = (): string => {
     if (isForced) {
-      return "Token limit exceeded. Upgrade your plan to continue using Note Companion.";
+      return "Token limit exceeded. Upgrade your plan to continue using Zenith-AI.";
     }
 
     if (!usageData) {
@@ -42,7 +42,7 @@ export function UpgradeButton({
     const formattedMax = usageData.maxTokenUsage.toLocaleString();
 
     if (usagePercent >= 100) {
-      return `Token limit reached (${formattedUsed}/${formattedMax}). Upgrade to continue using Note Companion.`;
+      return `Token limit reached (${formattedUsed}/${formattedMax}). Upgrade to continue using Zenith-AI.`;
     } else if (usagePercent >= 90) {
       return `Almost out of tokens (${formattedUsed}/${formattedMax} used, ${formattedRemaining} remaining). Upgrade now to avoid interruption.`;
     } else {

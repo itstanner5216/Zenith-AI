@@ -156,11 +156,11 @@ export function BrokenLinksHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[--text-muted]">
+        <div className="text-[#7aa2f7]">
           Scanning {scopeLabel} for broken links...
         </div>
       ) : (
-        <div className="text-[--text-normal]">
+        <div className="text-[#bebebe]">
           ✓ Broken link scan complete
         </div>
       )}

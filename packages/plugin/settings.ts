@@ -1,18 +1,18 @@
-export class FileOrganizerSettings {
+export class ZenithAISettings {
 
   API_KEY = "";
   isLicenseValid = false;
   useLogs = true;
-  defaultDestinationPath = "_NoteCompanion/Processed";
-  referencePath = "_NoteCompanion/References";
-  attachmentsPath = "_NoteCompanion/Processed/Attachments";
-  pathToWatch = "_NoteCompanion/Inbox";
-  logFolderPath = "_NoteCompanion/Logs";
-  backupFolderPath = "_NoteCompanion/Backups";
-  templatePaths = "_NoteCompanion/Templates";
-  bypassedFilePath = "_NoteCompanion/Bypassed";
-  errorFilePath = "_NoteCompanion/Errors";
-  syncFolderPath = "_NoteCompanion/Sync";
+  defaultDestinationPath = "_ZenithAI/Processed";
+  referencePath = "_ZenithAI/References";
+  attachmentsPath = "_ZenithAI/Processed/Attachments";
+  pathToWatch = "_ZenithAI/Inbox";
+  logFolderPath = "_ZenithAI/Logs";
+  backupFolderPath = "_ZenithAI/Backups";
+  templatePaths = "_ZenithAI/Templates";
+  bypassedFilePath = "_ZenithAI/Bypassed";
+  errorFilePath = "_ZenithAI/Errors";
+  syncFolderPath = "_ZenithAI/Sync";
   recordingsFolderPath = "Recordings";
 
   // inbox settings
@@ -62,7 +62,19 @@ export class FileOrganizerSettings {
   enableScreenpipe = false; // Enable ScreenPipe integration for screen activity search
   screenpipeApiUrl = "http://localhost:3030"; // ScreenPipe API URL
   screenpipeTimeRange = 4; // Default time range in hours for ScreenPipe searches (1-24)
+  // Vault Intelligence (Vertex Brain integration)
+  vertexBrainUrl = "http://localhost:8085";
+  enableVectorAutoSort = true;
+  autoSortConfidenceThreshold = 0.75;
+  organizationRulesPath = "System/Cosmic Vault Structure.md";
+  generalMergeThreshold = 0.50; // General directory → Project threshold
+  globalMergeThreshold = 0.70; // Non-General → Project threshold
+  pinnedTag = "pinned"; // Tag that locks files from auto-sort
+  projectsPath = "Projects"; // Root signal directory
+  autoDetectProjectContext = true;
+  backgroundScribeEnabled = false;
+  backgroundScribeOutputFile = "TODO.md";
   queryScreenpipeLimit = 10; // Default query limit for ScreenPipe searches (1-100)
 }
 
-export const DEFAULT_SETTINGS = new FileOrganizerSettings();
+export const DEFAULT_SETTINGS = new ZenithAISettings();

@@ -116,7 +116,7 @@ export function messagesToMarkdown(
     lines.push("---");
     lines.push(`title: ${optionTitle}`);
     lines.push(`date: ${typeof window !== "undefined" && window.moment ? window.moment().format("YYYY-MM-DD") : new Date().toISOString().slice(0, 10)}`);
-    lines.push('source: "Note Companion Chat"');
+    lines.push('source: "Zenith-AI Chat"');
     lines.push("---");
     lines.push("");
     lines.push(`# ${optionTitle}`);

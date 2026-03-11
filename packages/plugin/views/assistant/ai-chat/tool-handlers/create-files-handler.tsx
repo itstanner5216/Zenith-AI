@@ -163,19 +163,19 @@ export function CreateFilesHandler({
   const isComplete = "result" in toolInvocation;
 
   return (
-    <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-      <div className="text-[--text-muted] mb-1">{message}</div>
+    <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+      <div className="text-[#7aa2f7] mb-1">{message}</div>
       {!isComplete ? (
-        <div className="text-[--text-muted] text-xs">
+        <div className="text-[#7aa2f7] text-xs">
           Creating {files.length} file(s)...
         </div>
       ) : (
         <div className="space-y-1">
-          <div className="text-[--text-success] text-xs">
+          <div className="text-[#50fa7b] text-xs">
             ✓ Files created successfully
           </div>
           {createdFiles.length > 0 && (
-            <div className="text-[--text-faint] text-xs">
+            <div className="text-[rgba(122,162,247,0.4)] text-xs">
               {createdFiles.map((path) => (
                 <div key={path}>• {path}</div>
               ))}

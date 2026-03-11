@@ -86,11 +86,11 @@ export function BacklinksHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[--text-muted]">
+        <div className="text-[#7aa2f7]">
           Finding backlinks for {filePaths.length} file(s)...
         </div>
       ) : (
-        <div className="text-[--text-normal]">
+        <div className="text-[#bebebe]">
           ✓ Backlinks retrieved for {filePaths.length} file(s)
         </div>
       )}

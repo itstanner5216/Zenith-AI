@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile, WorkspaceLeaf, Notice, TAbstractFile } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { debounce } from "lodash";
 
 import { SectionHeader } from "../section-header";
@@ -19,7 +19,7 @@ import { logger } from "../../../services/logger";
 import { tw } from "../../../lib/utils";
 
 interface AssistantViewProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   leaf: WorkspaceLeaf;
   onTokenLimitError?: (error: string) => void;
 }
@@ -223,7 +223,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -244,7 +244,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -265,7 +265,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -282,7 +282,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -299,13 +299,13 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
         </div>
         <div className={tw("px-3")}>
-          <EmptyState message="To process an image or audio file, move it to the Note Companion Inbox Folder (e.g. for image text extraction or audio transcription)." />
+          <EmptyState message="To process an image or audio file, move it to the Zenith-AI Inbox Folder (e.g. for image text extraction or audio transcription)." />
         </div>
       </div>
     );
@@ -316,7 +316,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -339,12 +339,12 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       {/* Compact header - flush to edges */}
       <div
         className={tw(
-          "flex gap-2 items-center px-3 py-2 border-b border-[--background-modifier-border] bg-[--background-primary] sticky top-0 z-10"
+          "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)] bg-[#100e17] sticky top-0 z-10"
         )}
       >
         <RefreshButton onRefresh={refreshContext} />
         <div
-          className={tw("text-xs text-[--text-normal] font-medium truncate")}
+          className={tw("text-xs text-[#0fb6d6] font-medium truncate")}
         >
           {activeFile.basename}
         </div>

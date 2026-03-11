@@ -28,8 +28,8 @@ export function ChatTabs({
   return (
     <div
       className={tw(
-        "flex-none flex items-center gap-0.5 border-b border-[--background-modifier-border]",
-        "px-1.5 py-1 bg-[--background-primary] min-h-[32px]",
+        "flex-none flex items-center gap-0.5 border-b border-[rgba(14,210,247,0.05)]",
+        "px-1.5 py-1 bg-[#0a0910] min-h-[32px]",
         "relative z-10 w-full"
       )}
     >

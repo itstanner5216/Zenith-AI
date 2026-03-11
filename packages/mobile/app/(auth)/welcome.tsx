@@ -89,7 +89,7 @@ export default function WelcomeScreen() {
             Document OCR & Sync
           </Text>
           <Text style={styles.heroDescription}>
-            Note Companion automatically extracts text from your documents using OCR technology,
+            Zenith-AI automatically extracts text from your documents using OCR technology,
             making it accessible across all your favorite platforms.
           </Text>
         </View>
@@ -179,7 +179,7 @@ export default function WelcomeScreen() {
         <View style={styles.infoSection}>
           <MaterialIcons name="info-outline" size={24} color="#666" />
           <Text style={styles.infoText}>
-            Note Companion is a document OCR and syncing tool. 
+            Zenith-AI is a document OCR and syncing tool. 
             Sign in with your existing account to start uploading documents and accessing the OCR features.
           </Text>
         </View>

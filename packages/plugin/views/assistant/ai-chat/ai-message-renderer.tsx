@@ -163,7 +163,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
             <a
               key={i}
               href={linkpath}
-              className="internal-link text-[--text-accent] hover:text-[--text-accent-hover] underline cursor-pointer"
+              className="internal-link text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)] underline cursor-pointer"
               data-href={linkpath}
               rel="noopener"
               aria-label={`Open note ${displayText}`}
@@ -182,7 +182,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 <a
                   {...props}
                   href={href || ""}
-                  className="text-[--text-accent] hover:text-[--text-accent-hover] underline cursor-pointer"
+                  className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)] underline cursor-pointer"
                 >
                   {children}
                 </a>
@@ -191,12 +191,12 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 inline ? (
                   <code
                     {...props}
-                    className="inline-code bg-[--background-modifier-form-field] px-1 py-0.5 rounded text-[--text-accent]"
+                    className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
                   >
                     {children}
                   </code>
                 ) : (
-                  <pre className="code-block bg-[--background-secondary] p-3 rounded border border-[--background-modifier-border] overflow-x-auto">
+                  <pre className="code-block bg-[#191621] p-3 rounded border border-[rgba(14,210,247,0.08)] overflow-x-auto">
                     <code {...props}>{children}</code>
                   </pre>
                 ),
@@ -211,7 +211,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
               strong: ({ children, ...props }) => (
                 <strong
                   {...props}
-                  className="font-semibold text-[--text-normal]"
+                  className="font-semibold text-[#bebebe]"
                 >
                   {children}
                 </strong>

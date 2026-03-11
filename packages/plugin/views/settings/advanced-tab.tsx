@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
 
 interface AdvancedTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
@@ -55,7 +55,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   return (
     <div className="p-4 space-y-4">
       <ToggleSetting
-        name="Note Companion File Logs"
+        name="Zenith-AI File Logs"
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
         onChange={value => {
@@ -112,11 +112,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
       )}
 
       {useLogs && (
-        <div className="space-y-2 border-t border-[--background-modifier-border] pt-4 mt-4">
+        <div className="space-y-2 border-t border-[rgba(14,210,247,0.08)] pt-4 mt-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-[--text-normal]">View Logs</div>
-              <div className="text-sm text-[--text-muted]">
+              <div className="font-medium text-[#bebebe]">View Logs</div>
+              <div className="text-sm text-[#7aa2f7]">
                 {logger.getLogs().length} log entries available
               </div>
             </div>
@@ -155,7 +155,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                       className="w-[--icon-size] h-[--icon-size]"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="var(--text-muted)"
+                      stroke="#7aa2f7"
                       strokeWidth="2"
                     >
                       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -175,7 +175,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                       className="w-[--icon-size] h-[--icon-size]"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="var(--text-muted)"
+                      stroke="#7aa2f7"
                       strokeWidth="2"
                     >
                       <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -193,7 +193,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                   className="w-[--icon-size] h-[--icon-size]"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="var(--text-muted)"
+                  stroke="#7aa2f7"
                   strokeWidth="2"
                 >
                   {showLogs ? (
@@ -207,27 +207,27 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           </div>
           {showLogs && (
             <div
-              className="max-h-96 overflow-y-auto border border-[--background-modifier-border] rounded p-2 bg-[--background-secondary] select-text"
+              className="max-h-96 overflow-y-auto border border-[rgba(14,210,247,0.08)] rounded p-2 bg-[#191621] select-text"
               style={{ userSelect: "text", WebkitUserSelect: "text" }}
             >
               {logger.getLogs().length === 0 ? (
-                <div className="text-sm text-[--text-muted] py-4 text-center">
+                <div className="text-sm text-[#7aa2f7] py-4 text-center">
                   No logs available. Enable Debug Mode to start logging.
                 </div>
               ) : (
                 logger.getLogs().map((log, index) => (
                   <div
                     key={index}
-                    className={`py-1 border-b border-[--background-modifier-border] last:border-0 select-text ${
+                    className={`py-1 border-b border-[rgba(14,210,247,0.08)] last:border-0 select-text ${
                       log.level === "error"
-                        ? "text-[--text-error]"
+                        ? "text-[#f4569d]"
                         : log.level === "warn"
-                        ? "text-[--text-warning]"
-                        : "text-[--text-normal]"
+                        ? "text-[#ffb74d]"
+                        : "text-[#bebebe]"
                     }`}
                     style={{ userSelect: "text", WebkitUserSelect: "text" }}
                   >
-                    <span className="text-[--text-muted] text-xs">
+                    <span className="text-[#7aa2f7] text-xs">
                       {new Date(log.timestamp).toLocaleString()}
                     </span>{" "}
                     <span className="font-medium">
@@ -235,7 +235,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                     </span>{" "}
                     {log.message}
                     {log.details && (
-                      <pre className="text-xs mt-1 text-[--text-muted] whitespace-pre-wrap break-words select-text">
+                      <pre className="text-xs mt-1 text-[#7aa2f7] whitespace-pre-wrap break-words select-text">
                         {log.details}
                       </pre>
                     )}
@@ -342,15 +342,15 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
 }) => (
   <div className="flex items-center justify-between py-2">
     <div>
-      <div className="font-medium text-[--text-normal]">{name}</div>
-      <div className="text-sm text-[--text-muted]">{description}</div>
+      <div className="font-medium text-[#bebebe]">{name}</div>
+      <div className="text-sm text-[#7aa2f7]">{description}</div>
     </div>
     <div>
       <input
         type="checkbox"
         checked={value}
         onChange={e => onChange(e.target.checked)}
-        className="form-checkbox text-[--interactive-accent]"
+        className="form-checkbox text-[#0fb6d6] accent-[#0fb6d6]"
       />
     </div>
   </div>

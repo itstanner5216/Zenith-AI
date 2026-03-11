@@ -1,5 +1,5 @@
 import { Notice, TFile } from "obsidian";
-import FileOrganizer from "..";
+import ZenithAI from "..";
 import { Inbox } from "../inbox";
 import { VALID_MEDIA_EXTENSIONS } from "../constants";
 
@@ -10,7 +10,7 @@ function isInInboxFolder(filePath: string, pathToWatch: string): boolean {
   );
 }
 
-export function registerEventHandlers(plugin: FileOrganizer) {
+export function registerEventHandlers(plugin: ZenithAI) {
   plugin.registerEvent(
     plugin.app.vault.on("create", async file => {
       await new Promise(resolve => setTimeout(resolve, 100));

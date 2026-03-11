@@ -6,7 +6,7 @@ export default function PrivacyPolicyPage() {
       <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
       <div className="prose lg:prose-xl">
         <p className="mb-4">
-          This Privacy Policy describes how Note Companion AI collects and uses your information.
+          This Privacy Policy describes how Zenith-AI AI collects and uses your information.
         </p>
 
         <h2 className="text-xl font-semibold mt-6 mb-3">Information We Collect</h2>

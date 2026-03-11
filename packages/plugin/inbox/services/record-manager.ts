@@ -2,7 +2,7 @@ import { normalizePath, TFile } from "obsidian";
 import { IdService } from "./id-service";
 import moment from "moment";
 import { App, TAbstractFile } from "obsidian";
-import { FileOrganizerSettings } from "../../settings";
+import { ZenithAISettings } from "../../settings";
 // Using setTimeout type instead of NodeJS.Timeout
 type TimeoutID = ReturnType<typeof setTimeout>;
 
@@ -99,7 +99,7 @@ export class RecordManager {
     this.app = app;
     this.idService = IdService.getInstance();
     this.settings = {
-      recordFilePath: normalizePath("_NoteCompanion/.records"),
+      recordFilePath: normalizePath("_ZenithAI/.records"),
     };
     this.loadRecords();
   }

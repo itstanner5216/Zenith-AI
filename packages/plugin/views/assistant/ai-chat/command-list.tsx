@@ -23,7 +23,7 @@ interface CommandListProps {
 
 const CommandIcon = ({ icon }: { icon: React.ReactNode }) => {
   return (
-    <span className="text-[--text-muted] flex-shrink-0 w-5 h-5 flex items-center justify-center">
+    <span className="text-[#7aa2f7] flex-shrink-0 w-5 h-5 flex items-center justify-center">
       {icon}
     </span>
   );
@@ -104,14 +104,14 @@ export const CommandList = forwardRef<
   const categories = ["format", "action", "ai"] as const;
 
   return props.items.length ? (
-    <div className="max-h-[400px] overflow-y-auto bg-[--background-secondary] border border-[--background-modifier-border] rounded-md shadow-lg w-80">
+    <div className="max-h-[400px] overflow-y-auto bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-lg w-80">
       {categories.map(category => {
         const items = groupedItems[category] || [];
         if (items.length === 0) return null;
 
         return (
           <div key={category} className="py-1.5 first:pt-2.5 last:pb-2.5">
-            <div className="text-xs font-semibold text-[--text-muted] uppercase px-3 py-1.5 mb-1">
+            <div className="text-xs font-semibold text-[#7aa2f7] uppercase px-3 py-1.5 mb-1">
               {getCategoryLabel(category)}
             </div>
             {items.map(item => {
@@ -119,10 +119,10 @@ export const CommandList = forwardRef<
               return (
                 <button
                   key={item.id}
-                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded hover:bg-[--background-modifier-active-hover] transition-colors ${
+                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors ${
                     isSelected
-                      ? "bg-[--background-modifier-active-hover] text-[--text-accent]"
-                      : "text-[--text-normal]"
+                      ? "bg-[rgba(14,210,247,0.08)] text-[#0fb6d6]"
+                      : "text-[#bebebe]"
                   }`}
                   onClick={() => selectItem(item.originalIndex)}
                 >
@@ -132,7 +132,7 @@ export const CommandList = forwardRef<
                       {item.label}
                     </span>
                     {item.description && (
-                      <span className="text-xs text-[--text-muted] leading-tight">
+                      <span className="text-xs text-[#7aa2f7] leading-tight">
                         {item.description}
                       </span>
                     )}
@@ -145,7 +145,7 @@ export const CommandList = forwardRef<
       })}
     </div>
   ) : (
-    <div className="px-4 py-3 text-sm text-[--text-muted] text-center bg-[--background-secondary] border border-[--background-modifier-border] rounded-md">
+    <div className="px-4 py-3 text-sm text-[#7aa2f7] text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
       No matching commands found
     </div>
   );

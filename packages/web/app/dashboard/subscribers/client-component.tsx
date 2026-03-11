@@ -12,7 +12,7 @@ export function SubscribersDashboardClient() {
         <header>
           <div className="flex items-center">
             <DownloadIcon className="h-6 w-6 mr-2 text-blue-600" />
-            <h1 className="text-2xl font-bold">Note Companion</h1>
+            <h1 className="text-2xl font-bold">Zenith-AI</h1>
           </div>
           <p className="text-muted-foreground mt-1">
             Organize and manage your notes with powerful tools
@@ -58,7 +58,7 @@ export function SubscribersDashboardClient() {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="mb-4">
             <h2 className="text-2xl font-bold text-slate-800">
-              How to Use Note Companion
+              How to Use Zenith-AI
             </h2>
             <p className="text-muted-foreground">
               Watch our comprehensive tutorial video
@@ -68,7 +68,7 @@ export function SubscribersDashboardClient() {
           <div className="aspect-video mb-6 rounded-lg overflow-hidden shadow-md">
             <iframe
               src="https://www.youtube.com/embed/XZTpbECqZps"
-              title="Note Companion Tutorial"
+              title="Zenith-AI Tutorial"
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -124,7 +124,7 @@ export function SubscribersDashboardClient() {
           </div>
 
           <a
-            href="obsidian://show-plugin?id=fileorganizer2000"
+            href="obsidian://show-plugin?id=zenith-ai"
             className="block mb-4"
           >
             <Button

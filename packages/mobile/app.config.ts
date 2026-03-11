@@ -2,8 +2,8 @@ import { ExpoConfig, ConfigContext } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "Note Companion AI",
-  slug: "note-companion",
+  name: "Zenith-AI AI",
+  slug: "zenith-ai",
   scheme: "notecompanion",
   version: "1.0.0",
   orientation: "portrait",
@@ -44,7 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       NSPhotoLibraryUsageDescription:
         "Allow access so you can attach receipt photos to an expense. Example: tap 'Add receipt', pick a photo, and we save it with the transaction.",
       NSCameraUsageDescription:
-        "Note Companion uses the camera to capture documents or diagrams that are then converted into text and saved as notes (e.g., snap a whiteboard to create a meeting note).",
+        "Zenith-AI uses the camera to capture documents or diagrams that are then converted into text and saved as notes (e.g., snap a whiteboard to create a meeting note).",
       LSApplicationQueriesSchemes: ["obsidian"],
       UIFileSharingEnabled: true,
       LSSupportsOpeningDocumentsInPlace: true,

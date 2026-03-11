@@ -111,11 +111,11 @@ export function OutgoingLinksHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[--text-muted]">
+        <div className="text-[#7aa2f7]">
           Analyzing outgoing links for {filePaths.length} file(s)...
         </div>
       ) : (
-        <div className="text-[--text-normal]">
+        <div className="text-[#bebebe]">
           ✓ Outgoing links retrieved for {filePaths.length} file(s)
         </div>
       )}

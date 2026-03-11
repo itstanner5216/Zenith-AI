@@ -20,20 +20,20 @@ export function CollapsibleSection({
   children,
 }: CollapsibleSectionProps) {
   return (
-    <div className="mb-2 border-b border-[--background-modifier-border]">
+    <div className="mb-2 border-b border-[rgba(14,210,247,0.08)]">
       <Button
-        className="w-full flex justify-between items-center px-2 py-2 bg-[--background-primary] hover:bg-[--background-modifier-hover] transition-colors"
+        className="w-full flex justify-between items-center px-2 py-2 bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)] transition-colors"
         onClick={onToggle}
         variant="ghost"
       >
-        <span className="font-semibold text-[--text-normal]">{title}</span>
+        <span className="font-semibold text-[#bebebe]">{title}</span>
         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
       </Button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="bg-[--background-primary-alt]"
+            className="bg-[#100e17]"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

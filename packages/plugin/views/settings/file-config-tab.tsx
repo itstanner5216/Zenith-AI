@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { cleanPath } from "../../someUtils";
 import { normalizePath, Modal, Notice } from "obsidian";
 import { Search, X } from "lucide-react";
 import { logger } from "../../services/logger";
 interface FileConfigTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
@@ -78,28 +78,28 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     const filteredFolders = getFilteredFolders();
 
     return (
-      <div className="mb-8 p-4 bg-[--background-secondary] rounded-lg shadow-sm">
+      <div className="mb-8 p-4 bg-[#191621] rounded-lg shadow-sm">
         <div className="mb-4">
-          <p className="text-sm text-[--text-muted] mb-3">
+          <p className="text-sm text-[#7aa2f7] mb-3">
             Use the search box to verify folder accessibility
           </p>
 
           {/* Tabs */}
-          <div className="flex border-b border-[--background-modifier-border]">
+          <div className="flex border-b border-[rgba(14,210,247,0.08)]">
             <button
               onClick={() => setFilterType("all")}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 filterType === "all"
-                  ? "border-[--interactive-accent] text-[--text-accent]"
-                  : "border-transparent text-[--text-muted] hover:text-[--text-normal] hover:border-[--background-modifier-border]"
+                  ? "border-[#0fb6d6] text-[#0fb6d6]"
+                  : "border-transparent text-[#7aa2f7] hover:text-[#bebebe] hover:border-[rgba(14,210,247,0.08)]"
               }`}
             >
               All Folders
               <span
                 className={`ml-2 px-1.5 py-0.5 rounded text-xs ${
                   filterType === "all"
-                    ? "bg-[--interactive-accent] text-[--text-on-accent]"
-                    : "bg-[--background-modifier-border] text-[--text-muted]"
+                    ? "bg-[#0fb6d6] text-[#0d0b12]"
+                    : "bg-[rgba(14,210,247,0.08)] text-[#7aa2f7]"
                 }`}
               >
                 {allFolders.length}
@@ -109,16 +109,16 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               onClick={() => setFilterType("active")}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 filterType === "active"
-                  ? "border-[--interactive-accent] text-[--text-accent]"
-                  : "border-transparent text-[--text-muted] hover:text-[--text-normal] hover:border-[--background-modifier-border]"
+                  ? "border-[#0fb6d6] text-[#0fb6d6]"
+                  : "border-transparent text-[#7aa2f7] hover:text-[#bebebe] hover:border-[rgba(14,210,247,0.08)]"
               }`}
             >
               Active Paths
               <span
                 className={`ml-2 px-1.5 py-0.5 rounded text-xs ${
                   filterType === "active"
-                    ? "bg-[--interactive-accent] text-[--text-on-accent]"
-                    : "bg-[--background-modifier-border] text-[--text-muted]"
+                    ? "bg-[#0fb6d6] text-[#0d0b12]"
+                    : "bg-[rgba(14,210,247,0.08)] text-[#7aa2f7]"
                 }`}
               >
                 {availableFolders.length}
@@ -128,16 +128,16 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               onClick={() => setFilterType("ignored")}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 filterType === "ignored"
-                  ? "border-[--interactive-accent] text-[--text-accent]"
-                  : "border-transparent text-[--text-muted] hover:text-[--text-normal] hover:border-[--background-modifier-border]"
+                  ? "border-[#0fb6d6] text-[#0fb6d6]"
+                  : "border-transparent text-[#7aa2f7] hover:text-[#bebebe] hover:border-[rgba(14,210,247,0.08)]"
               }`}
             >
               Ignored Paths
               <span
                 className={`ml-2 px-1.5 py-0.5 rounded text-xs ${
                   filterType === "ignored"
-                    ? "bg-[--interactive-accent] text-[--text-on-accent]"
-                    : "bg-[--background-modifier-border] text-[--text-muted]"
+                    ? "bg-[#0fb6d6] text-[#0d0b12]"
+                    : "bg-[rgba(14,210,247,0.08)] text-[#7aa2f7]"
                 }`}
               >
                 {ignoredFolders.length}
@@ -147,19 +147,19 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
         </div>
 
         <div className="mb-3">
-          <div className="flex items-center gap-2 px-3 py-2 bg-[--background-modifier-form-field] border border-[--background-modifier-border] rounded-md focus-within:border-[--interactive-accent] focus-within:ring-1 focus-within:ring-[--interactive-accent]">
-            <Search className="w-4 h-4 text-[--text-muted] shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-2 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded-md focus-within:border-[#0fb6d6] focus-within:ring-1 focus-within:ring-[#0fb6d6]">
+            <Search className="w-4 h-4 text-[#7aa2f7] shrink-0" />
             <input
               type="text"
               placeholder="Search folders..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent border-0 p-0 text-[--text-normal] focus:outline-none"
+              className="w-full bg-transparent border-0 p-0 text-[#bebebe] focus:outline-none"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="shrink-0 flex items-center justify-center p-1 text-[--text-muted] hover:text-[--text-normal] transition-colors cursor-pointer rounded hover:bg-[--background-modifier-hover]"
+                className="shrink-0 flex items-center justify-center p-1 text-[#7aa2f7] hover:text-[#bebebe] transition-colors cursor-pointer rounded hover:bg-[rgba(14,210,247,0.04)]"
                 aria-label="Clear search"
               >
                 <X className="w-4 h-4 stroke-current" />
@@ -168,13 +168,13 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           </div>
         </div>
 
-        <div className="max-h-[240px] overflow-y-auto border border-[--background-modifier-border] rounded-md bg-[--background-primary]">
+        <div className="max-h-[240px] overflow-y-auto border border-[rgba(14,210,247,0.08)] rounded-md bg-[#0d0b12]">
           {filteredFolders.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-0.5">
               {filteredFolders.map(folder => (
                 <div
                   key={folder}
-                  className="px-3 py-2 text-[--text-normal] text-sm hover:bg-[--background-modifier-hover] cursor-default truncate"
+                  className="px-3 py-2 text-[#bebebe] text-sm hover:bg-[rgba(14,210,247,0.04)] cursor-default truncate"
                   title={folder}
                 >
                   {folder}
@@ -182,7 +182,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-[--text-muted]">
+            <div className="p-4 text-center text-[#7aa2f7]">
               {searchQuery
                 ? "No matching folders found"
                 : "No available folders"}
@@ -355,18 +355,18 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
   return (
     <div className="file-config-settings">
       <div className="mb-8">
-        <p className="text-[--text-muted] mb-4">
+        <p className="text-[#7aa2f7] mb-4">
           Configure which folders File Organizer can manage and monitor. This
           helps you:
         </p>
-        <ul className="list-disc pl-6 text-[--text-muted] space-y-1 mb-6">
+        <ul className="list-disc pl-6 text-[#7aa2f7] space-y-1 mb-6">
           <li>Define which folders to watch for new files</li>
           <li>Set up ignored paths to exclude from organization</li>
           <li>Manage attachment and backup locations</li>
           <li>Configure template and pattern directories</li>
         </ul>
-        <div className="p-4 bg-[--background-primary-alt] rounded-lg border border-[--background-modifier-border]">
-          <p className="text-sm text-[--text-accent]">
+        <div className="p-4 bg-[#100e17] rounded-lg border border-[rgba(14,210,247,0.08)]">
+          <p className="text-sm text-[#0fb6d6]">
             💡 Tip: Use the folder overview below to understand your vault
             structure and verify your path configurations.
           </p>
@@ -375,8 +375,8 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
 
       <FolderList key={Object.values(plugin.settings).join(",")} />
 
-      <div className="border-t border-[--background-modifier-border] ">
-        <h3 className="mb-4 text-lg font-medium text-[--text-normal]">
+      <div className="border-t border-[rgba(14,210,247,0.08)] ">
+        <h3 className="mb-4 text-lg font-medium text-[#bebebe]">
           Path Configuration
         </h3>
         {renderSettingItem(
@@ -495,7 +495,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
                       buttonContainer
                         .createEl("button", {
                           text: "Restore",
-                          attr: { style: "background: var(--interactive-accent);" },
+                          attr: { style: "background: #0fb6d6; color: #0d0b12;" },
                         })
                         .addEventListener("click", () => {
                           resolve(true);
@@ -518,11 +518,12 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               style={{
                 padding: "6px 12px",
                 fontSize: "13px",
-                background: "var(--interactive-accent)",
-                color: "var(--text-on-accent)",
+                background: "#0fb6d6",
+                color: "#0d0b12",
                 border: "none",
                 borderRadius: "4px",
                 cursor: "pointer",
+                fontWeight: "500",
               }}
             >
               Restore Default Templates

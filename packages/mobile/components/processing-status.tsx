@@ -14,7 +14,7 @@ import { useRouter } from "expo-router";
 
 interface ProcessingStatusProps {
   status: UploadStatus;
-  result?: string | null | { extractedText?: string; visualElements?: any };
+  result?: string | null | { extractedText?: string; visualElements?: unknown };
   fileUrl?: string;
   mimeType?: string;
   fileName?: string;
@@ -128,7 +128,7 @@ export const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
 
           {showDetails && (
             <Text style={styles.resultSubtext}>
-              Your file has been uploaded to Note Companion AI.
+              Your file has been uploaded to Zenith-AI AI.
               {"\n\n"}
               It will be automatically synced to any services you have enabled.
             </Text>

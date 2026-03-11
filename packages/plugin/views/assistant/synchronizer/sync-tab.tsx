@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SectionHeader } from "../section-header";
 import { makeApiRequest } from "../../../apiUtils";
 import { requestUrl, Notice, TFolder } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { Button } from "../../../components/ui/button";
 import { StyledContainer } from "@/components/ui/utils";
 import { tw } from "@/lib/utils";
@@ -61,7 +61,7 @@ export function SyncTab({
   plugin,
   onTokenLimitError,
 }: {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   onTokenLimitError?: (error: string) => void;
 }) {
   const [files, setFiles] = useState<RemoteFile[]>([]);
@@ -427,23 +427,23 @@ export function SyncTab({
     switch (status) {
       case "completed":
         className +=
-          " bg-[--text-success] text-[--text-on-accent] border border-[--background-modifier-border]";
+          " bg-[#50fa7b] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
         icon = <Check className="w-3 h-3" />;
         break;
       case "processing":
-        className += " bg-[--interactive-accent] text-[--text-on-accent] border border-[--background-modifier-border]";
+        className += " bg-[#0fb6d6] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
         icon = <RotateCw className="w-3 h-3 animate-spin" />;
         break;
       case "pending":
-        className += " bg-[--text-warning] text-[--text-on-accent] border border-[--background-modifier-border]";
+        className += " bg-[#ffb74d] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
         icon = <Clock className="w-3 h-3" />;
         break;
       case "error":
-        className += " bg-[--text-error] text-[--text-on-accent] border border-[--background-modifier-border]";
+        className += " bg-[#f4569d] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
         icon = <AlertCircle className="w-3 h-3" />;
         break;
       default:
-        className += " bg-[--background-secondary] text-[--text-muted] border border-[--background-modifier-border]";
+        className += " bg-[#191621] text-[#7aa2f7] border border-[rgba(14,210,247,0.08)]";
         icon = <Cloud className="w-3 h-3" />;
     }
 
@@ -457,12 +457,12 @@ export function SyncTab({
   }
 
   return (
-    <StyledContainer className={tw("bg-[--background-primary] h-full flex flex-col")}>
+    <StyledContainer className={tw("bg-[#0d0b12] h-full flex flex-col")}>
       {/* Header with icon-only tools */}
-      <div className={tw("px-3 py-1.5 border-b border-[--background-modifier-border] flex items-center justify-between")}>
+      <div className={tw("px-3 py-1.5 border-b border-[rgba(14,210,247,0.08)] flex items-center justify-between")}>
         <div>
-          <h2 className={tw("text-sm font-medium text-[--text-normal]")}>Sync Files</h2>
-          <p className={tw("text-xs text-[--text-muted]")}>
+          <h2 className={tw("text-sm font-medium text-[#bebebe]")}>Sync Files</h2>
+          <p className={tw("text-xs text-[#7aa2f7]")}>
             {files.filter(f => downloadedFiles.has(f.id)).length} of {files.length} synced
           </p>
         </div>
@@ -472,7 +472,7 @@ export function SyncTab({
           <button
             onClick={fetchFiles}
             disabled={loading}
-            className={tw(`p-1.5 text-[--text-muted] hover:text-[--text-normal] transition-colors ${loading ? 'cursor-wait' : ''}`)}
+            className={tw(`p-1.5 text-[#7aa2f7] hover:text-[#bebebe] transition-colors ${loading ? 'cursor-wait' : ''}`)}
             title="Refresh file list"
           >
             <RefreshCw className={tw(`w-4 h-4 ${loading ? 'animate-spin' : ''}`)} />
@@ -483,8 +483,8 @@ export function SyncTab({
             disabled={loading || syncingAll || files.filter(f => f.status === 'completed' && !downloadedFiles.has(f.id)).length === 0}
             className={tw(`p-1.5 transition-colors ${
               files.filter(f => f.status === 'completed' && !downloadedFiles.has(f.id)).length > 0
-                ? 'text-[--interactive-accent] hover:text-[--interactive-accent-hover]'
-                : 'text-[--text-muted] cursor-not-allowed'
+                ? 'text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]'
+                : 'text-[#7aa2f7] cursor-not-allowed'
             }`)}
             title={`Sync all (${files.filter(f => f.status === 'completed' && !downloadedFiles.has(f.id)).length})`}
           >
@@ -494,7 +494,7 @@ export function SyncTab({
           {downloadedFiles.size > 0 && (
             <button
               onClick={clearDownloadHistory}
-              className={tw("text-xs text-[--text-muted] hover:text-[--text-error] transition-colors px-2")}
+              className={tw("text-xs text-[#7aa2f7] hover:text-[#f4569d] transition-colors px-2")}
               title="Clear sync history"
             >
               Clear
@@ -508,8 +508,8 @@ export function SyncTab({
 
 
       {error && (
-        <div className={tw("px-3 py-2 bg-[--background-modifier-error] border-l-2 border-[--text-error]")}>
-          <div className={tw("flex items-center gap-2 text-sm text-[--text-error]")}>
+        <div className={tw("px-3 py-2 bg-[rgba(244,86,157,0.1)] border-l-2 border-[#f4569d]")}>
+          <div className={tw("flex items-center gap-2 text-sm text-[#f4569d]")}>
             <AlertCircle className={tw("w-4 h-4")} />
             <span>{error}</span>
           </div>
@@ -517,15 +517,15 @@ export function SyncTab({
       )}
 
       {loading ? (
-        <div className={tw("border-t border-[--background-modifier-border]")}>
+        <div className={tw("border-t border-[rgba(14,210,247,0.08)]")}>
           {[1, 2, 3].map(i => (
-            <div key={i} className={tw("flex items-center px-3 py-2 border-b border-[--background-modifier-border] animate-pulse")}>
-              <div className={tw("w-6 h-6 mr-3 bg-[--background-modifier-border]")}></div>
+            <div key={i} className={tw("flex items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] animate-pulse")}>
+              <div className={tw("w-6 h-6 mr-3 bg-[rgba(14,210,247,0.08)]")}></div>
               <div className={tw("flex-1")}>
-                <div className={tw("h-4 bg-[--background-modifier-border] w-2/3")}></div>
+                <div className={tw("h-4 bg-[rgba(14,210,247,0.08)] w-2/3")}></div>
               </div>
-              <div className={tw("h-3 bg-[--background-modifier-border] w-16 mr-4")}></div>
-              <div className={tw("w-4 h-4 bg-[--background-modifier-border]")}></div>
+              <div className={tw("h-3 bg-[rgba(14,210,247,0.08)] w-16 mr-4")}></div>
+              <div className={tw("w-4 h-4 bg-[rgba(14,210,247,0.08)]")}></div>
             </div>
           ))}
         </div>
@@ -533,20 +533,20 @@ export function SyncTab({
         <>
           {files.length === 0 ? (
             <div className={tw("flex flex-col items-center justify-center py-12 text-center")}>
-              <Cloud className={tw("w-12 h-12 text-[--text-faint] mb-4")} />
-              <p className={tw("text-sm text-[--text-muted]")}>
+              <Cloud className={tw("w-12 h-12 text-[rgba(122,162,247,0.4)] mb-4")} />
+              <p className={tw("text-sm text-[#7aa2f7]")}>
                 No files yet. Upload via mobile or web app.
               </p>
             </div>
           ) : (
-            <div className={tw("border-t border-[--background-modifier-border]")}>
+            <div className={tw("border-t border-[rgba(14,210,247,0.08)]")}>
               {files.map(file => (
                 <div
                   key={file.id}
                   onClick={() => file.status === 'completed' && !downloading[file.id] && downloadFile(file)}
-                  className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[--background-modifier-border] transition-colors group ${
+                  className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[rgba(14,210,247,0.08)] transition-colors group ${
                     file.status === 'completed' && !downloading[file.id]
-                      ? 'cursor-pointer hover:bg-[--background-modifier-hover]'
+                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.04)]'
                       : 'cursor-default'
                   }`)}
                 >
@@ -556,7 +556,7 @@ export function SyncTab({
                       <img
                         src={file.previewUrl || file.blobUrl}
                         alt={file.originalName}
-                        className={tw("w-16 h-16 object-cover border border-[--background-modifier-border]")}
+                        className={tw("w-16 h-16 object-cover border border-[rgba(14,210,247,0.08)]")}
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           const fallback = e.currentTarget.nextElementSibling as HTMLElement;
@@ -568,19 +568,19 @@ export function SyncTab({
                       className={tw("flex items-center justify-center w-6 h-6")}
                       style={{ display: file.fileType.startsWith('image/') ? 'none' : 'flex' }}
                     >
-                      {getFileIcon(file.fileType, tw("w-4 h-4 text-[--text-muted]"))}
+                      {getFileIcon(file.fileType, tw("w-4 h-4 text-[#7aa2f7]"))}
                     </div>
                   </div>
 
                   {/* File info */}
                   <div className={tw("flex-1 min-w-0 flex flex-col justify-center")}>
-                    <div className={tw("text-sm text-[--text-normal] truncate font-medium")}>
+                    <div className={tw("text-sm text-[#bebebe] truncate font-medium")}>
                       {file.originalName}
                     </div>
-                    <div className={tw("text-xs text-[--text-muted] flex items-center gap-2")}>
+                    <div className={tw("text-xs text-[#7aa2f7] flex items-center gap-2")}>
                       <span>{new Date(file.createdAt).toLocaleDateString()}</span>
                       {file.fileType.startsWith('image/') && (
-                        <span className={tw("text-[--text-faint]")}>• Image</span>
+                        <span className={tw("text-[rgba(122,162,247,0.4)]")}>• Image</span>
                       )}
                     </div>
                   </div>
@@ -588,13 +588,13 @@ export function SyncTab({
                   {/* Status icon */}
                   <div className={tw("w-5 h-5 flex items-center justify-center flex-shrink-0")}>
                     {downloading[file.id] ? (
-                      <DownloadCloud className={tw("w-4 h-4 text-[--text-muted] animate-pulse")} />
+                      <DownloadCloud className={tw("w-4 h-4 text-[#7aa2f7] animate-pulse")} />
                     ) : downloadedFiles.has(file.id) ? (
-                      <Check className={tw("w-4 h-4 text-[--text-success]")} />
+                      <Check className={tw("w-4 h-4 text-[#50fa7b]")} />
                     ) : file.status === 'completed' ? (
-                      <Download className={tw("w-4 h-4 text-[--text-muted] opacity-0 group-hover:opacity-100 transition-opacity")} />
+                      <Download className={tw("w-4 h-4 text-[#7aa2f7] opacity-0 group-hover:opacity-100 transition-opacity")} />
                     ) : (
-                      <Clock className={tw("w-4 h-4 text-[--text-warning]")} />
+                      <Clock className={tw("w-4 h-4 text-[#ffb74d]")} />
                     )}
                   </div>
                 </div>
@@ -603,14 +603,14 @@ export function SyncTab({
           )}
 
           {totalPages > 1 && (
-            <div className={tw("flex justify-between items-center mt-8 bg-[--background-primary] border border-[--background-modifier-border] p-4")}>
+            <div className={tw("flex justify-between items-center mt-8 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] p-4")}>
               <Button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className={tw(`px-4 py-2 h-auto transition-colors duration-200 flex items-center gap-2 ${
                   page === 1
-                    ? "bg-[--background-secondary] text-[--text-faint] cursor-not-allowed"
-                    : "bg-[--background-primary] border border-[--background-modifier-border] hover:bg-[--background-secondary] text-[--text-normal]"
+                    ? "bg-[#191621] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
+                    : "bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] hover:bg-[#191621] text-[#bebebe]"
                 }`)}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={tw("w-4 h-4")}>
@@ -619,7 +619,7 @@ export function SyncTab({
                 <span>Previous</span>
               </Button>
 
-              <div className={tw("bg-[--background-secondary] border border-[--background-modifier-border] px-4 py-2 text-sm font-medium text-[--text-normal]")}>
+              <div className={tw("bg-[#191621] border border-[rgba(14,210,247,0.08)] px-4 py-2 text-sm font-medium text-[#bebebe]")}>
                 Page {page} of {totalPages}
               </div>
 
@@ -628,8 +628,8 @@ export function SyncTab({
                 disabled={page === totalPages}
                 className={tw(`px-4 py-2 h-auto transition-colors duration-200 flex items-center gap-2 ${
                   page === totalPages
-                    ? "bg-[--background-secondary] text-[--text-faint] cursor-not-allowed"
-                    : "bg-[--background-primary] border border-[--background-modifier-border] hover:bg-[--background-secondary] text-[--text-normal]"
+                    ? "bg-[#191621] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
+                    : "bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] hover:bg-[#191621] text-[#bebebe]"
                 }`)}
               >
                 <span>Next</span>

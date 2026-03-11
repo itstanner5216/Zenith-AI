@@ -1,7 +1,7 @@
 {
-  "name": "@file-organizer/plugin",
+  "name": "@zenith-ai/plugin",
   "version": "3.6.11",
-  "description": "Note Companion",
+  "description": "Zenith-AI",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

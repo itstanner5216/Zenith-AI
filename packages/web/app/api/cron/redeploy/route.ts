@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
     console.log(`Found ${tokens.length} tokens to process`);
 
-    const repo = 'note-companion';
+    const repo = 'zenith-ai';
     const org = 'Nexus-JPF';
     const ref = 'master';
 
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
           // Create new deployment
           const deployment = await vercel.deployments.createDeployment({
             requestBody: {
-              name: `note-companion-redeploy-${Date.now()}`,
+              name: `zenith-ai-redeploy-${Date.now()}`,
               target: 'production',
               project: projectId,
               gitSource: {

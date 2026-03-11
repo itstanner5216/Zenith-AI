@@ -1,6 +1,6 @@
 import { TFile } from "obsidian";
 import { logger } from "../../../services/logger";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { RecordingMetadata, MeetingMetadataManager } from "./meeting-metadata";
 import { Notice } from "obsidian";
 
@@ -12,7 +12,7 @@ export interface TranscribeResult {
 
 export class TranscribeHandler {
   static async transcribeRecording(
-    plugin: FileOrganizer,
+    plugin: ZenithAI,
     recording: RecordingMetadata,
     metadataManager?: MeetingMetadataManager
   ): Promise<TranscribeResult> {
@@ -94,7 +94,7 @@ export class TranscribeHandler {
   }
 
   static async checkQuota(
-    plugin: FileOrganizer,
+    plugin: ZenithAI,
     file: TFile
   ): Promise<{ allowed: boolean; error?: string }> {
     try {

@@ -558,10 +558,10 @@ export function FileList({ pageSize = 12 }: FileListProps) {
         </div>
         <div className="max-w-md">
           <h3 className="text-xl font-semibold mb-2">
-            Welcome to Note Companion Sync
+            Welcome to Zenith-AI Sync
           </h3>
           <p className="text-gray-600 mb-4">
-            Note Companion Sync is a secure way to create OCR from your images
+            Zenith-AI Sync is a secure way to create OCR from your images
             and documents.
           </p>
           <div className="flex flex-col space-y-2 items-center">

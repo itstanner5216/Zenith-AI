@@ -19,6 +19,10 @@ import { Link } from 'expo-router';
 
 WebBrowser.maybeCompleteAuthSession();
 
+const isClerkError = (error: unknown): error is { errors?: Array<{ message?: string }> } => {
+  return typeof error === 'object' && error !== null && 'errors' in error;
+};
+
 export default function SignUpScreen() {
   const router = useRouter();
   const { signUp, setActive: setSignUpActive, isLoaded } = useSignUp();
@@ -60,8 +64,9 @@ export default function SignUpScreen() {
         // Handle additional verification if needed
         console.log(JSON.stringify(result, null, 2));
       }
-    } catch (err: any) {
-      Alert.alert('Error', err.errors?.[0]?.message || 'Failed to sign up');
+    } catch (err: unknown) {
+      const message = isClerkError(err) ? err.errors?.[0]?.message : undefined;
+      Alert.alert('Error', message || 'Failed to sign up');
     } finally {
       setLoading(false);
     }
@@ -106,7 +111,7 @@ export default function SignUpScreen() {
       >
         <View style={styles.header}>
           <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Join Note Companion AI</Text>
+          <Text style={styles.subtitle}>Join Zenith-AI AI</Text>
         </View>
 
         <View style={styles.form}>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile } from "obsidian";
-import FileOrganizer from "../../../../index";
+import ZenithAI from "../../../../index";
 import { logMessage } from "../../../../someUtils";
 import { logger } from "../../../../services/logger";
 import {
@@ -10,7 +10,7 @@ import {
 } from "../../../../utils/token-counter";
 
 interface UserTemplatesProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile | null;
   content: string;
   refreshKey: number;
@@ -163,14 +163,14 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
   const renderContent = () => {
     if (contentLoadStatus === "error" || classificationStatus === "error") {
       return (
-        <div className="text-[--text-error] p-2 bg-[--background-modifier-error]">
+        <div className="text-[#f4569d] p-2 bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.2)] rounded">
           Unable to process the content. Please try again later.
         </div>
       );
     }
     if (classificationStatus === "loading") {
       return (
-        <div className="text-[--text-muted] p-2">Classifying content...</div>
+        <div className="text-[#7aa2f7] p-2">Classifying content...</div>
       );
     }
 
@@ -178,7 +178,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
       <div className="flex flex-col space-y-2">
         <div className="relative" ref={dropdownRef}>
           <button
-            className="w-full flex items-center justify-between px-3 py-2 bg-[--background-secondary] text-[--text-normal] hover:bg-[--background-modifier-hover] transition-colors duration-200"
+            className="w-full flex items-center justify-between px-3 py-2 bg-[#0d0b12] text-[#bebebe] border border-[rgba(14,210,247,0.1)] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
             onClick={() => setShowDropdown(!showDropdown)}
           >
             <span>{getDisplayText()}</span>
@@ -198,12 +198,12 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
             </svg>
           </button>
           {showDropdown && (
-            <div className="absolute z-10 w-full mt-1 bg-[--background-primary] border border-[--background-modifier-border]">
+            <div className="absolute z-10 w-full mt-1 bg-[#191621] border border-[rgba(14,210,247,0.1)] rounded">
               {dropdownTemplates.length > 0 ? (
                 dropdownTemplates.map((templateName, index) => (
                   <div
                     key={index}
-                    className="px-3 py-2 cursor-pointer hover:bg-[--background-modifier-hover] text-[--text-normal]"
+                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] text-[#bebebe]"
                     onClick={() => {
                       setSelectedTemplateName(templateName);
                       setShowDropdown(false);
@@ -213,7 +213,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-2 text-[--text-muted]">
+                <div className="px-3 py-2 text-[#7aa2f7]">
                   No templates available
                 </div>
               )}
@@ -221,15 +221,15 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
           )}
         </div>
         {isFileTooLarge && (
-          <div className="text-[--text-error] p-2 bg-[--background-modifier-error]">
+          <div className="text-[#f4569d] p-2 bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.2)] rounded">
             File is too large to format.
           </div>
         )}
         <button
-          className={`px-4 py-2 transition-colors duration-200 flex items-center justify-center ${
+          className={`px-4 py-2 transition-colors duration-200 flex items-center justify-center rounded ${
             !selectedTemplateName || formatting
-              ? "bg-[--background-modifier-border] text-[--text-muted] cursor-not-allowed"
-              : "bg-[--interactive-accent] text-white hover:bg-[--interactive-accent-hover]"
+              ? "bg-[rgba(14,210,247,0.05)] text-[#7aa2f7] cursor-not-allowed border border-[rgba(14,210,247,0.05)]"
+              : "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.4)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.8)]"
           }`}
           disabled={!selectedTemplateName || formatting || isFileTooLarge}
           onClick={handleFormatClick}

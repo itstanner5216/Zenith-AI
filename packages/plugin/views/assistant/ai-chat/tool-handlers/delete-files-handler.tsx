@@ -124,8 +124,8 @@ export function DeleteFilesHandler({
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-success] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#50fa7b] text-xs">
           {isDone && !isConfirmed ? "✗ Deletion cancelled" : "✓ Files deleted"}
         </div>
       </div>
@@ -134,8 +134,8 @@ export function DeleteFilesHandler({
 
   if (validFiles.length === 0 && invalidPaths.length > 0) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-error] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#f4569d] text-xs">
           ✗ No valid files to delete. All paths were invalid.
         </div>
       </div>
@@ -143,40 +143,40 @@ export function DeleteFilesHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[--background-modifier-border]">
+    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
       <div className="flex items-start gap-2">
-        <span className="text-[--text-error] text-lg">⚠</span>
+        <span className="text-[#f4569d] text-lg">⚠</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[--text-normal] mb-1">
+          <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Deletion
           </div>
-          <div className="text-xs text-[--text-muted] mb-2">{reason}</div>
+          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Files to delete ({validFiles.length})
         </div>
         {validFiles.slice(0, 5).map((file) => (
-          <div key={file.path} className="text-[--text-normal] pl-2">
+          <div key={file.path} className="text-[#bebebe] pl-2">
             • {file.basename}
           </div>
         ))}
         {validFiles.length > 5 && (
-          <div className="text-[--text-faint] pl-2">
+          <div className="text-[rgba(122,162,247,0.4)] pl-2">
             ...and {validFiles.length - 5} more
           </div>
         )}
       </div>
 
       {invalidPaths.length > 0 && (
-        <div className="text-xs text-[--text-error]">
+        <div className="text-xs text-[#f4569d]">
           ⚠ {invalidPaths.length} invalid path(s) will be skipped
         </div>
       )}
 
-      <div className="p-2 bg-[--background-secondary] text-xs text-[--text-warning]">
+      <div className="p-2 bg-[#191621] text-xs text-[#ffb74d]">
         {permanentDelete ? (
           <>
             <strong>⚠ Permanent deletion:</strong> Files cannot be recovered
@@ -189,7 +189,7 @@ export function DeleteFilesHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs border border-[--background-modifier-border] hover:bg-[--background-modifier-hover] text-[--text-normal]"
+          className="flex-1 px-3 py-1.5 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#bebebe]"
         >
           Cancel
         </button>
@@ -198,7 +198,7 @@ export function DeleteFilesHandler({
             setIsConfirmed(true);
             handleConfirmDelete();
           }}
-          className="flex-1 px-3 py-1.5 text-xs bg-[--text-error] hover:opacity-90 text-white"
+          className="flex-1 px-3 py-1.5 text-xs bg-[#f4569d] hover:bg-[rgba(244,86,157,0.85)] text-[#0d0b12] font-medium rounded transition-colors"
         >
           Delete {validFiles.length} File{validFiles.length !== 1 ? "s" : ""}
         </button>

@@ -11,8 +11,8 @@ export const metadata: Metadata = {
         : 'https://www.notecompanion.ai')
   ),
   title: {
-    default: 'Note Companion',
-    template: '%s | Note Companion',
+    default: 'Zenith-AI',
+    template: '%s | Zenith-AI',
   },
   description: 'Your AI-powered assistant for Obsidian.',
   icons: {

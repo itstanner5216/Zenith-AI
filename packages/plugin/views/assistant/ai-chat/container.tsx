@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { ChatComponent } from "./chat";
-import FileOrganizer from "../../..";
+import ZenithAI from "../../..";
 import { Card } from "./card";
 import { Button } from "./button";
 import { ChatTabs } from "./components/chat-tabs";
@@ -16,7 +16,7 @@ import {
 } from "./services/chat-history-manager";
 
 interface AIChatSidebarProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   apiKey: string;
   onTokenLimitError?: (error: string) => void;
   isChatTabActive?: boolean;
@@ -199,7 +199,7 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full bg-[--background-primary]">
+    <div className="flex flex-col h-full w-full bg-[#100e17]">
       <ChatTabs
         sessions={chatSessions}
         activeChatId={activeChatId}

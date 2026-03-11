@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Inbox } from '../inbox';
 import { FileRecord, Action, RecordManager } from '../inbox/services/record-manager';
-import { FileOrganizer } from '../index';
+import { ZenithAI } from '../index';
 import { getActionDisplayName } from '../inbox/index';
 
 function calculateProgress(record: FileRecord): number {
@@ -41,7 +41,7 @@ function getCurrentAction(record: FileRecord, app: any): string {
   }
 }
 
-export function ProcessingStatusBar({ plugin }: { plugin: FileOrganizer }) {
+export function ProcessingStatusBar({ plugin }: { plugin: ZenithAI }) {
   const [status, setStatus] = React.useState<{
     currentFile?: string;
     currentAction?: string;

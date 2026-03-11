@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { App, PluginSettingTab } from 'obsidian';
-import FileOrganizer from '../../index';
+import ZenithAI from '../../index';
 import { createRoot, Root } from 'react-dom/client';
 import { SettingsTabContent } from './main';
 import { logMessage } from '../../someUtils';
 
-export class FileOrganizerSettingTab extends PluginSettingTab {
-  plugin: FileOrganizer;
+export class ZenithAISettingTab extends PluginSettingTab {
+  plugin: ZenithAI;
   private root: Root | null = null;
 
-  constructor(app: App, plugin: FileOrganizer) {
+  constructor(app: App, plugin: ZenithAI) {
     super(app, plugin);
     this.plugin = plugin;
   }
