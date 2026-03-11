@@ -44,7 +44,7 @@ export default function RootLayout() {
   }, [loaded]);
 
   // Safe navigation function to ensure we only navigate when component is mounted
-  const safeNavigate = (pathname: string, params?: Record<string, any>) => {
+  const safeNavigate = (pathname: string, params?: Record<string, unknown>) => {
     console.log(`[RootLayout] Safe Navigate - isMounted: ${isMounted.current}, isReady: ${isReady}, pathname: ${pathname}`);
     
     if (!isMounted.current || !isReady) {
