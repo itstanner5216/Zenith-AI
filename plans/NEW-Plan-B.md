@@ -4,18 +4,27 @@
 
 Parallel agents are running simultaneously in separate worktrees. Crossing into another agent's worktree WILL contaminate branches and cause hours of cleanup. **This MUST NOT happen.**
 
-**Your worktree:** <insert worktree>
-**Your branch:** <insert branch>
+**Your worktree:** `/home/tanner/Projects/Zenith-AI-plan-b`
+**Your branch:** `plan-b-implementation`
 
 
 **If you dispatch subagents**, you MUST include this in every subagent prompt:
-> "CRITICAL: You are working in <insert local system path> on branch <insert git branch>. Before ANY git operation, verify with `pwd` and `git branch --show-current`. Do NOT touch any other worktree or branch."
+> "CRITICAL: You are working in /home/tanner/Projects/Zenith-AI-plan-b on branch plan-b-implementation. Before ANY git operation, verify with `pwd` and `git branch --show-current`. Do NOT touch any other worktree or branch."
 
 ---
 
 ## 🚨 OWNERSHIP RULE — READ THIS FIRST
 
-**You own ONLY <file assignments>**. Do NOT edit any file outside of your scope. If you find a bug there, note it in your commit message so the human can address it.
+**You own ONLY these files/directories**:
+- `packages/plugin/views/assistant/ai-chat/chat.tsx` (MODIFY)
+- `packages/plugin/views/assistant/ai-chat/tool-handlers/` (NEW handlers)
+- `packages/plugin/views/assistant/context/index.tsx` (NEW)
+- `packages/plugin/views/assistant/view.tsx` (MODIFY)
+- `packages/plugin/views/assistant/meetings/meeting-recorder.tsx` (MODIFY)
+- `packages/plugin/views/assistant/meetings/recent-meetings.tsx` (MODIFY)
+- `packages/plugin/views/settings/customization-tab.tsx` (MODIFY)
+
+Do NOT edit any file outside of your scope. If you find a bug there, note it in your commit message so the human can address it.
 
 **You may READ any file** in the codebase for context, but only **edit files in your scope**.
 

@@ -4,18 +4,27 @@
 
 Parallel agents are running simultaneously in separate worktrees. Crossing into another agent's worktree WILL contaminate branches and cause hours of cleanup. **This MUST NOT happen.**
 
-**Your worktree:** <insert worktree>
-**Your branch:** <insert branch>
+**Your worktree:** `/home/tanner/Projects/Zenith-AI-plan-a`
+**Your branch:** `plan-a-implementation`
 
 
 **If you dispatch subagents**, you MUST include this in every subagent prompt:
-> "CRITICAL: You are working in <insert local system path> on branch <insert git branch>. Before ANY git operation, verify with `pwd` and `git branch --show-current`. Do NOT touch any other worktree or branch."
+> "CRITICAL: You are working in /home/tanner/Projects/Zenith-AI-plan-a on branch plan-a-implementation. Before ANY git operation, verify with `pwd` and `git branch --show-current`. Do NOT touch any other worktree or branch."
 
 ---
 
 ## 🚨 OWNERSHIP RULE — READ THIS FIRST
 
-**You own ONLY <file assignments>**. Do NOT edit any file outside of your scope. If you find a bug there, note it in your commit message so the human can address it.
+**You own ONLY these files/directories**:
+- `packages/plugin/services/organization-preferences.ts` (NEW)
+- `packages/plugin/services/vault-indexer.ts` (NEW)
+- `packages/plugin/services/background-scribe.ts` (NEW)
+- `packages/plugin/services/vertex-brain-client.ts` (MODIFY)
+- `packages/plugin/index.ts` (MODIFY — wiring only)
+- `packages/plugin/inbox/index.ts` (MODIFY — pipeline integration)
+- `packages/plugin/settings.ts` (MODIFY — add new settings fields)
+
+Do NOT edit any file outside of your scope. If you find a bug there, note it in your commit message so the human can address it.
 
 **You may READ any file** in the codebase for context, but only **edit files in your scope**.
 
