@@ -62,6 +62,18 @@ export class FileOrganizerSettings {
   enableScreenpipe = false; // Enable ScreenPipe integration for screen activity search
   screenpipeApiUrl = "http://localhost:3030"; // ScreenPipe API URL
   screenpipeTimeRange = 4; // Default time range in hours for ScreenPipe searches (1-24)
+  // Vault Intelligence (Vertex Brain integration)
+  vertexBrainUrl = "http://localhost:8085";
+  enableVectorAutoSort = true;
+  autoSortConfidenceThreshold = 0.75;
+  organizationRulesPath = "System/Cosmic Vault Structure.md";
+  generalMergeThreshold = 0.50; // General directory → Project threshold
+  globalMergeThreshold = 0.70; // Non-General → Project threshold
+  pinnedTag = "pinned"; // Tag that locks files from auto-sort
+  projectsPath = "Projects"; // Root signal directory
+  autoDetectProjectContext = true;
+  backgroundScribeEnabled = false;
+  backgroundScribeOutputFile = "TODO.md";
   queryScreenpipeLimit = 10; // Default query limit for ScreenPipe searches (1-100)
 }
 
