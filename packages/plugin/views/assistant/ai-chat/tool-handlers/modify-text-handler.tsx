@@ -203,7 +203,7 @@ export function ModifyTextHandler({
           <div className="flex items-center gap-2">
             <button
               onClick={handleDiscardChanges}
-              className="px-2 py-1 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#7aa2f7]"
+              className="px-2 py-1 text-xs rounded border border-[rgba(14,210,247,0.15)] text-[#45aaff] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
               disabled={isApplying}
             >
               Discard
@@ -211,7 +211,7 @@ export function ModifyTextHandler({
             <button
               onClick={handleApplyChanges}
               disabled={isApplying}
-              className="px-2 py-1 text-xs bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.7)] text-[#0d0b12] flex items-center gap-1"
+              className="px-2 py-1 text-xs rounded bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_4px_rgba(14,210,247,0.2)] flex items-center gap-1"
             >
               {isApplying ? (
                 <>

@@ -131,16 +131,11 @@ export function OnboardHandler({
         <button
           onClick={handleAnalyze}
           disabled={isAnalyzing}
-          className={`
-                px-4 py-2 
-                ${
+          className={`px-4 py-2 text-xs rounded-md font-semibold transition-all duration-150 ${
                   isAnalyzing
-                    ? "bg-[rgba(14,210,247,0.08)] cursor-not-allowed"
-                    : "bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.7)]"
-                }
-                text-[#0d0b12]
-                transition-colors
-              `}
+                    ? 'bg-[rgba(14,210,247,0.08)] text-[#45aaff] cursor-not-allowed'
+                    : 'bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]'
+              }`}
         >
           {isAnalyzing ? "Analyzing..." : "Start Analysis"}
         </button>

@@ -189,7 +189,7 @@ export function DeleteFilesHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#bebebe]"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
         >
           Cancel
         </button>
@@ -198,7 +198,7 @@ export function DeleteFilesHandler({
             setIsConfirmed(true);
             handleConfirmDelete();
           }}
-          className="flex-1 px-3 py-1.5 text-xs bg-[#f4569d] hover:bg-[rgba(244,86,157,0.85)] text-[#0d0b12] font-medium rounded transition-colors"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[#f4569d] text-[#0d0b12] font-semibold hover:bg-[rgba(244,86,157,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(244,86,157,0.25)] hover:shadow-[0_0_10px_rgba(244,86,157,0.4)]"
         >
           Delete {validFiles.length} File{validFiles.length !== 1 ? "s" : ""}
         </button>

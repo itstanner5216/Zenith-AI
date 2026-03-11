@@ -223,7 +223,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -244,7 +244,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -265,7 +265,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -282,7 +282,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -299,7 +299,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -316,7 +316,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       <div className={tw("flex flex-col h-full")}>
         <div
           className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)]"
+            "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12]"
           )}
         >
           <RefreshButton onRefresh={refreshContext} />
@@ -339,7 +339,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       {/* Compact header - flush to edges */}
       <div
         className={tw(
-          "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.05)] bg-[#100e17] sticky top-0 z-10"
+          "flex gap-2 items-center px-3 py-2 border-b border-[rgba(14,210,247,0.1)] bg-[#0d0b12] sticky top-0 z-10"
         )}
       >
         <RefreshButton onRefresh={refreshContext} />

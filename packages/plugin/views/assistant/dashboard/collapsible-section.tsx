@@ -20,20 +20,22 @@ export function CollapsibleSection({
   children,
 }: CollapsibleSectionProps) {
   return (
-    <div className="mb-2 border-b border-[rgba(14,210,247,0.08)]">
+    <div className="mb-2 border border-[rgba(14,210,247,0.08)] rounded-md overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <Button
-        className="w-full flex justify-between items-center px-2 py-2 bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)] transition-colors"
+        className="w-full flex justify-between items-center px-3 py-2.5 bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.06)] transition-colors duration-150"
         onClick={onToggle}
         variant="ghost"
       >
-        <span className="font-semibold text-[#bebebe]">{title}</span>
-        {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        <span className="font-semibold text-[#0fb6d6] text-sm tracking-wide">{title}</span>
+        {isOpen
+          ? <ChevronUp className="h-4 w-4 text-[#45aaff]" />
+          : <ChevronDown className="h-4 w-4 text-[#45aaff]" />}
       </Button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="bg-[#100e17]"
+            className="bg-[#100e17] border-t border-[rgba(14,210,247,0.06)]"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -45,4 +47,4 @@ export function CollapsibleSection({
       </AnimatePresence>
     </div>
   );
-} 
+}

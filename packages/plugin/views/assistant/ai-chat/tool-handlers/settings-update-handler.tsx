@@ -9,21 +9,21 @@ interface SettingUpdateProps {
 }
 
 const SettingUpdate = ({ setting, value, onValidate, isValidated }: SettingUpdateProps) => (
-  <div className="flex items-center justify-between p-2 border border-[rgba(14,210,247,0.08)] mb-2">
+  <div className="flex items-center justify-between p-2.5 rounded-md border border-[rgba(14,210,247,0.1)] mb-2 bg-[#191621] hover:border-[rgba(14,210,247,0.18)] transition-colors duration-150">
     <div className="flex-1">
-      <div className="font-medium text-[#bebebe]">{setting}</div>
-      <div className="text-sm text-[#7aa2f7] break-all">{value}</div>
+      <div className="font-medium text-[#bebebe] text-xs">{setting}</div>
+      <div className="text-xs text-[#45aaff] break-all mt-0.5 opacity-70">{value}</div>
     </div>
     <button
       onClick={onValidate}
       disabled={isValidated}
-      className={`ml-2 px-3 py-1  ${
+      className={`ml-3 px-3 py-1 text-xs rounded-md font-medium transition-all duration-150 ${
         isValidated 
-          ? 'bg-[#0fb6d6] text-[#0d0b12]' 
-          : 'bg-[#191621] hover:bg-[rgba(14,210,247,0.08)] text-[#bebebe]'
+          ? 'bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.3)] cursor-default' 
+          : 'bg-[#0fb6d6] text-[#0d0b12] font-semibold border border-[#0fb6d6] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] shadow-[0_0_6px_rgba(14,210,247,0.2)]'
       }`}
     >
-      {isValidated ? 'Applied' : 'Apply'}
+      {isValidated ? '✓ Applied' : 'Apply'}
     </button>
   </div>
 );

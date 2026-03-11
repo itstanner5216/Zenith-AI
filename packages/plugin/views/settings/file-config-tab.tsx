@@ -321,13 +321,13 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
         <div className="setting-item-name">{name}</div>
         <div className="setting-item-description">{description}</div>
         {warnings[settingKey] && (
-          <div className="setting-item-warning" style={{ color: "orange" }}>
-            Warning: {warnings[settingKey]}
+          <div className="mt-1 text-xs text-[#ffb74d] flex items-center gap-1">
+            <span>⚠</span> {warnings[settingKey]}
           </div>
         )}
         {pathExistence[value] === false && (
-          <div className="setting-item-error" style={{ color: "red" }}>
-            Path does not exist.
+          <div className="mt-1 text-xs text-[#f4569d] flex items-center gap-2">
+            <span>Path does not exist.</span>
             <button
               onClick={async () => {
                 const created = await createFolder(value);
@@ -335,6 +335,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
                   setPathExistence({ ...pathExistence, [value]: true });
                 }
               }}
+              className="px-2 py-0.5 text-xs rounded border border-[rgba(14,210,247,0.2)] text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)] transition-all duration-150"
             >
               Create folder
             </button>
@@ -515,16 +516,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
                   }
                 }
               }}
-              style={{
-                padding: "6px 12px",
-                fontSize: "13px",
-                background: "#0fb6d6",
-                color: "#0d0b12",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontWeight: "500",
-              }}
+              className="px-3 py-1.5 text-xs font-semibold bg-[#0fb6d6] text-[#0d0b12] rounded-md border border-[#0fb6d6] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)] cursor-pointer"
             >
               Restore Default Templates
             </button>

@@ -86,7 +86,7 @@ export function AppendContentHandler({
                 })
               )
             }
-            className="px-4 py-2 bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.12)]"
+            className="px-4 py-2 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
           >
             Cancel
           </button>

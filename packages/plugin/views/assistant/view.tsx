@@ -150,10 +150,10 @@ function TabButton({
     <button
       onClick={onClick}
       className={tw(
-        "px-4 py-2 text-sm transition-all relative flex items-center gap-2",
+        "px-4 py-2 text-sm transition-all duration-150 relative flex items-center gap-2",
         isActive
           ? "text-[#0fb6d6] font-medium"
-          : "text-[#7aa2f7] hover:text-[#0fb6d6]"
+          : "text-[#45aaff] hover:text-[#0fb6d6]"
       )}
       style={
         isActive
@@ -284,11 +284,11 @@ function AssistantContent({
   const showSyncTab = plugin.settings.showSyncTab;
 
   return (
-    <div className={tw("flex flex-col h-full w-full bg-[#100e17]")}>
+    <div className={tw("flex flex-col h-full w-full bg-[#0d0b12]")}>
       {/* Native tab navigation */}
       <div
         className={tw(
-          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.05)] bg-[#100e17] items-center justify-between"
+          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12] items-center justify-between"
         )}
       >
         <div className={tw("flex gap-0")}>
@@ -346,8 +346,8 @@ function AssistantContent({
         )}
       </div>
 
-      {/* Content area - no padding */}
-      <div className={tw("flex-1 min-h-0 w-full overflow-hidden")}>
+      {/* Content area - Layer 2 */}
+      <div className={tw("flex-1 min-h-0 w-full overflow-hidden bg-[#100e17]")}>
         <TabContent
           activeTab={activeTab}
           plugin={plugin}

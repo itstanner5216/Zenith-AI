@@ -66,8 +66,8 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
     <motion.div
       className={`flex items-start gap-3 py-2.5 ${
         isUser
-          ? "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md px-3 my-1"
-          : "border-l-2 border-[rgba(14,210,247,0.3)] pl-3 my-1"
+          ? "bg-[#191621] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[rgba(244,86,157,0.4)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+          : "border-l-2 border-[rgba(14,210,247,0.25)] pl-3 my-1"
       }`}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}

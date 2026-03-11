@@ -546,7 +546,7 @@ export function SyncTab({
                   onClick={() => file.status === 'completed' && !downloading[file.id] && downloadFile(file)}
                   className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[rgba(14,210,247,0.08)] transition-colors group ${
                     file.status === 'completed' && !downloading[file.id]
-                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.04)]'
+                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.12)]'
                       : 'cursor-default'
                   }`)}
                 >

@@ -41,8 +41,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
       {/* Inbox Processing Section */}
       <section>
         <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">Inbox Processing</h3>
-        <div className="bg-[#0d0b12] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)]">
-          <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
+        <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="text-xs text-[#45aaff] opacity-70">
             These settings control how new files are automatically handled when they enter your vault through the inbox.
             Enable or disable automatic processing features and configure how the AI should handle your incoming documents.
           </div>
@@ -60,9 +60,9 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             value={enableDocumentClassification}
             onChange={(value) => handleToggleChange(value, setEnableDocumentClassification, 'enableDocumentClassification')}
           />
-          <div className="bg-[#0d0b12] p-4 rounded-lg mt-2 border border-[rgba(14,210,247,0.08)]">
+          <div className="bg-[#191621] p-4 rounded-lg mt-2 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
             <div className="font-medium text-[#bebebe] mb-2">Document Type Templates</div>
-            <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
+            <div className="text-xs text-[#45aaff] opacity-70">
               To enable auto-formatting, create template files in the File Organizer template folder.
               Name each file according to its document type (e.g., 'workout.md', 'meeting-notes.md').
               The content of each file should contain the formatting instructions.
@@ -81,8 +81,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
       {/* General Settings Section */}
       <section>
         <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">General Settings</h3>
-        <div className="bg-[#0d0b12] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)]">
-          <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
+        <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="text-xs text-[#45aaff] opacity-70">
             Configure how File Organizer behaves across your vault. These settings affect both manual operations
             and provide the base configuration for inbox processing. Customize naming conventions, tagging behavior,
             and folder organization to match your workflow.
@@ -150,8 +150,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               value={imageInstructions}
               onChange={(value) => handleTextChange(value, setImageInstructions, 'imageInstructions')}
             />
-            <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
-              <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.7 }}>
+            <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+              <div className="text-xs text-[#45aaff] opacity-70">
                 These instructions will be used to generate descriptions for images in your documents.
                 The AI will analyze the image content and create descriptions based on your specifications.
               </div>
@@ -171,18 +171,31 @@ interface ToggleSettingProps {
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value, onChange }) => (
-  <div className="flex items-center justify-between py-2 border-b border-[rgba(14,210,247,0.04)]">
-    <div>
-      <div className="font-medium text-[#bebebe]">{name}</div>
-      <div className="text-sm text-[#7aa2f7]" style={{ opacity: 0.6 }}>{description}</div>
+  <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0 group">
+    <div className="flex-1 mr-4">
+      <div className="font-medium text-[#bebebe] text-sm leading-snug">{name}</div>
+      <div className="text-xs text-[#45aaff] mt-0.5 leading-relaxed opacity-70">{description}</div>
     </div>
-    <div>
-      <input
-        type="checkbox"
-        checked={value}
-        onChange={(e) => onChange(e.target.checked)}
-        className="form-checkbox text-[#0fb6d6]"
-      />
+    <div className="flex-shrink-0">
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={value}
+          onChange={(e) => onChange(e.target.checked)}
+          className="sr-only peer"
+        />
+        <div className={`w-8 h-4 rounded-full border transition-all duration-200 ${
+          value
+            ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
+            : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)] group-hover:border-[rgba(14,210,247,0.35)]'
+        }`}>
+          <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+            value
+              ? 'left-[18px] bg-[#0fb6d6]'
+              : 'left-0.5 bg-[#45aaff] opacity-60'
+          }`} />
+        </div>
+      </label>
     </div>
   </div>
 );
@@ -198,12 +211,12 @@ interface TextAreaSettingProps {
 const TextAreaSetting: React.FC<TextAreaSettingProps> = ({ name, description, value, onChange, disabled }) => (
   <div className="py-2">
     <div className="font-medium text-[#bebebe]">{name}</div>
-    <div className="text-sm text-[#7aa2f7] mb-1" style={{ opacity: 0.6 }}>{description}</div>
+    <div className="text-xs text-[#45aaff] mb-1 opacity-60">{description}</div>
     <textarea
       value={value}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className="w-full px-3 py-2 text-[#bebebe] bg-[#0d0b12] border border-[rgba(14,210,247,0.1)] rounded-lg focus:outline-none focus:border-[#0fb6d6] disabled:bg-[#191621] disabled:opacity-50"
+      className="w-full px-3 py-2 text-[#bebebe] bg-[#0d0b12] border border-[rgba(14,210,247,0.12)] rounded-md focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] disabled:bg-[#191621] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 resize-none text-xs leading-relaxed placeholder:text-[#45aaff] placeholder:opacity-40"
       rows={4}
     />
   </div>

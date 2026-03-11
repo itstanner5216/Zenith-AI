@@ -147,7 +147,7 @@ export function MoveFilesHandler({
         <div className="flex space-x-2">
           <button
             onClick={handleMoveFiles}
-            className="px-4 py-2 bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.7)]"
+            className="px-4 py-2 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
           >
             Move {filesToMove.length} Files
           </button>
@@ -160,7 +160,7 @@ export function MoveFilesHandler({
                 })
               )
             }
-            className="px-4 py-2 bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.12)]"
+            className="px-4 py-2 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
           >
             Cancel
           </button>

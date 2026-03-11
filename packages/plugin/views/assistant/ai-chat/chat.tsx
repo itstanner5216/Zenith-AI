@@ -1918,7 +1918,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   return (
     <StyledContainer className="flex flex-col h-full w-full max-h-full overflow-hidden">
       {/* Chat Header - minimal */}
-      <div className="flex-none border-b border-[rgba(14,210,247,0.05)] px-3 py-1.5 bg-[#100e17]">
+      <div className="flex-none border-b border-[rgba(14,210,247,0.08)] px-3 py-1.5 bg-[#0d0b12]">
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             {/* Export chat as markdown - menu rendered in portal so it isn't clipped by overflow-hidden */}
@@ -1949,8 +1949,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     ref={exportDropdownRef}
                     role="menu"
                     className={tw(
-                      "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.1)]",
-                      "bg-[#191621]"
+                      "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.15)]",
+                      "bg-[#1e1a2e] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)]"
                     )}
                     style={{
                       position: "fixed",
@@ -2180,7 +2180,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       </div>
 
       {/* Unified Command Center Footer */}
-      <div className="flex-none border-t border-[rgba(14,210,247,0.05)] bg-[#0d0b12]">
+      <div className="flex-none border-t border-[rgba(14,210,247,0.1)] bg-[#0d0b12]">
         <form onSubmit={handleSendMessage} className="p-3">
           {/* Row 1: Context attachments - compact chips */}
           <div className="mb-2">

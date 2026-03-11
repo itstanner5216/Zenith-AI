@@ -191,7 +191,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-medium mb-2 mt-0">
@@ -206,21 +206,21 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                className={`flex-1 bg-[#0d0b12] text-[#bebebe] border rounded px-3 py-1.5 ${
+                className={`flex-1 bg-[#0d0b12] text-[#bebebe] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40 ${
                   keyStatus === "valid"
-                    ? "border-[#50fa7b]"
+                    ? "border-[#50fa7b] shadow-[0_0_6px_rgba(80,250,123,0.2)]"
                     : keyStatus === "invalid" || validationError
-                    ? "border-[#f4569d]"
-                    : "border-[rgba(14,210,247,0.1)]"
+                    ? "border-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
+                    : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
                 }`}
-                placeholder="Enter your File Organizer License Key"
+                placeholder="Enter your license key"
                 value={licenseKey}
                 onChange={e => handleLicenseKeyChange(e.target.value)}
               />
               <button
                 onClick={handleActivate}
                 disabled={!licenseKey || !!validationError}
-                className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-1.5 rounded hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)]"
               >
                 Activate
               </button>
@@ -236,7 +236,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       </div>
 
       {/* Usage Stats Section - Always visible */}
-      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <h3 className="text-lg font-medium mb-2 mt-0">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
@@ -380,7 +380,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="mt-4">
               <button
                 onClick={() => plugin.openUpgradePlanModal()}
-                className="w-full bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.8)] transition-colors font-medium"
+                className="w-full bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 shadow-[0_0_12px_rgba(14,210,247,0.25)] hover:shadow-[0_0_18px_rgba(14,210,247,0.4)]"
               >
                 Upgrade Plan
               </button>
@@ -393,7 +393,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         onLicenseKeyChange={handleLicenseKeyChange}
       />
 
-      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <h3 className="text-lg font-medium mb-4 mt-0">Quick Tutorial</h3>
         <div className="youtube-embed">
           <iframe
@@ -407,7 +407,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         </div>
       </div>
 
-      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <p className="zenith-ai-support-text mb-4">
           Zenith-AI is an open-source initiative. If you find it valuable,
           please{" "}

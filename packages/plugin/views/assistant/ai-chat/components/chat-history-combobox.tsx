@@ -144,10 +144,10 @@ export function ChatHistoryCombobox({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={tw(
-          "flex items-center gap-2 px-3 py-1.5 text-xs rounded",
-          "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)]",
-          "text-[#bebebe] border border-[rgba(14,210,247,0.08)]",
-          "min-w-[200px] justify-between"
+          "flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-md",
+          "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.06)]",
+          "text-[#bebebe] border border-[rgba(14,210,247,0.12)] hover:border-[rgba(14,210,247,0.25)]",
+          "min-w-[200px] justify-between transition-all duration-150"
         )}
         title="Search chat history"
       >
@@ -165,8 +165,8 @@ export function ChatHistoryCombobox({
         <div
           className={tw(
             "absolute top-full right-0 mt-1 w-[300px] max-h-[400px]",
-            "bg-[#0d0b12] border border-[rgba(14,210,247,0.08)]",
-            "rounded shadow-lg z-50 overflow-hidden"
+            "bg-[#1e1a2e] border border-[rgba(14,210,247,0.15)]",
+            "rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)] z-50 overflow-hidden"
           )}
           style={{
             maxWidth: 'calc(100vw - 2rem)', // Prevent overflow beyond viewport
@@ -182,12 +182,12 @@ export function ChatHistoryCombobox({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search chats..."
-                className={tw(
-                  "w-full pl-7 pr-2 py-1.5 text-xs rounded",
-                  "bg-[#0d0b12]",
-                  "text-[#bebebe] border border-[rgba(14,210,247,0.08)]",
-                  "focus:outline-none focus:ring-1 focus:ring-[#0fb6d6]"
-                )}
+                  className={tw(
+                    "w-full pl-7 pr-2 py-1.5 text-xs rounded-md",
+                    "bg-[#0d0b12]",
+                    "text-[#bebebe] border border-[rgba(14,210,247,0.12)] placeholder:text-[#45aaff] placeholder:opacity-50",
+                    "focus:outline-none focus:border-[#0fb6d6] focus:ring-1 focus:ring-[rgba(14,210,247,0.2)] transition-all duration-150"
+                  )}
               />
             </div>
           </div>
@@ -211,8 +211,8 @@ export function ChatHistoryCombobox({
                     className={tw(
                       "group px-3 py-2 cursor-pointer transition-colors",
                       "border-b border-[rgba(14,210,247,0.08)] last:border-b-0",
-                      isSelected && "bg-[rgba(14,210,247,0.08)]",
-                      !isSelected && "hover:bg-[rgba(14,210,247,0.04)]"
+                    isSelected && "bg-[rgba(14,210,247,0.08)]",
+                    !isSelected && "hover:bg-[rgba(14,210,247,0.05)]"
                     )}
                     onClick={() => {
                       onSelectChat(session.id);
@@ -251,9 +251,9 @@ export function ChatHistoryCombobox({
                           onDeleteChat(session.id);
                         }}
                         className={tw(
-                          "opacity-0 group-hover:opacity-100 transition-opacity",
-                          "hover:text-[#f4569d] flex-shrink-0",
-                          "p-1 rounded hover:bg-[rgba(14,210,247,0.04)]"
+                          "opacity-0 group-hover:opacity-100 transition-all duration-150",
+                          "text-[#45aaff] hover:text-[#f4569d] flex-shrink-0",
+                          "p-1 rounded hover:bg-[rgba(244,86,157,0.1)]"
                         )}
                         aria-label="Delete chat"
                         title="Delete chat"

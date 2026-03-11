@@ -203,7 +203,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
   };
 
   return (
-    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.05)] rounded-md">
+    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[rgba(14,210,247,0.15)] transition-colors duration-200">
       {renderContent()}
     </div>
   );

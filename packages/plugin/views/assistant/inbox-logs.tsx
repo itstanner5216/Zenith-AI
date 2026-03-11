@@ -415,7 +415,7 @@ function FileCard({ record }: { record: FileRecord }) {
     record.status === "error";
 
   return (
-    <div className="border-b border-[rgba(14,210,247,0.05)] hover:bg-[rgba(14,210,247,0.04)]">
+    <div className="border-b border-[rgba(14,210,247,0.06)] hover:bg-[rgba(14,210,247,0.06)] transition-colors duration-150">
       <div
         className="px-3 py-2 cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -561,7 +561,7 @@ const InboxAnalytics: React.FC<{
   );
 
   return (
-    <div className="bg-[#100e17]">
+    <div className="bg-[#100e17] h-full">
       <div className="space-y-2">
         {/* Main flow row */}
         <div className="grid grid-cols-3 gap-2">

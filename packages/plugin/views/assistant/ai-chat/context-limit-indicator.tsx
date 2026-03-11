@@ -82,13 +82,13 @@ export function ContextLimitIndicator({
     <div className="mt-2 space-y-2 flex">
       <div className="relative">
         <div
-          className={`p-2 min-w-max rounded text-xs flex gap-1 items-center justify-between cursor-pointer hover:bg-[rgba(14,210,247,0.08)] transition-colors
+          className={`px-2 py-1 min-w-max rounded-md text-xs flex gap-1.5 items-center justify-between cursor-pointer hover:bg-[rgba(14,210,247,0.06)] transition-all duration-150
           ${
             isOverLimit
-              ? "border border-[rgba(244,86,157,0.4)] text-[#f4569d]"
+              ? "border border-[rgba(244,86,157,0.35)] text-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.15)]"
               : shouldWarn
-              ? "border border-[rgba(255,183,77,0.4)] text-[#ffb74d]"
-              : "border border-[rgba(14,210,247,0.1)] text-[#7aa2f7]"
+              ? "border border-[rgba(255,183,77,0.35)] text-[#ffb74d]"
+              : "border border-[rgba(14,210,247,0.12)] text-[#45aaff] hover:border-[rgba(14,210,247,0.25)]"
           }`}
           onMouseEnter={() => setIsTooltipOpen(true)}
           onMouseLeave={() => setIsTooltipOpen(false)}
@@ -105,7 +105,7 @@ export function ContextLimitIndicator({
 
         {/* Enhanced menu-style tooltip - renders above, stays open on hover */}
         <div
-          className={`absolute left-0 bottom-full mb-1 w-72 bg-[#191621] border border-[rgba(14,210,247,0.1)] rounded-md shadow-lg transition-opacity z-20 ${
+          className={`absolute left-0 bottom-full mb-1 w-72 bg-[#1e1a2e] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)] transition-opacity z-20 ${
             isTooltipOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"

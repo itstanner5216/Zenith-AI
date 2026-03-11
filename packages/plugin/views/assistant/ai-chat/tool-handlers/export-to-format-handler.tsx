@@ -92,9 +92,9 @@ export function ExportToFormatHandler({
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
     h1, h2, h3, h4, h5, h6 { margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
-    code { background: #f6f8fa; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
-    pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; }
-    blockquote { border-left: 4px solid #dfe2e5; padding-left: 16px; color: #6a737d; }
+    code { background: #191621; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+    pre { background: #191621; padding: 16px; border-radius: 6px; overflow-x: auto; }
+    blockquote { border-left: 4px solid rgba(14, 210, 247, 0.1); padding-left: 16px; color: #7aa2f7; }
   </style>
 </head>
 <body>
@@ -262,7 +262,7 @@ ${content.replace(/\n/g, "<br>\n")}
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#bebebe]"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
         >
           Cancel
         </button>
@@ -271,7 +271,7 @@ ${content.replace(/\n/g, "<br>\n")}
             setIsConfirmed(true);
             handleConfirmExport();
           }}
-          className="flex-1 px-3 py-1.5 text-xs bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] text-[#0d0b12] font-medium"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
         >
           Export {validFiles.length} File{validFiles.length !== 1 ? "s" : ""}
         </button>

@@ -35,15 +35,15 @@ const BaseFolderButton: React.FC<{
   reason?: string;
 }> = ({ folder, onClick, className, score, reason }) => (
   <motion.button
-    className={`px-3 py-1 transition-colors duration-200 ${className} flex items-center justify-between rounded`}
+    className={`px-2.5 py-1 text-xs transition-all duration-150 active:scale-[0.96] ${className} flex items-center justify-between rounded-md`}
     onClick={() => onClick(folder)}
-    initial={{ opacity: 0, scale: 0.8 }}
+    initial={{ opacity: 0, scale: 0.85 }}
     animate={{ opacity: 1, scale: 1 }}
-    exit={{ opacity: 0, scale: 0.8 }}
-    transition={{ duration: 0.2 }}
+    exit={{ opacity: 0, scale: 0.85 }}
+    transition={{ duration: 0.15 }}
     title={`Reason: ${reason}`}
   >
-    <span>{folder}</span>
+    <span className="truncate max-w-[120px]">{folder}</span>
     {score !== undefined && <ConfidenceBadge score={score} />}
   </motion.button>
 );
@@ -57,7 +57,7 @@ export const ExistingFolderButton: React.FC<{
 }> = props => (
   <BaseFolderButton
     {...props}
-    className="bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.2)] hover:text-[#0fb6d6] border border-solid border-[rgba(14,210,247,0.3)] hover:border-[rgba(14,210,247,0.6)]"
+    className="bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.18)] hover:text-[#0fb6d6] border border-solid border-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.55)] hover:shadow-[0_0_6px_rgba(14,210,247,0.15)]"
   />
 );
 
@@ -70,6 +70,6 @@ export const NewFolderButton: React.FC<{
 }> = props => (
   <BaseFolderButton
     {...props}
-    className="bg-[rgba(14,210,247,0.04)] text-[#7aa2f7] hover:bg-[rgba(14,210,247,0.15)] hover:text-[#0fb6d6] border border-dashed border-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.5)]"
+    className="bg-[rgba(14,210,247,0.03)] text-[#45aaff] hover:bg-[rgba(14,210,247,0.12)] hover:text-[#0fb6d6] border border-dashed border-[rgba(14,210,247,0.2)] hover:border-[rgba(14,210,247,0.45)] hover:shadow-[0_0_4px_rgba(14,210,247,0.1)]"
   />
 );

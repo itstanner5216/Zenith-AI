@@ -27,11 +27,11 @@ export function ChatTabItem({
   return (
     <div
       className={tw(
-        "group flex items-center gap-1.5 px-2 py-1 rounded-t cursor-pointer transition-colors",
+        "group flex items-center gap-1.5 px-2 py-1 rounded-t cursor-pointer transition-all duration-150",
         "border-b-2",
         isActive
-          ? "border-[#0fb6d6] bg-[rgba(14,210,247,0.08)]"
-          : "border-transparent hover:bg-[rgba(14,210,247,0.04)]"
+          ? "border-[#0fb6d6] bg-[#100e17] shadow-[0_0_6px_rgba(14,210,247,0.12)]"
+          : "border-transparent bg-transparent hover:bg-[rgba(14,210,247,0.05)] hover:border-[rgba(14,210,247,0.2)]"
       )}
       onClick={onSelect}
       title={`${session.title} - ${relativeTime}`}

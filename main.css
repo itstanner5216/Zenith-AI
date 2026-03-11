@@ -2740,3 +2740,192 @@
   color: #bebebe;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 0 12px rgba(14, 210, 247, 0.05);
 }
+
+/* ── Task 1: Amber warning glow treatment ────────────────────
+   #ffb74d is intentionally kept for warnings but gets a
+   subtle text-shadow glow to match the neon aesthetic.       */
+.zenith-ai-container [class*="text-[#ffb74d]"] {
+  text-shadow: 0 0 8px rgba(255, 183, 77, 0.3);
+}
+
+/* Amber badge/indicator glow — for status chips with bg-[#ffb74d] */
+.zenith-ai-container [class*="bg-[#ffb74d]"] {
+  box-shadow: 0 0 8px rgba(255, 183, 77, 0.25);
+  text-shadow: 0 0 8px rgba(255, 183, 77, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UI-WIDE DETAIL ENHANCEMENT — Phase 7 Polish
+   All rules scoped under .zenith-ai-container
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Input & Textarea: unified focus ring + glow */
+.zenith-ai-container input[type="text"],
+.zenith-ai-container input[type="password"],
+.zenith-ai-container input[type="email"],
+.zenith-ai-container input[type="search"],
+.zenith-ai-container input[type="number"],
+.zenith-ai-container textarea {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.zenith-ai-container input[type="text"]:focus,
+.zenith-ai-container input[type="password"]:focus,
+.zenith-ai-container input[type="email"]:focus,
+.zenith-ai-container input[type="search"]:focus,
+.zenith-ai-container input[type="number"]:focus,
+.zenith-ai-container textarea:focus {
+  outline: none;
+  border-color: rgba(14, 210, 247, 0.5);
+  box-shadow: 0 0 0 1px rgba(14, 210, 247, 0.15), 0 0 8px rgba(14, 210, 247, 0.1);
+}
+
+/* Placeholder text: muted cyan tint */
+.zenith-ai-container input::placeholder,
+.zenith-ai-container textarea::placeholder {
+  color: rgba(69, 170, 255, 0.4);
+}
+
+/* Select dropdowns */
+.zenith-ai-container select {
+  background-color: #0d0b12;
+  color: #bebebe;
+  border: 1px solid rgba(14, 210, 247, 0.12);
+  border-radius: 4px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.zenith-ai-container select:focus {
+  outline: none;
+  border-color: rgba(14, 210, 247, 0.5);
+  box-shadow: 0 0 0 1px rgba(14, 210, 247, 0.15), 0 0 8px rgba(14, 210, 247, 0.1);
+}
+
+/* Obsidian native setting-item inputs */
+.zenith-ai-container .setting-item-control input[type="text"] {
+  background-color: #0d0b12;
+  color: #bebebe;
+  border: 1px solid rgba(14, 210, 247, 0.12);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.zenith-ai-container .setting-item-control input[type="text"]:focus {
+  outline: none;
+  border-color: rgba(14, 210, 247, 0.5);
+  box-shadow: 0 0 0 1px rgba(14, 210, 247, 0.15), 0 0 8px rgba(14, 210, 247, 0.1);
+}
+
+/* Obsidian native setting-item text hierarchy */
+.zenith-ai-container .setting-item-name {
+  color: #bebebe;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.zenith-ai-container .setting-item-description {
+  color: rgba(69, 170, 255, 0.7);
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.zenith-ai-container .setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(14, 210, 247, 0.06);
+  gap: 12px;
+}
+.zenith-ai-container .setting-item:last-child { border-bottom: none; }
+.zenith-ai-container .setting-item-info { flex: 1; min-width: 0; }
+.zenith-ai-container .setting-item-control { flex-shrink: 0; }
+
+/* Section heading gradient text */
+.zenith-ai-container .zenith-ai-settings h3,
+.zenith-ai-container .zenith-ai-settings h4 {
+  background: linear-gradient(62deg, #87c2fd 0%, #dcb9fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Progress bars: cyan glow trail */
+.zenith-ai-container .overflow-hidden.h-2 > div {
+  box-shadow: 0 0 6px rgba(14, 210, 247, 0.4);
+}
+
+/* Pulse keyframes */
+@keyframes zenith-green-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(80, 250, 123, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(80, 250, 123, 0.7); }
+}
+@keyframes zenith-cyan-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(14, 210, 247, 0.3); }
+  50% { box-shadow: 0 0 12px rgba(14, 210, 247, 0.6); }
+}
+
+/* Elevation shadow utility classes */
+.zenith-elevation-1 { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); }
+.zenith-elevation-2 { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 1px rgba(14, 210, 247, 0.05); }
+.zenith-elevation-3 { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 2px rgba(14, 210, 247, 0.08); }
+.zenith-elevation-4 { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 4px rgba(14, 210, 247, 0.1); }
+
+/* Scrollbar: thin, themed */
+.zenith-ai-container ::-webkit-scrollbar { width: 4px; height: 4px; }
+.zenith-ai-container ::-webkit-scrollbar-track { background: transparent; }
+.zenith-ai-container ::-webkit-scrollbar-thumb {
+  background: rgba(14, 210, 247, 0.2);
+  border-radius: 2px;
+}
+.zenith-ai-container ::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 210, 247, 0.45);
+  box-shadow: 0 0 6px rgba(14, 210, 247, 0.3);
+}
+
+/* All interactive elements: base transition */
+.zenith-ai-container button,
+.zenith-ai-container [role="button"],
+.zenith-ai-container [role="tab"] {
+  transition-property: background-color, border-color, color, box-shadow, transform, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+/* Separator lines: gradient fade */
+.zenith-ai-container hr {
+  border: none;
+  background: linear-gradient(to right, transparent, rgba(14, 210, 247, 0.15), transparent);
+  height: 1px;
+  margin: 8px 0;
+}
+
+/* Inline code in chat messages */
+.zenith-ai-container code:not(pre code) {
+  background: rgba(14, 210, 247, 0.08);
+  border: 1px solid rgba(14, 210, 247, 0.12);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 0.85em;
+  color: rgba(14, 210, 247, 0.9);
+  font-family: 'OperatorMonoSSmLig-Book', 'JetBrains Mono', monospace;
+}
+
+/* Bold text in chat: gradient fill */
+.zenith-ai-container .prose strong {
+  background: linear-gradient(62deg, #87c2fd 0%, #dcb9fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+/* Italic text in chat */
+.zenith-ai-container .prose em {
+  color: #bb9af7;
+  font-style: italic;
+}
+
+/* Focus-within container highlight */
+.zenith-ai-container .focus-within\:border-\[\#0fb6d6\]:focus-within {
+  box-shadow: 0 0 0 1px rgba(14, 210, 247, 0.12), 0 0 8px rgba(14, 210, 247, 0.08);
+}
