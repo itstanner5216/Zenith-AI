@@ -67,8 +67,8 @@ model_list:
 #   url: "http://gateway:8085/mcp"
 # =============================================================================
 mcp_servers:
-  vertex_gateway:
-    url: "http://localhost:8085/mcp"
+  - server_name: "vault-search"
+    server_url: "http://host.docker.internal:8085/mcp"
 
 litellm_settings:
   log_level: INFO
