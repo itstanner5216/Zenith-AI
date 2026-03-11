@@ -64,7 +64,7 @@ Do NOT edit any file outside of your scope. If you find a bug there, note it in 
 
 # **Vault Intelligence — Implementation Plan**
 
-**Goal:** Integrate pgvector embeddings + Vertex AI ranker into Note Companion for project-aware auto-sorting, with the model shifting from routing to generation and user dialogue.
+**Goal:** Integrate pgvector embeddings + Vertex AI ranker into Zenith-AI for project-aware auto-sorting, with the model shifting from routing to generation and user dialogue.
 
 **Architecture:** pgvector in Vertex Brain Docker → new gateway embedding endpoints → TypeScript VertexBrainClient in plugin → pipeline overhaul → LiteLLM MCP bridge. See `docs/2026-03-08-vault-intelligence-design.md` for full design.
 
@@ -78,13 +78,13 @@ Do NOT edit any file outside of your scope. If you find a bug there, note it in 
 - All thresholds user-configurable via settings
 - Graceful fallback if Brain unavailable — existing model pipeline must continue to work
 
-**Assumption:** Vertex Brain 2 production fixes (`docs/plans/2026-03-08-production-fixes.md` in Vertex_AI_Brain_2) are complete and the gateway is running at [http://localhost:8085](http://localhost:8085/). All work targets `/home/tanner/Projects/Vertex_AI_Brain_2/` — NOT Vertex_AI_Brain (the older v3.0.0 origin).
+**Assumption:** Zeniths-Vectors production fixes (`docs/plans/2026-03-08-production-fixes.md` in Zeniths-Vectors) are complete and the gateway is running at [http://localhost:8085](http://localhost:8085/). All work targets `Zeniths-Vectors/` — NOT Vertex_AI_Brain (the older v3.0.0 origin).
 
 ---
 
 ## Phase 2: Plugin Infrastructure
 
-Work directory: /home/tanner/Projects/.note-companion/packages/plugin
+Work directory: /home/tanner/Projects/Zenith-AI/packages/plugin
 
 ### Task 8: Create OrganizationPreferencesService
 
@@ -94,13 +94,13 @@ Step 1: Create organization-preferences.ts
 
 TypeScript
 
-import { TFile } from "obsidian"; import type FileOrganizerPlugin from "../index"; export class OrganizationPreferencesService { private plugin: FileOrganizerPlugin; private cache: string | null = null; private cacheTimestamp = 0; private readonly CACHE_TTL_MS = 30_000; constructor(plugin: FileOrganizerPlugin) { this.plugin = plugin; } get rulesPath(): string { return this.plugin.settings.organizationRulesPath; } invalidate(): void { this.cache = null; } async getRules(): Promise<string> { if (this.cache !== null && Date.now() - this.cacheTimestamp < this.CACHE_TTL_MS) { return this.cache; } const file = this.plugin.app.vault.getAbstractFileByPath(this.rulesPath); if (!file || !(file instanceof TFile)) { this.cache = ""; this.cacheTimestamp = Date.now(); return ""; } this.cache = await this.plugin.app.vault.read(file as TFile); this.cacheTimestamp = Date.now(); return this.cache; } async updateRules(newContent: string): Promise<void> { const file = this.plugin.app.vault.getAbstractFileByPath(this.rulesPath); if (file instanceof TFile) { await this.plugin.app.vault.modify(file, newContent); } else { // Create parent directories if needed const parts = this.rulesPath.split("/"); if (parts.length > 1) { const dir = parts.slice(0, -1).join("/"); if (!this.plugin.app.vault.getAbstractFileByPath(dir)) { await this.plugin.app.vault.createFolder(dir); } } await this.plugin.app.vault.create(this.rulesPath, newContent); } this.cache = newContent; this.cacheTimestamp = Date.now(); } async ensureExists(): Promise<void> { const existing = await this.getRules(); if (existing) return; const template = `# Cosmic Vault Structure ## Active Rules - Group notes by project rather than by type - Files tagged with #${this.plugin.settings.pinnedTag} will not be auto-sorted ## Project Registry <!-- Add your projects here as: ProjectName → /FolderPath/ --> --- This document is live-updated by the AI assistant when you request organizational changes. `; await this.updateRules(template); } }
+import { TFile } from "obsidian"; import type ZenithAIPlugin from "../index"; export class OrganizationPreferencesService { private plugin: ZenithAIPlugin; private cache: string | null = null; private cacheTimestamp = 0; private readonly CACHE_TTL_MS = 30_000; constructor(plugin: ZenithAIPlugin) { this.plugin = plugin; } get rulesPath(): string { return this.plugin.settings.organizationRulesPath; } invalidate(): void { this.cache = null; } async getRules(): Promise<string> { if (this.cache !== null && Date.now() - this.cacheTimestamp < this.CACHE_TTL_MS) { return this.cache; } const file = this.plugin.app.vault.getAbstractFileByPath(this.rulesPath); if (!file || !(file instanceof TFile)) { this.cache = ""; this.cacheTimestamp = Date.now(); return ""; } this.cache = await this.plugin.app.vault.read(file as TFile); this.cacheTimestamp = Date.now(); return this.cache; } async updateRules(newContent: string): Promise<void> { const file = this.plugin.app.vault.getAbstractFileByPath(this.rulesPath); if (file instanceof TFile) { await this.plugin.app.vault.modify(file, newContent); } else { // Create parent directories if needed const parts = this.rulesPath.split("/"); if (parts.length > 1) { const dir = parts.slice(0, -1).join("/"); if (!this.plugin.app.vault.getAbstractFileByPath(dir)) { await this.plugin.app.vault.createFolder(dir); } } await this.plugin.app.vault.create(this.rulesPath, newContent); } this.cache = newContent; this.cacheTimestamp = Date.now(); } async ensureExists(): Promise<void> { const existing = await this.getRules(); if (existing) return; const template = `# Cosmic Vault Structure ## Active Rules - Group notes by project rather than by type - Files tagged with #${this.plugin.settings.pinnedTag} will not be auto-sorted ## Project Registry <!-- Add your projects here as: ProjectName → /FolderPath/ --> --- This document is live-updated by the AI assistant when you request organizational changes. `; await this.updateRules(template); } }
 
 Step 2: Verify TypeScript compiles
 
 Bash
 
-cd /home/tanner/Projects/.note-companion npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
+cd /home/tanner/Projects/Zenith-AI npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
 
 Expected: no errors
 
@@ -118,7 +118,7 @@ Step 1: Create vault-indexer.ts
 
 TypeScript
 
-import { TFile } from "obsidian"; import type FileOrganizerPlugin from "../index"; import type { VertexBrainClient } from "./vertex-brain-client"; const RATE_LIMIT_MS = 150; export class VaultIndexer { private plugin: FileOrganizerPlugin; private queue: TFile[] = []; private running = false; constructor(plugin: FileOrganizerPlugin) { this.plugin = plugin; } enqueue(file: TFile): void { if (!this.plugin.settings.enableVectorAutoSort) return; if (!this.queue.find((f) => f.path === file.path)) { this.queue.push(file); } if (!this.running) this.processQueue(); } async indexAll(): Promise<void> { const files = this.plugin.app.vault.getMarkdownFiles(); for (const file of files) this.enqueue(file); } private async processQueue(): Promise<void> { this.running = true; while (this.queue.length > 0) { const file = this.queue.shift()!; try { await this.indexFile(file); } catch (e) { // Non-fatal — log and continue console.debug(`[VaultIndexer] Failed to index ${file.path}:`, e); } await sleep(RATE_LIMIT_MS); } this.running = false; } private async indexFile(file: TFile): Promise<void> { const client: VertexBrainClient | null = this.plugin.vertexBrainClient; if (!client) return; const content = await this.plugin.app.vault.read(file); const metadata = this.plugin.app.metadataCache.getFileCache(file); const tags: string[] = metadata?.frontmatter?.tags ?? []; const folder_path = file.parent?.path ?? ""; await client.vectorUpsert({ id: file.path, content: content.slice(0, 6000), folder_path, tags, }); } } function sleep(ms: number): Promise<void> { return new Promise((resolve) => setTimeout(resolve, ms ```)); }
+import { TFile } from "obsidian"; import type ZenithAIPlugin from "../index"; import type { VertexBrainClient } from "./vertex-brain-client"; const RATE_LIMIT_MS = 150; export class VaultIndexer { private plugin: ZenithAIPlugin; private queue: TFile[] = []; private running = false; constructor(plugin: ZenithAIPlugin) { this.plugin = plugin; } enqueue(file: TFile): void { if (!this.plugin.settings.enableVectorAutoSort) return; if (!this.queue.find((f) => f.path === file.path)) { this.queue.push(file); } if (!this.running) this.processQueue(); } async indexAll(): Promise<void> { const files = this.plugin.app.vault.getMarkdownFiles(); for (const file of files) this.enqueue(file); } private async processQueue(): Promise<void> { this.running = true; while (this.queue.length > 0) { const file = this.queue.shift()!; try { await this.indexFile(file); } catch (e) { // Non-fatal — log and continue console.debug(`[VaultIndexer] Failed to index ${file.path}:`, e); } await sleep(RATE_LIMIT_MS); } this.running = false; } private async indexFile(file: TFile): Promise<void> { const client: VertexBrainClient | null = this.plugin.vertexBrainClient; if (!client) return; const content = await this.plugin.app.vault.read(file); const metadata = this.plugin.app.metadataCache.getFileCache(file); const tags: string[] = metadata?.frontmatter?.tags ?? []; const folder_path = file.parent?.path ?? ""; await client.vectorUpsert({ id: file.path, content: content.slice(0, 6000), folder_path, tags, }); } } function sleep(ms: number): Promise<void> { return new Promise((resolve) => setTimeout(resolve, ms ```)); }
 
 Step 2: Verify TypeScript compiles
 
@@ -160,7 +160,7 @@ Find onload(). After settings are loaded, add:
 
 TypeScript
 
-// Initialize Vault Intelligence services this.organizationPreferences = new OrganizationPreferencesService(this); this.vaultIndexer = new VaultIndexer(this); if (this.settings.enableVectorAutoSort && this.settings.vertexBrainUrl) { this.vertexBrainClient = new VertexBrainClient(this.settings.vertexBrainUrl); const healthy = await this.vertexBrainClient.health(); if (healthy) { await this.organizationPreferences.ensureExists(); // Background index — non-blocking this.vaultIndexer.indexAll().catch((e) => console.debug("[VaultIndexer] Initial index failed:", e) ); } else { console.warn("[NoteCompanion] Vertex Brain unavailable, vector auto-sort disabled"); this.vertexBrainClient = null; } }
+// Initialize Vault Intelligence services this.organizationPreferences = new OrganizationPreferencesService(this); this.vaultIndexer = new VaultIndexer(this); if (this.settings.enableVectorAutoSort && this.settings.vertexBrainUrl) { this.vertexBrainClient = new VertexBrainClient(this.settings.vertexBrainUrl); const healthy = await this.vertexBrainClient.health(); if (healthy) { await this.organizationPreferences.ensureExists(); // Background index — non-blocking this.vaultIndexer.indexAll().catch((e) => console.debug("[VaultIndexer] Initial index failed:", e) ); } else { console.warn("[ZenithAI] Vertex Brain unavailable, vector auto-sort disabled"); this.vertexBrainClient = null; } }
 
 Step 4: Re-index on file modify via existing event handlers
 
@@ -174,7 +174,7 @@ Step 5: Verify TypeScript compiles
 
 Bash
 
-cd /home/tanner/Projects/.note-companion npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -30
+cd /home/tanner/Projects/Zenith-AI npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -30
 
 Expected: no errors
 
@@ -187,7 +187,7 @@ git add packages/plugin/index.ts git commit -m "feat: initialize VertexBrainClie
 
 ## Phase 3: Auto-sort Pipeline Overhaul
 
-Work directory: /home/tanner/Projects/.note-companion/packages/plugin
+Work directory: /home/tanner/Projects/Zenith-AI/packages/plugin
 
 ### Task 11: Replace model-based folder routing with embeddings + ranker
 
@@ -221,7 +221,7 @@ Step 4: Verify TypeScript compiles
 
 Bash
 
-cd /home/tanner/Projects/.note-companion npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -30
+cd /home/tanner/Projects/Zenith-AI npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -30
 
 Expected: no errors
 
@@ -255,7 +255,7 @@ Step 3: Verify TypeScript compiles
 
 Bash
 
-cd /home/tanner/Projects/.note-companion npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
+cd /home/tanner/Projects/Zenith-AI npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
 
 Expected: no errors
 
@@ -321,7 +321,7 @@ Step 4: Verify TypeScript compiles
 
 Bash
 
-cd /home/tanner/Projects/.note-companion npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
+cd /home/tanner/Projects/Zenith-AI npx tsc --noEmit -p packages/plugin/tsconfig.json 2>&1 | head -20
 
 Expected: no errors
 
@@ -343,18 +343,18 @@ git add packages/plugin/index.ts git commit -m "feat: inject Cosmic Vault Struct
 
 ```typescript
 import { TFile } from "obsidian";
-import type FileOrganizerPlugin from "../index";
+import type ZenithAIPlugin from "../index";
 import type { VertexBrainClient } from "./vertex-brain-client";
 
 export class BackgroundScribe {
-  private plugin: FileOrganizerPlugin;
+  private plugin: ZenithAIPlugin;
   private client: VertexBrainClient;
   private buffer: Array<{timestamp: number, content: string}> = [];
   private isActive = false;
   private debounceTimer: NodeJS.Timeout | null = null;
   private readonly DEBOUNCE_MS = 30000;
 
-  constructor(plugin: FileOrganizerPlugin, client: VertexBrainClient) {
+  constructor(plugin: ZenithAIPlugin, client: VertexBrainClient) {
     this.plugin = plugin;
     this.client = client;
   }
