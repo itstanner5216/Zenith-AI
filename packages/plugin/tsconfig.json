@@ -10,6 +10,6 @@
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["src/**/*", "services/**/*.ts", "*.ts", "views/**/*", "handlers/**/*", "components/**/*"],
+  "include": ["*.ts", "services/**/*", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*"],
   "exclude": ["node_modules", "dist"]
 }
