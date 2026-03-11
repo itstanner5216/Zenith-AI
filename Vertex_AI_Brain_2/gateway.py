@@ -24,6 +24,7 @@ from contextlib import asynccontextmanager
 from functools import wraps
 
 import httpx
+import asyncpg
 from fastapi import FastAPI, HTTPException, Request, status, Query
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -47,6 +48,7 @@ VERTEX_GROUNDING_MODEL = os.environ.get("VERTEX_GROUNDING_MODEL", "gemini-2.5-fl
 VERTEX_MODEL_REASONING = os.environ.get("VERTEX_MODEL_REASONING", "gemini-2.5-pro")
 VERTEX_MODEL_BALANCED = os.environ.get("VERTEX_MODEL_BALANCED", "gemini-2.5-flash")
 VERTEX_MODEL_FAST = os.environ.get("VERTEX_MODEL_FAST", "gemini-2.5-flash-lite")
+VERTEX_EMBED_MODEL = os.environ.get("VERTEX_EMBED_MODEL", "text-embedding-004")
 
 # =============================================================================
 # GOOGLE CLOUD CONFIGURATION
@@ -79,6 +81,13 @@ RETRY_DELAY = float(os.environ.get("RETRY_DELAY", "1.0"))
 OBSIDIAN_HEALTH_CACHE_SECONDS = int(os.environ.get("OBSIDIAN_HEALTH_CACHE_SECONDS", "30"))
 OBSIDIAN_RECONNECT_INTERVAL = int(os.environ.get("OBSIDIAN_RECONNECT_INTERVAL", "10"))
 SESSION_TTL_MINUTES = int(os.environ.get("SESSION_TTL_MINUTES", "30"))
+
+PGVECTOR_DSN = os.environ.get(
+    "PGVECTOR_DSN",
+    "postgresql://postgres:postgres@pgvector:5432/postgres",
+)
+PGVECTOR_MIN_POOL_SIZE = int(os.environ.get("PGVECTOR_MIN_POOL_SIZE", "1"))
+PGVECTOR_MAX_POOL_SIZE = int(os.environ.get("PGVECTOR_MAX_POOL_SIZE", "10"))
 
 # =============================================================================
 # STRUCTURED LOGGING
@@ -147,6 +156,25 @@ class RankRequest(BaseModel):
     query: str = Field(..., min_length=1)
     records: List[RankRecord] = Field(..., min_length=1, max_length=100)
     top_n: Optional[int] = Field(default=None)
+
+
+class VectorUpsertRequest(BaseModel):
+    id: str = Field(..., min_length=1)
+    content: str = Field(..., min_length=1)
+    folder_path: str = Field(default="")
+    tags: List[str] = Field(default_factory=list)
+
+
+class VectorSearchRequest(BaseModel):
+    query: str = Field(..., min_length=1)
+    limit: int = Field(default=10, ge=1, le=100)
+
+
+class VectorSearchResult(BaseModel):
+    id: str
+    folder_path: str
+    tags: List[str]
+    similarity: float
 
 class GroundedRequest(BaseModel):
     query: str = Field(..., min_length=1)
@@ -384,6 +412,33 @@ class VertexSearchClient:
         r = await self.client.post(url, headers=self._headers(token), json=body)
         r.raise_for_status()
         return self._json(r)
+
+    @with_retry()
+    async def embed(self, text: str, task_type: str) -> Dict[str, Any]:
+        token = await auth_manager.get_access_token()
+        url = (
+            f"https://{GOOGLE_LOCATION}-aiplatform.googleapis.com/v1/projects/"
+            f"{GOOGLE_PROJECT_ID}/locations/{GOOGLE_LOCATION}/publishers/google/models/"
+            f"{VERTEX_EMBED_MODEL}:predict"
+        )
+        body = {
+            "instances": [{"content": text, "task_type": task_type}],
+            "parameters": {},
+        }
+        r = await self.client.post(url, headers=self._headers(token), json=body)
+        r.raise_for_status()
+        raw = self._json(r)
+        predictions = raw.get("predictions") or []
+        if not predictions:
+            raise RuntimeError("Embedding response missing predictions")
+        emb_values = (
+            predictions[0].get("embeddings", {}).get("values")
+            if isinstance(predictions[0], dict)
+            else None
+        )
+        if not emb_values:
+            raise RuntimeError("Embedding response missing values")
+        return {"embedding": emb_values}
 
 # =============================================================================
 # OBSIDIAN CLIENT — resilient, auto-reconnecting
@@ -765,6 +820,18 @@ def normalize_rank_response(raw_response: Any, original_records: List[RankRecord
 
 vertex_client: Optional[VertexSearchClient] = None
 obsidian_client: Optional[ObsidianClient] = None
+pg_pool: Optional[asyncpg.Pool] = None
+
+
+async def get_pg_pool() -> asyncpg.Pool:
+    global pg_pool
+    if pg_pool is None:
+        pg_pool = await asyncpg.create_pool(
+            dsn=PGVECTOR_DSN,
+            min_size=PGVECTOR_MIN_POOL_SIZE,
+            max_size=PGVECTOR_MAX_POOL_SIZE,
+        )
+    return pg_pool
 
 def _check_vertex_config() -> List[str]:
     m = []
@@ -776,7 +843,7 @@ def _check_vertex_config() -> List[str]:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global vertex_client, obsidian_client
+    global vertex_client, obsidian_client, pg_pool
     logger.info("Starting Gateway Service v3.1.0")
     vertex_ok = False
     miss = _check_vertex_config()
@@ -797,6 +864,9 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down")
     if vertex_client: await vertex_client.close()
     if obsidian_client: await obsidian_client.close()
+    if pg_pool:
+        await pg_pool.close()
+        pg_pool = None
 
 app = FastAPI(title="Vertex AI Search + Obsidian Gateway", version="3.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
@@ -917,6 +987,84 @@ async def ep_rank(request: RankRequest):
         raise HTTPException(e.response.status_code, f"Vertex Rank error: {e.response.text[:300]}")
     except Exception as e:
         raise HTTPException(500, f"Ranking failed: {type(e).__name__}")
+
+
+@app.post("/v1/vector-upsert")
+async def v1_vector_upsert(req: VectorUpsertRequest):
+    import hashlib
+
+    content_hash = hashlib.sha256(req.content.encode()).hexdigest()
+    try:
+        client = _req_vertex()
+        pool = await get_pg_pool()
+        async with pool.acquire() as conn:
+            existing = await conn.fetchrow(
+                "SELECT content_hash FROM vault_embeddings WHERE id = $1", req.id
+            )
+            if existing and existing["content_hash"] == content_hash:
+                return {"success": True, "indexed": False, "reason": "unchanged"}
+        result = await client.embed(req.content[:8000], "RETRIEVAL_DOCUMENT")
+        embedding = result["embedding"]
+        async with pool.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO vault_embeddings (id, content_hash, embedding, folder_path, tags, updated_at)
+                VALUES ($1, $2, $3::vector, $4, $5, NOW())
+                ON CONFLICT (id) DO UPDATE SET
+                    content_hash = EXCLUDED.content_hash,
+                    embedding = EXCLUDED.embedding,
+                    folder_path = EXCLUDED.folder_path,
+                    tags = EXCLUDED.tags,
+                    updated_at = NOW()
+                """,
+                req.id,
+                content_hash,
+                str(embedding),
+                req.folder_path,
+                req.tags,
+            )
+        return {"success": True, "indexed": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Vector upsert error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/v1/vector-search")
+async def v1_vector_search(req: VectorSearchRequest):
+    try:
+        client = _req_vertex()
+        pool = await get_pg_pool()
+        result = await client.embed(req.query[:4000], "RETRIEVAL_QUERY")
+        embedding = result["embedding"]
+        async with pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT id, folder_path, tags,
+                       1 - (embedding <=> $1::vector) AS similarity
+                FROM vault_embeddings
+                ORDER BY embedding <=> $1::vector
+                LIMIT $2
+                """,
+                str(embedding),
+                req.limit,
+            )
+        results: List[VectorSearchResult] = [
+            VectorSearchResult(
+                id=r["id"],
+                folder_path=r["folder_path"],
+                tags=list(r["tags"] or []),
+                similarity=float(r["similarity"]),
+            )
+            for r in rows
+        ]
+        return {"success": True, "results": [result.model_dump() for result in results]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Vector search error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/v1/grounded", response_model=GatewayResponse)
 async def ep_grounded(request: GroundedRequest):
