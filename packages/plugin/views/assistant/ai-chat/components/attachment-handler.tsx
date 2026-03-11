@@ -106,8 +106,8 @@ export const AttachmentHandler: React.FC<AttachmentHandlerProps> = ({
       <div
         className={`relative border-2 border-dashed  p-4 transition-colors cursor-pointer
           ${isDragging 
-            ? 'border-[--interactive-accent] bg-[--background-modifier-hover]' 
-            : 'border-[--background-modifier-border] hover:border-[--interactive-accent]'
+            ? 'border-[#0fb6d6] bg-[rgba(14,210,247,0.04)]' 
+            : 'border-[rgba(14,210,247,0.08)] hover:border-[#0fb6d6]'
           }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -125,7 +125,7 @@ export const AttachmentHandler: React.FC<AttachmentHandlerProps> = ({
         
         <div className="text-center">
           <svg
-            className="mx-auto h-12 w-12 text-[--text-muted]"
+            className="mx-auto h-12 w-12 text-[#7aa2f7]"
             stroke="currentColor"
             fill="none"
             viewBox="0 0 48 48"
@@ -138,24 +138,24 @@ export const AttachmentHandler: React.FC<AttachmentHandlerProps> = ({
               strokeLinejoin="round"
             />
           </svg>
-          <div className="text-sm text-[--text-muted] mt-2">
+          <div className="text-sm text-[#7aa2f7] mt-2">
             {isDragging ? (
               'Drop files here...'
             ) : (
               <>
                 <span>Drag and drop files, or </span>
-                <span className="text-[--text-accent]">browse</span>
+                <span className="text-[#0fb6d6]">browse</span>
               </>
             )}
           </div>
-          <div className="text-xs text-[--text-faint] mt-1">
+          <div className="text-xs text-[rgba(122,162,247,0.4)] mt-1">
             Maximum file size: {maxFileSize / 1024 / 1024}MB
           </div>
         </div>
       </div>
 
       {error && (
-        <div className="mt-2 text-sm text-[--text-error]">
+        <div className="mt-2 text-sm text-[#f4569d]">
           {error}
         </div>
       )}
@@ -180,7 +180,7 @@ const AttachmentPreview: React.FC<{ attachment: Attachment; onRemove: (id: strin
   onRemove,
 }) => {
   return (
-    <div className="flex items-center justify-between p-2 bg-[--background-secondary]">
+    <div className="flex items-center justify-between p-2 bg-[#191621]">
       <div className="flex items-center space-x-2">
         {attachment.contentType.startsWith('image/') ? (
           <img
@@ -189,9 +189,9 @@ const AttachmentPreview: React.FC<{ attachment: Attachment; onRemove: (id: strin
             className="h-8 w-8 object-cover rounded"
           />
         ) : (
-          <div className="h-8 w-8 flex items-center justify-center bg-[--background-modifier-border] rounded">
+          <div className="h-8 w-8 flex items-center justify-center bg-[rgba(14,210,247,0.08)] rounded">
             <svg
-              className="h-4 w-4 text-[--text-muted]"
+              className="h-4 w-4 text-[#7aa2f7]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -206,20 +206,20 @@ const AttachmentPreview: React.FC<{ attachment: Attachment; onRemove: (id: strin
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium text-[--text-normal] truncate">
+          <div className="text-sm font-medium text-[#bebebe] truncate">
             {attachment.name}
           </div>
-          <div className="text-xs text-[--text-muted]">
+          <div className="text-xs text-[#7aa2f7]">
             {(attachment.size / 1024).toFixed(1)} KB
           </div>
         </div>
       </div>
       <button
         onClick={() => onRemove(attachment.id)}
-        className="p-1 hover:bg-[--background-modifier-hover] rounded-full"
+        className="p-1 hover:bg-[rgba(14,210,247,0.04)] rounded-full"
       >
         <svg
-          className="h-4 w-4 text-[--text-muted]"
+          className="h-4 w-4 text-[#7aa2f7]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

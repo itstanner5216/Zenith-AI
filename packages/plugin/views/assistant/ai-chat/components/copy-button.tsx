@@ -25,7 +25,7 @@ export const CopyButton: React.FC<CopyButtonProps> = ({ content }) => {
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
       title="Copy to clipboard"
     >
-      <Copy size={16} className="text-[--text-muted]" />
+      <Copy size={16} className="text-[#7aa2f7] hover:text-[#0fb6d6]" />
     </button>
   );
 };

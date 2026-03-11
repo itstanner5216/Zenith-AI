@@ -60,33 +60,35 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
     return null;
   }
 
+  const isUser = message.role === "user";
+
   return (
     <motion.div
-      className="flex items-start gap-3 py-2.5"
+      className={`flex items-start gap-3 py-2.5 ${
+        isUser
+          ? "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md px-3 my-1"
+          : "border-l-2 border-[rgba(14,210,247,0.3)] pl-3 my-1"
+      }`}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
       {/* Icon on the left - top-aligned with small padding to match text baseline */}
       <div className="flex-shrink-0 w-8 h-8 flex items-start justify-center pt-[2px]">
-        {message.role === "user" ? (
-          <User size={16} className="text-[--interactive-accent]" />
+        {isUser ? (
+          <User size={16} className="text-[#f4569d]" />
         ) : (
-          <Bot size={16} className="text-[--interactive-accent]" />
+          <Bot size={16} className="text-[#0fb6d6]" />
         )}
       </div>
 
       {/* Message content - top-aligned, consistent line height */}
       <div className="flex-1 min-w-0 flex flex-col leading-snug">
         <div
-          className={`text-sm leading-snug m-0 ${
-            message.role === "assistant"
-              ? "text-[--text-normal]"
-              : "text-[--text-normal]"
-          }`}
+          className="text-sm leading-snug m-0 text-[#bebebe]"
           style={{ marginTop: 0, paddingTop: 0, marginLeft: 0, paddingLeft: 0 }}
         >
-          {message.role === "user" ? (
+          {isUser ? (
             <UserMarkdown content={message.content} />
           ) : (
             <AIMarkdown content={message.content} app={plugin.app} />
@@ -95,7 +97,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
 
         {/* Timestamp and buttons row - perfectly aligned */}
         <div className="flex items-baseline justify-between mt-1 gap-2">
-          <div className="text-xs text-[--text-muted] flex-shrink-0">
+          <div className="text-xs text-[#7aa2f7] flex-shrink-0" style={{ opacity: 0.6 }}>
             {timestamp}
           </div>
           {/* Action buttons on the right - at same baseline as timestamp */}
@@ -125,12 +127,12 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
                     <img
                       src={attachment.url}
                       alt={attachment.name}
-                      className="w-full h-32 object-cover"
+                      className="w-full h-32 object-cover rounded"
                     />
                   ) : (
-                    <div className="w-full h-32 flex items-center justify-center bg-[--background-secondary]">
+                    <div className="w-full h-32 flex items-center justify-center bg-[#191621] rounded">
                       <svg
-                        className="h-8 w-8 text-[--text-muted]"
+                        className="h-8 w-8 text-[#7aa2f7]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -145,11 +147,11 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
                     </div>
                   )}
                   {attachment.url && (
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="absolute inset-0 bg-[#0d0b12] bg-opacity-0 group-hover:bg-opacity-75 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 rounded">
                       <a
                         href={attachment.url}
                         download={attachment.name}
-                        className="text-white text-sm bg-black bg-opacity-75 px-3 py-1 rounded-full"
+                        className="text-[#0fb6d6] text-sm bg-[#100e17] bg-opacity-90 px-3 py-1 rounded-full border border-[rgba(14,210,247,0.3)]"
                       >
                         Download
                       </a>

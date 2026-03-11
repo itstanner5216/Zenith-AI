@@ -105,13 +105,13 @@ export function MoveFilesHandler({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[--background-modifier-border]">
-      <div className="text-[--text-normal]">
+    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+      <div className="text-[#bebebe]">
         {toolInvocation.args.message || "Ready to move files"}
       </div>
 
       {!isValidated && filesToMove.length > 0 && (
-        <div className="text-sm text-[--text-muted]">
+        <div className="text-sm text-[#7aa2f7]">
           Found {filesToMove.length} files to move:
           <ul className="list-disc ml-4 mt-1">
             {filesToMove.slice(0, 5).map((file, i) => (
@@ -131,10 +131,10 @@ export function MoveFilesHandler({
               key={i}
               className={`${
                 result.startsWith("✅") 
-                  ? "text-[--text-success]" 
+                  ? "text-[#50fa7b]" 
                   : result.startsWith("ℹ️")
-                  ? "text-[--text-muted]"
-                  : "text-[--text-error]"
+                  ? "text-[#7aa2f7]"
+                  : "text-[#f4569d]"
               }`}
             >
               {result}
@@ -147,7 +147,7 @@ export function MoveFilesHandler({
         <div className="flex space-x-2">
           <button
             onClick={handleMoveFiles}
-            className="px-4 py-2 bg-[--interactive-accent] text-[--text-on-accent] hover:bg-[--interactive-accent-hover]"
+            className="px-4 py-2 bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.7)]"
           >
             Move {filesToMove.length} Files
           </button>
@@ -160,7 +160,7 @@ export function MoveFilesHandler({
                 })
               )
             }
-            className="px-4 py-2 bg-[--background-modifier-border] text-[--text-normal] hover:bg-[--background-modifier-border-hover]"
+            className="px-4 py-2 bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.12)]"
           >
             Cancel
           </button>

@@ -135,7 +135,7 @@ export function MainDashboard() {
     <div className="flex flex-col h-full relative p-2">
       {/** 1) Basic progress feedback if a background task is running */}
       {isLongTaskRunning && (
-        <div className="p-2 bg-[--background-secondary] mb-2 rounded">
+        <div className="p-2 bg-[#191621] mb-2 rounded">
           <ProgressBar value={longTaskProgress} />
         </div>
       )}

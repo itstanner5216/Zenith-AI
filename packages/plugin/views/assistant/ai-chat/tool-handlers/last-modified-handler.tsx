@@ -110,7 +110,7 @@ export function LastModifiedHandler({
   const resultCount = result?.count || 0;
 
   return (
-    <div className="text-sm text-[--text-muted]">
+    <div className="text-sm text-[#7aa2f7]">
       {!("result" in toolInvocation) ? (
         `Fetching last modified files... ${progress.total > 0 ? `(${progress.done}/${progress.total})` : ""}`
       ) : resultCount > 0 ? (

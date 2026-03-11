@@ -89,11 +89,11 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
   return (
     <StyledContainer>
       <motion.div
-        className={tw("max-w-xl mx-auto bg-white p-6")}
+        className={tw("max-w-xl mx-auto bg-[#191621] p-6 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_0_30px_rgba(14,210,247,0.05)]")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <h2 className={tw("text-xl font-bold mb-6 text-[--text-accent]")}>
+        <h2 className={tw("text-xl font-bold mb-6 text-[#0fb6d6]")}>
           {step === 0
             ? "Welcome to Zenith-AI!"
             : step === 1
@@ -103,7 +103,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
 
         {step === 0 && (
           <div className={tw("mb-6 space-y-4")}>
-            <p className={tw("text-[--text-normal]")}>
+            <p className={tw("text-[#bebebe]")}>
               Zenith-AI helps you organize your Obsidian vault with AI-powered features:
             </p>
             <ul className={tw("list-disc pl-5 space-y-2")}>
@@ -112,7 +112,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               <li>Get AI assistance with your content</li>
               <li>Sync across devices</li>
             </ul>
-            <p className={tw("text-sm text-[--text-muted] mt-4")}>
+            <p className={tw("text-sm text-[#7aa2f7] mt-4")}>
               Let's get you set up in just a few steps!
             </p>
             <Button
@@ -130,8 +130,8 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               <div
                 className={tw(`cursor-pointer px-4 py-2 font-medium ${
                   isSignup 
-                    ? "text-[--text-accent] border-b-2 border-[--text-accent]" 
-                    : "text-[--text-muted]"
+                    ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]" 
+                    : "text-[#7aa2f7]"
                 }`)}
                 onClick={() => setIsSignup(true)}
               >
@@ -140,8 +140,8 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               <div
                 className={tw(`cursor-pointer px-4 py-2 font-medium ${
                   !isSignup 
-                    ? "text-[--text-accent] border-b-2 border-[--text-accent]" 
-                    : "text-[--text-muted]"
+                    ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]" 
+                    : "text-[#7aa2f7]"
                 }`)}
                 onClick={() => setIsSignup(false)}
               >
@@ -150,13 +150,13 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             </div>
             
             {error && (
-              <div className={tw("bg-red-50 text-red-700 p-3 text-sm")}>
+              <div className={tw("bg-[rgba(244,86,157,0.1)] text-[#f4569d] p-3 text-sm rounded border border-[rgba(244,86,157,0.2)]")}>
                 {error}
               </div>
             )}
             
             <div>
-              <label className={tw("block text-[--text-normal] mb-1 text-sm font-medium")}>
+              <label className={tw("block text-[#bebebe] mb-1 text-sm font-medium")}>
                 Email
               </label>
               <input
@@ -164,12 +164,12 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className={tw("w-full bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2")}
+                className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2")}
               />
             </div>
             
             <div>
-              <label className={tw("block text-[--text-normal] mb-1 text-sm font-medium")}>
+              <label className={tw("block text-[#bebebe] mb-1 text-sm font-medium")}>
                 Password
               </label>
               <input
@@ -177,13 +177,13 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className={tw("w-full bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2")}
+                className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2")}
               />
             </div>
             
             {isSignup && (
               <div>
-                <label className={tw("block text-[--text-normal] mb-1 text-sm font-medium")}>
+                <label className={tw("block text-[#bebebe] mb-1 text-sm font-medium")}>
                   Confirm Password
                 </label>
                 <input
@@ -191,7 +191,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={tw("w-full bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2")}
+                  className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2")}
                 />
               </div>
             )}
@@ -215,9 +215,9 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             </Button>
             
             <div className={tw("flex items-center justify-center my-4")}>
-              <div className={tw("flex-grow border-t border-[--background-modifier-border]")}></div>
-              <span className={tw("mx-4 text-[--text-muted] text-sm")}>or</span>
-              <div className={tw("flex-grow border-t border-[--background-modifier-border]")}></div>
+              <div className={tw("flex-grow border-t border-[rgba(14,210,247,0.08)]")}></div>
+              <span className={tw("mx-4 text-[#7aa2f7] text-sm")}>or</span>
+              <div className={tw("flex-grow border-t border-[rgba(14,210,247,0.08)]")}></div>
             </div>
             
             <Button 
@@ -232,8 +232,8 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
 
         {step === 2 && (
           <div className={tw("mb-6 space-y-4")}>
-            <div className={tw("mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4")}>
-              <svg className={tw("w-8 h-8 text-green-600")} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={tw("mx-auto w-16 h-16 bg-[rgba(80,250,123,0.15)] rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(80,250,123,0.2)]")}>
+              <svg className={tw("w-8 h-8 text-[#50fa7b]")} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
@@ -244,12 +244,12 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               Zenith-AI is now set up and ready to help you organize your vault.
             </p>
             
-            <div className={tw("bg-[--background-primary-alt] p-4 border border-[--background-modifier-border]")}>
+            <div className={tw("bg-[#100e17] p-4 border border-[rgba(14,210,247,0.08)]")}>
               <h4 className={tw("font-medium text-sm mb-2")}>We'll create these folders for you:</h4>
               <ul className={tw("text-sm space-y-2")}>
-                <li><strong>_ZenithAI/Inbox</strong>: Files waiting to be processed</li>
-                <li><strong>_ZenithAI/Processed</strong>: Organized files</li>
-                <li><strong>_ZenithAI/References</strong>: Reference materials</li>
+                <li><strong>_NoteCompanion/Inbox</strong>: Files waiting to be processed</li>
+                <li><strong>_NoteCompanion/Processed</strong>: Organized files</li>
+                <li><strong>_NoteCompanion/References</strong>: Reference materials</li>
               </ul>
             </div>
             
@@ -264,13 +264,13 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
 
         {/* Progress indicator */}
         <div className={tw("mt-6")}>
-          <div className={tw("w-full bg-[--background-modifier-border] rounded-full h-1.5")}>
+          <div className={tw("w-full bg-[rgba(14,210,247,0.08)] rounded-full h-1.5")}>
             <div
-              className={tw("bg-[--text-accent] h-1.5 rounded-full")}
+              className={tw("bg-[#0fb6d6] h-1.5 rounded-full shadow-[0_0_8px_rgba(14,210,247,0.6)]")}
               style={{ width: `${((step + 1) / 3) * 100}%` }}
             />
           </div>
-          <div className={tw("text-xs text-[--text-muted] text-right mt-1")}>
+          <div className={tw("text-xs text-[#7aa2f7] text-right mt-1")}>
             Step {step + 1} of 3
           </div>
         </div>

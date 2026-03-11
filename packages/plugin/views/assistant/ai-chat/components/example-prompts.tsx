@@ -67,22 +67,22 @@ export const ExamplePrompts: React.FC<{
   const [displayedExamples] = React.useState(() => getRandomExamples());
 
   return (
-    <div className="flex flex-col gap-4 p-4 mx-auto max-w-xl">
+    <div className="flex flex-col gap-3 p-4 mx-auto max-w-xl">
       {displayedExamples.map((example, index) => (
         <button
           key={index}
           onClick={() => onExampleClick(example.prompt)}
-          className="text-left p-4 border-2 border-[--background-modifier-border] hover:border-[--interactive-accent] bg-[--background-primary] hover:bg-[--background-primary] shadow-none transition-colors flex items-start gap-4 group w-full"
+          className="text-left p-3 border border-[rgba(14,210,247,0.1)] hover:border-[rgba(14,210,247,0.4)] bg-[#191621] hover:bg-[rgba(14,210,247,0.04)] shadow-none transition-all duration-200 flex items-start gap-3 group w-full rounded-md"
         >
-          <div className="text-[--text-muted] group-hover:text-[--interactive-accent] text-xl">
+          <div className="text-[#7aa2f7] group-hover:text-[#0fb6d6] text-xl transition-colors">
             {example.icon}
           </div>
           <div className="flex-1">
-            <p className="text-[--text-normal] font-medium mb-1.5">{example.prompt}</p>
-            <span className="text-[--text-muted] text-sm">{example.description}</span>
+            <p className="text-[#bebebe] font-medium mb-1 group-hover:text-[#0fb6d6] transition-colors">{example.prompt}</p>
+            <span className="text-[#7aa2f7] text-sm" style={{ opacity: 0.7 }}>{example.description}</span>
           </div>
         </button>
       ))}
     </div>
   );
-}; 
+};

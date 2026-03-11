@@ -83,13 +83,13 @@ export const RenameSuggestion: React.FC<RenameSuggestionProps> = ({
   };
 
   return (
-    <div className="bg-[--background-primary-alt] text-[--text-normal] p-4 border-b border-[--background-modifier-border]">
+    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.05)] rounded-md">
       {loading ? (
         <SkeletonLoader count={3} rows={4} width="70%" />
       ) : error ? (
         <ErrorDisplay message={error.message} onRetry={suggestTitles} />
       ) : !suggestions.length ? (
-        <div>No title suggestions available</div>
+        <div className="text-[#7aa2f7] p-2">No title suggestions available</div>
       ) : (
         <motion.div
           className="flex flex-wrap gap-2"
@@ -118,8 +118,8 @@ const ErrorDisplay: React.FC<{ message: string; onRetry: () => void }> = ({
   message,
   onRetry,
 }) => (
-  <div className="error-container">
-    <p>Error: {message}</p>
-    <button onClick={onRetry}>Retry</button>
+  <div className="space-y-2">
+    <p className="text-[#f4569d] text-sm">Error: {message}</p>
+    <button onClick={onRetry} className="px-3 py-1.5 bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.4)] rounded hover:bg-[rgba(14,210,247,0.25)] transition-colors duration-200 text-sm">Retry</button>
   </div>
 );

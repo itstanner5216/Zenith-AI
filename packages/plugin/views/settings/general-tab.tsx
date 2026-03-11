@@ -123,7 +123,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
     switch (keyStatus) {
       case "valid":
         return (
-          <div className="flex items-center text-[--text-success] text-sm">
+          <div className="flex items-center text-[#50fa7b] text-sm">
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -142,7 +142,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "invalid":
         return (
-          <div className="flex items-center text-[--text-error] text-sm">
+          <div className="flex items-center text-[#f4569d] text-sm">
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -161,7 +161,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "checking":
         return (
-          <div className="flex items-center text-[--text-muted] text-sm">
+          <div className="flex items-center text-[#7aa2f7] text-sm">
             <svg
               className="w-4 h-4 mr-1.5 animate-spin"
               fill="none"
@@ -191,13 +191,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-[--background-primary-alt] p-4 rounded-lg">
+      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-medium mb-2 mt-0">
               Zenith-AI License Key
             </h3>
-            <p className="text-[--text-muted] mb-4">
+            <p className="text-[#7aa2f7] mb-4">
               Enter your license key to activate Zenith-AI.
             </p>
           </div>
@@ -206,12 +206,12 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                className={`flex-1 bg-[--background-primary] border rounded px-3 py-1.5 ${
+                className={`flex-1 bg-[#0d0b12] text-[#bebebe] border rounded px-3 py-1.5 ${
                   keyStatus === "valid"
-                    ? "border-[--text-success]"
+                    ? "border-[#50fa7b]"
                     : keyStatus === "invalid" || validationError
-                    ? "border-[--text-error]"
-                    : "border-[--background-modifier-border]"
+                    ? "border-[#f4569d]"
+                    : "border-[rgba(14,210,247,0.1)]"
                 }`}
                 placeholder="Enter your File Organizer License Key"
                 value={licenseKey}
@@ -220,13 +220,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               <button
                 onClick={handleActivate}
                 disabled={!licenseKey || !!validationError}
-                className="bg-[--interactive-accent] text-[--text-on-accent] px-4 py-1.5 rounded hover:bg-[--interactive-accent-hover] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-1.5 rounded hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
                 Activate
               </button>
             </div>
             {validationError && (
-              <div className="text-sm text-[--text-error] mt-1">
+              <div className="text-sm text-[#f4569d] mt-1">
                 {validationError}
               </div>
             )}
@@ -236,29 +236,29 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       </div>
 
       {/* Usage Stats Section - Always visible */}
-      <div className="bg-[--background-primary-alt] p-4 rounded-lg">
+      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
         <h3 className="text-lg font-medium mb-2 mt-0">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[--text-accent]"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0fb6d6]"></div>
           </div>
         ) : usageData ? (
           <div className="space-y-3">
             <div className="relative pt-1">
               <div className="flex mb-2 items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold inline-block text-[--text-normal]">
+                  <span className="text-xs font-semibold inline-block text-[#bebebe]">
                     Token Usage
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-semibold inline-block text-[--text-normal]">
+                  <span className="text-xs font-semibold inline-block text-[#bebebe]">
                     {usageData.tokenUsage.toLocaleString()} /{" "}
                     {usageData.maxTokenUsage.toLocaleString()}
                   </span>
                 </div>
               </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[--background-modifier-border]">
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]">
                 <div
                   style={{
                     width: `${Math.min(
@@ -266,10 +266,10 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                       (usageData.tokenUsage / usageData.maxTokenUsage) * 100
                     )}%`,
                   }}
-                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
+                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-[#0d0b12] justify-center ${
                     usageData.tokenUsage > usageData.maxTokenUsage * 0.9
-                      ? "bg-[--text-error]"
-                      : "bg-[--text-accent]"
+                      ? "bg-[#f4569d]"
+                      : "bg-[#0fb6d6]"
                   }`}
                 ></div>
               </div>
@@ -279,18 +279,18 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               <div className="relative pt-1">
                 <div className="flex mb-2 items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold inline-block text-[--text-normal]">
+                    <span className="text-xs font-semibold inline-block text-[#bebebe]">
                       Audio Transcription
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs font-semibold inline-block text-[--text-normal]">
+                    <span className="text-xs font-semibold inline-block text-[#bebebe]">
                       {(usageData.audioTranscriptionMinutes || 0).toFixed(1)} /{" "}
                       {usageData.maxAudioTranscriptionMinutes} min
                     </span>
                   </div>
                 </div>
-                <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[--background-modifier-border]">
+                <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]">
                   <div
                     style={{
                       width: `${Math.min(
@@ -300,20 +300,20 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                           100
                       )}%`,
                     }}
-                    className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
+                    className={`shadow-none flex flex-col text-center whitespace-nowrap text-[#0d0b12] justify-center ${
                       (usageData.audioTranscriptionMinutes || 0) >
                       usageData.maxAudioTranscriptionMinutes * 0.9
-                        ? "bg-[--text-error]"
-                        : "bg-[--text-accent]"
+                        ? "bg-[#f4569d]"
+                        : "bg-[#0fb6d6]"
                     }`}
                   ></div>
                 </div>
               </div>
             )}
-            <div className="text-sm text-[--text-muted]">
+            <div className="text-sm text-[#7aa2f7]">
               <p>
                 Plan:{" "}
-                <span className="font-medium text-[--text-normal]">
+                <span className="font-medium text-[#0fb6d6]">
                   {usageData.currentPlan || "Free"}
                 </span>
               </p>
@@ -322,8 +322,8 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 <span
                   className={`font-medium ${
                     usageData.subscriptionStatus === "active"
-                      ? "text-[--text-success]"
-                      : "text-[--text-warning]"
+                      ? "text-[#50fa7b]"
+                      : "text-[#ffb74d]"
                   }`}
                 >
                   {usageData.subscriptionStatus === "active"
@@ -336,13 +336,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               usageData.maxAudioTranscriptionMinutes > 0 &&
               usageData.audioTranscriptionMinutes >=
                 usageData.maxAudioTranscriptionMinutes && (
-                <div className="mt-2 p-3 bg-[--background-] bg-opacity-20 rounded text-[--text-error] text-sm">
+                <div className="mt-2 p-3 bg-[rgba(244,86,157,0.1)] rounded text-[#f4569d] text-sm border border-[rgba(244,86,157,0.2)]">
                   Audio transcription quota reached. Please upgrade your plan or
                   wait for the next billing cycle.
                 </div>
               )}
             {usageData && usageData.tokenUsage >= usageData.maxTokenUsage && (
-              <div className="mt-2 p-3 bg-[--background-] bg-opacity-20 rounded text-[--text-error] text-sm">
+              <div className="mt-2 p-3 bg-[rgba(244,86,157,0.1)] rounded text-[#f4569d] text-sm border border-[rgba(244,86,157,0.2)]">
                 {usageData.maxTokenUsage === FREE_TIER_TOKEN_LIMIT ? (
                   <>
                     <strong>Token limit reached!</strong> You've used all your
@@ -365,7 +365,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             )}
           </div>
         ) : (
-          <p className="text-[--text-muted] text-sm">
+          <p className="text-[#7aa2f7] text-sm">
             {!plugin.settings.API_KEY
               ? "Please enter a license key to see usage statistics."
               : keyStatus === "invalid"
@@ -380,7 +380,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="mt-4">
               <button
                 onClick={() => plugin.openUpgradePlanModal()}
-                className="w-full bg-[--interactive-accent] text-[--text-on-accent] px-4 py-2 rounded hover:bg-[--interactive-accent-hover] transition-colors"
+                className="w-full bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.8)] transition-colors font-medium"
               >
                 Upgrade Plan
               </button>
@@ -393,7 +393,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         onLicenseKeyChange={handleLicenseKeyChange}
       />
 
-      <div className="bg-[--background-primary-alt] p-4 rounded-lg">
+      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
         <h3 className="text-lg font-medium mb-4 mt-0">Quick Tutorial</h3>
         <div className="youtube-embed">
           <iframe
@@ -407,7 +407,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         </div>
       </div>
 
-      <div className="bg-[--background-primary-alt] p-4 rounded-lg">
+      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
         <p className="zenith-ai-support-text mb-4">
           Zenith-AI is an open-source initiative. If you find it valuable,
           please{" "}
@@ -415,18 +415,18 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             href="https://notecompanion.ai/?utm_source=obsidian&utm_medium=in-app&utm_campaign=support-us"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[--text-accent] hover:text-[--text-accent-hover]"
+            className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]"
           >
             consider supporting us
           </a>{" "}
           to help improve and maintain the project. 🙏
         </p>
-        <p className="text-[--text-muted]">
+        <p className="text-[#7aa2f7]">
           <a
             href="https://discord.gg/UWH53WqFuE"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[--text-accent] hover:text-[--text-accent-hover]"
+            className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]"
           >
             Need help? Ask me on Discord.
           </a>

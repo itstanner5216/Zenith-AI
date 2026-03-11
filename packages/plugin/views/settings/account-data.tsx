@@ -184,11 +184,11 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
   if (!plugin.settings.API_KEY) {
     return (
-      <div className="bg-[--background-primary-alt] p-4 rounded-lg">
+      <div className="bg-[#100e17] p-4 rounded-lg">
         <h3 className="text-lg font-medium mb-2 mt-0">
           Get Started with Zenith-AI
         </h3>
-        <p className="text-[--text-muted] mb-4">
+        <p className="text-[#7aa2f7] mb-4">
           Create an account or sign in to access all features.
         </p>
 
@@ -196,8 +196,8 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <div
             className={`cursor-pointer px-4 py-2 font-medium ${
               isSignup
-                ? "text-[--text-accent] border-b-2 border-[--text-accent]"
-                : "text-[--text-muted]"
+                ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]"
+                : "text-[#7aa2f7]"
             }`}
             onClick={() => setIsSignup(true)}
           >
@@ -206,8 +206,8 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <div
             className={`cursor-pointer px-4 py-2 font-medium ${
               !isSignup
-                ? "text-[--text-accent] border-b-2 border-[--text-accent]"
-                : "text-[--text-muted]"
+                ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]"
+                : "text-[#7aa2f7]"
             }`}
             onClick={() => setIsSignup(false)}
           >
@@ -217,13 +217,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         <div className="space-y-4 mb-6">
           {error && (
-            <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm">
+            <div className="bg-[rgba(244,86,157,0.1)] text-[#f4569d] p-3 rounded-md text-sm border border-[rgba(244,86,157,0.2)]">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-[--text-normal] mb-1 text-sm font-medium">
+            <label className="block text-[#bebebe] mb-1 text-sm font-medium">
               Email
             </label>
             <input
@@ -231,12 +231,12 @@ export const AccountData: React.FC<AccountDataProps> = ({
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+              className="w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
             />
           </div>
 
           <div>
-            <label className="block text-[--text-normal] mb-1 text-sm font-medium">
+            <label className="block text-[#bebebe] mb-1 text-sm font-medium">
               Password
             </label>
             <input
@@ -244,13 +244,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+              className="w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
             />
           </div>
 
           {isSignup && (
             <div>
-              <label className="block text-[--text-normal] mb-1 text-sm font-medium">
+              <label className="block text-[#bebebe] mb-1 text-sm font-medium">
                 Confirm Password
               </label>
               <input
@@ -258,7 +258,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+                className="w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
               />
             </div>
           )}
@@ -266,12 +266,12 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <button
             onClick={handleSignup}
             disabled={isLoading}
-            className="w-full bg-[--interactive-accent] text-[--text-on-accent] py-2 rounded-md font-medium hover:bg-[--interactive-accent-hover] transition-colors disabled:opacity-50"
+            className="w-full bg-[#0fb6d6] text-[#0d0b12] py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.7)] transition-colors disabled:opacity-50"
           >
             {isLoading ? (
               <span className="flex items-center justify-center">
                 <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#0d0b12]"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -302,15 +302,15 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         {/* Create Account via Web */}
         <div className="mb-6">
-          <div className="bg-[--background-primary] p-4 rounded-lg border border-[--background-modifier-border]">
+          <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
             <h4 className="font-medium mb-2 mt-0">Create Account via Web</h4>
-            <p className="text-[--text-muted] text-sm mb-4">
+            <p className="text-[#7aa2f7] text-sm mb-4">
               Create an account through our web dashboard for a full-featured
               experience.
             </p>
             <div
               onClick={() => window.open(plugin.getServerUrl(), "_blank")}
-              className="cursor-pointer bg-[--interactive-accent] text-[--text-on-accent] px-4 py-2 rounded hover:bg-[--interactive-accent-hover] transition-colors text-center font-medium"
+              className="cursor-pointer bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.7)] transition-colors text-center font-medium"
             >
               Open Dashboard
             </div>
@@ -318,15 +318,15 @@ export const AccountData: React.FC<AccountDataProps> = ({
         </div>
 
         <div className="flex items-center justify-center mb-6">
-          <div className="flex-grow border-t border-[--background-modifier-border]"></div>
-          <span className="mx-4 text-[--text-muted] text-sm">or</span>
-          <div className="flex-grow border-t border-[--background-modifier-border]"></div>
+          <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
+          <span className="mx-4 text-[#7aa2f7] text-sm">or</span>
+          <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
         </div>
 
         {/* Quick Top-up Section */}
         <div className="mb-6">
           <h4 className="font-medium mb-3 mt-0">Quick Top-up</h4>
-          <p className="text-[--text-muted] text-sm mb-3">
+          <p className="text-[#7aa2f7] text-sm mb-3">
             Start immediately with a one-time credit purchase. No account
             needed.
           </p>
@@ -343,9 +343,9 @@ export const AccountData: React.FC<AccountDataProps> = ({
         </div>
 
         {isDevMode && (
-          <div className="bg-[--background-primary] p-4 rounded-lg border border-[--background-modifier-border] mt-4">
+          <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] mt-4">
             <h4 className="font-medium mb-2 mt-0">Development Mode</h4>
-            <p className="text-[--text-muted] text-sm mb-3">
+            <p className="text-[#7aa2f7] text-sm mb-3">
               Add tokens or minutes to your account for development purposes.
             </p>
             <div className="space-y-3">
@@ -354,13 +354,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devTokens}
                   onChange={e => setDevTokens(e.target.value)}
-                  className="flex-1 bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
                   placeholder="Number of tokens"
                 />
                 <button
                   onClick={handleDevTopUp}
                   disabled={isLoading}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Tokens"}
                 </button>
@@ -370,13 +370,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devMinutes}
                   onChange={e => setDevMinutes(e.target.value)}
-                  className="flex-1 bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
                   placeholder="Number of minutes"
                 />
                 <button
                   onClick={handleDevTopUpMinutes}
                   disabled={isLoading}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Minutes"}
                 </button>
@@ -385,7 +385,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
           </div>
         )}
 
-        <div className="text-[--text-muted] text-sm mt-6">
+        <div className="text-[#7aa2f7] text-sm mt-6">
           <p className="mb-2">
             💡 <strong>Benefits of having an account:</strong>
           </p>
@@ -419,7 +419,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
       {isDevMode && (
         <div className="border-t pt-6">
           <h3 className="text-lg font-medium mb-4 mt-0">Development Tools</h3>
-          <div className="bg-[--background-primary] p-4 rounded-lg border border-[--background-modifier-border] space-y-3">
+          <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] space-y-3">
             <div>
               <h4 className="font-medium mb-2 mt-0">Add Development Tokens</h4>
               <div className="flex items-center space-x-2">
@@ -427,13 +427,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devTokens}
                   onChange={e => setDevTokens(e.target.value)}
-                  className="flex-1 bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
                   placeholder="Number of tokens"
                 />
                 <button
                   onClick={handleDevTopUp}
                   disabled={isLoading}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Tokens"}
                 </button>
@@ -446,13 +446,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devMinutes}
                   onChange={e => setDevMinutes(e.target.value)}
-                  className="flex-1 bg-[--background-primary] border border-[--background-modifier-border] rounded px-3 py-2"
+                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
                   placeholder="Number of minutes"
                 />
                 <button
                   onClick={handleDevTopUpMinutes}
                   disabled={isLoading}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Minutes"}
                 </button>

@@ -89,21 +89,21 @@ export const Mentions = forwardRef<
   return (
       props.items.length ? (
         // do not indent list
-        <ul className="max-h-[300px] overflow-y-auto bg-[--background-secondary] list-none p-0">
+        <ul className="max-h-[300px] overflow-y-auto bg-[#191621] list-none p-0">
           {props.items.map((item, index) => (
             <li 
               key={item.path || item.title} 
               className="list-none"
             >
               <button
-                className={`w-full text-left flex items-center gap-2 hover:bg-[--background-modifier-active-hover] ${
+                className={`w-full text-left flex items-center gap-2 hover:bg-[rgba(14,210,247,0.08)] ${
                   index === selectedIndex
-                    ? "bg-[--background-modifier-active-hover] text-[--text-accent]"
-                    : "text-[--text-normal]"
+                    ? "bg-[rgba(14,210,247,0.08)] text-[#0fb6d6]"
+                    : "text-[#bebebe]"
                 }`}
                 onClick={() => selectItem(index)}
               >
-                <span className="text-[--text-muted] flex-shrink-0">
+                <span className="text-[#7aa2f7] flex-shrink-0">
                   <ItemIcon type={item.type} />
                 </span>
                 
@@ -114,7 +114,7 @@ export const Mentions = forwardRef<
                </div>
 
                 {item.type && (
-                  <span className="text-xs text-[--text-muted] bg-[--background-secondary] px-1.5 py-0.5 rounded-full flex-shrink-0">
+                  <span className="text-xs text-[#7aa2f7] bg-[#191621] px-1.5 py-0.5 rounded-full flex-shrink-0">
                     {item.type}
                   </span>
                 )}
@@ -123,7 +123,7 @@ export const Mentions = forwardRef<
           ))}
         </ul>
       ) : (
-        <div className="px-4 py-3 text-sm text-[--text-muted] text-center">
+        <div className="px-4 py-3 text-sm text-[#7aa2f7] text-center">
         No matching items found
       </div>
     )

@@ -289,7 +289,7 @@ The full transcript is provided above - use it to create a detailed, accurate su
 
   if (fetchSuccess === null) {
     return (
-      <div className="text-sm text-[--text-muted]">
+      <div className="text-sm text-[#7aa2f7]">
         Fetching the video transcript...
       </div>
     );
@@ -297,14 +297,14 @@ The full transcript is provided above - use it to create a detailed, accurate su
 
   if (fetchSuccess) {
     return (
-      <div className="text-sm text-[--text-muted]">
+      <div className="text-sm text-[#7aa2f7]">
         YouTube transcript successfully retrieved
       </div>
     );
   }
 
   return (
-    <div className="text-sm text-[--text-error]">
+    <div className="text-sm text-[#f4569d]">
       Failed to fetch YouTube transcript
     </div>
   );

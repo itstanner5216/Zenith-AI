@@ -86,7 +86,7 @@ export const UndoButton: React.FC<UndoButtonProps> = ({ record, plugin, onUndo }
       disabled={isUndoing}
       size="sm"
       variant="outline"
-      className={tw("flex items-center gap-2 text-xs")}
+      className={tw("flex items-center gap-2 text-xs border-[rgba(14,210,247,0.2)] text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)]")}
       title="Undo file processing and move back to inbox"
     >
       <Undo2 className={tw(`w-3 h-3 ${isUndoing ? "animate-spin" : ""}`)} />

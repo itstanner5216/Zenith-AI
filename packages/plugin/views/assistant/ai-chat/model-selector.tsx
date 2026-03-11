@@ -54,7 +54,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       <div className="flex items-center justify-end">
         <div
           onClick={() => plugin.settings.showLocalLLMInChat && setIsModelSelectorOpen(!isModelSelectorOpen)}
-          className={`flex items-center gap-1 text-xs text-[--text-muted] ${plugin.settings.showLocalLLMInChat ? 'hover:text-[--text-normal] cursor-pointer' : ''}`}
+          className={`flex items-center gap-1 text-xs text-[#7aa2f7] ${plugin.settings.showLocalLLMInChat ? 'hover:text-[#0fb6d6] cursor-pointer' : ''}`}
         >
           <span>{getDisplayName(selectedModel)}</span>
           {plugin.settings.showLocalLLMInChat && (
@@ -75,11 +75,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           )}
         </div>
         {isModelSelectorOpen && plugin.settings.showLocalLLMInChat && (
-          <div className="absolute bottom-full right-0 mb-1 bg-[--background-primary] border border-[--background-modifier-border]">
+          <div className="absolute bottom-full right-0 mb-1 bg-[#191621] border border-[rgba(14,210,247,0.1)] rounded-md shadow-lg">
             <div className="py-1">
               <div
                 onClick={() => handleModelSelect("gpt-4o-mini")}
-                className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-[--text-normal] hover:bg-[--background-modifier-hover]"
+                className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-[#bebebe] hover:bg-[rgba(14,210,247,0.08)] hover:text-[#0fb6d6]"
               >
                 {getDisplayName("gpt-4o-mini")}
               </div>
@@ -90,19 +90,19 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                     type="text"
                     value={customModel}
                     onChange={(e) => setCustomModel(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border bg-[--background-primary] text-[--text-normal] border-[--background-modifier-border]"
+                    className="w-full px-2 py-1 text-sm border bg-[#0d0b12] text-[#bebebe] border-[rgba(14,210,247,0.1)] rounded"
                     placeholder="Enter model name..."
                   />
                   <div className="flex justify-end mt-2 space-x-2">
                     <button
                       onClick={() => setIsCustomizing(false)}
-                      className="px-2 py-1 text-xs text-[--text-muted] hover:text-[--text-normal]"
+                      className="px-2 py-1 text-xs text-[#7aa2f7] hover:text-[#bebebe]"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleCustomModelSave}
-                      className="px-2 py-1 text-xs text-[--text-accent] hover:text-[--text-accent-hover]"
+                      className="px-2 py-1 text-xs text-[#0fb6d6] hover:text-[rgba(14,210,247,0.8)]"
                     >
                       Save
                     </button>
@@ -111,7 +111,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               ) : (
                 <div
                   onClick={() => handleModelSelect("custom")}
-                  className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-[--text-normal] hover:bg-[--background-modifier-hover]"
+                  className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-[#bebebe] hover:bg-[rgba(14,210,247,0.08)] hover:text-[#0fb6d6]"
                 >
                   {getDisplayName("custom")}
                 </div>

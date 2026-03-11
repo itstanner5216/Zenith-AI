@@ -184,8 +184,8 @@ export function BulkFindReplaceHandler({
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-success] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#50fa7b] text-xs">
           {isDone && !isConfirmed
             ? "✗ Find/Replace cancelled"
             : "✓ Find/Replace complete"}
@@ -196,8 +196,8 @@ export function BulkFindReplaceHandler({
 
   if (validFiles.length === 0) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-error] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#f4569d] text-xs">
           ✗ No valid files to search.
         </div>
       </div>
@@ -206,8 +206,8 @@ export function BulkFindReplaceHandler({
 
   if (totalMatches === 0) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-muted] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#7aa2f7] text-xs">
           No matches found in {validFiles.length} file(s)
         </div>
       </div>
@@ -215,64 +215,64 @@ export function BulkFindReplaceHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[--background-modifier-border]">
+    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
       <div className="flex items-start gap-2">
-        <span className="text-[--text-accent] text-lg">🔍</span>
+        <span className="text-[#0fb6d6] text-lg">🔍</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[--text-normal] mb-1">
+          <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Find & Replace
           </div>
-          <div className="text-xs text-[--text-muted] mb-2">{reason}</div>
+          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Operation
         </div>
-        <div className="p-2 bg-[--background-secondary] space-y-1">
-          <div className="text-[--text-normal]">
+        <div className="p-2 bg-[#191621] space-y-1">
+          <div className="text-[#bebebe]">
             <strong>Find:</strong>{" "}
-            <code className="px-1 bg-[--background-primary]">{find}</code>
-            {useRegex && <span className="text-[--text-faint] ml-1">(regex)</span>}
+            <code className="px-1 bg-[#0d0b12]">{find}</code>
+            {useRegex && <span className="text-[rgba(122,162,247,0.4)] ml-1">(regex)</span>}
           </div>
-          <div className="text-[--text-normal]">
+          <div className="text-[#bebebe]">
             <strong>Replace:</strong>{" "}
-            <code className="px-1 bg-[--background-primary]">{replace}</code>
+            <code className="px-1 bg-[#0d0b12]">{replace}</code>
           </div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Impact
         </div>
-        <div className="text-[--text-normal] pl-2">
+        <div className="text-[#bebebe] pl-2">
           <strong>{totalMatches}</strong> match(es) in <strong>{filesWithMatches}</strong> file(s)
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Files ({filesWithMatches} with matches)
         </div>
         {matchCounts
           .filter((m) => m.count > 0)
           .slice(0, 5)
           .map((item) => (
-            <div key={item.path} className="text-[--text-normal] pl-2">
+            <div key={item.path} className="text-[#bebebe] pl-2">
               • {item.path.split("/").pop()} ({item.count} match{item.count !== 1 ? "es" : ""})
             </div>
           ))}
         {filesWithMatches > 5 && (
-          <div className="text-[--text-faint] pl-2">
+          <div className="text-[rgba(122,162,247,0.4)] pl-2">
             ...and {filesWithMatches - 5} more file(s)
           </div>
         )}
       </div>
 
       {invalidPaths.length > 0 && (
-        <div className="text-xs text-[--text-error]">
+        <div className="text-xs text-[#f4569d]">
           ⚠ {invalidPaths.length} invalid path(s) will be skipped
         </div>
       )}
@@ -280,7 +280,7 @@ export function BulkFindReplaceHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs border border-[--background-modifier-border] hover:bg-[--background-modifier-hover] text-[--text-normal]"
+          className="flex-1 px-3 py-1.5 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#bebebe]"
         >
           Cancel
         </button>
@@ -289,7 +289,7 @@ export function BulkFindReplaceHandler({
             setIsConfirmed(true);
             handleConfirmReplace();
           }}
-          className="flex-1 px-3 py-1.5 text-xs bg-[--interactive-accent] hover:bg-[--interactive-accent-hover] text-white"
+          className="flex-1 px-3 py-1.5 text-xs bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] text-[#0d0b12] font-medium"
         >
           Replace {totalMatches} Match{totalMatches !== 1 ? "es" : ""}
         </button>

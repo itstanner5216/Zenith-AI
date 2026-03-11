@@ -19,7 +19,7 @@ export interface MeetingsMetadata {
   lastScan?: string;
 }
 
-const METADATA_FILE = "_ZenithAI/.meetings.json";
+const METADATA_FILE = "_NoteCompanion/.meetings.json";
 
 export class MeetingMetadataManager {
   private plugin: ZenithAI;

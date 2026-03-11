@@ -98,7 +98,7 @@ export const TranscriptionButton: React.FC<TranscriptionButtonProps> = ({
   return (
     <div className="flex flex-col gap-2">
       <button
-        className="flex items-center gap-2 bg-[--interactive-accent] text-[--text-on-accent] px-4 py-2 hover:bg-[--interactive-accent-hover] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 hover:bg-[rgba(14,210,247,0.7)] disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={handleTranscribe}
         disabled={transcribing || !validation.valid}
         title={!validation.valid ? validation.error : undefined}
@@ -113,7 +113,7 @@ export const TranscriptionButton: React.FC<TranscriptionButtonProps> = ({
         )}
       </button>
       {!validation.valid && validation.error && (
-        <div className="text-xs text-[--text-error] px-2">
+        <div className="text-xs text-[#f4569d] px-2">
           {validation.error}
         </div>
       )}

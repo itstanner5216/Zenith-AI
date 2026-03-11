@@ -127,10 +127,10 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
     >
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-[--text-error] font-medium mb-1">
+          <div className="text-[#f4569d] font-medium mb-1">
             Error: Failed to fetch
           </div>
-          <p className="text-sm text-[--text-muted]">
+          <p className="text-sm text-[#7aa2f7]">
             {error?.message || "An unexpected error occurred"}
           </p>
         </div>
@@ -141,13 +141,13 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
           <button
             onClick={handleRetry}
             disabled={loading}
-            className="px-3 py-1.5 bg-[--interactive-accent] text-[--text-on-accent] rounded hover:bg-[--interactive-accent-hover] disabled:opacity-50 transition-colors duration-200"
+            className="px-3 py-1.5 bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.4)] rounded hover:bg-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.8)] disabled:opacity-50 transition-colors duration-200"
           >
             {loading ? "Retrying..." : "Retry"}
           </button>
           <button
             onClick={() => setError(null)}
-            className="px-3 py-1.5 border border-[--background-modifier-border] rounded hover:bg-[--background-modifier-hover] transition-colors duration-200"
+            className="px-3 py-1.5 border border-[rgba(14,210,247,0.1)] text-[#bebebe] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
           >
             Dismiss
           </button>
@@ -167,7 +167,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
 
     if (existingFolders.length === 0 && newFolders.length === 0) {
       return (
-        <div className="text-[--text-muted] p-2">No suitable folders found</div>
+        <div className="text-[#7aa2f7] p-2">No suitable folders found</div>
       );
     }
 
@@ -203,7 +203,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
   };
 
   return (
-    <div className="bg-[--background-primary-alt] text-[--text-normal] p-4 border-b border-[--background-modifier-border]">
+    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.05)] rounded-md">
       {renderContent()}
     </div>
   );

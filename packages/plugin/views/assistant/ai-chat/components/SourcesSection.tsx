@@ -49,11 +49,11 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
   return (
     <div className="mt-6 space-y-4 m-2 z-50">
       <div className="flex justify-between items-center">
-        <h3 className="text-base font-medium text-[--text-normal]">Sources</h3>
+        <h3 className="text-base font-medium text-[#0fb6d6]">Sources</h3>
         {sources.length > 3 && (
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-sm text-[--text-accent] hover:text-[--text-accent-hover]"
+            className="text-sm text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]"
           >
             {showAll ? 'Show less' : 'Show all'}
           </button>
@@ -64,32 +64,32 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
         {displayedSources.map((source) => (
           <div
             key={source.id}
-            className="flex items-center p-4 bg-[--background-primary] border border-[--background-modifier-border] hover:border-[--background-modifier-border-hover] transition-colors"
+            className="flex items-center p-4 bg-[#0d0b12] border border-[rgba(14,210,247,0.1)] hover:border-[rgba(14,210,247,0.3)] transition-colors rounded-md"
           >
             <div className="flex-shrink-0 mr-4">
               <div className="relative">
                 <img
                   src={getFaviconUrl(source.domain)}
                   alt={source.domain}
-                  className="w-8 h-8"
+                  className="w-8 h-8 rounded"
                 />
-                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[--background-secondary] border border-[--background-modifier-border] rounded-full text-xs font-medium text-[--text-accent]">
+                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[#191621] border border-[rgba(14,210,247,0.3)] rounded-full text-xs font-medium text-[#0fb6d6]">
                   {source.id}
                 </div>
               </div>
             </div>
             <div className="flex-grow min-w-0">
-              <h4 className="font-medium text-sm text-[--text-normal] truncate">
+              <h4 className="font-medium text-sm truncate">
                 <a 
                   href={source.url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-[--text-accent] hover:underline"
+                  className="text-[#0fb6d6] hover:underline"
                 >
                   {source.title || source.domain}
                 </a>
               </h4>
-              <p className="text-xs text-[--text-muted] truncate">
+              <p className="text-xs text-[#7aa2f7] truncate" style={{ opacity: 0.6 }}>
                 {source.domain}
               </p>
             </div>

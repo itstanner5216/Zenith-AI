@@ -184,8 +184,8 @@ ${content.replace(/\n/g, "<br>\n")}
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-success] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#50fa7b] text-xs">
           {isDone && !isConfirmed ? "✗ Export cancelled" : "✓ Export complete"}
         </div>
       </div>
@@ -194,8 +194,8 @@ ${content.replace(/\n/g, "<br>\n")}
 
   if (validFiles.length === 0) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-error] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#f4569d] text-xs">
           ✗ No valid files to export.
         </div>
       </div>
@@ -203,58 +203,58 @@ ${content.replace(/\n/g, "<br>\n")}
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[--background-modifier-border]">
+    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
       <div className="flex items-start gap-2">
-        <span className="text-[--text-accent] text-lg">📤</span>
+        <span className="text-[#0fb6d6] text-lg">📤</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[--text-normal] mb-1">
+          <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Export
           </div>
-          <div className="text-xs text-[--text-muted] mb-2">{reason}</div>
+          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Export Settings
         </div>
-        <div className="p-2 bg-[--background-secondary] space-y-1">
-          <div className="text-[--text-normal]">
+        <div className="p-2 bg-[#191621] space-y-1">
+          <div className="text-[#bebebe]">
             <strong>Format:</strong> {format.toUpperCase()}
           </div>
-          <div className="text-[--text-normal]">
+          <div className="text-[#bebebe]">
             <strong>Output:</strong> {outputFolder}/
           </div>
-          <div className="text-[--text-normal]">
+          <div className="text-[#bebebe]">
             <strong>Metadata:</strong> {includeMetadata ? "Included" : "Excluded"}
           </div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Files to Export ({validFiles.length})
         </div>
         {validFiles.slice(0, 5).map((file) => (
-          <div key={file.path} className="text-[--text-normal] pl-2">
+          <div key={file.path} className="text-[#bebebe] pl-2">
             • {file.basename}
           </div>
         ))}
         {validFiles.length > 5 && (
-          <div className="text-[--text-faint] pl-2">
+          <div className="text-[rgba(122,162,247,0.4)] pl-2">
             ...and {validFiles.length - 5} more
           </div>
         )}
       </div>
 
       {invalidPaths.length > 0 && (
-        <div className="text-xs text-[--text-error]">
+        <div className="text-xs text-[#f4569d]">
           ⚠ {invalidPaths.length} invalid path(s) will be skipped
         </div>
       )}
 
       {format === "pdf" && (
-        <div className="p-2 bg-[--background-secondary] text-xs text-[--text-warning]">
+        <div className="p-2 bg-[#191621] text-xs text-[#ffb74d]">
           <strong>⚠ Note:</strong> PDF export is not yet fully implemented
         </div>
       )}
@@ -262,7 +262,7 @@ ${content.replace(/\n/g, "<br>\n")}
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs border border-[--background-modifier-border] hover:bg-[--background-modifier-hover] text-[--text-normal]"
+          className="flex-1 px-3 py-1.5 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#bebebe]"
         >
           Cancel
         </button>
@@ -271,7 +271,7 @@ ${content.replace(/\n/g, "<br>\n")}
             setIsConfirmed(true);
             handleConfirmExport();
           }}
-          className="flex-1 px-3 py-1.5 text-xs bg-[--interactive-accent] hover:bg-[--interactive-accent-hover] text-white"
+          className="flex-1 px-3 py-1.5 text-xs bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] text-[#0d0b12] font-medium"
         >
           Export {validFiles.length} File{validFiles.length !== 1 ? "s" : ""}
         </button>

@@ -199,7 +199,7 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full bg-[--background-primary]">
+    <div className="flex flex-col h-full w-full bg-[#100e17]">
       <ChatTabs
         sessions={chatSessions}
         activeChatId={activeChatId}

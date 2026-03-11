@@ -349,7 +349,7 @@ function ToolInvocationHandler({
         );
       }
       return (
-        <div className="text-xs text-[--text-error] p-2">
+        <div className="text-xs text-[#f4569d] p-2">
           Unknown tool: {toolInvocation.toolName}
         </div>
       );
@@ -361,15 +361,15 @@ function ToolInvocationHandler({
   
   return (
     <motion.div
-      className="p-3 border border-[--background-modifier-border] rounded bg-[--background-secondary]"
+      className="p-3 border border-[rgba(14,210,247,0.08)] rounded bg-[#191621]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <h4 className="m-0 mb-2 text-[--text-normal] text-sm font-semibold">
+      <h4 className="m-0 mb-2 text-[#bebebe] text-sm font-semibold">
         {getToolTitle(toolInvocation.toolName)}
       </h4>
-      <div className="text-sm text-[--text-muted]">{content}</div>
+      <div className="text-sm text-[#7aa2f7]">{content}</div>
     </motion.div>
   );
 }

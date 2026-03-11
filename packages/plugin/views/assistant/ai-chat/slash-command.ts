@@ -11,7 +11,7 @@ const SlashCommand = Mention.extend({
       ...this.parent?.(),
       HTMLAttributes: {
         class:
-          "slash-command bg-[--background-modifier-active-hover] text-[--text-accent] px-1 py-0.5",
+          "slash-command bg-[rgba(14,210,247,0.08)] text-[#0fb6d6] px-1 py-0.5 rounded",
       },
       suggestion: {
         char: "/",

@@ -91,7 +91,7 @@ export const SimilarTags: React.FC<SimilarTagsProps> = ({
       existingTags.length === 0 &&
       newTags.length === 0
     ) {
-      return <div className="text-[--text-muted] p-2">No tags found</div>;
+      return <div className="text-[#7aa2f7] p-2">No tags found</div>;
     }
 
     return (
@@ -126,7 +126,7 @@ export const SimilarTags: React.FC<SimilarTagsProps> = ({
   };
 
   return (
-    <div className="bg-[--background-primary-alt] text-[--text-normal] p-4 border-b border-[--background-modifier-border]">
+    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.05)] rounded-md">
       {renderContent()}
     </div>
   );

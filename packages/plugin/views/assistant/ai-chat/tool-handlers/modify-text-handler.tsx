@@ -142,9 +142,9 @@ export function ModifyTextHandler({
           // Determine background color
           let bgColor = '';
           if (line.added) {
-            bgColor = 'rgba(var(--color-green-rgb, 0, 255, 0), 0.15)';
+            bgColor = 'rgba(80, 250, 123, 0.15)';
           } else if (line.removed) {
-            bgColor = 'rgba(var(--color-red-rgb, 255, 0, 0), 0.15)';
+            bgColor = 'rgba(244, 86, 157, 0.15)';
           }
 
           return (
@@ -153,23 +153,23 @@ export function ModifyTextHandler({
               style={bgColor ? { backgroundColor: bgColor } : {}}
               className={`py-0.5 px-2 flex items-start border-l-2 ${
                 line.added 
-                  ? "border-[--text-success]" 
+                  ? "border-[#50fa7b]" 
                   : line.removed 
-                  ? "border-[--text-error]" 
+                  ? "border-[#f4569d]" 
                   : "border-transparent"
               }`}
             >
               <span className={`select-none mr-2 w-4 flex-shrink-0 font-bold ${
-                line.added ? "text-[--text-success]" : line.removed ? "text-[--text-error]" : "text-[--text-faint]"
+                line.added ? "text-[#50fa7b]" : line.removed ? "text-[#f4569d]" : "text-[rgba(122,162,247,0.4)]"
               }`}>
                 {line.added ? "+" : line.removed ? "−" : ""}
               </span>
               <span className={`flex-1 whitespace-pre-wrap break-words ${
-                line.removed ? "line-through opacity-75 text-[--text-error]" : ""
+                line.removed ? "line-through opacity-75 text-[#f4569d]" : ""
               } ${
-                line.added ? "font-medium text-[--text-success]" : ""
+                line.added ? "font-medium text-[#50fa7b]" : ""
               } ${
-                !line.added && !line.removed ? "text-[--text-muted]" : ""
+                !line.added && !line.removed ? "text-[#7aa2f7]" : ""
               }`}>
                 {line.value}
               </span>
@@ -182,7 +182,7 @@ export function ModifyTextHandler({
 
   if (modifySuccess === null && !pendingChanges) {
     return (
-      <div className="p-2 text-sm text-[--text-muted]">
+      <div className="p-2 text-sm text-[#7aa2f7]">
         Analyzing changes...
       </div>
     );
@@ -196,14 +196,14 @@ export function ModifyTextHandler({
 
     return (
       <div className="space-y-2">
-        <div className="flex items-center justify-between border-b border-[--background-modifier-border] pb-2">
-          <div className="text-xs font-semibold text-[--text-muted] uppercase">
+        <div className="flex items-center justify-between border-b border-[rgba(14,210,247,0.08)] pb-2">
+          <div className="text-xs font-semibold text-[#7aa2f7] uppercase">
             Review Changes
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDiscardChanges}
-              className="px-2 py-1 text-xs border border-[--background-modifier-border] hover:bg-[--background-modifier-hover] text-[--text-muted]"
+              className="px-2 py-1 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#7aa2f7]"
               disabled={isApplying}
             >
               Discard
@@ -211,7 +211,7 @@ export function ModifyTextHandler({
             <button
               onClick={handleApplyChanges}
               disabled={isApplying}
-              className="px-2 py-1 text-xs bg-[--interactive-accent] hover:bg-[--interactive-accent-hover] text-[--text-on-accent] flex items-center gap-1"
+              className="px-2 py-1 text-xs bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.7)] text-[#0d0b12] flex items-center gap-1"
             >
               {isApplying ? (
                 <>
@@ -229,30 +229,30 @@ export function ModifyTextHandler({
         </div>
 
         {explanation && (
-          <div className="p-2 border-b border-[--background-modifier-border]">
-            <div className="text-xs font-semibold text-[--text-muted] uppercase mb-1">
+          <div className="p-2 border-b border-[rgba(14,210,247,0.08)]">
+            <div className="text-xs font-semibold text-[#7aa2f7] uppercase mb-1">
               Summary
             </div>
-            <div className="text-xs text-[--text-normal]">
+            <div className="text-xs text-[#bebebe]">
               {explanation}
             </div>
           </div>
         )}
 
-        <div className="border border-[--background-modifier-border]">
-          <div className="border-b border-[--background-modifier-border] px-2 py-1 flex items-center justify-between">
-            <div className="text-xs font-semibold text-[--text-muted] uppercase">
+        <div className="border border-[rgba(14,210,247,0.08)]">
+          <div className="border-b border-[rgba(14,210,247,0.08)] px-2 py-1 flex items-center justify-between">
+            <div className="text-xs font-semibold text-[#7aa2f7] uppercase">
               Diff
             </div>
             <div className="flex items-center gap-3 text-xs">
               {removedCount > 0 && (
-                <span className="text-[--text-error] flex items-center gap-1">
+                <span className="text-[#f4569d] flex items-center gap-1">
                   <span>−</span>
                   <span>{removedCount} removed</span>
                 </span>
               )}
               {addedCount > 0 && (
-                <span className="text-[--text-success] flex items-center gap-1">
+                <span className="text-[#50fa7b] flex items-center gap-1">
                   <span>+</span>
                   <span>{addedCount} added</span>
                 </span>
@@ -269,13 +269,13 @@ export function ModifyTextHandler({
 
   if (modifySuccess) {
     return (
-      <div className="p-3 space-y-2 border-b border-[--background-modifier-border]">
-        <div className="flex items-center text-[--text-success] space-x-2">
+      <div className="p-3 space-y-2 border-b border-[rgba(14,210,247,0.08)]">
+        <div className="flex items-center text-[#50fa7b] space-x-2">
           <span className="text-base">✓</span>
           <span className="text-sm font-medium">Changes Applied Successfully</span>
         </div>
         {explanation && (
-          <div className="text-xs text-[--text-muted]">
+          <div className="text-xs text-[#7aa2f7]">
             {explanation}
           </div>
         )}
@@ -284,13 +284,13 @@ export function ModifyTextHandler({
   }
 
   return (
-    <div className="p-3 space-y-2 border-b border-[--background-modifier-border]">
-      <div className="flex items-center text-[--text-error] space-x-2">
+    <div className="p-3 space-y-2 border-b border-[rgba(14,210,247,0.08)]">
+      <div className="flex items-center text-[#f4569d] space-x-2">
         <span className="text-base">⚠</span>
         <span className="text-sm font-medium">Failed to Apply Changes</span>
       </div>
       {explanation && (
-        <div className="text-xs text-[--text-muted]">
+        <div className="text-xs text-[#7aa2f7]">
           <strong>Attempted Changes:</strong> {explanation}
         </div>
       )}

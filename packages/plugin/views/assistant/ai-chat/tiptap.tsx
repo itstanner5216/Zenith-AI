@@ -104,7 +104,7 @@ const Tiptap: React.FC<TiptapProps> = ({
       MentionWithSpaces.configure({
         HTMLAttributes: {
           class:
-            "bg-[--background-modifier-active-hover] text-[--text-accent]  px-1 py-0.5",
+            "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] px-1 py-0.5 rounded",
         },
         suggestion: {
           char: "@",
@@ -112,7 +112,7 @@ const Tiptap: React.FC<TiptapProps> = ({
           render: () => suggestion.render(),
           command: handleMentionCommand,
           decorationClass:
-            "bg-[--background-modifier-active-hover] text-[--text-accent]  px-1 py-0.5",
+            "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] px-1 py-0.5 rounded",
         },
       }),
       SlashCommand.configure({
@@ -249,7 +249,7 @@ const Tiptap: React.FC<TiptapProps> = ({
     <div className="tiptap-editor relative" onKeyDown={onKeyDown}>
       <EditorContent editor={editor} />
       {isEmpty && editor && (
-        <div className="absolute left-[10px] top-[10px] pointer-events-none text-[--text-muted] text-sm select-none">
+        <div className="absolute left-[10px] top-[10px] pointer-events-none text-[#7aa2f7] text-sm select-none opacity-50">
           Type @ to mention files, folders, or tags, or / for commands...
         </div>
       )}

@@ -30,16 +30,16 @@ export function ChatTabItem({
         "group flex items-center gap-1.5 px-2 py-1 rounded-t cursor-pointer transition-colors",
         "border-b-2",
         isActive
-          ? "border-[--interactive-accent] bg-[--background-modifier-active-hover]"
-          : "border-transparent hover:bg-[--background-modifier-hover]"
+          ? "border-[#0fb6d6] bg-[rgba(14,210,247,0.08)]"
+          : "border-transparent hover:bg-[rgba(14,210,247,0.04)]"
       )}
       onClick={onSelect}
       title={`${session.title} - ${relativeTime}`}
     >
       <span
         className={tw(
-          "text-[10px] text-[--text-normal] truncate max-w-[120px]",
-          isActive && "font-medium"
+          "text-[10px] truncate max-w-[120px]",
+          isActive ? "text-[#0fb6d6] font-medium" : "text-[#7aa2f7]"
         )}
       >
         {session.title}
@@ -48,8 +48,8 @@ export function ChatTabItem({
         onClick={handleDelete}
         className={tw(
           "opacity-0 group-hover:opacity-100 transition-opacity",
-          "hover:text-[--text-error] flex-shrink-0",
-          "p-0.5 rounded hover:bg-[--background-modifier-hover]"
+          "hover:text-[#f4569d] flex-shrink-0",
+          "p-0.5 rounded hover:bg-[rgba(244,86,157,0.1)]"
         )}
         aria-label="Delete chat"
         title="Delete chat"
@@ -59,4 +59,3 @@ export function ChatTabItem({
     </div>
   );
 }
-

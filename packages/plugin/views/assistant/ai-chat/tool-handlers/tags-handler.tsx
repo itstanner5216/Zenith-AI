@@ -155,12 +155,12 @@ export function TagsHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[--text-muted]">
+        <div className="text-[#7aa2f7]">
           Adding tags {tags.map((t: string) => `#${t}`).join(", ")} to{" "}
           {filePaths.length} file(s) in {location}...
         </div>
       ) : (
-        <div className="text-[--text-normal]">
+        <div className="text-[#bebebe]">
           ✓ Tags added to {filePaths.length} file(s)
         </div>
       )}

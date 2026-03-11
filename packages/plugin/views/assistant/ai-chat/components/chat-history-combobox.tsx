@@ -145,19 +145,19 @@ export function ChatHistoryCombobox({
         onClick={() => setIsOpen(!isOpen)}
         className={tw(
           "flex items-center gap-2 px-3 py-1.5 text-xs rounded",
-          "bg-[--background-modifier-form-field] hover:bg-[--background-modifier-hover]",
-          "text-[--text-normal] border border-[--background-modifier-border]",
+          "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)]",
+          "text-[#bebebe] border border-[rgba(14,210,247,0.08)]",
           "min-w-[200px] justify-between"
         )}
         title="Search chat history"
       >
         <div className={tw("flex items-center gap-2 flex-1 min-w-0")}>
-          <Search className="w-3 h-3 text-[--text-muted] flex-shrink-0" />
+          <Search className="w-3 h-3 text-[#7aa2f7] flex-shrink-0" />
           <span className={tw("truncate")}>
             {activeSession?.title || "Select chat..."}
           </span>
         </div>
-        <Clock className="w-3 h-3 text-[--text-muted] flex-shrink-0" />
+        <Clock className="w-3 h-3 text-[#7aa2f7] flex-shrink-0" />
       </button>
 
       {/* Dropdown */}
@@ -165,7 +165,7 @@ export function ChatHistoryCombobox({
         <div
           className={tw(
             "absolute top-full right-0 mt-1 w-[300px] max-h-[400px]",
-            "bg-[--background-primary] border border-[--background-modifier-border]",
+            "bg-[#0d0b12] border border-[rgba(14,210,247,0.08)]",
             "rounded shadow-lg z-50 overflow-hidden"
           )}
           style={{
@@ -173,9 +173,9 @@ export function ChatHistoryCombobox({
           }}
         >
           {/* Search Input */}
-          <div className={tw("p-2 border-b border-[--background-modifier-border]")}>
+          <div className={tw("p-2 border-b border-[rgba(14,210,247,0.08)]")}>
             <div className={tw("relative")}>
-              <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[--text-muted]")} />
+              <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[#7aa2f7]")} />
               <input
                 ref={inputRef}
                 type="text"
@@ -184,9 +184,9 @@ export function ChatHistoryCombobox({
                 placeholder="Search chats..."
                 className={tw(
                   "w-full pl-7 pr-2 py-1.5 text-xs rounded",
-                  "bg-[--background-modifier-form-field]",
-                  "text-[--text-normal] border border-[--background-modifier-border]",
-                  "focus:outline-none focus:ring-1 focus:ring-[--interactive-accent]"
+                  "bg-[#0d0b12]",
+                  "text-[#bebebe] border border-[rgba(14,210,247,0.08)]",
+                  "focus:outline-none focus:ring-1 focus:ring-[#0fb6d6]"
                 )}
               />
             </div>
@@ -195,7 +195,7 @@ export function ChatHistoryCombobox({
           {/* Results List */}
           <div className={tw("overflow-y-auto max-h-[350px]")}>
             {filteredSessions.length === 0 ? (
-              <div className={tw("px-4 py-3 text-xs text-[--text-muted] text-center")}>
+              <div className={tw("px-4 py-3 text-xs text-[#7aa2f7] text-center")}>
                 No chats found
               </div>
             ) : (
@@ -210,9 +210,9 @@ export function ChatHistoryCombobox({
                     key={session.id}
                     className={tw(
                       "group px-3 py-2 cursor-pointer transition-colors",
-                      "border-b border-[--background-modifier-border] last:border-b-0",
-                      isSelected && "bg-[--background-modifier-active-hover]",
-                      !isSelected && "hover:bg-[--background-modifier-hover]"
+                      "border-b border-[rgba(14,210,247,0.08)] last:border-b-0",
+                      isSelected && "bg-[rgba(14,210,247,0.08)]",
+                      !isSelected && "hover:bg-[rgba(14,210,247,0.04)]"
                     )}
                     onClick={() => {
                       onSelectChat(session.id);
@@ -225,15 +225,15 @@ export function ChatHistoryCombobox({
                       <div className={tw("flex-1 min-w-0")}>
                         <div
                           className={tw(
-                            "text-xs font-medium text-[--text-normal] truncate",
-                            isActive && "text-[--interactive-accent]"
+                            "text-xs font-medium text-[#bebebe] truncate",
+                            isActive && "text-[#0fb6d6]"
                           )}
                         >
                           {session.title}
                         </div>
                         <div
                           className={tw(
-                            "text-[10px] text-[--text-muted] mt-0.5 flex items-center gap-1.5"
+                            "text-[10px] text-[#7aa2f7] mt-0.5 flex items-center gap-1.5"
                           )}
                         >
                           <span>{relativeTime}</span>
@@ -252,8 +252,8 @@ export function ChatHistoryCombobox({
                         }}
                         className={tw(
                           "opacity-0 group-hover:opacity-100 transition-opacity",
-                          "hover:text-[--text-error] flex-shrink-0",
-                          "p-1 rounded hover:bg-[--background-modifier-hover]"
+                          "hover:text-[#f4569d] flex-shrink-0",
+                          "p-1 rounded hover:bg-[rgba(14,210,247,0.04)]"
                         )}
                         aria-label="Delete chat"
                         title="Delete chat"

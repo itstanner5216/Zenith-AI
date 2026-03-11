@@ -101,8 +101,8 @@ export function CreateTemplateHandler({
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[--background-modifier-border] pb-2">
-        <div className="text-[--text-success] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#50fa7b] text-xs">
           {isDone && !isConfirmed
             ? "✗ Template creation cancelled"
             : "✓ Template created"}
@@ -112,34 +112,34 @@ export function CreateTemplateHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[--background-modifier-border]">
+    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
       <div className="flex items-start gap-2">
-        <span className="text-[--text-accent] text-lg">📋</span>
+        <span className="text-[#0fb6d6] text-lg">📋</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[--text-normal] mb-1">
+          <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Create Template
           </div>
-          <div className="text-xs text-[--text-muted] mb-2">{reason}</div>
+          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Template Details
         </div>
-        <div className="text-[--text-normal] pl-2">
+        <div className="text-[#bebebe] pl-2">
           <strong>Name:</strong> {templateName}
         </div>
-        <div className="text-[--text-normal] pl-2">
+        <div className="text-[#bebebe] pl-2">
           <strong>Description:</strong> {description}
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[--text-muted] uppercase">
+        <div className="font-semibold text-[#7aa2f7] uppercase">
           Template Preview
         </div>
-        <div className="p-2 bg-[--background-secondary] text-[--text-muted] font-mono text-xs max-h-32 overflow-y-auto whitespace-pre-wrap">
+        <div className="p-2 bg-[#191621] text-[#7aa2f7] font-mono text-xs max-h-32 overflow-y-auto whitespace-pre-wrap">
           {templateContent.slice(0, 300)}
           {templateContent.length > 300 && "..."}
         </div>
@@ -148,7 +148,7 @@ export function CreateTemplateHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs border border-[--background-modifier-border] hover:bg-[--background-modifier-hover] text-[--text-normal]"
+          className="flex-1 px-3 py-1.5 text-xs border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.04)] text-[#bebebe]"
         >
           Cancel
         </button>
@@ -157,7 +157,7 @@ export function CreateTemplateHandler({
             setIsConfirmed(true);
             handleConfirmCreate();
           }}
-          className="flex-1 px-3 py-1.5 text-xs bg-[--interactive-accent] hover:bg-[--interactive-accent-hover] text-white"
+          className="flex-1 px-3 py-1.5 text-xs bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] text-[#0d0b12] font-medium"
         >
           Create Template
         </button>

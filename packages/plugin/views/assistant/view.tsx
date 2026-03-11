@@ -152,13 +152,13 @@ function TabButton({
       className={tw(
         "px-4 py-2 text-sm transition-all relative flex items-center gap-2",
         isActive
-          ? "text-[--text-normal] font-medium"
-          : "text-[--text-muted] hover:text-[--text-normal]"
+          ? "text-[#0fb6d6] font-medium"
+          : "text-[#7aa2f7] hover:text-[#0fb6d6]"
       )}
       style={
         isActive
           ? {
-              borderBottom: "2px solid var(--interactive-accent)",
+              borderBottom: "2px solid #0fb6d6",
               marginBottom: "-1px",
             }
           : undefined
@@ -169,7 +169,7 @@ function TabButton({
       {badge !== undefined && badge > 0 && (
         <span
           className={tw(
-            "ml-1 px-1.5 py-0.5 text-xs rounded-full bg-[--interactive-accent] text-[--text-on-accent] font-medium min-w-[1.25rem] text-center"
+            "ml-1 px-1.5 py-0.5 text-xs rounded-full bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] font-medium min-w-[1.25rem] text-center"
           )}
         >
           {badge}
@@ -237,11 +237,11 @@ function AssistantContent({
 
     // Listen to workspace events
     const handler = () => updateProcessingCount();
-    plugin.app.workspace.on("zenith-ai:processing-step", handler);
+    plugin.app.workspace.on("file-organizer:processing-step", handler);
 
     return () => {
       clearInterval(interval);
-      plugin.app.workspace.off("zenith-ai:processing-step", handler);
+      plugin.app.workspace.off("file-organizer:processing-step", handler);
     };
   }, [plugin]);
 
@@ -284,11 +284,11 @@ function AssistantContent({
   const showSyncTab = plugin.settings.showSyncTab;
 
   return (
-    <div className={tw("flex flex-col h-full w-full")}>
+    <div className={tw("flex flex-col h-full w-full bg-[#100e17]")}>
       {/* Native tab navigation */}
       <div
         className={tw(
-          "flex gap-0 px-3 pt-2 pb-0 border-b border-[--background-modifier-border] bg-[--background-primary] items-center justify-between"
+          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.05)] bg-[#100e17] items-center justify-between"
         )}
       >
         <div className={tw("flex gap-0")}>

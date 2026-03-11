@@ -544,24 +544,24 @@ export function ScreenpipeHandler({
   // Always render something visible - never return empty/null
   return (
     <div className="text-sm p-2">
-      <div className="text-[--text-normal] mb-2 font-medium">
+      <div className="text-[#bebebe] mb-2 font-medium">
         {isComplete ? "✓ ScreenPipe search complete" : `⏳ ${status}`}
       </div>
       {error && (
-        <div className="text-xs text-[--text-error] mt-2 p-2 bg-[--background-secondary] rounded border border-[--background-modifier-border]">
+        <div className="text-xs text-[#f4569d] mt-2 p-2 bg-[#191621] rounded border border-[rgba(14,210,247,0.08)]">
           <strong>Error:</strong> {error}
         </div>
       )}
       {isComplete && resultCount > 0 && (
-        <div className="text-xs text-[--text-muted] mt-1">
+        <div className="text-xs text-[#7aa2f7] mt-1">
           Found {resultCount} result{resultCount > 1 ? "s" : ""}
         </div>
       )}
       {isComplete && resultCount === 0 && !error && (
-        <div className="text-xs text-[--text-muted] mt-1">No results found</div>
+        <div className="text-xs text-[#7aa2f7] mt-1">No results found</div>
       )}
       {!isComplete && !error && (
-        <div className="text-xs text-[--text-muted] mt-1 italic">
+        <div className="text-xs text-[#7aa2f7] mt-1 italic">
           {status || "Initializing..."}
         </div>
       )}

@@ -86,16 +86,16 @@ export const AtomicNotes: React.FC<DocumentChunksProps> = ({ plugin, activeFile,
   }, [chunks, renderMarkdown]);
 
   const renderChunk = (chunk: { concept: string; content: string }, index: number) => (
-    <div key={index} className="chunk-container p-4 border mb-2">
+    <div key={index} className="chunk-container p-4 border border-[rgba(14,210,247,0.08)] mb-2 bg-[#191621] rounded-lg">
       <div 
-        className="chunk-markdown-content mb-3"
+        className="chunk-markdown-content mb-3 text-[#bebebe]"
         data-content={chunk.content}
       />
       <button
-        className="bg-accent text-accent-foreground px-2 py-1"
+        className="bg-[#0fb6d6] text-[#0d0b12] px-3 py-1.5 rounded text-sm font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors"
         onClick={() => createFileInSameFolder(chunk.concept, chunk.content)}
       >
-        Create Note
+        Create note
       </button>
     </div>
   );
@@ -105,7 +105,7 @@ export const AtomicNotes: React.FC<DocumentChunksProps> = ({ plugin, activeFile,
       <button
         onClick={parseDocument}
         disabled={loading}
-        className="bg-accent text-accent-foreground px-2 py-1"
+        className="bg-[#0fb6d6] text-[#0d0b12] px-3 py-1.5 rounded text-sm font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50 mb-4"
       >
         {loading ? "Parsing..." : "Parse Document"}
       </button>

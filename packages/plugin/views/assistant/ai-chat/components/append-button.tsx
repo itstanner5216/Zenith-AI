@@ -35,7 +35,7 @@ export const AppendButton: React.FC<AppendButtonProps> = ({ content }) => {
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
       title="Append to current note"
     >
-      <FileText size={16} className="text-[--text-muted]" />
+      <FileText size={16} className="text-[#7aa2f7] hover:text-[#0fb6d6]" />
     </button>
   );
 };

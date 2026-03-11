@@ -11,8 +11,8 @@ export function NewChatButton({ onClick }: NewChatButtonProps) {
       onClick={onClick}
       className={tw(
         "flex items-center justify-center w-6 h-6 rounded",
-        "text-[--text-muted] hover:text-[--text-normal]",
-        "hover:border hover:border-[--background-modifier-border]",
+        "text-[#7aa2f7] hover:text-[#0fb6d6]",
+        "hover:bg-[rgba(14,210,247,0.08)]",
         "transition-colors"
       )}
       aria-label="Start new chat"

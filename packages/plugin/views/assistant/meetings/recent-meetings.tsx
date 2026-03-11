@@ -147,7 +147,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
 
   if (isLoading) {
     return (
-      <div className={tw("p-4 text-center text-[--text-muted]")}>
+      <div className={tw("p-4 text-center text-[#7aa2f7]")}>
         Loading recordings...
       </div>
     );
@@ -157,7 +157,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
     return (
       <div className={tw("p-4")}>
         <div className={tw("flex items-center justify-between mb-4")}>
-          <h3 className={tw("text-lg font-medium text-[--text-normal]")}>
+          <h3 className={tw("text-lg font-medium text-[#bebebe]")}>
             Recent Meetings
           </h3>
           <button
@@ -165,9 +165,9 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
             disabled={isScanning}
             className={tw(
               "flex items-center gap-1.5 px-2 py-1 text-xs",
-              "bg-[--background-modifier-form-field] hover:bg-[--background-modifier-hover]",
-              "border border-[--background-modifier-border] rounded",
-              "text-[--text-normal]",
+              "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)]",
+              "border border-[rgba(14,210,247,0.08)] rounded",
+              "text-[#bebebe]",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "transition-colors"
             )}
@@ -183,7 +183,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
             )}
           </button>
         </div>
-        <div className={tw("text-center py-8 text-[--text-muted]")}>
+        <div className={tw("text-center py-8 text-[#7aa2f7]")}>
           <p>No recordings yet.</p>
           <p className={tw("text-sm mt-2")}>Start recording to see meetings here.</p>
         </div>
@@ -194,7 +194,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
   return (
     <div className={tw("p-4 flex-1 overflow-y-auto")}>
       <div className={tw("flex items-center justify-between mb-4")}>
-        <h3 className={tw("text-lg font-medium text-[--text-normal]")}>
+        <h3 className={tw("text-lg font-medium text-[#bebebe]")}>
           Recent Meetings
         </h3>
         <button
@@ -202,9 +202,9 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
           disabled={isScanning}
           className={tw(
             "flex items-center gap-1.5 px-2 py-1 text-xs",
-            "bg-[--background-modifier-form-field] hover:bg-[--background-modifier-hover]",
-            "border border-[--background-modifier-border] rounded",
-            "text-[--text-normal]",
+            "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)]",
+            "border border-[rgba(14,210,247,0.08)] rounded",
+            "text-[#bebebe]",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             "transition-colors"
           )}
@@ -235,14 +235,14 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
             <div
               key={recording.filePath}
               className={tw(
-                "border border-[--background-modifier-border] rounded p-3 hover:bg-[--background-modifier-hover]"
+                "border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[rgba(14,210,247,0.04)]"
               )}
             >
               <div className={tw("flex items-start justify-between mb-2 gap-2")}>
                 <div className={tw("flex-1 min-w-0 pr-2")}>
                   <div className={tw("flex items-start gap-2 mb-1 flex-wrap")}>
                     <span
-                      className={tw("text-sm font-medium text-[--text-normal] break-all")}
+                      className={tw("text-sm font-medium text-[#bebebe] break-all")}
                       title={recording.filePath.split("/").pop()}
                     >
                       {recording.filePath.split("/").pop()}
@@ -250,7 +250,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
                     {recording.discovered && (
                       <span
                         className={tw(
-                          "text-xs px-1.5 py-0.5 rounded bg-[--tag-background] text-[--tag-color]"
+                          "text-xs px-1.5 py-0.5 rounded bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] font-medium"
                         )}
                       >
                         Discovered
@@ -259,21 +259,21 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
                     {!isInRecordingsFolder && (
                       <span
                         className={tw(
-                          "text-xs px-1.5 py-0.5 rounded bg-[--background-modifier-border] text-[--text-muted]"
+                          "text-xs px-1.5 py-0.5 rounded bg-[rgba(14,210,247,0.08)] text-[#7aa2f7]"
                         )}
                       >
                         {recording.filePath.split("/").slice(0, -1).join("/")}
                       </span>
                     )}
                   </div>
-                  <div className={tw("text-xs text-[--text-muted] space-x-3")}>
+                  <div className={tw("text-xs text-[#7aa2f7] space-x-3")}>
                     <span>{formatDate(recording.createdAt)}</span>
                     {fileSize > 0 && <span>{formatFileSize(fileSize)}</span>}
                     {recording.duration && (
                       <span>{formatDuration(recording.duration)}</span>
                     )}
                     {recording.transcribed && (
-                      <span className={tw("text-[--text-accent]")}>Transcribed</span>
+                      <span className={tw("text-[#0fb6d6]")}>Transcribed</span>
                     )}
                   </div>
                 </div>
@@ -287,7 +287,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
                   </Button>
                   <Button
                     onClick={() => handleDelete(recording.filePath)}
-                    className={tw("p-1 text-[--text-error]")}
+                    className={tw("p-1 text-[#f4569d]")}
                     title="Delete"
                   >
                     <Trash2 className="w-3 h-3" />

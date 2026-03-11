@@ -57,14 +57,14 @@ export function AppendContentHandler({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[--background-modifier-border]">
-      <div className="text-[--text-normal]">
+    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+      <div className="text-[#bebebe]">
         {toolInvocation.args.message ||
           "Would you like to append the following content?"}
       </div>
 
-      <div className="bg-[--background-secondary] p-3">
-        <pre className="text-sm text-[--text-muted] whitespace-pre-wrap">
+      <div className="bg-[#191621] p-3">
+        <pre className="text-sm text-[#7aa2f7] whitespace-pre-wrap">
           {toolInvocation.args.content}
         </pre>
       </div>
@@ -73,7 +73,7 @@ export function AppendContentHandler({
         <div className="flex space-x-2">
           <button
             onClick={handleAppendContent}
-            className="px-4 py-2 bg-[--interactive-accent] text-[--text-on-accent] hover:bg-[--interactive-accent-hover]"
+            className="px-4 py-2 bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.7)]"
           >
             Append Content
           </button>
@@ -86,7 +86,7 @@ export function AppendContentHandler({
                 })
               )
             }
-            className="px-4 py-2 bg-[--background-modifier-border] text-[--text-normal] hover:bg-[--background-modifier-border-hover]"
+            className="px-4 py-2 bg-[rgba(14,210,247,0.08)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.12)]"
           >
             Cancel
           </button>
