@@ -4,8 +4,8 @@ import {
   StyleSheet,
   Platform,
   AccessibilityRole,
+  AccessibilityState,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
 import { launchCamera } from '@/utils/camera-handler';
 import { useSemanticColor } from '@/hooks/useThemeColor';
 import * as Haptics from 'expo-haptics';
@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 interface CameraTabButtonProps {
   accessibilityLabel?: string;
   accessibilityRole?: AccessibilityRole;
-  accessibilityState?: any;
+  accessibilityState?: AccessibilityState;
   children: React.ReactNode;
 }
 
@@ -24,7 +24,6 @@ const CameraTabButton: React.FC<CameraTabButtonProps> = ({
   accessibilityState,
   children,
 }) => {
-  const primaryColor = useSemanticColor('primary');
   const backgroundColor = useSemanticColor('tabBar');
   const router = useRouter();
 
