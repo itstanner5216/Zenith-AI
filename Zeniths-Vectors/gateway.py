@@ -868,6 +868,60 @@ def normalize_rank_response(raw_response: Any, original_records: List[RankRecord
 
 vertex_client: Optional[VertexSearchClient] = None
 obsidian_client: Optional[ObsidianClient] = None
+_pg_pool = None
+_pgvector_ready = False
+
+
+class VectorUpsertRequest(BaseModel):
+    id: str
+    content: str
+    embedding: List[float]
+
+
+class VectorSearchRequest(BaseModel):
+    embedding: List[float]
+    top_k: int = Field(default=5, ge=1, le=100)
+
+
+async def get_pg_pool():
+    global _pg_pool
+    if _pg_pool is None:
+        import asyncpg
+
+        pg_dsn = os.environ.get("PG_DSN", "")
+        if not pg_dsn:
+            raise RuntimeError("PG_DSN is not configured")
+        _pg_pool = await asyncpg.create_pool(dsn=pg_dsn)
+    return _pg_pool
+
+
+async def init_pgvector_schema():
+    pool = await get_pg_pool()
+    async with pool.acquire() as conn:
+        await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS vault_embeddings (
+                id TEXT PRIMARY KEY,
+                content TEXT NOT NULL,
+                embedding vector(1536) NOT NULL,
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+            """
+        )
+        await conn.execute(
+            """
+            CREATE INDEX IF NOT EXISTS vault_embeddings_embedding_idx
+            ON vault_embeddings USING hnsw (embedding vector_cosine_ops)
+            """
+        )
+
+
+async def ensure_pgvector_ready():
+    global _pgvector_ready
+    if not _pgvector_ready:
+        await init_pgvector_schema()
+        _pgvector_ready = True
 
 def _check_vertex_config() -> List[str]:
     m = []
@@ -879,7 +933,7 @@ def _check_vertex_config() -> List[str]:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global vertex_client, obsidian_client, _pg_pool
+    global vertex_client, obsidian_client, _pg_pool, _pgvector_ready
     logger.info("Starting Gateway Service v3.1.0")
     vertex_ok = False
     miss = _check_vertex_config()
@@ -897,8 +951,9 @@ async def lifespan(app: FastAPI):
     obs_ok = await obsidian_client.check_availability()
     try:
         await init_pgvector_schema()
+        _pgvector_ready = True
     except Exception as e:
-        logger.warning(f"pgvector init failed (non-fatal): {e}")
+        logger.warning(f"pgvector init deferred (will retry on first request): {e}")
     logger.info("Gateway started (vertex=%s, obsidian=%s)", vertex_ok, obs_ok)
     yield
     logger.info("Shutting down")
@@ -1031,6 +1086,7 @@ async def ep_rank(request: RankRequest):
 
 @app.post("/v1/vector-upsert")
 async def v1_vector_upsert(req: VectorUpsertRequest):
+    await ensure_pgvector_ready()
     import hashlib
 
     content_hash = hashlib.sha256(req.content.encode()).hexdigest()
@@ -1073,6 +1129,7 @@ async def v1_vector_upsert(req: VectorUpsertRequest):
 
 @app.post("/v1/vector-search")
 async def v1_vector_search(req: VectorSearchRequest):
+    await ensure_pgvector_ready()
     try:
         client = _req_vertex()
         pool = await get_pg_pool()
