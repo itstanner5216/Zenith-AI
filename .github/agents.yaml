@@ -449,7 +449,7 @@ pr_guidelines:
     - Theme testing evidence for plugin UI changes
   checklist:
     - "[ ] CI passes"
-    - "[ ] No hardcoded colours in plugin (grep: bg-white, text-gray, #[0-9a-fA-F])"
+    - "[ ] No hardcoded colours in plugin (grep: bg-white, text-gray, #[0-9a-fA-F]{3,6}\\b)"
     - "[ ] API changes are backward compatible"
     - "[ ] Token usage tracked if new AI endpoint added"
     - "[ ] Tests added / updated"
