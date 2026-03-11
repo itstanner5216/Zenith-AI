@@ -1,0 +1,45 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      non-major:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "ai"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "npm"
+    directory: "/packages/web"
+    schedule:
+      interval: "weekly"
+    groups:
+      non-major:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "ai"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "npm"
+    directory: "/packages/landing"
+    schedule:
+      interval: "weekly"
+    groups:
+      non-major:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "ai"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directory: "/Zeniths-Vectors"
+    schedule:
+      interval: "weekly"

@@ -1,0 +1,11 @@
+# CODEOWNERS
+# Require explicit review from @itstanner5216 for any changes to
+# CI/CD workflows, security configs, and dependency lockfiles.
+
+# All files under .github/ (workflows, dependabot, CODEOWNERS, etc.)
+.github/ @itstanner5216
+
+# Root package manifest and lockfiles
+/package.json @itstanner5216
+/pnpm-lock.yaml @itstanner5216
+/yarn.lock @itstanner5216
