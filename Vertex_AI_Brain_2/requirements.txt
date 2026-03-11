@@ -20,5 +20,8 @@ python-multipart==0.0.20
 # Redis client for session storage
 redis==5.2.1
 
+# PostgreSQL async client for pgvector
+asyncpg==0.30.0
+
 # MCP server — exposes all FastAPI routes as MCP tools (Fix 2)
 fastapi-mcp>=0.4.0
