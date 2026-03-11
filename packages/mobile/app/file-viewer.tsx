@@ -23,10 +23,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const { width } = Dimensions.get('window');
 
 // Function to adjust font size for all text elements
-const adjustFontSizes = (
-  baseStyles: Record<string, Record<string, unknown>>,
-  fontSize: number
-) => {
+const adjustFontSizes = (baseStyles: Record<string, Record<string, unknown>>, fontSize: number) => {
   const textElements = [
     'body',
     'heading1',

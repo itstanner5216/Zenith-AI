@@ -40,7 +40,7 @@ export class VertexBrainClient {
         requestUrl({ url: `${this.baseUrl}/health` }),
         5000
       );
-      return resp.json?.status !== "unhealthy";
+      return resp.status === 200 && resp.json?.status !== "unhealthy";
     } catch {
       return false;
     }
@@ -96,7 +96,7 @@ export class VertexBrainClient {
     }), 30000);
     return (resp.json.grounding_support ?? []).map((s: RankSupport) => ({
       title: s.segment,
-      score: s.score,
+      score: s.score ?? 0,
     }));
   }
 

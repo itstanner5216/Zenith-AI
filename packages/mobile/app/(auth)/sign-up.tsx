@@ -19,6 +19,10 @@ import { Link } from 'expo-router';
 
 WebBrowser.maybeCompleteAuthSession();
 
+const isClerkError = (error: unknown): error is { errors?: Array<{ message?: string }> } => {
+  return typeof error === 'object' && error !== null && 'errors' in error;
+};
+
 export default function SignUpScreen() {
   const router = useRouter();
   const { signUp, setActive: setSignUpActive, isLoaded } = useSignUp();
@@ -61,13 +65,7 @@ export default function SignUpScreen() {
         console.log(JSON.stringify(result, null, 2));
       }
     } catch (err: unknown) {
-      const message =
-        typeof err === 'object' &&
-        err !== null &&
-        'errors' in err &&
-        Array.isArray((err as { errors?: Array<{ message?: string }> }).errors)
-          ? (err as { errors: Array<{ message?: string }> }).errors[0]?.message
-          : undefined;
+      const message = isClerkError(err) ? err.errors?.[0]?.message : undefined;
       Alert.alert('Error', message || 'Failed to sign up');
     } finally {
       setLoading(false);

@@ -14,13 +14,7 @@ import { useRouter } from "expo-router";
 
 interface ProcessingStatusProps {
   status: UploadStatus;
-  result?:
-    | string
-    | null
-    | {
-        extractedText?: string;
-        visualElements?: unknown;
-      };
+  result?: string | null | { extractedText?: string; visualElements?: unknown };
   fileUrl?: string;
   mimeType?: string;
   fileName?: string;

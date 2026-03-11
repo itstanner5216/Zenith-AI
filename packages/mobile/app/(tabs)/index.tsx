@@ -502,7 +502,7 @@ export default function HomeScreen() {
           {status === "uploading" ? (
             <ProcessingStatus
               status={status}
-              result={uploadResults[0]?.text ?? undefined}
+              result={uploadResults[0]?.text}
               fileUrl={uploadResults[0]?.url}
               mimeType={uploadResults[0]?.mimeType}
             />

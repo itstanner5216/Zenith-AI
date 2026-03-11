@@ -13,10 +13,12 @@ import { ThemedText } from '@/components/ThemedText';
 import { useSemanticColor } from '@/hooks/useThemeColor';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+type MaterialIconName = React.ComponentProps<typeof MaterialIcons>['name'];
+
 interface IntegrationOption {
   id: string;
   name: string;
-  icon: React.ComponentProps<typeof MaterialIcons>["name"];
+  icon: string;
   description: string;
   comingSoon: boolean;
 }
@@ -111,7 +113,7 @@ export default function SyncScreen() {
             {integrations.map((integration) => (
               <View key={integration.id} style={styles.integrationCard}>
                 <View style={styles.integrationHeader}>
-                  <MaterialIcons name={integration.icon} size={32} color={primaryColor} />
+                  <MaterialIcons name={integration.icon as MaterialIconName} size={32} color={primaryColor} />
                   <View style={styles.integrationTitleContainer}>
                     <Text style={styles.integrationTitle}>{integration.name}</Text>
                     {integration.comingSoon ? (

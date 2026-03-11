@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`settings defaults matches the exported DEFAULT_SETTINGS object shape 1`] = `
+exports[`DEFAULT_SETTINGS matches the snapshot 1`] = `
 ZenithAISettings {
   "API_KEY": "",
   "attachmentsPath": "_ZenithAI/Processed/Attachments",
