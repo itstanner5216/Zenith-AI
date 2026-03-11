@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
 
 interface AdvancedTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
@@ -55,7 +55,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   return (
     <div className="p-4 space-y-4">
       <ToggleSetting
-        name="Note Companion File Logs"
+        name="Zenith-AI File Logs"
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
         onChange={value => {

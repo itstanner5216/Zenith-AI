@@ -43,7 +43,7 @@ export default function OnboardingPage() {
           <div>
             <section>
               <h1 className="text-3xl md:text-4xl font-bold mb-3">
-                Welcome to Note Companion
+                Welcome to Zenith-AI
               </h1>
               <p className="text-lg mb-6">
                 Powerful AI features to organize and enhance your Obsidian
@@ -104,7 +104,7 @@ export default function OnboardingPage() {
             <div className="mb-6">
               <div className="bg-white p-4 rounded-lg border border-violet-200 shadow-sm">
                 <h3 className="text-xl font-semibold mb-3 text-violet-700">
-                  Why Choose Note Companion?
+                  Why Choose Zenith-AI?
                 </h3>
                 <ul className="space-y-2">
                   <li className="flex items-start">

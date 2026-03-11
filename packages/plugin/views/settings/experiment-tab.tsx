@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { CatalystGate } from "./catalyst-gate";
 
 interface ExperimentTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
@@ -241,10 +241,10 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                           ⚠️ Advanced Feature
                         </p>
                         <p className="text-[--text-muted]">
-                          This feature is designed for users of the Note Companion mobile app who want to sync files between mobile and desktop.
+                          This feature is designed for users of the Zenith-AI mobile app who want to sync files between mobile and desktop.
                         </p>
                         <p className="text-xs text-[--text-faint]">
-                          Requires Note Companion mobile app setup
+                          Requires Zenith-AI mobile app setup
                         </p>
                       </div>
                     </div>

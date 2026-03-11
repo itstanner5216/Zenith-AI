@@ -1,5 +1,5 @@
 {
-  "name": "file-organizer-2000-monorepo",
+  "name": "zenith-ai-monorepo",
   "private": true,
   "devDependencies": {
     "@types/node": "^22.13.10",

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ErrorBox } from "./error-box";
-import FileOrganizer from "../../..";
+import ZenithAI from "../../..";
 
 interface LicenseValidatorProps {
   apiKey: string;
   onValidationComplete: () => void;
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const LicenseValidator: React.FC<LicenseValidatorProps> = ({
@@ -60,7 +60,7 @@ export const LicenseValidator: React.FC<LicenseValidatorProps> = ({
               onClick={() => {
                 // Open Obsidian settings and navigate to plugin settings
                 plugin.app.setting.open();
-                plugin.app.setting.openTabById("fileorganizer2000");
+                plugin.app.setting.openTabById("zenith-ai");
               }}
               className="px-3 py-1.5 bg-[--interactive-accent] text-[--text-on-accent] rounded hover:bg-[--interactive-accent-hover] transition-colors duration-200"
             >

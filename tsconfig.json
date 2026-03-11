@@ -11,7 +11,7 @@
     "declaration": true,
     "baseUrl": ".",
     "paths": {
-      "@file-organizer/*": [
+      "@zenith-ai/*": [
         "packages/*/src"
       ],
       "@/*": [

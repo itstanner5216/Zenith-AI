@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "../../../components/ui/button";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { Notice } from "obsidian";
 import { StyledContainer } from "../../../components/ui/utils";
 import { tw } from "../../../lib/utils";
 
 interface OnboardingWizardProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   onComplete: () => void;
 }
 
@@ -95,7 +95,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
       >
         <h2 className={tw("text-xl font-bold mb-6 text-[--text-accent]")}>
           {step === 0
-            ? "Welcome to Note Companion!"
+            ? "Welcome to Zenith-AI!"
             : step === 1
             ? "Create Your Account"
             : "Set Up Your Workspace"}
@@ -104,7 +104,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
         {step === 0 && (
           <div className={tw("mb-6 space-y-4")}>
             <p className={tw("text-[--text-normal]")}>
-              Note Companion helps you organize your Obsidian vault with AI-powered features:
+              Zenith-AI helps you organize your Obsidian vault with AI-powered features:
             </p>
             <ul className={tw("list-disc pl-5 space-y-2")}>
               <li>Automatically organize and format notes</li>
@@ -241,15 +241,15 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             <h4 className={tw("text-lg font-medium text-center")}>You're ready to go!</h4>
             
             <p className={tw("text-center")}>
-              Note Companion is now set up and ready to help you organize your vault.
+              Zenith-AI is now set up and ready to help you organize your vault.
             </p>
             
             <div className={tw("bg-[--background-primary-alt] p-4 border border-[--background-modifier-border]")}>
               <h4 className={tw("font-medium text-sm mb-2")}>We'll create these folders for you:</h4>
               <ul className={tw("text-sm space-y-2")}>
-                <li><strong>_NoteCompanion/Inbox</strong>: Files waiting to be processed</li>
-                <li><strong>_NoteCompanion/Processed</strong>: Organized files</li>
-                <li><strong>_NoteCompanion/References</strong>: Reference materials</li>
+                <li><strong>_ZenithAI/Inbox</strong>: Files waiting to be processed</li>
+                <li><strong>_ZenithAI/Processed</strong>: Organized files</li>
+                <li><strong>_ZenithAI/References</strong>: Reference materials</li>
               </ul>
             </div>
             

@@ -1,18 +1,18 @@
-export class FileOrganizerSettings {
+export class ZenithAISettings {
 
   API_KEY = "";
   isLicenseValid = false;
   useLogs = true;
-  defaultDestinationPath = "_NoteCompanion/Processed";
-  referencePath = "_NoteCompanion/References";
-  attachmentsPath = "_NoteCompanion/Processed/Attachments";
-  pathToWatch = "_NoteCompanion/Inbox";
-  logFolderPath = "_NoteCompanion/Logs";
-  backupFolderPath = "_NoteCompanion/Backups";
-  templatePaths = "_NoteCompanion/Templates";
-  bypassedFilePath = "_NoteCompanion/Bypassed";
-  errorFilePath = "_NoteCompanion/Errors";
-  syncFolderPath = "_NoteCompanion/Sync";
+  defaultDestinationPath = "_ZenithAI/Processed";
+  referencePath = "_ZenithAI/References";
+  attachmentsPath = "_ZenithAI/Processed/Attachments";
+  pathToWatch = "_ZenithAI/Inbox";
+  logFolderPath = "_ZenithAI/Logs";
+  backupFolderPath = "_ZenithAI/Backups";
+  templatePaths = "_ZenithAI/Templates";
+  bypassedFilePath = "_ZenithAI/Bypassed";
+  errorFilePath = "_ZenithAI/Errors";
+  syncFolderPath = "_ZenithAI/Sync";
   recordingsFolderPath = "Recordings";
 
   // inbox settings
@@ -77,4 +77,4 @@ export class FileOrganizerSettings {
   queryScreenpipeLimit = 10; // Default query limit for ScreenPipe searches (1-100)
 }
 
-export const DEFAULT_SETTINGS = new FileOrganizerSettings();
+export const DEFAULT_SETTINGS = new ZenithAISettings();

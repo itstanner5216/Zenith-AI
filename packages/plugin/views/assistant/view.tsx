@@ -2,7 +2,7 @@ import { ItemView, WorkspaceLeaf, TFile } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import { AssistantView } from "./organizer/organizer";
-import FileOrganizer from "../..";
+import ZenithAI from "../..";
 import { InboxLogs } from "./inbox-logs";
 import { SectionHeader } from "./section-header";
 import { AppContext } from "./provider";
@@ -30,7 +30,7 @@ function TabContent({
   onTokenLimitError,
 }: {
   activeTab: Tab;
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   leaf: WorkspaceLeaf;
   showSyncTab: boolean;
   onTokenLimitError?: (error: string) => void;
@@ -185,7 +185,7 @@ function AssistantContent({
   initialTab,
   onTabChange,
 }: {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   leaf: WorkspaceLeaf;
   initialTab: Tab;
   onTabChange: (setTab: (tab: Tab) => void) => void;
@@ -237,11 +237,11 @@ function AssistantContent({
 
     // Listen to workspace events
     const handler = () => updateProcessingCount();
-    plugin.app.workspace.on("file-organizer:processing-step", handler);
+    plugin.app.workspace.on("zenith-ai:processing-step", handler);
 
     return () => {
       clearInterval(interval);
-      plugin.app.workspace.off("file-organizer:processing-step", handler);
+      plugin.app.workspace.off("zenith-ai:processing-step", handler);
     };
   }, [plugin]);
 
@@ -362,11 +362,11 @@ function AssistantContent({
 
 export class AssistantViewWrapper extends ItemView {
   root: Root | null = null;
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   private activeTab: Tab = "organizer";
   private setActiveTab: (tab: Tab) => void = () => {};
 
-  constructor(leaf: WorkspaceLeaf, plugin: FileOrganizer) {
+  constructor(leaf: WorkspaceLeaf, plugin: ZenithAI) {
     super(leaf);
     this.plugin = plugin;
 
@@ -419,7 +419,7 @@ export class AssistantViewWrapper extends ItemView {
   }
 
   getDisplayText(): string {
-    return "Note Companion";
+    return "Zenith-AI";
   }
 
   getIcon(): string {

@@ -128,7 +128,7 @@ export const ProcessingStatus: React.FC<ProcessingStatusProps> = ({
 
           {showDetails && (
             <Text style={styles.resultSubtext}>
-              Your file has been uploaded to Note Companion AI.
+              Your file has been uploaded to Zenith-AI AI.
               {"\n\n"}
               It will be automatically synced to any services you have enabled.
             </Text>

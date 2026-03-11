@@ -90,7 +90,7 @@ export function BetaRequestForm({
           </div>
           <h4 className="text-lg font-medium mb-1">Thanks for joining!</h4>
           <p className="text-muted-foreground text-sm text-center max-w-md">
-            You now have beta access! Check your email for login instructions to start using Note Companion Mobile.
+            You now have beta access! Check your email for login instructions to start using Zenith-AI Mobile.
           </p>
         </div>
       )}

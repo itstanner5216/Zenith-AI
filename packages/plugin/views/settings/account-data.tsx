@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { TopUpCredits } from "./top-up-credits";
 import { TopUpMinutes } from "./top-up-minutes";
 import { logger } from "../../services/logger";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { Notice } from "obsidian";
 import { validateApiKey } from "../../apiUtils";
 
 interface AccountDataProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   onLicenseKeyChange: (key: string) => void;
 }
 
@@ -186,7 +186,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
     return (
       <div className="bg-[--background-primary-alt] p-4 rounded-lg">
         <h3 className="text-lg font-medium mb-2 mt-0">
-          Get Started with Note Companion
+          Get Started with Zenith-AI
         </h3>
         <p className="text-[--text-muted] mb-4">
           Create an account or sign in to access all features.

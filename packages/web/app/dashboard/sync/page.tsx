@@ -141,7 +141,7 @@ export default function SyncDashboard() {
         <header>
           <div className="flex items-center">
             <CloudUpload className="h-6 w-6 mr-2 text-blue-600" />
-            <h1 className="text-2xl font-bold">Note Companion Sync</h1>
+            <h1 className="text-2xl font-bold">Zenith-AI Sync</h1>
           </div>
           <p className="text-muted-foreground mt-1">
             View, organize, and manage your uploaded files

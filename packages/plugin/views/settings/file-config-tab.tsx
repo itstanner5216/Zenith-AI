@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { cleanPath } from "../../someUtils";
 import { normalizePath, Modal, Notice } from "obsidian";
 import { Search, X } from "lucide-react";
 import { logger } from "../../services/logger";
 interface FileConfigTabProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {

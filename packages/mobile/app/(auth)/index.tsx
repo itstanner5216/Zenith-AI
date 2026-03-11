@@ -60,7 +60,7 @@ export default function IndexScreen() {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.title}>Note Companion</Text>
+          <Text style={styles.title}>Zenith-AI</Text>
           <Text style={styles.subtitle}>
             Document OCR and Cross-Platform Sync
           </Text>
@@ -95,7 +95,7 @@ export default function IndexScreen() {
         <View style={styles.infoSection}>
           <MaterialIcons name="info-outline" size={24} color="#666" style={styles.infoIcon} />
           <Text style={styles.infoText}>
-            Note Companion is a companion app for the Note Companion AI web service. 
+            Zenith-AI is a companion app for the Zenith-AI AI web service. 
             Sign in to upload documents, extract text with OCR, and sync with other platforms.
           </Text>
         </View>

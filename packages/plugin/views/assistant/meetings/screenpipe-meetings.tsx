@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { TFile } from "obsidian";
 import { Button } from "../ai-chat/button";
 import { FileText, FilePlus, RefreshCw } from "lucide-react";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { tw } from "../../../lib/utils";
 import { Notice } from "obsidian";
 import { logger } from "../../../services/logger";
@@ -28,7 +28,7 @@ import {
 } from "./screenpipe-meetings-utils";
 
 interface ScreenpipeMeetingsProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 const PER_QUERY_LIMIT = 100;

@@ -122,7 +122,7 @@ export default function NotesScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.onboardingContainer}>
         <ThemedText type="heading" style={styles.onboardingTitle}>
-          Welcome to Note Companion
+          Welcome to Zenith-AI
         </ThemedText>
 
         <ThemedText style={styles.onboardingDescription}>

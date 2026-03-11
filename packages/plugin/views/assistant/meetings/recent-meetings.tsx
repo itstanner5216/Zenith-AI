@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TFile } from "obsidian";
 import { Button } from "../ai-chat/button";
 import { FileText, Trash2, ExternalLink, RefreshCw, AlertCircle, Search } from "lucide-react";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { tw } from "../../../lib/utils";
 import { Notice } from "obsidian";
 import { logger } from "../../../services/logger";
@@ -13,7 +13,7 @@ import {
 import { EnhanceNoteHandler } from "./enhance-note-handler";
 
 interface RecentMeetingsProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { TFile, Notice } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { logger } from "../../../services/logger";
 
 interface TranscriptionButtonProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile;
   content: string;
 }

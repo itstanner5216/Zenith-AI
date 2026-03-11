@@ -22,7 +22,7 @@ export default async function NoUserManagementPage() {
             <p className="text-gray-800 mt-6 text-xl sm:text-2xl font-extrabold mt-2 mb-4">
               Get the plugin
             </p>
-            <a href="obsidian://show-plugin?id=fileorganizer2000">
+            <a href="obsidian://show-plugin?id=zenith-ai">
               <Button className="max-w-xs w-full sm:w-auto">Download</Button>
             </a>
             <p className="mt-3 text-sm text-gray-600">Requires Obsidian app.</p>

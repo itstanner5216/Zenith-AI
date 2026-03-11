@@ -14,7 +14,7 @@ import { RefreshCw, AlertCircle, Send, Square, Bot, Download } from "lucide-reac
 import { StyledContainer } from "@/components/ui/utils";
 import { Editor } from "@tiptap/react";
 
-import FileOrganizer from "../../..";
+import ZenithAI from "../../..";
 import { GroundingMetadata, DataChunk } from "./types/grounding";
 import Tiptap from "./tiptap";
 import { usePlugin } from "../provider";
@@ -64,7 +64,7 @@ import {
 import { tw } from "../../../lib/utils";
 
 interface ChatComponentProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   apiKey: string;
   inputRef: React.RefObject<HTMLDivElement>;
   onTokenLimitError?: (error: string) => void;

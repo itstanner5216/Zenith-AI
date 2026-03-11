@@ -1,8 +1,8 @@
-import FileOrganizer from "../../index";
+import ZenithAI from "../../index";
 import { useState, useEffect } from "react";
 
 interface CatalystGateProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   children: React.ReactNode;
 }
 

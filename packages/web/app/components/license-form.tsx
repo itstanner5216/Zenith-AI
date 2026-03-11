@@ -27,7 +27,7 @@ const LicenseForm = () => {
   // Load key from localStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedKey = localStorage.getItem('noteCompanionLicenseKey');
+      const storedKey = localStorage.getItem('zenithAILicenseKey');
       if (storedKey) {
         setLicenseKey(storedKey);
       }
@@ -47,7 +47,7 @@ const LicenseForm = () => {
         setLicenseKey(newKey);
         // Store in localStorage for persistence
         if (typeof window !== 'undefined') {
-          localStorage.setItem('noteCompanionLicenseKey', newKey);
+          localStorage.setItem('zenithAILicenseKey', newKey);
         }
       } else {
         alert(
@@ -182,7 +182,7 @@ const LicenseForm = () => {
                 </CardFooter>
                 <CardDescription className="text-center px-6 pb-4">
                   <p className="mb-2">
-                    You'll need this key to unlock Note Companion in your plugin
+                    You'll need this key to unlock Zenith-AI in your plugin
                     settings.
                   </p>
                   <p className="text-xs text-muted-foreground">

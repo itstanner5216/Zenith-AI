@@ -1,6 +1,6 @@
 import { TFile } from "obsidian";
 import { logger } from "../../../services/logger";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { VALID_AUDIO_EXTENSIONS } from "../../../constants";
 
 export interface RecordingMetadata {
@@ -19,13 +19,13 @@ export interface MeetingsMetadata {
   lastScan?: string;
 }
 
-const METADATA_FILE = "_NoteCompanion/.meetings.json";
+const METADATA_FILE = "_ZenithAI/.meetings.json";
 
 export class MeetingMetadataManager {
-  private plugin: FileOrganizer;
+  private plugin: ZenithAI;
   private metadata: MeetingsMetadata = { recordings: [] };
 
-  constructor(plugin: FileOrganizer) {
+  constructor(plugin: ZenithAI) {
     this.plugin = plugin;
   }
 

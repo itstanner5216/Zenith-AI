@@ -153,7 +153,7 @@ export default function SignInScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome to Note Companion</Text>
+          <Text style={styles.title}>Welcome to Zenith-AI</Text>
           <Text style={styles.subtitle}>Sign in to access your account</Text>
         </View>
 

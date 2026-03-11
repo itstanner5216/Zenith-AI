@@ -1,16 +1,16 @@
 import * as React from "react";
 import { TFile } from "obsidian";
-import FileOrganizer from "../../../index";
+import ZenithAI from "../../../index";
 import { logger } from "../../../services/logger";
 import { MarkdownRenderer } from "obsidian";
 
 interface DocumentChunksProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   activeFile: TFile;
 }
 
 interface DocumentChunksProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   activeFile: TFile;
   refreshKey?: number;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FileOrganizer from '../../index';
+import ZenithAI from '../../index';
 import { GeneralTab } from './general-tab';
 import { FileConfigTab } from './file-config-tab';
 import { CustomizationTab } from './customization-tab';
@@ -8,11 +8,11 @@ import { ExperimentTab } from './experiment-tab';
 
 interface Tab {
   name: string;
-  component: React.ComponentType<{ plugin: FileOrganizer }>;
+  component: React.ComponentType<{ plugin: ZenithAI }>;
 }
 
 interface SettingsTabContentProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }
 
 export const SettingsTabContent: React.FC<SettingsTabContentProps> = ({ plugin }) => {
@@ -71,7 +71,7 @@ const TabButton: React.FC<{
 const TabContent: React.FC<{
   tabs: Tab[];
   activeTab: string;
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
 }> = ({ tabs, activeTab, plugin }) => (
   <div className="flex-1 overflow-y-auto p-4 border border-gray-200 rounded-b-md">
     {tabs.map((tab) => (

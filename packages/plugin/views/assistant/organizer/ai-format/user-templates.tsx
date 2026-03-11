@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TFile } from "obsidian";
-import FileOrganizer from "../../../../index";
+import ZenithAI from "../../../../index";
 import { logMessage } from "../../../../someUtils";
 import { logger } from "../../../../services/logger";
 import {
@@ -10,7 +10,7 @@ import {
 } from "../../../../utils/token-counter";
 
 interface UserTemplatesProps {
-  plugin: FileOrganizer;
+  plugin: ZenithAI;
   file: TFile | null;
   content: string;
   refreshKey: number;

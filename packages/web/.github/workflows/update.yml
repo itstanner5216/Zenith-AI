@@ -24,7 +24,7 @@ jobs:
 
       - name: Fetch parent repo
         run: |
-          git remote add parent https://github.com/different-ai/file-organizer-2000.git
+          git remote add parent https://github.com/different-ai/zenith-ai-2000.git
           git fetch parent
 
       - name: Update current repo
