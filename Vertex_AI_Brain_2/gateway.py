@@ -81,6 +81,19 @@ OBSIDIAN_RECONNECT_INTERVAL = int(os.environ.get("OBSIDIAN_RECONNECT_INTERVAL", 
 SESSION_TTL_MINUTES = int(os.environ.get("SESSION_TTL_MINUTES", "30"))
 
 # =============================================================================
+# PGVECTOR CONFIGURATION
+# =============================================================================
+
+PGVECTOR_HOST = os.environ.get("PGVECTOR_HOST", "pgvector")
+PGVECTOR_PORT_INTERNAL = int(os.environ.get("PGVECTOR_PORT_INTERNAL", "5432"))
+PGVECTOR_DB = os.environ.get("PGVECTOR_DB", "vault_embeddings")
+PGVECTOR_USER = os.environ.get("PGVECTOR_USER", "vault")
+PGVECTOR_PASSWORD = os.environ.get("PGVECTOR_PASSWORD", "vault-secure-pass")
+VERTEX_EMBEDDING_MODEL = os.environ.get("VERTEX_EMBEDDING_MODEL", "text-embedding-004")
+VERTEX_EMBEDDING_DIMENSIONS = int(os.environ.get("VERTEX_EMBEDDING_DIMENSIONS", "768"))
+VERTEX_EMBEDDING_LOCATION = os.environ.get("VERTEX_EMBEDDING_LOCATION", "us-central1")
+
+# =============================================================================
 # STRUCTURED LOGGING
 # =============================================================================
 
@@ -246,6 +259,50 @@ class AuthManager:
             return self.credentials.token
 
 auth_manager = AuthManager()
+
+# =============================================================================
+# PGVECTOR CONNECTION POOL
+# =============================================================================
+
+_pg_pool = None
+
+
+async def get_pg_pool():
+    global _pg_pool
+    if _pg_pool is None:
+        import asyncpg
+        _pg_pool = await asyncpg.create_pool(
+            host=PGVECTOR_HOST,
+            port=PGVECTOR_PORT_INTERNAL,
+            database=PGVECTOR_DB,
+            user=PGVECTOR_USER,
+            password=PGVECTOR_PASSWORD,
+            min_size=2,
+            max_size=10,
+        )
+    return _pg_pool
+
+
+async def init_pgvector_schema():
+    pool = await get_pg_pool()
+    async with pool.acquire() as conn:
+        await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+        await conn.execute(f"""
+            CREATE TABLE IF NOT EXISTS vault_embeddings (
+                id TEXT PRIMARY KEY,
+                content_hash TEXT NOT NULL,
+                embedding vector({VERTEX_EMBEDDING_DIMENSIONS}),
+                folder_path TEXT DEFAULT '',
+                tags TEXT[] DEFAULT '{{}}',
+                updated_at TIMESTAMPTZ DEFAULT NOW()
+            )
+        """)
+        await conn.execute("""
+            CREATE INDEX IF NOT EXISTS vault_embeddings_embedding_idx
+            ON vault_embeddings USING ivfflat (embedding vector_cosine_ops)
+            WITH (lists = 100)
+        """)
+    logger.info("pgvector schema initialized")
 
 # =============================================================================
 # RETRY DECORATOR
@@ -792,6 +849,10 @@ async def lifespan(app: FastAPI):
         logger.warning("Vertex AI Search unavailable")
     obsidian_client = ObsidianClient()
     obs_ok = await obsidian_client.check_availability()
+    try:
+        await init_pgvector_schema()
+    except Exception as e:
+        logger.warning(f"pgvector init failed (non-fatal): {e}")
     logger.info("Gateway started (vertex=%s, obsidian=%s)", vertex_ok, obs_ok)
     yield
     logger.info("Shutting down")
