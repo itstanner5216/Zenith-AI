@@ -10,6 +10,6 @@
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["services/**/*.ts"],
+  "include": ["src/**/*", "services/**/*.ts", "*.ts", "views/**/*", "handlers/**/*", "components/**/*"],
   "exclude": ["node_modules", "dist"]
 }
