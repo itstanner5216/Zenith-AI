@@ -680,3 +680,70 @@ python -c "import yaml; yaml.safe_load(open('docker-compose.yml'))" && echo "com
 - **Phase 5:** Autonomous plan synthesis (Background Scribe with strict activation)
 - **Phase 6:** Codebase cleanup
 
+
+---
+
+## 🏁 COMPLETION DIRECTIVE: Brand & Theme Alignment Verification
+
+**Before claiming this plan is complete, verify ALL of the following.** No user-facing text, model-facing text, or developer-facing text should reference old branding ("File Organizer", "Note Companion", "notecompanion", "organization rules"). Everything must reflect the Zenith-AI / Cosmic Vault theme.
+
+### A. User-Facing Strings (what the user sees in Obsidian)
+
+Check every file you touched or created. None of these old strings should appear:
+- [ ] No `"File Organizer"` in any Notice(), UI label, description, heading, or placeholder
+- [ ] No `"Note Companion"` in any error message, tooltip, or status text
+- [ ] No `"organization rules"` — must be `"Cosmic Vault Structure"` everywhere user-visible
+- [ ] Tab names reflect new theme: "Meetings" tab → "Cosmic Context" (Task 18)
+- [ ] Settings section headers use "Vault Intelligence", not old naming
+- [ ] Console warnings use `[ZenithAI]` prefix, not `[NoteCompanion]` or `[FileOrganizer]`
+
+### B. Model-Facing Strings (what the AI model sees)
+
+If you create or modify any prompt, tool description, or context string:
+- [ ] Tool descriptions (e.g., `update-vault-structure` in Task 13) reference "Cosmic Vault Structure", not "organization rules"
+- [ ] Any tool result strings sent back via `handleAddResult` use new terminology
+- [ ] Context strings assembled from settings use the `Cosmic Vault Structure` path, not `organization rules`
+- [ ] No old names leak into model context through settings values or UI text that gets forwarded
+
+### C. Settings UI (Task 15 specifically)
+
+- [ ] New "Vault Intelligence" settings section uses `"Zenith-AI"` and `"Cosmic Vault Structure"` in all labels
+- [ ] Setting descriptions don't reference "File Organizer" or "Note Companion"
+- [ ] Toggle labels are thematic (e.g., "Vector Auto-Sort", "Cosmic Vault Structure Path")
+- [ ] The `organizationRulesPath` setting is labeled as "Cosmic Vault Structure Path" in the UI
+
+### D. Task 13b Rename Verification
+
+- [ ] All user-facing strings referencing "organization rules" → "Cosmic Vault Structure"
+- [ ] Handler file renamed if it contained old naming
+- [ ] Tool name uses new terminology
+
+### E. Settings Defaults (if adding any new settings)
+
+- [ ] Default paths use `_ZenithAI/` prefix (not `_FileOrganizer/`)
+- [ ] No setting defaults reference `.notecompanion/` — use `_ZenithAI/` instead
+
+### F. Code Identifiers
+
+- [ ] New classes/components use `ZenithAI` prefix where appropriate (not `FileOrganizer`)
+- [ ] New type imports reference `ZenithAIPlugin` (not `FileOrganizerPlugin`)
+- [ ] New component props accept `ZenithAIPlugin` (the renamed type)
+
+### G. Known Pre-Existing Issues (DO NOT fix — out of scope, noted for awareness)
+
+These exist in files you do NOT own. Do not touch them, but be aware:
+- `AGENTS.MD` lines 1, 5, 12, 1366 — still says "Note Companion" (developer docs, separate task)
+- `settings.ts:30` — `stagingFolder = ".notecompanion/staging"` (migration risk, separate task)
+- `index.ts:148,177` — `https://app.notecompanion.ai` backend URLs (domain migration, separate task)
+- `general-tab.tsx:415`, `catalyst-gate.tsx:64` — `notecompanion.ai` links (domain dependent)
+- `apiUtils.ts:59` — `'File Organizer error:'` in Notice (if not in your file scope, leave it)
+- `dashboard/view.tsx:23` — `"File Organizer Dashboard"` (if not in your scope, leave it)
+- `general-tab.tsx:216,353` — old branding in license key placeholder and token limit error
+
+### H. Verification Command
+
+Run this from the worktree root after completing all tasks:
+```bash
+grep -rn "File Organizer|Note Companion|NoteCompanion|organization.rules|\.notecompanion|FileOrganizer" packages/plugin/views/assistant/ packages/plugin/views/settings/customization-tab.tsx --include="*.ts" --include="*.tsx" | grep -v node_modules | grep -v ".test."
+```
+**Expected output: empty** (zero matches in files you own)

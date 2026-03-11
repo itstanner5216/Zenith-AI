@@ -471,3 +471,57 @@ Step 1: Initialize BackgroundScribe after VertexBrainClient
 TypeScript
 
 // In onload(), after vertexBrainClient initialization: if (this.vertexBrainClient) { this.backgroundScribe = new BackgroundScribe(this.app, this.vertexBrainClient); }
+
+---
+
+## 🏁 COMPLETION DIRECTIVE: Brand & Theme Alignment Verification
+
+**Before claiming this plan is complete, verify ALL of the following.** No user-facing text, model-facing text, or developer-facing text should reference old branding ("File Organizer", "Note Companion", "notecompanion", "organization rules"). Everything must reflect the Zenith-AI / Cosmic Vault theme.
+
+### A. User-Facing Strings (what the user sees in Obsidian)
+
+Check every file you touched or created. None of these old strings should appear:
+- [ ] No `"File Organizer"` in any Notice(), UI label, description, or placeholder
+- [ ] No `"Note Companion"` in any error message, tooltip, or status text
+- [ ] No `"organization rules"` — must be `"Cosmic Vault Structure"` everywhere user-visible
+- [ ] Console warnings use `[ZenithAI]` prefix, not `[NoteCompanion]` or `[FileOrganizer]`
+
+### B. Model-Facing Strings (what the AI model sees)
+
+If you create or modify any prompt, system message, tool description, or context string:
+- [ ] System prompts reference "Zenith-AI", not old names
+- [ ] Tool descriptions use new terminology
+- [ ] Context strings assembled from settings use `Cosmic Vault Structure` path, not `organization rules`
+- [ ] Any logging/debug strings injected into model context use new naming
+
+### C. Settings Defaults (new services you create)
+
+For every new setting field added to `settings.ts`:
+- [ ] Default paths use `_ZenithAI/` prefix (not `_FileOrganizer/`)
+- [ ] Setting names/descriptions in the UI use "Zenith-AI" and "Cosmic Vault Structure"
+- [ ] No setting defaults reference `.notecompanion/` — use `_ZenithAI/` instead
+
+### D. Code Identifiers
+
+- [ ] New classes use `ZenithAI` prefix where appropriate (not `FileOrganizer`)
+- [ ] New type imports reference `ZenithAIPlugin` (not `FileOrganizerPlugin`)
+- [ ] New service constructors accept `ZenithAIPlugin` (the renamed type)
+
+### E. Known Pre-Existing Issues (DO NOT fix — out of scope, noted for awareness)
+
+These exist in files you do NOT own. Do not touch them, but be aware:
+- `AGENTS.MD` lines 1, 5, 12, 1366 — still says "Note Companion" (developer docs, not user-facing)
+- `settings.ts:30` — `stagingFolder = ".notecompanion/staging"` (migration risk, separate task)
+- `index.ts:148,177` — `https://app.notecompanion.ai` backend URLs (domain migration, separate task)
+- `general-tab.tsx:415`, `catalyst-gate.tsx:64` — `notecompanion.ai` links (domain dependent)
+- `apiUtils.ts:59` — `'File Organizer error:'` in Notice (Plan B scope or separate fix)
+- `dashboard/view.tsx:23` — `"File Organizer Dashboard"` (not in either plan's scope)
+- `general-tab.tsx:216,353` — old branding in license key placeholder and token error
+
+### F. Verification Command
+
+Run this from the worktree root after completing all tasks:
+```bash
+grep -rn "File Organizer\|Note Companion\|NoteCompanion\|organization.rules\|\.notecompanion\|FileOrganizer" packages/plugin/services/ packages/plugin/inbox/index.ts --include="*.ts" | grep -v node_modules | grep -v ".test."
+```
+**Expected output: empty** (zero matches in files you own)
