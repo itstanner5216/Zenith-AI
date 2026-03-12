@@ -2,6 +2,7 @@ import React from "react";
 import { App, getLinkpath } from "obsidian";
 import ReactMarkdown from "react-markdown";
 import { usePlugin } from "../provider";
+import { ObsidianCodeBlock } from "./components/obsidian-code-block";
 
 interface AIMarkdownProps {
   content: string;
@@ -187,19 +188,21 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                   {children}
                 </a>
               ),
-              code: ({ inline, children, ...props }) =>
-                inline ? (
-                  <code
-                    {...props}
-                    className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
-                  >
-                    {children}
-                  </code>
-                ) : (
-                  <pre className="code-block bg-[#191621] p-3 rounded border border-[rgba(14,210,247,0.08)] overflow-x-auto">
-                    <code {...props}>{children}</code>
-                  </pre>
-                ),
+              code: ({ inline, className, children, ...props }) => {
+                if (inline) {
+                  return (
+                    <code
+                      {...props}
+                      className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
+                    >
+                      {children}
+                    </code>
+                  );
+                }
+                const lang = className?.replace("language-", "") || "";
+                const codeStr = String(children).replace(/\n$/, "");
+                return <ObsidianCodeBlock language={lang} code={codeStr} />;
+              },
               p: ({ children, ...props }) => (
                 <p
                   {...props}

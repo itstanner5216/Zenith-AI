@@ -3034,3 +3034,32 @@
 .zenith-ai-container textarea::placeholder {
   color: rgba(69, 170, 255, 0.35);
 }
+
+/* ============================================================
+   CODE BLOCK — Obsidian MarkdownRenderer Integration
+   ============================================================ */
+
+/* Container reset — remove Obsidian's default margins inside chat */
+.obsidian-rendered-code .markdown-rendered {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.obsidian-rendered-code pre {
+  margin: 0 !important;
+  padding: 12px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.obsidian-rendered-code pre code {
+  font-family: 'OperatorMonoSSmLig-Book', 'Fira Code', 'Cascadia Code', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  color: #f8f8f2 !important;
+}
+
+/* Copy button container styling */
+.obsidian-rendered-code .copy-code-button {
+  display: none !important; /* Hide Obsidian's default copy button — we have our own */
+}
