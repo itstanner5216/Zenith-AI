@@ -21,13 +21,23 @@ export const ObsidianCodeBlock: React.FC<ObsidianCodeBlockProps> = ({
       return;
     }
 
+    let cancelled = false;
     el.innerHTML = "";
 
     const fenced = `\`\`\`${language}\n${code}\n\`\`\``;
 
-    MarkdownRenderer.render(plugin.app, fenced, el, "", plugin);
+    (async () => {
+      try {
+        await MarkdownRenderer.render(plugin.app, fenced, el, "", plugin);
+      } catch {
+        if (!cancelled) {
+          el.textContent = code;
+        }
+      }
+    })();
 
     return () => {
+      cancelled = true;
       el.innerHTML = "";
     };
   }, [code, language, plugin]);
@@ -45,8 +55,12 @@ export const ObsidianCodeBlock: React.FC<ObsidianCodeBlockProps> = ({
   }, [copied]);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+    } catch {
+      // Clipboard API unavailable in some contexts
+    }
   };
 
   return (

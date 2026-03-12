@@ -160,9 +160,9 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         disabled={isProcessing }
       >
         {isProcessing ? (
-          <Loader2 className="w-4 h-4 animate-spin text-[#0fb6d6]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }} />
+          <Loader2 className="w-4 h-4 animate-spin text-[#0fb6d6]" />
         ) : isRecording ? (
-          <StopCircle className="w-4 h-4 text-[#f4569d] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]" style={{ filter: 'drop-shadow(0 0 6px rgba(244,86,157,0.6))' }} />
+          <StopCircle className="w-4 h-4 text-[#0fb6d6] animate-[zenith-typing-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_6px_rgba(14,210,247,0.6)]" />
         ) : (
           <MicIcon className="w-4 h-4 text-[#45aaff]" />
         )}

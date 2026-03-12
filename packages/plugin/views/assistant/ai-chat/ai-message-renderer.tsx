@@ -188,23 +188,30 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                   {children}
                 </a>
               ),
-              code: ({ inline, className, children, ...props }) => {
-                if (inline) {
-                  return (
-                    <code
-                      {...props}
-                      className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
-                    >
-                      {children}
-                    </code>
-                  );
+              pre: ({ children }) => {
+                // react-markdown v9: block code renders as <pre><code className="language-*">
+                const codeChild = React.Children.toArray(children).find(
+                  (child): child is React.ReactElement =>
+                    React.isValidElement(child) && (child as React.ReactElement).type === "code"
+                );
+                if (codeChild) {
+                  const className = (codeChild.props as { className?: string }).className || "";
+                  const lang = className.replace("language-", "");
+                  const codeStr = String(
+                    (codeChild.props as { children?: React.ReactNode }).children
+                  ).replace(/\n$/, "");
+                  return <ObsidianCodeBlock language={lang} code={codeStr} />;
                 }
-
-                const lang = className?.replace("language-", "") || "";
-                const codeStr = String(children).replace(/\n$/, "");
-
-                return <ObsidianCodeBlock language={lang} code={codeStr} />;
+                return <pre>{children}</pre>;
               },
+              code: ({ children, ...props }) => (
+                <code
+                  {...props}
+                  className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
+                >
+                  {children}
+                </code>
+              ),
               p: ({ children, ...props }) => (
                 <p
                   {...props}
