@@ -3407,3 +3407,28 @@
   border-color: rgba(14, 210, 247, 0.5);
   box-shadow: 0 0 8px rgba(14, 210, 247, 0.15);
 }
+
+/* --- Obsidianite Zenith-AI Polish Pass --- */
+@keyframes zenith-cyan-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(14,210,247,0.2); border-color: rgba(14,210,247,0.3); }
+  50% { box-shadow: 0 0 12px rgba(14,210,247,0.5); border-color: rgba(14,210,247,0.8); }
+}
+
+@keyframes zenith-pink-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(244,86,157,0.2); border-color: rgba(244,86,157,0.3); }
+  50% { box-shadow: 0 0 12px rgba(244,86,157,0.5); border-color: rgba(244,86,157,0.8); }
+}
+
+@keyframes zenith-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.zenith-glow-cyan { box-shadow: 0 0 8px rgba(14,210,247,0.25); }
+.zenith-glow-pink { box-shadow: 0 0 8px rgba(244,86,157,0.25); }
+
+/* Custom scrollbar for deep space theme */
+.zenith-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.zenith-scrollbar::-webkit-scrollbar-track { background: #0a0910; }
+.zenith-scrollbar::-webkit-scrollbar-thumb { background: rgba(14,210,247,0.15); border-radius: 10px; }
+.zenith-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(14,210,247,0.3); }
