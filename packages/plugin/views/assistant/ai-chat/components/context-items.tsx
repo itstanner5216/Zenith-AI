@@ -131,7 +131,7 @@ export const ContextItems: React.FC = () => {
           <div className="flex items-center justify-end mb-1 gap-2">
             {showClearConfirm ? (
               <div className="flex items-center gap-1.5 text-xs">
-                <span className="text-[#7aa2f7]">Clear context?</span>
+                <span className="text-[#45aaff]">Clear context?</span>
                 <button
                   onClick={handleClearAll}
                   className={tw(
@@ -147,7 +147,7 @@ export const ContextItems: React.FC = () => {
                 <button
                   onClick={() => setShowClearConfirm(false)}
                   className={tw(
-                    "text-[#7aa2f7] hover:text-[#bebebe]",
+                    "text-[#45aaff] hover:text-[#bebebe]",
                     "px-2 py-1 rounded",
                     "hover:bg-[rgba(14,210,247,0.08)] transition-colors"
                   )}
@@ -159,7 +159,7 @@ export const ContextItems: React.FC = () => {
               <button
                 onClick={handleClearAll}
                 className={tw(
-                  "text-xs text-[#7aa2f7] hover:text-[#0fb6d6]",
+                  "text-xs text-[#45aaff] hover:text-[#0fb6d6]",
                   "flex items-center gap-1 px-2 py-1 rounded",
                   "hover:bg-[rgba(14,210,247,0.08)] transition-colors"
                 )}

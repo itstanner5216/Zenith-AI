@@ -30,7 +30,7 @@ export const SelectedItem: React.FC<SelectedItemProps> = ({
     </span>
     <div
       onClick={onRemove}
-      className="text-[#7aa2f7] hover:text-[#f4569d] cursor-pointer transition-colors"
+      className="text-[#45aaff] hover:text-[#f4569d] cursor-pointer transition-colors"
     >
       ×
     </div>

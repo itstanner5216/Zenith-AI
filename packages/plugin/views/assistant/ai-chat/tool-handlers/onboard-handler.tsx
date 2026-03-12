@@ -116,7 +116,7 @@ export function OnboardHandler({
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-[#7aa2f7]">
+      <div className="text-sm text-[#45aaff]">
         This will analyze your vault structure to suggest optimal organization
         and settings. The analysis will:
         <ul className="list-disc ml-4 mt-2 space-y-1">

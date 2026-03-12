@@ -15,7 +15,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       type="submit"
       className={`flex-none ml-2 font-bold px-4 flex items-center justify-center h-full rounded transition-all duration-150 ${
         isGenerating
-          ? "bg-[rgba(14,210,247,0.05)] text-[#7aa2f7] cursor-not-allowed"
+          ? "bg-[rgba(14,210,247,0.05)] text-[#45aaff] cursor-not-allowed"
           : "bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] text-[#100e17] active:scale-[0.97] shadow-[0_0_8px_rgba(14,210,247,0.25)] hover:shadow-[0_0_14px_rgba(14,210,247,0.45)]"
       } ${className}`}
     >

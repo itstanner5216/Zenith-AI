@@ -125,7 +125,7 @@ export function DeleteFilesHandler({
   if (isComplete || isDone) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#50fa7b] text-xs">
+        <div className="text-[#0fb6d6] text-xs">
           {isDone && !isConfirmed ? "✗ Deletion cancelled" : "✓ Files deleted"}
         </div>
       </div>
@@ -150,12 +150,12 @@ export function DeleteFilesHandler({
           <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Deletion
           </div>
-          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
+          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Files to delete ({validFiles.length})
         </div>
         {validFiles.slice(0, 5).map((file) => (

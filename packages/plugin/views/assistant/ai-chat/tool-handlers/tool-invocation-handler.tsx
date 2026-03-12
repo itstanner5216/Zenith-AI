@@ -369,7 +369,7 @@ function ToolInvocationHandler({
       <h4 className="m-0 mb-2 text-[#bebebe] text-sm font-semibold">
         {getToolTitle(toolInvocation.toolName)}
       </h4>
-      <div className="text-sm text-[#7aa2f7]">{content}</div>
+      <div className="text-sm text-[#45aaff]">{content}</div>
     </motion.div>
   );
 }

@@ -39,7 +39,7 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
 
   return (
     <div className="flex flex-col gap-2 p-3 bg-[#191621] m-2 rounded-md border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-      <div className="text-[#7aa2f7] text-sm">Search Results:</div>
+      <div className="text-[#45aaff] text-sm">Search Results:</div>
       {groundingMetadata.groundingSupports.map((result, index) => {
         const sources = result.groundingChunkIndices.map(idx => {
           const chunk = groundingMetadata.groundingChunks[idx]?.web;
@@ -69,7 +69,7 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
                   </React.Fragment>
                 ))}
               </span>
-              <span className="text-[#7aa2f7] text-xs">
+              <span className="text-[#45aaff] text-xs">
                 Score: {(maxScore * 100).toFixed(1)}%
               </span>
             </div>

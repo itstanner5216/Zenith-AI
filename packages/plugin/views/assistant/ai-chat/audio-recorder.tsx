@@ -160,20 +160,20 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         disabled={isProcessing }
       >
         {isProcessing ? (
-          <Loader2 className="w-4 h-4 animate-spin" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }} />
+          <Loader2 className="w-4 h-4 animate-spin text-[#0fb6d6]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }} />
         ) : isRecording ? (
-          <StopCircle className="w-4 h-4" />
+          <StopCircle className="w-4 h-4 text-[#f4569d]" style={{ filter: 'drop-shadow(0 0 6px rgba(244,86,157,0.6))' }} />
         ) : (
-          <MicIcon className="w-4 h-4" />
+          <MicIcon className="w-4 h-4 text-[#45aaff]" />
         )}
       </Button>
 
       {debug && recordings.length > 0 && (
         <div className="flex flex-col gap-2 p-2 rounded bg-[#191621] border border-[rgba(14,210,247,0.1)]">
-          <h3 className="text-[#7aa2f7] text-sm">Recording History</h3>
+          <h3 className="text-[#45aaff] text-sm">Recording History</h3>
           {recordings.map((recording, index) => (
             <div key={recording.timestamp} className="flex items-center gap-2">
-              <span className="text-xs text-[#7aa2f7]">
+              <span className="text-xs text-[#45aaff]">
                 {recording.timestamp}
               </span>
               <audio controls src={recording.url} className="h-8" />

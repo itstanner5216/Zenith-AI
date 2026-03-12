@@ -207,7 +207,7 @@ export function MergeFilesHandler({
   if (isComplete || isDone) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#50fa7b] text-xs">
+        <div className="text-[#0fb6d6] text-xs">
           {isDone && !isConfirmed ? "✗ Merge cancelled" : "✓ Files merged"}
         </div>
       </div>
@@ -242,12 +242,12 @@ export function MergeFilesHandler({
           <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Merge
           </div>
-          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
+          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Files to merge ({validFiles.length})
         </div>
         {validFiles.slice(0, 5).map((file) => (
@@ -263,7 +263,7 @@ export function MergeFilesHandler({
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Output file
         </div>
         <div className="text-[#bebebe] pl-2">📄 {outputFileName}.md</div>

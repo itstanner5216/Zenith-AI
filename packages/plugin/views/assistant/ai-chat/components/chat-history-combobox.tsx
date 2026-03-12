@@ -152,12 +152,12 @@ export function ChatHistoryCombobox({
         title="Search chat history"
       >
         <div className={tw("flex items-center gap-2 flex-1 min-w-0")}>
-          <Search className="w-3 h-3 text-[#7aa2f7] flex-shrink-0" />
+          <Search className="w-3 h-3 text-[#45aaff] flex-shrink-0" />
           <span className={tw("truncate")}>
             {activeSession?.title || "Select chat..."}
           </span>
         </div>
-        <Clock className="w-3 h-3 text-[#7aa2f7] flex-shrink-0" />
+        <Clock className="w-3 h-3 text-[#45aaff] flex-shrink-0" />
       </button>
 
       {/* Dropdown */}
@@ -175,7 +175,7 @@ export function ChatHistoryCombobox({
           {/* Search Input */}
           <div className={tw("p-2 border-b border-[rgba(14,210,247,0.08)]")}>
             <div className={tw("relative")}>
-              <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[#7aa2f7]")} />
+              <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[#45aaff]")} />
               <input
                 ref={inputRef}
                 type="text"
@@ -195,7 +195,7 @@ export function ChatHistoryCombobox({
           {/* Results List */}
           <div className={tw("overflow-y-auto max-h-[350px]")}>
             {filteredSessions.length === 0 ? (
-              <div className={tw("px-4 py-3 text-xs text-[#7aa2f7] text-center")}>
+              <div className={tw("px-4 py-3 text-xs text-[#45aaff] text-center")}>
                 No chats found
               </div>
             ) : (
@@ -233,7 +233,7 @@ export function ChatHistoryCombobox({
                         </div>
                         <div
                           className={tw(
-                            "text-[10px] text-[#7aa2f7] mt-0.5 flex items-center gap-1.5"
+                            "text-[10px] text-[#45aaff] mt-0.5 flex items-center gap-1.5"
                           )}
                         >
                           <span>{relativeTime}</span>

@@ -102,7 +102,7 @@ export function CreateTemplateHandler({
   if (isComplete || isDone) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#50fa7b] text-xs">
+        <div className="text-[#0fb6d6] text-xs">
           {isDone && !isConfirmed
             ? "✗ Template creation cancelled"
             : "✓ Template created"}
@@ -119,12 +119,12 @@ export function CreateTemplateHandler({
           <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Create Template
           </div>
-          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
+          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Template Details
         </div>
         <div className="text-[#bebebe] pl-2">
@@ -136,10 +136,10 @@ export function CreateTemplateHandler({
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Template Preview
         </div>
-        <div className="p-2 bg-[#0d0b12] text-[#7aa2f7] font-mono text-xs max-h-32 overflow-y-auto whitespace-pre-wrap rounded border border-[rgba(14,210,247,0.06)]">
+        <div className="p-2 bg-[#0d0b12] text-[#45aaff] font-mono text-xs max-h-32 overflow-y-auto whitespace-pre-wrap rounded border border-[rgba(14,210,247,0.06)]">
           {templateContent.slice(0, 300)}
           {templateContent.length > 300 && "..."}
         </div>

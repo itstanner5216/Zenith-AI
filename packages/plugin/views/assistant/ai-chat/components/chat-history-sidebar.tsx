@@ -38,7 +38,7 @@ export function ChatHistorySidebar({
         </div>
         <div className={tw("flex-1 overflow-y-auto space-y-1")}>
           {sessions.length === 0 ? (
-            <div className={tw("text-xs text-[#7aa2f7] py-4 text-center")} style={{ opacity: 0.5 }}>
+            <div className={tw("text-xs text-[#45aaff] py-4 text-center")} style={{ opacity: 0.5 }}>
               No chat history
             </div>
           ) : (
@@ -67,7 +67,7 @@ export function ChatHistorySidebar({
                       )}>
                         {session.title}
                       </div>
-                      <div className={tw("text-xs text-[#7aa2f7] mt-0.5 flex items-center gap-2")} style={{ opacity: 0.6 }}>
+                      <div className={tw("text-xs text-[#45aaff] mt-0.5 flex items-center gap-2")} style={{ opacity: 0.6 }}>
                         <span>{relativeTime}</span>
                         {messageCount > 0 && (
                           <>

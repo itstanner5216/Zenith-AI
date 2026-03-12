@@ -89,7 +89,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   {source.title || source.domain}
                 </a>
               </h4>
-              <p className="text-xs text-[#7aa2f7] truncate" style={{ opacity: 0.6 }}>
+              <p className="text-xs text-[#45aaff] truncate" style={{ opacity: 0.6 }}>
                 {source.domain}
               </p>
             </div>

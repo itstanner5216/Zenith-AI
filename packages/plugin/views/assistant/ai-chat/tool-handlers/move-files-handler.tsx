@@ -111,7 +111,7 @@ export function MoveFilesHandler({
       </div>
 
       {!isValidated && filesToMove.length > 0 && (
-        <div className="text-sm text-[#7aa2f7]">
+        <div className="text-sm text-[#45aaff]">
           Found {filesToMove.length} files to move:
           <ul className="list-disc ml-4 mt-1">
             {filesToMove.slice(0, 5).map((file, i) => (
@@ -131,9 +131,9 @@ export function MoveFilesHandler({
               key={i}
               className={`${
                 result.startsWith("✅") 
-                  ? "text-[#50fa7b]" 
+                  ? "text-[#0fb6d6]" 
                   : result.startsWith("ℹ️")
-                  ? "text-[#7aa2f7]"
+                  ? "text-[#45aaff]"
                   : "text-[#f4569d]"
               }`}
             >

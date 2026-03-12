@@ -27,7 +27,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         📝
       </motion.div>
       <motion.p 
-        className="text-lg text-[#7aa2f7] mb-6 text-center"
+        className="text-lg text-[#45aaff] mb-6 text-center"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}

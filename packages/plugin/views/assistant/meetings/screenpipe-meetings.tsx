@@ -254,7 +254,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
 
   if (isLoading) {
     return (
-      <div className={tw("p-4 text-center text-[#7aa2f7]")}>
+      <div className={tw("p-4 text-center text-[#45aaff]")}>
         Loading from ScreenPipe...
       </div>
     );
@@ -290,7 +290,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
             )}
           </button>
         </div>
-        <p className={tw("text-sm text-[#7aa2f7]")}>
+        <p className={tw("text-sm text-[#45aaff]")}>
           ScreenPipe unavailable. Start ScreenPipe (e.g. localhost:3030), then
           click Retry to load meetings—no need to reload Obsidian.
         </p>
@@ -505,7 +505,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
       </div>
 
       {sessions.length === 0 ? (
-        <p className={tw("text-sm text-[#7aa2f7]")}>
+        <p className={tw("text-sm text-[#45aaff]")}>
           No meetings in the last{" "}
           {plugin.settings.screenpipeTimeRange ?? 4} hours.
         </p>
@@ -566,7 +566,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                       </span>
                     </div>
                     <div
-                      className={tw("text-xs text-[#7aa2f7] space-x-3")}
+                      className={tw("text-xs text-[#45aaff] space-x-3")}
                     >
                       <span title="Session time range (from ScreenPipe)">
                         {timeRange}
@@ -574,7 +574,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     </div>
                     <p
                       className={tw(
-                        "text-xs text-[#7aa2f7] mt-0.5"
+                        "text-xs text-[#45aaff] mt-0.5"
                       )}
                       title="Evidence: window and URL host"
                     >
@@ -583,7 +583,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     </p>
                     <p
                       className={tw(
-                        "text-xs text-[#7aa2f7] mt-0.5 capitalize"
+                        "text-xs text-[#45aaff] mt-0.5 capitalize"
                       )}
                       title="How this meeting was detected"
                     >
@@ -591,7 +591,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     </p>
                     <p
                       className={tw(
-                        "text-xs text-[#7aa2f7] mt-1 truncate"
+                        "text-xs text-[#45aaff] mt-1 truncate"
                       )}
                       title={
                         hasTranscript ? session.transcript : undefined

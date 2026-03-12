@@ -64,7 +64,7 @@ export function AppendContentHandler({
       </div>
 
       <div className="bg-[#0d0b12] p-3 rounded border border-[rgba(14,210,247,0.06)]">
-        <pre className="text-sm text-[#7aa2f7] whitespace-pre-wrap">
+        <pre className="text-sm text-[#45aaff] whitespace-pre-wrap">
           {toolInvocation.args.content}
         </pre>
       </div>

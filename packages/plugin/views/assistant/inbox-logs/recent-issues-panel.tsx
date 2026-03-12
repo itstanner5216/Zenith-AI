@@ -14,9 +14,9 @@ const StatusBadge: React.FC<{ status: FileStatus }> = ({ status }) => {
       case "error":
         return "bg-[#f4569d]";
       case "bypassed":
-        return "bg-[#7aa2f7]";
+        return "bg-[#45aaff]";
       default:
-        return "bg-[#7aa2f7]";
+        return "bg-[#45aaff]";
     }
   };
 
@@ -107,7 +107,7 @@ const IssueCard: React.FC<{
             {errorMessage}
           </div>
           {getMostRecentTimestamp() && (
-            <div className="text-xs text-[#7aa2f7] mt-0.5" style={{ opacity: 0.4 }}>
+            <div className="text-xs text-[#45aaff] mt-0.5" style={{ opacity: 0.4 }}>
               {new Date(getMostRecentTimestamp()).toLocaleString()}
             </div>
           )}
@@ -298,7 +298,7 @@ export const RecentIssuesPanel: React.FC<{ plugin: any }> = ({ plugin }) => {
             Recent Issues ({issues.length})
           </h3>
         </div>
-        <div className="text-xs text-[#7aa2f7] mb-2" style={{ opacity: 0.6 }}>
+        <div className="text-xs text-[#45aaff] mb-2" style={{ opacity: 0.6 }}>
           Files that failed processing or were bypassed
         </div>
       </div>

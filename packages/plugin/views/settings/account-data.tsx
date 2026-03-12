@@ -186,11 +186,11 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
   if (!plugin.settings.API_KEY) {
     return (
-      <div className="bg-[#100e17] p-4 rounded-lg">
-        <h3 className="text-lg font-medium mb-2 mt-0">
+      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.06)]">
+        <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">
           Get Started with Zenith-AI
         </h3>
-        <p className="text-[#7aa2f7] mb-4">
+        <p className="text-xs text-[#45aaff] opacity-70 mb-4">
           Create an account or sign in to access all features.
         </p>
 
@@ -199,7 +199,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
             className={`cursor-pointer px-4 py-2 font-medium ${
               isSignup
                 ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]"
-                : "text-[#7aa2f7]"
+                : "text-[#45aaff]"
             }`}
             onClick={() => setIsSignup(true)}
           >
@@ -209,7 +209,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
             className={`cursor-pointer px-4 py-2 font-medium ${
               !isSignup
                 ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]"
-                : "text-[#7aa2f7]"
+                : "text-[#45aaff]"
             }`}
             onClick={() => setIsSignup(false)}
           >
@@ -305,15 +305,15 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         {/* Create Account via Web */}
         <div className="mb-6">
-          <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)]">
-            <h4 className="font-medium mb-2 mt-0">Create Account via Web</h4>
-            <p className="text-[#7aa2f7] text-sm mb-4">
+            <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <h4 className="font-medium mb-2 mt-0 text-[#0fb6d6]">Create Account via Web</h4>
+            <p className="text-xs text-[#45aaff] opacity-70 mb-4">
               Create an account through our web dashboard for a full-featured
               experience.
             </p>
             <div
               onClick={() => window.open(plugin.getServerUrl(), "_blank")}
-              className="cursor-pointer bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.7)] transition-colors text-center font-medium"
+              className="cursor-pointer bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 text-center font-semibold shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_14px_rgba(14,210,247,0.4)]"
             >
               Open Dashboard
             </div>
@@ -322,14 +322,14 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         <div className="flex items-center justify-center mb-6">
           <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
-          <span className="mx-4 text-[#7aa2f7] text-sm">or</span>
+          <span className="mx-4 text-[#45aaff] text-sm">or</span>
           <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
         </div>
 
         {/* Quick Top-up Section */}
         <div className="mb-6">
           <h4 className="font-medium mb-3 mt-0">Quick Top-up</h4>
-          <p className="text-[#7aa2f7] text-sm mb-3">
+          <p className="text-xs text-[#45aaff] opacity-70 mb-3">
             Start immediately with a one-time credit purchase. No account
             needed.
           </p>
@@ -348,7 +348,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
         {isDevMode && (
           <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] mt-4">
             <h4 className="font-medium mb-2 mt-0">Development Mode</h4>
-            <p className="text-[#7aa2f7] text-sm mb-3">
+            <p className="text-xs text-[#45aaff] opacity-70 mb-3">
               Add tokens or minutes to your account for development purposes.
             </p>
             <div className="space-y-3">
@@ -363,7 +363,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUp}
                   disabled={isLoading}
-                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Tokens"}
                 </button>
@@ -379,7 +379,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUpMinutes}
                   disabled={isLoading}
-                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Minutes"}
                 </button>
@@ -388,7 +388,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
           </div>
         )}
 
-        <div className="text-[#7aa2f7] text-sm mt-6">
+        <div className="text-[#45aaff] text-sm mt-6">
           <p className="mb-2">
             💡 <strong>Benefits of having an account:</strong>
           </p>
@@ -406,7 +406,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
   return (
     <div className="space-y-6">
       <div className="pt-6">
-        <h3 className="text-lg font-medium mb-4 mt-0">Need more credits?</h3>
+        <h3 className="text-lg font-semibold mb-4 mt-0 text-[#0fb6d6]">Need more credits?</h3>
         <div className="space-y-3">
           <TopUpCredits
             plugin={plugin}
@@ -421,7 +421,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
       {isDevMode && (
         <div className="border-t pt-6">
-          <h3 className="text-lg font-medium mb-4 mt-0">Development Tools</h3>
+          <h3 className="text-lg font-semibold mb-4 mt-0 text-[#0fb6d6]">Development Tools</h3>
           <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] space-y-3">
             <div>
               <h4 className="font-medium mb-2 mt-0">Add Development Tokens</h4>
@@ -436,7 +436,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUp}
                   disabled={isLoading}
-                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Tokens"}
                 </button>
@@ -455,7 +455,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUpMinutes}
                   disabled={isLoading}
-                  className="bg-[#50fa7b] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(80,250,123,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Minutes"}
                 </button>

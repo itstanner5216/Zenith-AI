@@ -153,23 +153,23 @@ export function ModifyTextHandler({
               style={bgColor ? { backgroundColor: bgColor } : {}}
               className={`py-0.5 px-2 flex items-start border-l-2 ${
                 line.added 
-                  ? "border-[#50fa7b]" 
+                  ? "border-[#0fb6d6]" 
                   : line.removed 
                   ? "border-[#f4569d]" 
                   : "border-transparent"
               }`}
             >
               <span className={`select-none mr-2 w-4 flex-shrink-0 font-bold ${
-                line.added ? "text-[#50fa7b]" : line.removed ? "text-[#f4569d]" : "text-[rgba(122,162,247,0.4)]"
+                line.added ? "text-[#0fb6d6]" : line.removed ? "text-[#f4569d]" : "text-[rgba(122,162,247,0.4)]"
               }`}>
                 {line.added ? "+" : line.removed ? "−" : ""}
               </span>
               <span className={`flex-1 whitespace-pre-wrap break-words ${
                 line.removed ? "line-through opacity-75 text-[#f4569d]" : ""
               } ${
-                line.added ? "font-medium text-[#50fa7b]" : ""
+                line.added ? "font-medium text-[#0fb6d6]" : ""
               } ${
-                !line.added && !line.removed ? "text-[#7aa2f7]" : ""
+                !line.added && !line.removed ? "text-[#45aaff]" : ""
               }`}>
                 {line.value}
               </span>
@@ -182,7 +182,7 @@ export function ModifyTextHandler({
 
   if (modifySuccess === null && !pendingChanges) {
     return (
-      <div className="p-2 text-sm text-[#7aa2f7]">
+      <div className="p-2 text-sm text-[#45aaff]">
         Analyzing changes...
       </div>
     );
@@ -197,7 +197,7 @@ export function ModifyTextHandler({
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between border-b border-[rgba(14,210,247,0.08)] pb-2">
-          <div className="text-xs font-semibold text-[#7aa2f7] uppercase">
+          <div className="text-xs font-semibold text-[#45aaff] uppercase">
             Review Changes
           </div>
           <div className="flex items-center gap-2">
@@ -230,7 +230,7 @@ export function ModifyTextHandler({
 
         {explanation && (
           <div className="p-2 border-b border-[rgba(14,210,247,0.08)]">
-            <div className="text-xs font-semibold text-[#7aa2f7] uppercase mb-1">
+            <div className="text-xs font-semibold text-[#45aaff] uppercase mb-1">
               Summary
             </div>
             <div className="text-xs text-[#bebebe]">
@@ -241,7 +241,7 @@ export function ModifyTextHandler({
 
         <div className="border border-[rgba(14,210,247,0.08)]">
           <div className="border-b border-[rgba(14,210,247,0.08)] px-2 py-1 flex items-center justify-between">
-            <div className="text-xs font-semibold text-[#7aa2f7] uppercase">
+            <div className="text-xs font-semibold text-[#45aaff] uppercase">
               Diff
             </div>
             <div className="flex items-center gap-3 text-xs">
@@ -252,7 +252,7 @@ export function ModifyTextHandler({
                 </span>
               )}
               {addedCount > 0 && (
-                <span className="text-[#50fa7b] flex items-center gap-1">
+                <span className="text-[#0fb6d6] flex items-center gap-1">
                   <span>+</span>
                   <span>{addedCount} added</span>
                 </span>
@@ -270,12 +270,12 @@ export function ModifyTextHandler({
   if (modifySuccess) {
     return (
       <div className="p-3 space-y-2 border-b border-[rgba(14,210,247,0.08)]">
-        <div className="flex items-center text-[#50fa7b] space-x-2">
+        <div className="flex items-center text-[#0fb6d6] space-x-2">
           <span className="text-base">✓</span>
           <span className="text-sm font-medium">Changes Applied Successfully</span>
         </div>
         {explanation && (
-          <div className="text-xs text-[#7aa2f7]">
+          <div className="text-xs text-[#45aaff]">
             {explanation}
           </div>
         )}
@@ -290,7 +290,7 @@ export function ModifyTextHandler({
         <span className="text-sm font-medium">Failed to Apply Changes</span>
       </div>
       {explanation && (
-        <div className="text-xs text-[#7aa2f7]">
+        <div className="text-xs text-[#45aaff]">
           <strong>Attempted Changes:</strong> {explanation}
         </div>
       )}

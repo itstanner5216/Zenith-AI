@@ -388,14 +388,14 @@ export function SyncTab({
             <button
               onClick={fetchFiles}
               disabled={loading}
-              className={tw("p-2 rounded-full hover:bg-[rgba(14,210,247,0.08)] text-[#7aa2f7] transition-colors")}
+              className={tw("p-2 rounded-full hover:bg-[rgba(14,210,247,0.08)] text-[#45aaff] transition-colors")}
               title="Refresh files"
             >
               <RotateCw className={tw(`w-4 h-4 ${loading ? "animate-spin" : ""}`)} />
             </button>
           </div>
         </div>
-        <p className={tw("text-xs text-[#7aa2f7] mb-4")}>
+        <p className={tw("text-xs text-[#45aaff] mb-4")}>
           Access files uploaded from your mobile device or web dashboard.
         </p>
 
@@ -420,7 +420,7 @@ export function SyncTab({
           {downloadedFiles.size > 0 && (
             <button
               onClick={clearDownloadHistory}
-              className={tw("px-3 py-2 rounded text-xs font-medium bg-[#191621] text-[#7aa2f7] border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.06)] transition-colors")}
+              className={tw("px-3 py-2 rounded text-xs font-medium bg-[#191621] text-[#45aaff] border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.06)] transition-colors")}
               title="Clear sync history"
             >
               Reset
@@ -489,7 +489,7 @@ export function SyncTab({
                       className={tw("flex items-center justify-center w-6 h-6")}
                       style={{ display: file.fileType.startsWith('image/') ? 'none' : 'flex' }}
                     >
-                      {getFileIcon(file.fileType, tw("w-4 h-4 text-[#7aa2f7]"))}
+                      {getFileIcon(file.fileType, tw("w-4 h-4 text-[#45aaff]"))}
                     </div>
                   </div>
 
@@ -498,7 +498,7 @@ export function SyncTab({
                     <div className={tw("text-sm text-[#bebebe] truncate font-medium")}>
                       {file.originalName}
                     </div>
-                    <div className={tw("text-xs text-[#7aa2f7] flex items-center gap-2")}>
+                    <div className={tw("text-xs text-[#45aaff] flex items-center gap-2")}>
                       <span>{new Date(file.createdAt).toLocaleDateString()}</span>
                       {file.fileType.startsWith('image/') && (
                         <span className={tw("text-[rgba(122,162,247,0.4)]")}>• Image</span>
@@ -509,11 +509,11 @@ export function SyncTab({
                   {/* Status icon */}
                   <div className={tw("w-5 h-5 flex items-center justify-center flex-shrink-0")}>
                     {downloading[file.id] ? (
-                      <DownloadCloud className={tw("w-4 h-4 text-[#7aa2f7] animate-pulse")} />
+                      <DownloadCloud className={tw("w-4 h-4 text-[#45aaff] animate-pulse")} />
                     ) : downloadedFiles.has(file.id) ? (
-                      <Check className={tw("w-4 h-4 text-[#50fa7b]")} />
+                      <Check className={tw("w-4 h-4 text-[#0fb6d6]")} />
                     ) : file.status === 'completed' ? (
-                      <Download className={tw("w-4 h-4 text-[#7aa2f7] opacity-0 group-hover:opacity-100 transition-opacity")} />
+                      <Download className={tw("w-4 h-4 text-[#45aaff] opacity-0 group-hover:opacity-100 transition-opacity")} />
                     ) : (
                       <Clock className={tw("w-4 h-4 text-[#ffb74d]")} style={{ filter: 'drop-shadow(0 0 4px rgba(255,183,77,0.4))' }} />
                     )}

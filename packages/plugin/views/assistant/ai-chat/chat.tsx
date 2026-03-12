@@ -1935,8 +1935,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 className={tw(
                   "clickable-icon flex items-center justify-center w-8 h-8 rounded-md transition-colors",
                   messages.length === 0
-                    ? "text-[#7aa2f7] cursor-not-allowed opacity-50"
-                    : "text-[#7aa2f7] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)]"
+                    ? "text-[#45aaff] cursor-not-allowed opacity-50"
+                    : "text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)]"
                 )}
                 aria-label="Export chat as markdown"
               >
@@ -2009,7 +2009,9 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       <div className="flex-1 overflow-y-auto px-3 py-2 bg-[#100e17]">
         <div className="flex flex-col space-y-1">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12"></div>
+            <div className="flex flex-col items-center justify-center py-8">
+              <ExamplePrompts onExampleClick={handleExampleClick} />
+            </div>
           ) : (
             messages.map(message => {
               // Extract tool invocations from AI SDK v4 message format.
@@ -2150,7 +2152,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                   </div>
                   <button
                     onClick={handleDismissError}
-                    className="text-[#7aa2f7] hover:text-[#bebebe] text-xs"
+                    className="text-[#45aaff] hover:text-[#bebebe] text-xs"
                     title="Dismiss error"
                   >
                     ✕
@@ -2207,7 +2209,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 disabled={isGenerating || !input.trim()}
                 className={`flex items-center justify-center transition-all rounded-md w-8 h-8 ${
                   isGenerating || !input.trim()
-                    ? "text-[#7aa2f7] cursor-not-allowed opacity-50"
+                    ? "text-[#45aaff] cursor-not-allowed opacity-50"
                     : "text-[#100e17] bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
                 }`}
                 title={isGenerating ? "Stop generating" : "Send message"}
@@ -2222,7 +2224,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           </div>
 
           {/* Row 3: Modifier bar - subtle toggles and status */}
-          <div className="flex items-center justify-between mt-1.5 text-xs text-[#7aa2f7]">
+          <div className="flex items-center justify-between mt-1.5 text-xs text-[#45aaff]">
             <div className="flex items-center gap-3">
               <ContextLimitIndicator
                 unifiedContext={contextString}

@@ -249,7 +249,7 @@ const Tiptap: React.FC<TiptapProps> = ({
     <div className="tiptap-editor relative" onKeyDown={onKeyDown}>
       <EditorContent editor={editor} />
       {isEmpty && editor && (
-        <div className="absolute left-[10px] top-[10px] pointer-events-none text-[#7aa2f7] text-sm select-none opacity-50">
+        <div className="absolute left-[10px] top-[10px] pointer-events-none text-[#45aaff] text-sm select-none opacity-50">
           Type @ to mention files, folders, or tags, or / for commands...
         </div>
       )}

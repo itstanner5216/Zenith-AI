@@ -6,7 +6,7 @@ import { tw } from "@/lib/utils";
 const ConfidenceBadge: React.FC<{ score: number }> = ({ score }) => {
   const getConfidenceColor = (score: number) => {
     if (score >= 80) return "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6]";
-    if (score >= 60) return "bg-[rgba(122,162,247,0.15)] text-[#7aa2f7]";
+    if (score >= 60) return "bg-[rgba(122,162,247,0.15)] text-[#45aaff]";
     return "bg-[rgba(190,190,190,0.1)] text-[#bebebe]";
   };
 

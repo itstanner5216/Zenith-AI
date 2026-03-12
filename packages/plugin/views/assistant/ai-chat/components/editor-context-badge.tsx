@@ -30,7 +30,7 @@ export function EditorContextBadge({
     <StyledContainer>
       <div
         className={tw(
-          "flex items-center gap-2 px-3 py-1.5 text-xs bg-[#0d0b12] border border-[rgba(14,210,247,0.1)] text-[#7aa2f7] rounded"
+          "flex items-center gap-2 px-3 py-1.5 text-xs bg-[#0d0b12] border border-[rgba(14,210,247,0.1)] text-[#45aaff] rounded"
         )}
       >
         <span className="font-medium">📝 Selection:</span>
@@ -47,7 +47,7 @@ export function EditorContextBadge({
           <div
             onClick={onClear}
             className={tw(
-              "ml-auto text-[#7aa2f7] hover:text-[#f4569d] cursor-pointer"
+              "ml-auto text-[#45aaff] hover:text-[#f4569d] cursor-pointer"
             )}
             title="Clear selection context"
             aria-label="Clear selection context"

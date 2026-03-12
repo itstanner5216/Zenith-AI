@@ -39,7 +39,7 @@ export function ChatTabItem({
       <span
         className={tw(
           "text-[10px] truncate max-w-[120px]",
-          isActive ? "text-[#0fb6d6] font-medium" : "text-[#7aa2f7]"
+          isActive ? "text-[#0fb6d6] font-medium" : "text-[#45aaff]"
         )}
       >
         {session.title}

@@ -23,7 +23,7 @@ interface CommandListProps {
 
 const CommandIcon = ({ icon }: { icon: React.ReactNode }) => {
   return (
-    <span className="text-[#7aa2f7] flex-shrink-0 w-5 h-5 flex items-center justify-center">
+    <span className="text-[#45aaff] flex-shrink-0 w-5 h-5 flex items-center justify-center">
       {icon}
     </span>
   );
@@ -111,7 +111,7 @@ export const CommandList = forwardRef<
 
         return (
           <div key={category} className="py-1.5 first:pt-2.5 last:pb-2.5">
-            <div className="text-xs font-semibold text-[#7aa2f7] uppercase px-3 py-1.5 mb-1">
+            <div className="text-xs font-semibold text-[#45aaff] uppercase px-3 py-1.5 mb-1">
               {getCategoryLabel(category)}
             </div>
             {items.map(item => {
@@ -132,7 +132,7 @@ export const CommandList = forwardRef<
                       {item.label}
                     </span>
                     {item.description && (
-                      <span className="text-xs text-[#7aa2f7] leading-tight">
+                      <span className="text-xs text-[#45aaff] leading-tight">
                         {item.description}
                       </span>
                     )}
@@ -145,7 +145,7 @@ export const CommandList = forwardRef<
       })}
     </div>
   ) : (
-    <div className="px-4 py-3 text-sm text-[#7aa2f7] text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
+    <div className="px-4 py-3 text-sm text-[#45aaff] text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
       No matching commands found
     </div>
   );

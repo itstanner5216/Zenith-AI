@@ -103,7 +103,7 @@ export const Mentions = forwardRef<
                 }`}
                 onClick={() => selectItem(index)}
               >
-                <span className="text-[#7aa2f7] flex-shrink-0">
+                <span className="text-[#45aaff] flex-shrink-0">
                   <ItemIcon type={item.type} />
                 </span>
                 
@@ -114,7 +114,7 @@ export const Mentions = forwardRef<
                </div>
 
                 {item.type && (
-                  <span className="text-xs text-[#7aa2f7] bg-[#191621] px-1.5 py-0.5 rounded-full flex-shrink-0">
+                  <span className="text-xs text-[#45aaff] bg-[#191621] px-1.5 py-0.5 rounded-full flex-shrink-0">
                     {item.type}
                   </span>
                 )}
@@ -123,7 +123,7 @@ export const Mentions = forwardRef<
           ))}
         </ul>
       ) : (
-        <div className="px-4 py-3 text-sm text-[#7aa2f7] text-center">
+        <div className="px-4 py-3 text-sm text-[#45aaff] text-center">
         No matching items found
       </div>
     )

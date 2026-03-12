@@ -131,7 +131,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
           <div className="text-[#f4569d] font-medium mb-1">
             Error: Failed to fetch
           </div>
-          <p className="text-sm text-[#7aa2f7]">
+          <p className="text-sm text-[#45aaff]">
             {error?.message || "An unexpected error occurred"}
           </p>
         </div>

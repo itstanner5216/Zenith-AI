@@ -123,7 +123,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
     switch (keyStatus) {
       case "valid":
         return (
-          <div className="flex items-center text-[#50fa7b] text-sm">
+          <div className="flex items-center text-[#0fb6d6] text-sm" style={{ textShadow: '0 0 8px rgba(14,210,247,0.4)' }}>
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -161,7 +161,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "checking":
         return (
-          <div className="flex items-center text-[#7aa2f7] text-sm">
+          <div className="flex items-center text-[#45aaff] text-sm">
             <svg
               className="w-4 h-4 mr-1.5 animate-spin"
               fill="none"
@@ -194,10 +194,10 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-medium mb-2 mt-0">
+            <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">
               Zenith-AI License Key
             </h3>
-            <p className="text-[#7aa2f7] mb-4">
+            <p className="text-xs text-[#45aaff] opacity-70 mb-4">
               Enter your license key to activate Zenith-AI.
             </p>
           </div>
@@ -208,7 +208,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 type="text"
                 className={`flex-1 bg-[#0d0b12] text-[#bebebe] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40 ${
                   keyStatus === "valid"
-                    ? "border-[#50fa7b] shadow-[0_0_6px_rgba(80,250,123,0.2)]"
+                    ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
                     : keyStatus === "invalid" || validationError
                     ? "border-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
                     : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
@@ -237,7 +237,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
       {/* Usage Stats Section - Always visible */}
       <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-        <h3 className="text-lg font-medium mb-2 mt-0">Usage Statistics</h3>
+        <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-[rgba(14,210,247,0.2)] border-t-[#0fb6d6]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}></div>
@@ -258,7 +258,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                   </span>
                 </div>
               </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]">
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)' }}>
                 <div
                   style={{
                     width: `${Math.min(
@@ -310,7 +310,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 </div>
               </div>
             )}
-            <div className="text-sm text-[#7aa2f7]">
+            <div className="text-sm text-[#45aaff]">
               <p>
                 Plan:{" "}
                 <span className="font-medium text-[#0fb6d6]">
@@ -322,7 +322,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 <span
                   className={`font-medium ${
                     usageData.subscriptionStatus === "active"
-                      ? "text-[#50fa7b]"
+                      ? "text-[#0fb6d6]"
                       : "text-[#ffb74d]"
                   }`}
                   style={usageData.subscriptionStatus !== "active" ? { textShadow: '0 0 8px rgba(255,183,77,0.3)' } : undefined}
@@ -366,7 +366,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             )}
           </div>
         ) : (
-          <p className="text-[#7aa2f7] text-sm">
+          <p className="text-sm text-[#45aaff] opacity-70">
             {!plugin.settings.API_KEY
               ? "Please enter a license key to see usage statistics."
               : keyStatus === "invalid"
@@ -395,7 +395,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       />
 
       <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-        <h3 className="text-lg font-medium mb-4 mt-0">Quick Tutorial</h3>
+        <h3 className="text-lg font-semibold mb-4 mt-0 text-[#0fb6d6]">Quick Tutorial</h3>
         <div className="youtube-embed">
           <iframe
             width="100%"
@@ -422,7 +422,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
           </a>{" "}
           to help improve and maintain the project. 🙏
         </p>
-        <p className="text-[#7aa2f7]">
+        <p className="text-[#45aaff]">
           <a
             href="https://discord.gg/UWH53WqFuE"
             target="_blank"

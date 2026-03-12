@@ -53,8 +53,10 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <ToggleSetting
+    <div className="p-4 space-y-6">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">Logging & Debug</h3>
+        <ToggleSetting
         name="Zenith-AI File Logs"
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
@@ -76,7 +78,10 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           plugin.saveSettings();
         }}
       />
+      </div>
 
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">Self-Hosting</h3>
       <div className="setting-item">
         <div className="setting-item-info">
           <div className="setting-item-name">Enable Self-Hosting</div>
@@ -125,13 +130,14 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           </div>
         </div>
       )}
+      </div>
 
       {useLogs && (
-        <div className="space-y-2 border-t border-[rgba(14,210,247,0.08)] pt-4 mt-4">
+        <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-2">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-[#bebebe]">View Logs</div>
-              <div className="text-sm text-[#7aa2f7]">
+              <div className="text-sm text-[#45aaff]">
                 {logger.getLogs().length} log entries available
               </div>
             </div>
@@ -170,7 +176,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                       className="w-[--icon-size] h-[--icon-size]"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#7aa2f7"
+                      stroke="#45aaff"
                       strokeWidth="2"
                     >
                       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -190,7 +196,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                       className="w-[--icon-size] h-[--icon-size]"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#7aa2f7"
+                      stroke="#45aaff"
                       strokeWidth="2"
                     >
                       <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -208,7 +214,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                   className="w-[--icon-size] h-[--icon-size]"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#7aa2f7"
+                  stroke="#45aaff"
                   strokeWidth="2"
                 >
                   {showLogs ? (
@@ -221,12 +227,9 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             </div>
           </div>
           {showLogs && (
-            <div
-              className="max-h-96 overflow-y-auto border border-[rgba(14,210,247,0.08)] rounded p-2 bg-[#191621] select-text"
-              style={{ userSelect: "text", WebkitUserSelect: "text" }}
-            >
+            <div className="max-h-96 overflow-y-auto border border-[rgba(14,210,247,0.08)] rounded p-2 bg-[#0d0b12] select-text" style={{ userSelect: "text", WebkitUserSelect: "text" }}>
               {logger.getLogs().length === 0 ? (
-                <div className="text-sm text-[#7aa2f7] py-4 text-center">
+                <div className="text-sm text-[#45aaff] py-4 text-center">
                   No logs available. Enable Debug Mode to start logging.
                 </div>
               ) : (
@@ -242,7 +245,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                     }`}
                     style={{ userSelect: "text", WebkitUserSelect: "text", ...(log.level === "warn" ? { textShadow: '0 0 8px rgba(255,183,77,0.3)' } : {}) }}
                   >
-                    <span className="text-[#7aa2f7] text-xs">
+                    <span className="text-[#45aaff] text-xs">
                       {new Date(log.timestamp).toLocaleString()}
                     </span>{" "}
                     <span className="font-medium">
@@ -250,7 +253,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                     </span>{" "}
                     {log.message}
                     {log.details && (
-                      <pre className="text-xs mt-1 text-[#7aa2f7] whitespace-pre-wrap break-words select-text">
+                      <pre className="text-xs mt-1 text-[#45aaff] whitespace-pre-wrap break-words select-text">
                         {log.details}
                       </pre>
                     )}
@@ -262,6 +265,8 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         </div>
       )}
 
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">Performance Limits</h3>
       <div className="setting-item">
         <div className="setting-item-info">
           <div className="setting-item-name">Content Analysis Cutoff</div>
@@ -315,7 +320,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         </div>
       </div>
 
-      <div className="setting-item">
+      <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0">
         <div className="setting-item-info">
           <div className="setting-item-name">PDF Page Cutoff</div>
           <div className="setting-item-description">
@@ -338,6 +343,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           />
         </div>
       </div>
+      </div>
     </div>
   );
 };
@@ -355,10 +361,10 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
   value,
   onChange,
 }) => (
-  <div className="flex items-center justify-between py-2">
+  <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0">
     <div>
       <div className="font-medium text-[#bebebe]">{name}</div>
-      <div className="text-sm text-[#7aa2f7]">{description}</div>
+      <div className="text-xs text-[#45aaff] opacity-70">{description}</div>
     </div>
     <div>
       <label className="relative inline-flex items-center cursor-pointer">

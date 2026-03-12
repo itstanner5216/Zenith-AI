@@ -97,7 +97,7 @@ export function ExportToFormatHandler({
     code { background: #191621; color: rgba(14, 210, 247, 0.9); padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; border: 1px solid rgba(14, 210, 247, 0.12); }
     pre { background: #191621; padding: 16px; border-radius: 6px; overflow-x: auto; border: 1px solid rgba(14, 210, 247, 0.08); }
     pre code { color: #bebebe; border: none; background: transparent; }
-    blockquote { border-left: 3px solid rgba(14, 210, 247, 0.5); padding-left: 16px; color: #7aa2f7; background: linear-gradient(135deg, rgba(32, 28, 41, 0.45), #100e17); margin: 1em 0; padding: 8px 16px; border-radius: 0 4px 4px 0; }
+    blockquote { border-left: 3px solid rgba(14, 210, 247, 0.5); padding-left: 16px; color: #45aaff; background: linear-gradient(135deg, rgba(32, 28, 41, 0.45), #100e17); margin: 1em 0; padding: 8px 16px; border-radius: 0 4px 4px 0; }
     table { border-collapse: collapse; width: 100%; }
     th { background: #191621; color: #0fb6d6; border: 1px solid rgba(14, 210, 247, 0.1); padding: 6px 12px; text-align: left; }
     td { border: 1px solid rgba(14, 210, 247, 0.06); padding: 5px 12px; color: #bebebe; }
@@ -192,7 +192,7 @@ ${content.replace(/\n/g, "<br>\n")}
   if (isComplete || isDone) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#50fa7b] text-xs">
+        <div className="text-[#0fb6d6] text-xs">
           {isDone && !isConfirmed ? "✗ Export cancelled" : "✓ Export complete"}
         </div>
       </div>
@@ -217,12 +217,12 @@ ${content.replace(/\n/g, "<br>\n")}
           <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Export
           </div>
-          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
+          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Export Settings
         </div>
         <div className="p-2 bg-[#0d0b12] rounded border border-[rgba(14,210,247,0.06)] space-y-1">
@@ -239,7 +239,7 @@ ${content.replace(/\n/g, "<br>\n")}
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Files to Export ({validFiles.length})
         </div>
         {validFiles.slice(0, 5).map((file) => (

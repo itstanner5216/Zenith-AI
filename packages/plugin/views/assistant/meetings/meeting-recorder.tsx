@@ -199,7 +199,7 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
           <div
             className={tw(
               "h-3 w-3 rounded-full transition-all",
-              isRecording ? "bg-[#f4569d] animate-pulse shadow-[0_0_8px_rgba(244,86,157,0.8)]" : "bg-[#7aa2f7] opacity-60"
+              isRecording ? "bg-[#f4569d] animate-pulse shadow-[0_0_8px_rgba(244,86,157,0.8)]" : "bg-[#45aaff] opacity-60"
             )}
           />
           <h3 className={tw("text-lg font-medium text-[#bebebe]")}>
@@ -235,7 +235,7 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
       </div>
       {isRecording && (
         <div
-          className={tw("flex items-center gap-2 text-sm text-[#7aa2f7]")}
+          className={tw("flex items-center gap-2 text-sm text-[#45aaff]")}
         >
           <span>Recording: {formatDuration(duration)}</span>
         </div>

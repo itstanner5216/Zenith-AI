@@ -127,7 +127,7 @@ export function ContextLimitIndicator({
               ${
                 isLightweightMode
                   ? "border-[#0fb6d6] bg-[#0fb6d6]"
-                  : "border-[#7aa2f7] bg-[#0d0b12]"
+                  : "border-[#45aaff] bg-[#0d0b12]"
               }`}
             >
               {isLightweightMode && (
@@ -148,7 +148,7 @@ export function ContextLimitIndicator({
             </div>
             <div className="space-y-1.5 flex-1">
               <div className="font-medium">Disable Context</div>
-              <div className="text-[#7aa2f7] text-[11px] leading-relaxed" style={{ opacity: 0.7 }}>
+              <div className="text-[#45aaff] text-[11px] leading-relaxed" style={{ opacity: 0.7 }}>
                 Removes file content from context while preserving metadata.
                 Useful for batch operations like moving, renaming, or tagging
                 files.

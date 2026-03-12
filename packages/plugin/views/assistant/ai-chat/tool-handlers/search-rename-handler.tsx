@@ -63,7 +63,7 @@ export const SearchRenameHandler: React.FC<ToolHandlerProps> = ({ toolInvocation
 
       {!isSearching && !error && (
         <>
-          <div className="text-sm text-[#7aa2f7]">
+          <div className="text-sm text-[#45aaff]">
             Found {matchedFiles.length} matching files:
             {matchedFiles.length > 0 && (
               <ul className="list-disc ml-4 mt-1">

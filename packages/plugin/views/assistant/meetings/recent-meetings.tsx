@@ -148,7 +148,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
 
   if (isLoading) {
     return (
-      <div className={tw("p-4 text-center text-[#7aa2f7]")}>
+      <div className={tw("p-4 text-center text-[#45aaff]")}>
         Loading recordings...
       </div>
     );
@@ -257,14 +257,14 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
                     {!isInRecordingsFolder && (
                       <span
                         className={tw(
-                          "text-xs px-1.5 py-0.5 rounded bg-[rgba(14,210,247,0.08)] text-[#7aa2f7]"
+                          "text-xs px-1.5 py-0.5 rounded bg-[rgba(14,210,247,0.08)] text-[#45aaff]"
                         )}
                       >
                         {recording.filePath.split("/").slice(0, -1).join("/")}
                       </span>
                     )}
                   </div>
-                  <div className={tw("text-xs text-[#7aa2f7] space-x-3")}>
+                  <div className={tw("text-xs text-[#45aaff] space-x-3")}>
                     <span>{formatDate(recording.createdAt)}</span>
                     {fileSize > 0 && <span>{formatFileSize(fileSize)}</span>}
                     {recording.duration && (

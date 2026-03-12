@@ -67,11 +67,11 @@ export function AddTextHandler({
   }, [toolInvocation, handleAddResult, app]);
 
   if (addSuccess === null) {
-    return <div className="text-sm text-[#7aa2f7]">Adding text to document...</div>;
+    return <div className="text-sm text-[#45aaff]">Adding text to document...</div>;
   }
 
   if (addSuccess) {
-    return <div className="text-sm text-[#7aa2f7]">Text successfully added to document</div>;
+    return <div className="text-sm text-[#45aaff]">Text successfully added to document</div>;
   }
 
   return <div className="text-sm text-[#f4569d]">Failed to add text to document</div>;

@@ -170,7 +170,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
     }
     if (classificationStatus === "loading") {
       return (
-        <div className="text-[#7aa2f7] p-2">Classifying content...</div>
+        <div className="text-[#45aaff] p-2">Classifying content...</div>
       );
     }
 
@@ -198,7 +198,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
             </svg>
           </button>
           {showDropdown && (
-            <div className="absolute z-10 w-full mt-1 bg-[#191621] border border-[rgba(14,210,247,0.1)] rounded">
+            <div className="absolute z-10 w-full mt-1 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.1)]">
               {dropdownTemplates.length > 0 ? (
                 dropdownTemplates.map((templateName, index) => (
                   <div
@@ -213,7 +213,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-2 text-[#7aa2f7]">
+                <div className="px-3 py-2 text-[#45aaff]">
                   No templates available
                 </div>
               )}
@@ -228,7 +228,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
         <button
           className={`px-4 py-2 transition-colors duration-200 flex items-center justify-center rounded ${
             !selectedTemplateName || formatting
-              ? "bg-[rgba(14,210,247,0.05)] text-[#7aa2f7] cursor-not-allowed border border-[rgba(14,210,247,0.05)]"
+              ? "bg-[rgba(14,210,247,0.05)] text-[#45aaff] cursor-not-allowed border border-[rgba(14,210,247,0.05)]"
               : "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.4)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.8)]"
           }`}
           disabled={!selectedTemplateName || formatting || isFileTooLarge}

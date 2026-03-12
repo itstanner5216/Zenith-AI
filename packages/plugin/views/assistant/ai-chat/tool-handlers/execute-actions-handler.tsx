@@ -103,9 +103,9 @@ export function ExecuteActionsHandler({ toolInvocation, handleAddResult, app }: 
               key={i}
               className={
                 result.startsWith("✅")
-                  ? "text-[#50fa7b]"
+                  ? "text-[#0fb6d6]"
                   : result.startsWith("ℹ️")
-                  ? "text-[#7aa2f7]"
+                  ? "text-[#45aaff]"
                   : "text-[#f4569d]"
               }
             >

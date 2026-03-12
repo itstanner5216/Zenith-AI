@@ -112,7 +112,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               <li>Get AI assistance with your content</li>
               <li>Sync across devices</li>
             </ul>
-            <p className={tw("text-sm text-[#7aa2f7] mt-4")}>
+            <p className={tw("text-sm text-[#45aaff] mt-4")}>
               Let's get you set up in just a few steps!
             </p>
             <Button
@@ -131,7 +131,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 className={tw(`cursor-pointer px-4 py-2 font-medium ${
                   isSignup 
                     ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]" 
-                    : "text-[#7aa2f7]"
+                    : "text-[#45aaff]"
                 }`)}
                 onClick={() => setIsSignup(true)}
               >
@@ -141,7 +141,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 className={tw(`cursor-pointer px-4 py-2 font-medium ${
                   !isSignup 
                     ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]" 
-                    : "text-[#7aa2f7]"
+                    : "text-[#45aaff]"
                 }`)}
                 onClick={() => setIsSignup(false)}
               >
@@ -164,7 +164,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2")}
+                className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.12)] rounded px-3 py-2 text-[#bebebe] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150")}
               />
             </div>
             
@@ -177,7 +177,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2")}
+                className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.12)] rounded px-3 py-2 text-[#bebebe] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150")}
               />
             </div>
             
@@ -191,7 +191,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2")}
+                  className={tw("w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.12)] rounded px-3 py-2 text-[#bebebe] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150")}
                 />
               </div>
             )}
@@ -216,7 +216,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             
             <div className={tw("flex items-center justify-center my-4")}>
               <div className={tw("flex-grow border-t border-[rgba(14,210,247,0.08)]")}></div>
-              <span className={tw("mx-4 text-[#7aa2f7] text-sm")}>or</span>
+              <span className={tw("mx-4 text-[#45aaff] text-sm")}>or</span>
               <div className={tw("flex-grow border-t border-[rgba(14,210,247,0.08)]")}></div>
             </div>
             
@@ -232,20 +232,20 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
 
         {step === 2 && (
           <div className={tw("mb-6 space-y-4")}>
-            <div className={tw("mx-auto w-16 h-16 bg-[rgba(80,250,123,0.15)] rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(80,250,123,0.2)]")}>
-              <svg className={tw("w-8 h-8 text-[#50fa7b]")} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={tw("mx-auto w-16 h-16 bg-[rgba(14,210,247,0.12)] rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(14,210,247,0.3)]")}>
+              <svg className={tw("w-8 h-8 text-[#0fb6d6]")} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             
-            <h4 className={tw("text-lg font-medium text-center")}>You're ready to go!</h4>
+            <h4 className={tw("text-lg font-semibold text-center text-[#0fb6d6]")}>You're ready to go!</h4>
             
-            <p className={tw("text-center")}>
+            <p className={tw("text-center text-[#bebebe]")}>
               Zenith-AI is now set up and ready to help you organize your vault.
             </p>
             
-            <div className={tw("bg-[#100e17] p-4 border border-[rgba(14,210,247,0.08)]")}>
-              <h4 className={tw("font-medium text-sm mb-2")}>We'll create these folders for you:</h4>
+            <div className={tw("bg-[#100e17] p-4 rounded-md border border-[rgba(14,210,247,0.08)]")}>
+              <h4 className={tw("font-medium text-sm mb-2 text-[#0fb6d6]")}>We'll create these folders for you:</h4>
               <ul className={tw("text-sm space-y-2")}>
                 <li><strong>_NoteCompanion/Inbox</strong>: Files waiting to be processed</li>
                 <li><strong>_NoteCompanion/Processed</strong>: Organized files</li>
@@ -270,7 +270,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               style={{ width: `${((step + 1) / 3) * 100}%` }}
             />
           </div>
-          <div className={tw("text-xs text-[#7aa2f7] text-right mt-1")}>
+          <div className={tw("text-xs text-[#45aaff] text-right mt-1")}>
             Step {step + 1} of 3
           </div>
         </div>

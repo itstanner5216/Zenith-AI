@@ -185,7 +185,7 @@ export function BulkFindReplaceHandler({
   if (isComplete || isDone) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#50fa7b] text-xs">
+        <div className="text-[#0fb6d6] text-xs">
           {isDone && !isConfirmed
             ? "✗ Find/Replace cancelled"
             : "✓ Find/Replace complete"}
@@ -207,7 +207,7 @@ export function BulkFindReplaceHandler({
   if (totalMatches === 0) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#7aa2f7] text-xs">
+        <div className="text-[#45aaff] text-xs">
           No matches found in {validFiles.length} file(s)
         </div>
       </div>
@@ -222,12 +222,12 @@ export function BulkFindReplaceHandler({
           <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Find & Replace
           </div>
-          <div className="text-xs text-[#7aa2f7] mb-2">{reason}</div>
+          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Operation
         </div>
         <div className="p-2 bg-[#0d0b12] rounded border border-[rgba(14,210,247,0.06)] space-y-1">
@@ -244,7 +244,7 @@ export function BulkFindReplaceHandler({
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Impact
         </div>
         <div className="text-[#bebebe] pl-2">
@@ -253,7 +253,7 @@ export function BulkFindReplaceHandler({
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#7aa2f7] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Files ({filesWithMatches} with matches)
         </div>
         {matchCounts

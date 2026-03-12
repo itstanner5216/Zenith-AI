@@ -97,7 +97,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
 
         {/* Timestamp and buttons row - perfectly aligned */}
         <div className="flex items-baseline justify-between mt-1 gap-2">
-          <div className="text-xs text-[#7aa2f7] flex-shrink-0" style={{ opacity: 0.6 }}>
+          <div className="text-xs text-[#45aaff] flex-shrink-0" style={{ opacity: 0.6 }}>
             {timestamp}
           </div>
           {/* Action buttons on the right - at same baseline as timestamp */}
@@ -132,7 +132,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
                   ) : (
                     <div className="w-full h-32 flex items-center justify-center bg-[#191621] rounded">
                       <svg
-                        className="h-8 w-8 text-[#7aa2f7]"
+                        className="h-8 w-8 text-[#45aaff]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

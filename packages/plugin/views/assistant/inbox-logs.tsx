@@ -78,15 +78,15 @@ const LogEntryDisplay: React.FC<{ entry: LogEntry; step: Action }> = ({
           hasError
             ? "bg-[#f4569d]"
             : entry.skipped
-            ? "bg-[#7aa2f7]"
+            ? "bg-[#45aaff]"
             : entry.completed
-            ? "bg-[#50fa7b]"
+            ? "bg-[#0fb6d6]"
             : "bg-[#0fb6d6] animate-pulse"
         }`}
       />
 
       {/* Timestamp */}
-      <span className="text-[#7aa2f7] w-20 text-xs" style={{ opacity: 0.6 }}>
+      <span className="text-[#45aaff] w-20 text-xs" style={{ opacity: 0.6 }}>
         {moment(entry.timestamp).format("HH:mm:ss")}
       </span>
 
@@ -96,7 +96,7 @@ const LogEntryDisplay: React.FC<{ entry: LogEntry; step: Action }> = ({
           hasError
             ? "text-[#f4569d]"
             : entry.skipped
-            ? "text-[#7aa2f7] line-through"
+            ? "text-[#45aaff] line-through"
             : "text-[#bebebe]"
         }`}
       >
@@ -134,10 +134,10 @@ const FileNameDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[#7aa2f7] line-through">
+      <span className="text-[#45aaff] line-through">
         {record.originalName}
       </span>
-      <span className="text-[#7aa2f7]">→</span>
+      <span className="text-[#45aaff]">→</span>
       <span className="text-[#0fb6d6]">{record.newName}</span>
     </div>
   );
@@ -149,7 +149,7 @@ const PathDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="text-[#7aa2f7]">→</span>
+      <span className="text-[#45aaff]">→</span>
       <span className="text-[#0fb6d6]">{record.newPath}</span>
     </div>
   );
@@ -273,7 +273,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.newName}
           </span>{" "}
-          <span className="text-[#7aa2f7] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
             {formatTimestamp(getActionTimestamp("RENAME_DONE"))}
           </span>
         </div>
@@ -306,7 +306,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.newPath}
           </span>{" "}
-          <span className="text-[#7aa2f7] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
             {formatTimestamp(getActionTimestamp("MOVING_DONE"))}
           </span>
         </div>
@@ -315,7 +315,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasTranscribedAudio && (
         <div className="text-sm">
           Transcribed audio{" "}
-          <span className="text-[#7aa2f7] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
             {formatTimestamp(audioTimestamp)}
           </span>
         </div>
@@ -324,7 +324,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasProcessedImage && (
         <div className="text-sm">
           Processed image{" "}
-          <span className="text-[#7aa2f7] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
             {formatTimestamp(imageTimestamp)}
           </span>
         </div>
@@ -354,7 +354,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.classification || "document"}
           </span>{" "}
-          <span className="text-[#7aa2f7] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
             {formatTimestamp(formattingTimestamp)}
           </span>
         </div>
@@ -367,7 +367,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasYouTubeTranscript && (
         <div className="text-sm">
           Extracted YouTube transcript{" "}
-          <span className="text-[#7aa2f7] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
             {formatTimestamp(youtubeTimestamp)}
           </span>
         </div>
@@ -429,7 +429,7 @@ function FileCard({ record }: { record: FileRecord }) {
                 {isExpanded ? (
                   <ChevronDown className="w-4 h-4 text-[#0fb6d6]" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-[#7aa2f7]" />
+                  <ChevronRight className="w-4 h-4 text-[#45aaff]" />
                 )}
               </div>
             )}
@@ -459,7 +459,7 @@ function FileCard({ record }: { record: FileRecord }) {
               <StatusBadge status={record.status} />
               <FileNameDisplay record={record} />
               {queuePosition && (
-                <span className="text-[#7aa2f7] text-xs">
+                <span className="text-[#45aaff] text-xs">
                   (Queue: {queuePosition.position}/{queuePosition.total})
                 </span>
               )}
@@ -498,13 +498,13 @@ const StatusBadge: React.FC<{ status: FileStatus }> = ({ status }) => {
   const getStatusColor = () => {
     switch (status) {
       case "completed":
-        return "bg-[#50fa7b]";
+        return "bg-[#0fb6d6]";
       case "error":
         return "bg-[#f4569d]";
       case "processing":
         return "bg-[#0fb6d6]";
       default:
-        return "bg-[#7aa2f7]";
+        return "bg-[#45aaff]";
     }
   };
 
@@ -556,7 +556,7 @@ const InboxAnalytics: React.FC<{
     >
       <div className="text-sm capitalize">{status}</div>
       <div className="font-semibold">{byStatus[status] || 0}</div>
-      <div className="mt-1 text-[#7aa2f7]">{icon}</div>
+      <div className="mt-1 text-[#45aaff]">{icon}</div>
     </div>
   );
 
@@ -738,7 +738,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           placeholder="Search files, tags, or actions..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-full pl-10 pr-4 h-min py-2 bg-[#191621] text-[#bebebe] rounded border border-[rgba(14,210,247,0.1)] text-sm placeholder-[#7aa2f7]"
+          className="w-full pl-10 pr-4 h-min py-2 bg-[#191621] text-[#bebebe] rounded border border-[rgba(14,210,247,0.1)] text-sm placeholder-[#45aaff]"
         />
       </div>
 
@@ -910,7 +910,7 @@ export const InboxLogs: React.FC = () => {
 
       {/* Date indicator - minimal */}
       {dateFilter.range !== "all" && (
-        <div className="text-xs text-[#7aa2f7] px-3 py-1 border-b border-[rgba(14,210,247,0.05)]">
+        <div className="text-xs text-[#45aaff] px-3 py-1 border-b border-[rgba(14,210,247,0.05)]">
           {dateFilter.range === "custom" ? (
             <>{moment(dateFilter.startDate).format("MMM D, YYYY")}</>
           ) : (
@@ -929,7 +929,7 @@ export const InboxLogs: React.FC = () => {
           <FileCard key={record.id} record={record} />
         ))}
         {filteredRecords.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-xs text-[#7aa2f7]" style={{ opacity: 0.5 }}>
+          <div className="flex items-center justify-center h-32 text-xs text-[#45aaff]" style={{ opacity: 0.5 }}>
             {records.length === 0 ? "No records found" : "No matching records"}
           </div>
         )}

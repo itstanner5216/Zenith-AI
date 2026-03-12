@@ -54,7 +54,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       <div className="flex items-center justify-end">
         <div
           onClick={() => plugin.settings.showLocalLLMInChat && setIsModelSelectorOpen(!isModelSelectorOpen)}
-          className={`flex items-center gap-1 text-xs text-[#7aa2f7] ${plugin.settings.showLocalLLMInChat ? 'hover:text-[#0fb6d6] cursor-pointer' : ''}`}
+          className={`flex items-center gap-1 text-xs text-[#45aaff] ${plugin.settings.showLocalLLMInChat ? 'hover:text-[#0fb6d6] cursor-pointer' : ''}`}
         >
           <span>{getDisplayName(selectedModel)}</span>
           {plugin.settings.showLocalLLMInChat && (
@@ -96,7 +96,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                   <div className="flex justify-end mt-2 space-x-2">
                     <button
                       onClick={() => setIsCustomizing(false)}
-                      className="px-2 py-1 text-xs text-[#7aa2f7] hover:text-[#bebebe]"
+                      className="px-2 py-1 text-xs text-[#45aaff] hover:text-[#bebebe]"
                     >
                       Cancel
                     </button>
