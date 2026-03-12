@@ -153,6 +153,18 @@ workflows:
 
   ci_reference: .github/workflows/build.yml
 
+  docker:
+    workflow: .github/workflows/docker-publish.yml
+    registry: jpfong/zenith-ai
+    file: Dockerfile.optimized
+    platforms: [linux/amd64, linux/arm64]
+    note: Native runners per arch — no QEMU required
+    actions:
+      setup_buildx: docker/setup-buildx-action@v4   # upgraded from v3; requires Actions runner v2.327.1+
+      login: docker/login-action@v3
+      build_push: docker/build-push-action@v7
+    runner_requirement: "GitHub Actions runner >= v2.327.1 (required by docker/setup-buildx-action@v4 / Node 24 runtime)"
+
 # ------------------------------------------------------------
 # 4. RULES
 # ------------------------------------------------------------
