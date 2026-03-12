@@ -13,39 +13,36 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   return (
     <Button
       type="submit"
-      className={`flex-none ml-2 font-bold px-4 flex items-center justify-center h-full rounded transition-all duration-150 ${
+      title={isGenerating ? "Stop generation" : "Send message"}
+      className={`flex-none ml-2 font-bold px-3.5 flex items-center justify-center h-full rounded-md transition-all duration-150 ${
         isGenerating
-          ? "bg-[rgba(14,210,247,0.05)] text-[#45aaff] cursor-not-allowed animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]"
-          : "bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] text-[#100e17] active:scale-[0.97] shadow-[0_0_8px_rgba(14,210,247,0.25)] hover:shadow-[0_0_14px_rgba(14,210,247,0.45)]"
+          ? "bg-[rgba(244,86,157,0.1)] text-[#f4569d] border border-[rgba(244,86,157,0.3)] hover:bg-[rgba(244,86,157,0.18)] hover:border-[rgba(244,86,157,0.5)] hover:shadow-[0_0_10px_rgba(244,86,157,0.25)] cursor-pointer"
+          : "bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.85)] text-[#0a0910] active:scale-[0.96] shadow-[0_0_10px_rgba(14,210,247,0.3)] hover:shadow-[0_0_18px_rgba(14,210,247,0.5)] border border-transparent"
       } ${className}`}
     >
       {isGenerating ? (
+        /* Stop icon: filled square */
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          className="w-5 h-5"
+          fill="currentColor"
+          className="w-4 h-4"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
+          <rect x="5" y="5" width="14" height="14" rx="2" />
         </svg>
       ) : (
+        /* Send arrow */
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          className="w-5 h-5"
+          className="w-4.5 h-4.5"
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={2.5}
             d="M14 5l7 7m0 0l-7 7m7-7H3"
           />
         </svg>

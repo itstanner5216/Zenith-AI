@@ -155,7 +155,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
                 {getStepIcon(step.status)}
               </div>
               {index < stepsWithDuration.length - 1 && (
-                <div className={`w-0.5 h-6 mt-1 ${getStepColor(step.status)}`} style={{ opacity: 0.5 }} />
+                <div className={`w-0.5 h-6 mt-1 opacity-50 ${getStepColor(step.status)}`} />
               )}
             </div>
 
@@ -166,18 +166,18 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
                   {step.label}
                 </span>
                 {step.duration !== undefined && step.duration > 0 && (
-                  <span className={tw("text-xs text-[#45aaff] font-mono")} style={{ opacity: 0.6 }}>
+                  <span className={tw("text-xs text-[#45aaff] font-mono")} className="opacity-60">
                     {formatDuration(step.duration)}
                   </span>
                 )}
               </div>
               {step.timestamp && (
-                <div className={tw("text-xs text-[#45aaff] mt-0.5")} style={{ opacity: 0.4 }}>
+                <div className={tw("text-xs text-[#45aaff] mt-0.5")} className="opacity-40">
                   {formatTime(step.timestamp)}
                 </div>
               )}
               {step.status === "skipped" && (
-                <div className={tw("text-xs text-[#45aaff] italic mt-1")} style={{ opacity: 0.5 }}>
+                <div className={tw("text-xs text-[#45aaff] italic mt-1")} className="opacity-50">
                   Skipped
                 </div>
               )}

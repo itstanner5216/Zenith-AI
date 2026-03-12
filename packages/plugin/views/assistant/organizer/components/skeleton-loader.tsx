@@ -56,21 +56,13 @@ const SkeletonItem: React.FC<{ width: string; height: string }> = ({
   width,
   height,
 }) => (
-  <motion.div
+  <div
+    className="zenith-shimmer"
     style={{
       width,
       height,
-      background: "linear-gradient(90deg, #191621 25%, rgba(14,210,247,0.06) 50%, #191621 75%)",
-      backgroundSize: "200% 100%",
-      borderRadius: "12px",
-    }}
-    animate={{
-      backgroundPosition: ["200% 0", "-200% 0"],
-    }}
-    transition={{
-      duration: 2,
-      repeat: Infinity,
-      ease: "linear",
+      borderRadius: "6px",
+      border: "1px solid rgba(14,210,247,0.05)",
     }}
   />
 );

@@ -86,7 +86,7 @@ const LogEntryDisplay: React.FC<{ entry: LogEntry; step: Action }> = ({
       />
 
       {/* Timestamp */}
-      <span className="text-[#45aaff] w-20 text-xs" style={{ opacity: 0.6 }}>
+      <span className="text-[#45aaff] w-20 text-xs" className="opacity-60">
         {moment(entry.timestamp).format("HH:mm:ss")}
       </span>
 
@@ -273,7 +273,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.newName}
           </span>{" "}
-          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" className="opacity-50">
             {formatTimestamp(getActionTimestamp("RENAME_DONE"))}
           </span>
         </div>
@@ -306,7 +306,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.newPath}
           </span>{" "}
-          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" className="opacity-50">
             {formatTimestamp(getActionTimestamp("MOVING_DONE"))}
           </span>
         </div>
@@ -315,7 +315,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasTranscribedAudio && (
         <div className="text-sm">
           Transcribed audio{" "}
-          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" className="opacity-50">
             {formatTimestamp(audioTimestamp)}
           </span>
         </div>
@@ -324,7 +324,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasProcessedImage && (
         <div className="text-sm">
           Processed image{" "}
-          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" className="opacity-50">
             {formatTimestamp(imageTimestamp)}
           </span>
         </div>
@@ -354,7 +354,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.classification || "document"}
           </span>{" "}
-          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" className="opacity-50">
             {formatTimestamp(formattingTimestamp)}
           </span>
         </div>
@@ -367,7 +367,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasYouTubeTranscript && (
         <div className="text-sm">
           Extracted YouTube transcript{" "}
-          <span className="text-[#45aaff] text-xs" style={{ opacity: 0.5 }}>
+          <span className="text-[#45aaff] text-xs" className="opacity-50">
             {formatTimestamp(youtubeTimestamp)}
           </span>
         </div>
@@ -929,7 +929,7 @@ export const InboxLogs: React.FC = () => {
           <FileCard key={record.id} record={record} />
         ))}
         {filteredRecords.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-xs text-[#45aaff]" style={{ opacity: 0.5 }}>
+          <div className="flex items-center justify-center h-32 text-xs text-[#45aaff]" className="opacity-50">
             {records.length === 0 ? "No records found" : "No matching records"}
           </div>
         )}

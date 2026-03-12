@@ -8,12 +8,11 @@ interface SectionHeaderProps {
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({ text, icon }) => {
   return (
-    <h6
-      className={tw("text-xs font-semibold text-[#0fb6d6] uppercase tracking-wide mt-5 mb-2 px-3 pb-1 border-b border-transparent")}
-      style={{ backgroundImage: "linear-gradient(to right, #f4569d, transparent)", backgroundPosition: "0 100%", backgroundSize: "100% 1px", backgroundRepeat: "no-repeat" }}
-    >
-      {icon && <span className={tw("mr-1.5")}>{icon}</span>}
-      {text}
-    </h6>
+    <div className={tw("flex items-center gap-2 mt-5 mb-2 px-3 pb-1.5")} style={{ backgroundImage: "linear-gradient(to right, rgba(244,86,157,0.5), transparent)", backgroundPosition: "0 100%", backgroundSize: "100% 1px", backgroundRepeat: "no-repeat" }}>
+      {icon && <span className={tw("text-[#f4569d] text-xs flex-shrink-0")}>{icon}</span>}
+      <h6 className={tw("m-0 text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-[#0fb6d6] to-[#87c2fd] bg-clip-text text-transparent")}>
+        {text}
+      </h6>
+    </div>
   );
 };

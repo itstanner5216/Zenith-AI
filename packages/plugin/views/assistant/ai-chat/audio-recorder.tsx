@@ -142,13 +142,12 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       <Button
         onClick={isRecording ? stopRecording : startRecording}
         className={cn(
-          // box shadow none
-          "bg-transparent opacity-50 cursor-pointer  ",
-          "hover:opacity-100 hover:shadow-none",
-          "shadow-none disabled:shadow-none disabled:cursor-not-allowed",
-          {
-            "cursor-wait": isProcessing
-          }
+          "bg-transparent border border-transparent cursor-pointer transition-all duration-150",
+          "hover:border-[rgba(14,210,247,0.2)] hover:bg-[rgba(14,210,247,0.05)] hover:shadow-none",
+          "shadow-none disabled:shadow-none disabled:cursor-not-allowed disabled:opacity-30",
+          isRecording && "border-[rgba(244,86,157,0.3)] bg-[rgba(244,86,157,0.06)] animate-[zenith-neon-pulse_2s_ease-in-out_infinite]",
+          isProcessing && "cursor-wait opacity-60",
+          !isRecording && !isProcessing && "opacity-60 hover:opacity-100"
         )}
         title={
           isProcessing

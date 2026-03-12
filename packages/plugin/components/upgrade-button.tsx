@@ -53,21 +53,21 @@ export function UpgradeButton({
   // Determine color based on usage
   const getColorClasses = (): string => {
     if (isForced || !usageData) {
-      // Error state - use error color
-      return "bg-[--text-error] text-[--text-on-accent] hover:opacity-90";
+      // Error state - hot pink
+      return "bg-[rgba(244,86,157,0.15)] text-[#f4569d] border border-[rgba(244,86,157,0.4)] hover:bg-[rgba(244,86,157,0.25)] hover:border-[rgba(244,86,157,0.6)] hover:shadow-[0_0_10px_rgba(244,86,157,0.25)] cursor-pointer";
     }
 
     const usagePercent = (usageData.tokenUsage / usageData.maxTokenUsage) * 100;
 
     if (usagePercent >= 100) {
-      // Critical - use error color
-      return "bg-[--text-error] text-[--text-on-accent] hover:opacity-90";
+      // Critical - hot pink pulsing
+      return "bg-[rgba(244,86,157,0.15)] text-[#f4569d] border border-[rgba(244,86,157,0.4)] hover:bg-[rgba(244,86,157,0.25)] hover:border-[rgba(244,86,157,0.6)] animate-pulse cursor-pointer";
     } else if (usagePercent >= 90) {
-      // Warning - use warning color
-      return "bg-[--text-warning] text-[--text-on-accent] hover:opacity-90";
+      // Warning - amber
+      return "bg-[rgba(255,183,77,0.12)] text-[#ffb74d] border border-[rgba(255,183,77,0.35)] hover:bg-[rgba(255,183,77,0.2)] hover:border-[rgba(255,183,77,0.55)] hover:shadow-[0_0_8px_rgba(255,183,77,0.2)] cursor-pointer";
     } else {
-      // Normal - use accent color
-      return "bg-[--interactive-accent] text-[--text-on-accent] hover:bg-[--interactive-accent-hover]";
+      // Normal - cyan accent
+      return "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.3)] hover:bg-[rgba(14,210,247,0.18)] hover:border-[rgba(14,210,247,0.5)] hover:shadow-[0_0_8px_rgba(14,210,247,0.2)] cursor-pointer";
     }
   };
 
@@ -79,7 +79,7 @@ export function UpgradeButton({
       <button
         onClick={handleClick}
         className={tw(
-          "px-2 py-1.5 text-xs font-medium rounded transition-colors flex items-center gap-1.5",
+          "px-2.5 py-1.5 text-xs font-semibold rounded-md transition-all duration-150 flex items-center gap-1.5 active:scale-[0.97]",
           colorClasses,
           className
         )}
@@ -95,7 +95,7 @@ export function UpgradeButton({
     <button
       onClick={handleClick}
       className={tw(
-        "px-3 py-1.5 text-sm font-medium rounded transition-colors flex items-center gap-2",
+        "px-3 py-2 text-sm font-semibold rounded-md transition-all duration-150 flex items-center gap-2 active:scale-[0.97]",
         colorClasses,
         className
       )}

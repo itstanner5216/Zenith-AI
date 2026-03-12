@@ -258,19 +258,22 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                   </span>
                 </div>
               </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)' }}>
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
                 <div
                   style={{
                     width: `${Math.min(
                       100,
                       (usageData.tokenUsage / usageData.maxTokenUsage) * 100
                     )}%`,
+                    background: usageData.tokenUsage > usageData.maxTokenUsage * 0.9
+                      ? 'linear-gradient(90deg, #f4569d, rgba(244,86,157,0.7))'
+                      : 'linear-gradient(90deg, #0fb6d6, #3dd7fb)',
+                    boxShadow: usageData.tokenUsage > usageData.maxTokenUsage * 0.9
+                      ? '0 0 8px rgba(244,86,157,0.4)'
+                      : '0 0 8px rgba(14,210,247,0.4)',
+                    transition: 'width 0.5s ease-out',
                   }}
-                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-[#0d0b12] justify-center ${
-                    usageData.tokenUsage > usageData.maxTokenUsage * 0.9
-                      ? "bg-[#f4569d]"
-                      : "bg-[#0fb6d6]"
-                  }`}
+                  className="shadow-none flex flex-col text-center whitespace-nowrap justify-center rounded-full"
                 ></div>
               </div>
             </div>
@@ -290,24 +293,26 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                     </span>
                   </div>
                 </div>
-                <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]">
-                  <div
-                    style={{
-                      width: `${Math.min(
-                        100,
-                        ((usageData.audioTranscriptionMinutes || 0) /
-                          usageData.maxAudioTranscriptionMinutes) *
-                          100
-                      )}%`,
-                    }}
-                    className={`shadow-none flex flex-col text-center whitespace-nowrap text-[#0d0b12] justify-center ${
-                      (usageData.audioTranscriptionMinutes || 0) >
-                      usageData.maxAudioTranscriptionMinutes * 0.9
-                        ? "bg-[#f4569d]"
-                        : "bg-[#0fb6d6]"
-                    }`}
-                  ></div>
-                </div>
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
+                <div
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      ((usageData.audioTranscriptionMinutes || 0) /
+                        usageData.maxAudioTranscriptionMinutes) *
+                        100
+                    )}%`,
+                    background: (usageData.audioTranscriptionMinutes || 0) > usageData.maxAudioTranscriptionMinutes * 0.9
+                      ? 'linear-gradient(90deg, #f4569d, rgba(244,86,157,0.7))'
+                      : 'linear-gradient(90deg, #0fb6d6, #3dd7fb)',
+                    boxShadow: (usageData.audioTranscriptionMinutes || 0) > usageData.maxAudioTranscriptionMinutes * 0.9
+                      ? '0 0 8px rgba(244,86,157,0.4)'
+                      : '0 0 8px rgba(14,210,247,0.4)',
+                    transition: 'width 0.5s ease-out',
+                  }}
+                  className="shadow-none flex flex-col text-center whitespace-nowrap justify-center rounded-full"
+                ></div>
+              </div>
               </div>
             )}
             <div className="text-sm text-[#45aaff]">

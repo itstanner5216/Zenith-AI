@@ -150,26 +150,30 @@ function TabButton({
     <button
       onClick={onClick}
       className={tw(
-        "px-4 py-2 text-sm transition-all duration-150 relative flex items-center gap-2",
+        "px-3 py-2 text-xs transition-all duration-150 relative flex items-center gap-1.5 cursor-pointer select-none",
         isActive
-          ? "text-[#0fb6d6] font-medium"
-          : "text-[#45aaff] hover:text-[#0fb6d6]"
+          ? "text-[#0fb6d6] font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
+          : "text-[#45aaff] opacity-70 hover:opacity-100 hover:text-[#0fb6d6]"
       )}
       style={
         isActive
           ? {
               borderBottom: "2px solid #0fb6d6",
               marginBottom: "-1px",
+              textShadow: "0 0 8px rgba(14,210,247,0.3)",
             }
-          : undefined
+          : { borderBottom: "2px solid transparent", marginBottom: "-1px" }
       }
     >
-      {icon && <span className={tw("w-4 h-4 flex-shrink-0")}>{icon}</span>}
+      {icon && <span className={tw("w-3.5 h-3.5 flex-shrink-0")}>{icon}</span>}
       {children}
       {badge !== undefined && badge > 0 && (
         <span
           className={tw(
-            "ml-1 px-1.5 py-0.5 text-xs rounded-full bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] font-medium min-w-[1.25rem] text-center"
+            "ml-0.5 px-1.5 py-0.5 text-[9px] rounded-full font-semibold min-w-[1.1rem] text-center",
+            badge > 0
+              ? "bg-[rgba(244,86,157,0.2)] text-[#f4569d] shadow-[0_0_4px_rgba(244,86,157,0.3)]"
+              : "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6]"
           )}
         >
           {badge}

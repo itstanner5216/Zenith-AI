@@ -148,7 +148,7 @@ export function ContextLimitIndicator({
             </div>
             <div className="space-y-1.5 flex-1">
               <div className="font-medium">Disable Context</div>
-              <div className="text-[#45aaff] text-[11px] leading-relaxed" style={{ opacity: 0.7 }}>
+              <div className="text-[#45aaff] text-[11px] leading-relaxed opacity-70">
                 Removes file content from context while preserving metadata.
                 Useful for batch operations like moving, renaming, or tagging
                 files.

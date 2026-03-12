@@ -45,16 +45,16 @@ export function ChatHistorySidebar({
                 <div
                   key={i}
                   className={tw(
-                    "h-10 rounded-lg bg-[#191621] animate-pulse border border-[rgba(14,210,247,0.05)]"
+                    "h-10 rounded-lg zenith-shimmer border border-[rgba(14,210,247,0.05)]"
                   )}
                 />
               ))}
             </div>
           ) : sessions.length === 0 ? (
             <div className={tw("flex flex-col items-center justify-center py-8 text-center")}>
-              <MessageSquare className="h-8 w-8 text-[#45aaff] mb-3" style={{ opacity: 0.3 }} />
-              <p className="text-xs text-[#bebebe]" style={{ opacity: 0.5 }}>No chat history yet</p>
-              <p className="text-xs text-[#bebebe] mt-1" style={{ opacity: 0.3 }}>Start a conversation to see it here</p>
+              <MessageSquare className="h-8 w-8 text-[#45aaff] mb-3 opacity-30" />
+              <p className="text-xs text-[#bebebe] opacity-50">No chat history yet</p>
+              <p className="text-xs text-[#bebebe] mt-1 opacity-30">Start a conversation to see it here</p>
             </div>
           ) : (
             sessions.map((session) => {
@@ -65,10 +65,10 @@ export function ChatHistorySidebar({
                 <div
                   key={session.id}
                   className={tw(
-                    "group p-2 rounded cursor-pointer text-sm transition-colors",
+                    "group p-2 rounded-md cursor-pointer text-sm transition-all duration-150",
                     activeChatId === session.id
-                      ? "bg-[rgba(14,210,247,0.12)] border-l-2 border-[#0fb6d6] shadow-[0_0_8px_rgba(14,210,247,0.1)]"
-                      : "hover:bg-[#191621] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                      ? "bg-[rgba(14,210,247,0.1)] border-l-2 border-[#0fb6d6] shadow-[0_0_10px_rgba(14,210,247,0.12),0_2px_8px_rgba(0,0,0,0.4)]"
+                      : "border-l-2 border-transparent hover:bg-[#191621] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
                   )}
                   onClick={() => onSelectChat(session.id)}
                   role="listitem"
@@ -84,7 +84,7 @@ export function ChatHistorySidebar({
                       )}>
                         {session.title}
                       </div>
-                      <div className={tw("text-xs text-[#45aaff] mt-0.5 flex items-center gap-2")} style={{ opacity: 0.6 }}>
+                      <div className={tw("text-xs text-[#45aaff] mt-0.5 flex items-center gap-2 opacity-60")}>
                         <span>{relativeTime}</span>
                         {messageCount > 0 && (
                           <>

@@ -89,7 +89,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
   return (
     <StyledContainer>
       <motion.div
-        className={tw("max-w-xl mx-auto bg-[#191621] p-6 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_12px_rgba(14,210,247,0.1)]")}
+        className={tw("max-w-xl mx-auto bg-[#191621] p-6 rounded-xl border border-[rgba(14,210,247,0.12)] shadow-[0_8px_40px_rgba(0,0,0,0.7),0_0_16px_rgba(14,210,247,0.08)]")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -106,11 +106,18 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             <p className={tw("text-[#bebebe]")}>
               Zenith-AI helps you organize your Obsidian vault with AI-powered features:
             </p>
-            <ul className={tw("list-disc pl-5 space-y-2")}>
-              <li>Automatically organize and format notes</li>
-              <li>Extract key concepts and suggest tags</li>
-              <li>Get AI assistance with your content</li>
-              <li>Sync across devices</li>
+            <ul className={tw("space-y-2")}>
+              {[
+                "Automatically organize and format notes",
+                "Extract key concepts and suggest tags",
+                "Get AI assistance with your content",
+                "Sync across devices"
+              ].map((item, i) => (
+                <li key={i} className={tw("flex items-start gap-2 text-[#bebebe]")}>  
+                  <span className={tw("w-1.5 h-1.5 rounded-full bg-[#0fb6d6] shadow-[0_0_4px_rgba(14,210,247,0.5)] mt-1.5 flex-shrink-0")} />
+                  {item}
+                </li>
+              ))}
             </ul>
             <p className={tw("text-sm text-[#45aaff] mt-4")}>
               Let's get you set up in just a few steps!
@@ -127,26 +134,26 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
         {step === 1 && (
           <div className={tw("mb-6 space-y-4")}>
             <div className={tw("mb-4 flex items-center justify-center space-x-4")}>
-              <div
-                className={tw(`cursor-pointer px-4 py-2 font-medium ${
-                  isSignup 
-                    ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]" 
-                    : "text-[#45aaff]"
-                }`)}
-                onClick={() => setIsSignup(true)}
-              >
-                Sign Up
-              </div>
-              <div
-                className={tw(`cursor-pointer px-4 py-2 font-medium ${
-                  !isSignup 
-                    ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]" 
-                    : "text-[#45aaff]"
-                }`)}
-                onClick={() => setIsSignup(false)}
-              >
-                Sign In
-              </div>
+          <div
+              className={tw(`cursor-pointer px-4 py-2 text-sm font-semibold transition-all duration-150 ${
+                isSignup 
+                  ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6] drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]" 
+                  : "text-[#45aaff] opacity-70 hover:opacity-100 border-b-2 border-transparent"
+              }`)}
+              onClick={() => setIsSignup(true)}
+            >
+              Sign Up
+            </div>
+            <div
+              className={tw(`cursor-pointer px-4 py-2 text-sm font-semibold transition-all duration-150 ${
+                !isSignup 
+                  ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6] drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]" 
+                  : "text-[#45aaff] opacity-70 hover:opacity-100 border-b-2 border-transparent"
+              }`)}
+              onClick={() => setIsSignup(false)}
+            >
+              Sign In
+            </div>
             </div>
             
             {error && (
@@ -244,7 +251,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               Zenith-AI is now set up and ready to help you organize your vault.
             </p>
             
-            <div className={tw("bg-[#0d0b12] p-4 rounded-md border border-[rgba(14,210,247,0.05)]")}>
+            <div className={tw("bg-[#0d0b12] p-4 rounded-md border border-[rgba(14,210,247,0.1)] shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]")}>
               <h4 className={tw("font-medium text-sm mb-2 bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent")}>We'll create these folders for you:</h4>
               <ul className={tw("text-sm space-y-2")}>
                 <li><strong>_NoteCompanion/Inbox</strong>: Files waiting to be processed</li>

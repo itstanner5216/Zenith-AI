@@ -80,6 +80,30 @@
   --table-border-color: rgb(14, 210, 247, 0.15);
   --test-color: rgb(122, 162, 247);
   --editor-border-color: #101014;
+
+  /* Zenith-AI extended palette variables */
+  --text-error: #f4569d;
+  --text-warning: #ffb74d;
+  --text-success: #50fa7b;
+  --text-on-accent: #0d0b12;
+  --interactive-accent-solid: #0fb6d6;
+  --bg-depth-0: #0a0910;
+  --bg-depth-1: #0d0b12;
+  --bg-depth-2: #100e17;
+  --bg-depth-3: #191621;
+  --bg-depth-4: #1e1a2e;
+  --bg-depth-5: #252136;
+  --border-subtle: rgba(14, 210, 247, 0.05);
+  --border-defined: rgba(14, 210, 247, 0.08);
+  --border-accent: rgba(14, 210, 247, 0.15);
+  --border-active: rgba(14, 210, 247, 0.45);
+  --glow-cyan-sm: 0 0 6px rgba(14, 210, 247, 0.2);
+  --glow-cyan-md: 0 0 12px rgba(14, 210, 247, 0.35);
+  --glow-cyan-lg: 0 0 20px rgba(14, 210, 247, 0.5);
+  --glow-pink-sm: 0 0 6px rgba(244, 86, 157, 0.2);
+  --glow-pink-md: 0 0 12px rgba(244, 86, 157, 0.35);
+  --gradient-heading: linear-gradient(62deg, #87c2fd, #dcb9fc);
+  --gradient-divider: linear-gradient(to right, #f4569d, transparent);
 }
 
 /******************************************
@@ -123,7 +147,7 @@
 a.tag[href*='#todo'],
 a.tag[href*='#待完成'] {
   background-color: #be2e5e;
-  color: #fff;
+  color: #0a0910;
 }
 /* For Editor Mode */
 .cm-s-obsidian .CodeMirror-line span.cm-tag-todo:not(.cm-formatting-hashtag) {
@@ -133,7 +157,7 @@ a.tag[href*='#待完成'] {
 a.tag[href*='#working-draft'],
 a.tag[href*='#进行中'] {
   background-color: #4d3ca6;
-  color: #fff;
+  color: #0a0910;
 }
 
 .cm-s-obsidian .CodeMirror-line span.cm-tag-working-draft:not(.cm-formatting-hashtag) {
@@ -143,7 +167,7 @@ a.tag[href*='#进行中'] {
 a.tag[href*='#notes'],
 a.tag[href*='#笔记'] {
   background-color: #17b978;
-  color: #fff;
+  color: #0a0910;
 }
 
 .cm-s-obsidian .CodeMirror-line span.cm-tag-notes:not(.cm-formatting-hashtag) {
@@ -153,7 +177,7 @@ a.tag[href*='#笔记'] {
 a.tag[href*='#knowledge'],
 a.tag[href*='#知识'] {
   background-color: #005792;
-  color: #fff;
+  color: #0a0910;
 }
 
 .cm-s-obsidian .CodeMirror-line span.cm-tag-knowledge:not(.cm-formatting-hashtag) {
@@ -163,7 +187,7 @@ a.tag[href*='#知识'] {
 a.tag[href*='#writing'],
 a.tag[href*='#文章'] {
   background-color: #f95959;
-  color: #fff;
+  color: #0a0910;
 }
 
 .cm-s-obsidian .CodeMirror-line span.cm-tag-writing:not(.cm-formatting-hashtag) {
@@ -740,16 +764,16 @@ cm-s-obsidian span.cm-link:not(.cm-formatting-link) .cm-underline {
 
 .internal-link:hover,
 .cm-s-obsidian span.cm-hmd-internal-link .cm-underline:hover {
-  -webkit-text-fill-color: #fff;
-  color: #fff;
+  -webkit-text-fill-color: #0fb6d6;
+  color: #0fb6d6;
   background-size: 4px 50px;
   text-decoration-line: none !important;
 }
 
 .cm-s-obsidian span.cm-link:not(.cm-formatting-link) .cm-underline:hover,
 .external-link:hover {
-  -webkit-text-fill-color: #fff;
-  color: #fff;
+  -webkit-text-fill-color: #0fb6d6;
+  color: #0fb6d6;
   background-size: 4px 50px;
   text-decoration-line: none !important;
 }
@@ -867,8 +891,8 @@ h6 a.tag {
 .cm-s-obsidian span.cm-highlight {
   background-image: none !important;
   background-color: var(--text-highlight-bg);
-  color: #fff;
-  -webkit-text-fill-color: #fff;
+  color: #0a0910;
+  -webkit-text-fill-color: #0a0910;
   -webkit-background-clip: initial;
 }
 
@@ -930,7 +954,7 @@ pre[class*='language-']:before {
   font-style: normal;
   font-weight: 700;
   font-size: 0.6rem;
-  color: #fff;
+  color: var(--text-accent);
   position: absolute;
   top: 0.3rem;
   right: 0.3rem;

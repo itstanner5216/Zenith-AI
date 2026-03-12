@@ -64,7 +64,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
         {displayedSources.map((source) => (
           <div
             key={source.id}
-            className="flex items-center p-4 bg-[#191621] border border-[rgba(14,210,247,0.08)] hover:bg-[#1e1a2e] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(14,210,247,0.05)] transition-all duration-150 rounded-md"
+            className="flex items-center p-4 bg-[#191621] border border-[rgba(14,210,247,0.08)] hover:bg-[#1e1a2e] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_10px_rgba(14,210,247,0.08)] active:scale-[0.99] transition-all duration-200 rounded-md cursor-pointer"
           >
             <div className="flex-shrink-0 mr-4">
               <div className="relative">
@@ -89,7 +89,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   {source.title || source.domain}
                 </a>
               </h4>
-              <p className="text-xs text-[#45aaff] truncate" style={{ opacity: 0.6 }}>
+              <p className="text-xs text-[#45aaff] truncate opacity-60">
                 {source.domain}
               </p>
             </div>

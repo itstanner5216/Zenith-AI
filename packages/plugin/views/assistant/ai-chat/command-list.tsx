@@ -146,8 +146,8 @@ export const CommandList = forwardRef<
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center py-6 text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
-      <p className="text-sm text-[#bebebe]" style={{ opacity: 0.5 }}>No matching commands found</p>
-      <p className="text-xs text-[#bebebe] mt-1" style={{ opacity: 0.3 }}>Try a different search term</p>
+      <p className="text-sm text-[#bebebe]" className="opacity-50">No matching commands found</p>
+      <p className="text-xs text-[#bebebe] mt-1" className="opacity-30">Try a different search term</p>
     </div>
   );
 });

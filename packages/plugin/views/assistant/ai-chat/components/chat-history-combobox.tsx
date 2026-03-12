@@ -196,9 +196,9 @@ export function ChatHistoryCombobox({
           <div className={tw("overflow-y-auto max-h-[350px]")}>
             {filteredSessions.length === 0 ? (
               <div className={tw("flex flex-col items-center justify-center py-6 text-center")}>
-                <SearchX className="h-6 w-6 text-[#45aaff] mb-2" style={{ opacity: 0.3 }} />
-                <p className="text-xs text-[#bebebe]" style={{ opacity: 0.5 }}>No chats found</p>
-                <p className="text-xs text-[#bebebe] mt-1" style={{ opacity: 0.3 }}>Try a different search term</p>
+                <SearchX className="h-6 w-6 text-[#45aaff] mb-2 opacity-30" />
+                <p className="text-xs text-[#bebebe] opacity-50">No chats found</p>
+                <p className="text-xs text-[#bebebe] mt-1 opacity-30">Try a different search term</p>
               </div>
             ) : (
               filteredSessions.map((session, index) => {

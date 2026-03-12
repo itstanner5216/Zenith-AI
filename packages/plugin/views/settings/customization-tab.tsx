@@ -171,28 +171,30 @@ interface ToggleSettingProps {
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value, onChange }) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0 group">
+  <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0 group hover:bg-[rgba(14,210,247,0.02)] rounded-md px-1 -mx-1 transition-colors duration-150">
     <div className="flex-1 mr-4">
       <div className="font-medium text-[#bebebe] text-sm leading-snug">{name}</div>
-      <div className="text-xs text-[#45aaff] mt-0.5 leading-relaxed opacity-70">{description}</div>
+      <div className="text-xs text-[#45aaff] mt-0.5 leading-relaxed opacity-60">{description}</div>
     </div>
     <div className="flex-shrink-0">
-      <label className="relative inline-flex items-center cursor-pointer">
+      <label className="relative inline-flex items-center cursor-pointer" title={value ? 'Enabled' : 'Disabled'}>
         <input
           type="checkbox"
           checked={value}
           onChange={(e) => onChange(e.target.checked)}
           className="sr-only peer"
         />
-        <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
+        {/* Track */}
+        <div className={`relative w-9 h-5 rounded-full border transition-all duration-250 ${
           value
-            ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
-            : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)] group-hover:border-[rgba(14,210,247,0.35)]'
+            ? 'bg-[rgba(14,210,247,0.2)] border-[#0fb6d6] shadow-[0_0_8px_rgba(14,210,247,0.35),inset_0_0_4px_rgba(14,210,247,0.1)]'
+            : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)] group-hover:border-[rgba(14,210,247,0.4)]'
         }`}>
-          <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+          {/* Thumb */}
+          <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full transition-all duration-250 shadow-sm ${
             value
-              ? 'right-0.5 bg-[#0fb6d6]'
-              : 'left-0.5 bg-[#45aaff] opacity-60'
+              ? 'translate-x-[18px] bg-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.6)]'
+              : 'translate-x-0.5 bg-[#45aaff] opacity-50'
           }`} />
         </div>
       </label>

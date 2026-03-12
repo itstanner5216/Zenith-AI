@@ -27,19 +27,21 @@ export function ChatTabItem({
   return (
     <div
       className={tw(
-        "group flex items-center gap-1 px-2 py-1 rounded text-sm transition-all duration-150 cursor-pointer",
+        "group flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm transition-all duration-150 cursor-pointer select-none",
         "border-b-2",
         isActive
-          ? "border-[#0fb6d6] bg-[#191621] shadow-[0_4px_12px_rgba(0,0,0,0.4),0_0_8px_rgba(14,210,247,0.1)]"
-          : "border-transparent bg-transparent hover:bg-[#100e17] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+          ? "border-[#0fb6d6] bg-[#191621] shadow-[0_2px_8px_rgba(0,0,0,0.4),0_0_10px_rgba(14,210,247,0.12)]"
+          : "border-transparent bg-transparent hover:bg-[#100e17] hover:border-[rgba(14,210,247,0.25)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
       )}
       onClick={onSelect}
-      title={`${session.title} - ${relativeTime}`}
+      title={`${session.title} — ${relativeTime}`}
     >
       <span
         className={tw(
-          "text-[10px] truncate max-w-[120px]",
-          isActive ? "text-[#0fb6d6] font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]" : "text-[#45aaff]"
+          "text-[10px] truncate max-w-[110px] leading-tight",
+          isActive
+            ? "text-[#0fb6d6] font-semibold drop-shadow-[0_0_5px_rgba(14,210,247,0.4)]"
+            : "text-[#45aaff] opacity-80 group-hover:opacity-100"
         )}
       >
         {session.title}
@@ -47,9 +49,9 @@ export function ChatTabItem({
       <button
         onClick={handleDelete}
         className={tw(
-          "opacity-0 group-hover:opacity-100 transition-opacity",
-          "hover:text-[#f4569d] flex-shrink-0",
-          "p-0.5 rounded hover:bg-[rgba(244,86,157,0.1)]"
+          "opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer",
+          "text-[#45aaff] hover:text-[#f4569d] flex-shrink-0",
+          "p-0.5 rounded hover:bg-[rgba(244,86,157,0.12)] hover:shadow-[0_0_4px_rgba(244,86,157,0.2)]"
         )}
         aria-label="Delete chat"
         title="Delete chat"

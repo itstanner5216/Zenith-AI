@@ -103,11 +103,11 @@ const IssueCard: React.FC<{
               {record.originalName}
             </div>
           </div>
-          <div className="text-xs text-[#f4569d] truncate" style={{ opacity: 0.8 }}>
+          <div className="text-xs text-[#f4569d] truncate" className="opacity-80">
             {errorMessage}
           </div>
           {getMostRecentTimestamp() && (
-            <div className="text-xs text-[#45aaff] mt-0.5" style={{ opacity: 0.4 }}>
+            <div className="text-xs text-[#45aaff] mt-0.5" className="opacity-40">
               {new Date(getMostRecentTimestamp()).toLocaleString()}
             </div>
           )}
@@ -298,7 +298,7 @@ export const RecentIssuesPanel: React.FC<{ plugin: any }> = ({ plugin }) => {
             Recent Issues ({issues.length})
           </h3>
         </div>
-        <div className="text-xs text-[#45aaff] mb-2" style={{ opacity: 0.6 }}>
+        <div className="text-xs text-[#45aaff] mb-2" className="opacity-60">
           Files that failed processing or were bypassed
         </div>
       </div>

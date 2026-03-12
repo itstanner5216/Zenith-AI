@@ -207,7 +207,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
               code: ({ children, ...props }) => (
                 <code
                   {...props}
-                  className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
+                  className="inline-code bg-[#0d0b12] border border-[rgba(14,210,247,0.15)] px-1.5 py-0.5 rounded text-[#0fb6d6] text-[0.8em] font-mono"
                 >
                   {children}
                 </code>
@@ -229,7 +229,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 </strong>
               ),
               em: ({ children, ...props }) => (
-                <em {...props} className="italic text-[#45aaff]" style={{ opacity: 0.85 }}>
+                <em {...props} className="italic text-[#45aaff] opacity-85">
                   {children}
                 </em>
               ),
@@ -243,7 +243,27 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 <h3 {...props} className="text-sm font-semibold text-[#0fb6d6] mt-2 mb-1">{children}</h3>
               ),
               blockquote: ({ children, ...props }) => (
-                <blockquote {...props} className="border-l-2 border-[rgba(14,210,247,0.4)] pl-3 my-2 text-[#45aaff] bg-gradient-to-r from-[rgba(32,28,41,0.45)] to-transparent rounded-r-md" style={{ opacity: 0.8 }}>{children}</blockquote>
+                <blockquote {...props} className="border-l-2 border-[rgba(14,210,247,0.4)] pl-3 my-2 text-[#45aaff] opacity-85 bg-gradient-to-r from-[rgba(32,28,41,0.5)] to-transparent rounded-r-md py-1">{children}</blockquote>
+              ),
+              table: ({ children, ...props }) => (
+                <div className="overflow-x-auto my-2">
+                  <table {...props} className="w-full text-xs border-collapse">{children}</table>
+                </div>
+              ),
+              thead: ({ children, ...props }) => (
+                <thead {...props} className="bg-[#0d0b12] border-b border-[rgba(14,210,247,0.2)]">{children}</thead>
+              ),
+              th: ({ children, ...props }) => (
+                <th {...props} className="px-2 py-1.5 text-left text-[#0fb6d6] font-semibold text-[10px] uppercase tracking-wider">{children}</th>
+              ),
+              td: ({ children, ...props }) => (
+                <td {...props} className="px-2 py-1.5 text-[#bebebe] border-b border-[rgba(14,210,247,0.06)]">{children}</td>
+              ),
+              tr: ({ children, ...props }) => (
+                <tr {...props} className="hover:bg-[rgba(14,210,247,0.03)] transition-colors duration-100">{children}</tr>
+              ),
+              hr: ({ ...props }) => (
+                <hr {...props} className="my-3 border-0" style={{ background: 'linear-gradient(to right, rgba(244,86,157,0.4), transparent)', height: '1px' }} />
               ),
               li: ({ children, ...props }) => (
                 <li {...props} className="mb-0.5">{children}</li>

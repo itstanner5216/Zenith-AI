@@ -361,15 +361,21 @@ function ToolInvocationHandler({
   
   return (
     <motion.div
-      className="p-3 border border-[rgba(14,210,247,0.1)] border-t-[rgba(14,210,247,0.25)] rounded bg-[#191621] hover:bg-[rgba(14,210,247,0.06)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[rgba(14,210,247,0.18)] transition-all duration-150"
-      initial={{ opacity: 0, y: 20 }}
+      className="my-1.5 rounded-md overflow-hidden border border-[rgba(14,210,247,0.1)] shadow-[0_2px_10px_rgba(0,0,0,0.45)] bg-[#191621] transition-all duration-200"
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
     >
-      <h4 className="m-0 mb-2 text-[#bebebe] text-sm font-semibold">
-        {getToolTitle(toolInvocation.toolName)}
-      </h4>
-      <div className="text-sm text-[#45aaff]">{content}</div>
+      {/* Tool header bar */}
+      <div className="flex items-center gap-2 px-3 py-2 bg-[#0d0b12] border-b border-[rgba(14,210,247,0.1)]">
+        {/* Pulsing indicator dot */}
+        <span className="w-1.5 h-1.5 rounded-full bg-[#0fb6d6] shadow-[0_0_4px_rgba(14,210,247,0.6)] animate-pulse flex-shrink-0" />
+        <h4 className="m-0 text-[#0fb6d6] text-xs font-semibold uppercase tracking-wider">
+          {getToolTitle(toolInvocation.toolName) || toolInvocation.toolName}
+        </h4>
+      </div>
+      {/* Tool content */}
+      <div className="p-3 text-sm text-[#bebebe]">{content}</div>
     </motion.div>
   );
 }

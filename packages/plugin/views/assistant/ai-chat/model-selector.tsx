@@ -54,9 +54,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       <div className="flex items-center justify-end">
         <div
           onClick={() => plugin.settings.showLocalLLMInChat && setIsModelSelectorOpen(!isModelSelectorOpen)}
-          className={`flex items-center gap-1 text-xs text-[#45aaff] ${plugin.settings.showLocalLLMInChat ? 'hover:text-[#0fb6d6] cursor-pointer' : ''}`}
+          className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 ${
+            plugin.settings.showLocalLLMInChat
+              ? 'text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[rgba(14,210,247,0.15)]'
+              : 'text-[#45aaff] opacity-60'
+          }`}
         >
-          <span>{getDisplayName(selectedModel)}</span>
+          <span className="font-medium">{getDisplayName(selectedModel)}</span>
           {plugin.settings.showLocalLLMInChat && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,12 +79,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           )}
         </div>
         {isModelSelectorOpen && plugin.settings.showLocalLLMInChat && (
-          <div className="absolute bottom-full right-0 mb-1 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)] z-50">
+          <div className="absolute bottom-full right-0 mb-1.5 bg-[#1e1a2e] border border-[rgba(14,210,247,0.18)] rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.7),0_0_12px_rgba(14,210,247,0.1)] z-50 min-w-[140px] overflow-hidden">
             <div className="py-1">
               <div
                 onClick={() => handleModelSelect("gpt-4o-mini")}
-                className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-[#bebebe] hover:bg-[rgba(14,210,247,0.08)] hover:text-[#0fb6d6]"
+                className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs text-[#bebebe] hover:bg-[rgba(14,210,247,0.08)] hover:text-[#0fb6d6] transition-colors duration-100"
               >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#50fa7b] shadow-[0_0_4px_rgba(80,250,123,0.5)] flex-shrink-0" />
                 {getDisplayName("gpt-4o-mini")}
               </div>
 
@@ -96,13 +101,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                   <div className="flex justify-end mt-2 space-x-2">
                     <button
                       onClick={() => setIsCustomizing(false)}
-                      className="px-2 py-1 text-xs text-[#45aaff] hover:text-[#bebebe]"
+                      className="px-2 py-1 text-xs text-[#45aaff] hover:text-[#bebebe] cursor-pointer transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleCustomModelSave}
-                      className="px-2 py-1 text-xs text-[#0fb6d6] hover:text-[rgba(14,210,247,0.8)]"
+                      className="px-2 py-1 text-xs bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.25)] rounded hover:bg-[rgba(14,210,247,0.18)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] cursor-pointer transition-all duration-150"
                     >
                       Save
                     </button>
@@ -111,8 +116,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               ) : (
                 <div
                   onClick={() => handleModelSelect("custom")}
-                  className="cursor-pointer block w-full text-left px-4 py-2 text-sm text-[#bebebe] hover:bg-[rgba(14,210,247,0.08)] hover:text-[#0fb6d6]"
+                  className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs text-[#bebebe] hover:bg-[rgba(14,210,247,0.08)] hover:text-[#0fb6d6] transition-colors duration-100 border-t border-[rgba(14,210,247,0.06)]"
                 >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#f4569d] shadow-[0_0_4px_rgba(244,86,157,0.5)] flex-shrink-0" />
                   {getDisplayName("custom")}
                 </div>
               )}
