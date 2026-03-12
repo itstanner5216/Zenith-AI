@@ -2120,11 +2120,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             <div className="flex items-center gap-3 py-2.5">
               <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center relative">
                 <div
-                  className="absolute inset-0 rounded-full"
+                  className="absolute inset-0 rounded-full animate-[zenith-typing-pulse_2s_ease-in-out_infinite]"
                   style={{
                     background:
                       "radial-gradient(circle, rgba(14,210,247,0.15) 0%, transparent 70%)",
-                    animation: "zenith-typing-pulse 2s ease-in-out infinite",
                   }}
                 />
                 <Bot
