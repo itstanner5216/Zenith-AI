@@ -2118,24 +2118,44 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
           {showLoadingIndicator && (
             <div className="flex items-center gap-3 py-2.5">
-              {/* Icon */}
-              <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-                <Bot size={16} className="text-[#0fb6d6]" />
+              <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center relative">
+                {/* Pulsing glow ring */}
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background:
+                      "radial-gradient(circle, rgba(14,210,247,0.15) 0%, transparent 70%)",
+                    animation: "zenith-typing-pulse 2s ease-in-out infinite",
+                  }}
+                />
+                <Bot
+                  size={16}
+                  className="text-[#0fb6d6] relative z-10"
+                  style={{ filter: "drop-shadow(0 0 6px rgba(14,210,247,0.5))" }}
+                />
               </div>
 
-              {/* Dots */}
-              <div className="h-8 flex items-center gap-0.5">
+              <div className="h-8 flex items-center gap-1.5">
                 <span
-                  className="w-1 h-1 bg-[#0fb6d6] rounded-full animate-bounce"
-                  style={{ animationDelay: "0ms", animationDuration: "1.4s" }}
+                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full"
+                  style={{
+                    animation: "zenith-dot-pulse 1.4s ease-in-out infinite",
+                    animationDelay: "0ms",
+                  }}
                 />
                 <span
-                  className="w-1 h-1 bg-[#0fb6d6] rounded-full animate-bounce"
-                  style={{ animationDelay: "200ms", animationDuration: "1.4s" }}
+                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full"
+                  style={{
+                    animation: "zenith-dot-pulse 1.4s ease-in-out infinite",
+                    animationDelay: "200ms",
+                  }}
                 />
                 <span
-                  className="w-1 h-1 bg-[#0fb6d6] rounded-full animate-bounce"
-                  style={{ animationDelay: "400ms", animationDuration: "1.4s" }}
+                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full"
+                  style={{
+                    animation: "zenith-dot-pulse 1.4s ease-in-out infinite",
+                    animationDelay: "400ms",
+                  }}
                 />
               </div>
             </div>

@@ -149,8 +149,9 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
               <div className={`w-8 h-8 rounded-full bg-[#0d0b12] border-2 flex items-center justify-center ${
                 step.status === "completed" ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]" :
                 step.status === "error" ? "border-[#f4569d]" :
-                step.status === "processing" ? "border-[#0fb6d6]" :
-                "border-[rgba(14,210,247,0.1)]"
+                step.status === "processing"
+                  ? "border-[#0fb6d6] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]"
+                  : "border-[rgba(14,210,247,0.1)]"
               }`}>
                 {getStepIcon(step.status)}
               </div>
