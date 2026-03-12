@@ -311,7 +311,7 @@ export const ClassificationContainer: React.FC<ClassificationBoxProps> = ({
   return (
     <div>
       <div className="font-semibold my-3 text-[#0fb6d6]">🗳️ AI Templates</div>
-      <div className="bg-[#191621] text-[#bebebe] p-4 space-y-4 border-b border-[rgba(14,210,247,0.05)] rounded-md">
+      <div className="bg-[#191621] text-[#bebebe] p-4 space-y-4 border-b border-[rgba(14,210,247,0.05)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="flex items-center space-x-2">
           <label htmlFor="formatBehavior" className="font-medium">
             Format Behavior:
@@ -320,7 +320,7 @@ export const ClassificationContainer: React.FC<ClassificationBoxProps> = ({
             id="formatBehavior"
             value={formatBehavior}
             onChange={handleFormatBehaviorChange}
-            className="px-2 py-1 border border-[rgba(14,210,247,0.1)] bg-[#0d0b12] text-[#bebebe] rounded"
+            className="px-2 py-1 border border-[rgba(14,210,247,0.12)] bg-[#0d0b12] text-[#bebebe] rounded focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150 appearance-none cursor-pointer"
           >
             <option value="override">Replace</option>
             <option value="newFile">New File</option>

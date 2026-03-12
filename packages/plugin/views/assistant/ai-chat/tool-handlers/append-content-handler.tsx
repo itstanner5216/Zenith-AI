@@ -57,13 +57,13 @@ export function AppendContentHandler({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+    <div className="flex flex-col space-y-4 p-4 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="text-[#bebebe]">
         {toolInvocation.args.message ||
           "Would you like to append the following content?"}
       </div>
 
-      <div className="bg-[#191621] p-3">
+      <div className="bg-[#0d0b12] p-3 rounded border border-[rgba(14,210,247,0.06)]">
         <pre className="text-sm text-[#7aa2f7] whitespace-pre-wrap">
           {toolInvocation.args.content}
         </pre>
@@ -73,7 +73,7 @@ export function AppendContentHandler({
         <div className="flex space-x-2">
           <button
             onClick={handleAppendContent}
-            className="px-4 py-2 bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.7)]"
+            className="px-4 py-2 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
           >
             Append Content
           </button>

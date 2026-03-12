@@ -1950,7 +1950,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     role="menu"
                     className={tw(
                       "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.15)]",
-                      "bg-[#191621] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)]"
+                      "bg-[#252136] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)]"
                     )}
                     style={{
                       position: "fixed",
@@ -2208,7 +2208,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 className={`flex items-center justify-center transition-all rounded-md w-8 h-8 ${
                   isGenerating || !input.trim()
                     ? "text-[#7aa2f7] cursor-not-allowed opacity-50"
-                    : "text-[#100e17] bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] shadow-sm hover:shadow"
+                    : "text-[#100e17] bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
                 }`}
                 title={isGenerating ? "Stop generating" : "Send message"}
               >

@@ -2929,3 +2929,108 @@
 .zenith-ai-container .focus-within\:border-\[\#0fb6d6\]:focus-within {
   box-shadow: 0 0 0 1px rgba(14, 210, 247, 0.12), 0 0 8px rgba(14, 210, 247, 0.08);
 }
+
+
+/* ============================================================
+   ZENITH-AI FINAL POLISH — Accessibility, Typography, Depth
+   ============================================================ */
+
+/* Focus-visible ring for keyboard navigation */
+.zenith-ai-container *:focus-visible {
+  outline: 2px solid rgba(14, 210, 247, 0.5);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Hyperlinks in chat/prose */
+.zenith-ai-container .prose a,
+.zenith-ai-container a {
+  color: #0fb6d6;
+  text-decoration: none;
+  transition: color 150ms ease, text-shadow 150ms ease;
+}
+.zenith-ai-container .prose a:hover,
+.zenith-ai-container a:hover {
+  color: #3dd7fb;
+  text-shadow: 0 0 8px rgba(14, 210, 247, 0.35);
+}
+
+/* Tables in chat messages */
+.zenith-ai-container .prose table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.85em;
+}
+.zenith-ai-container .prose th {
+  background: rgba(14, 210, 247, 0.08);
+  color: #0fb6d6;
+  font-weight: 600;
+  padding: 6px 10px;
+  border: 1px solid rgba(14, 210, 247, 0.12);
+  text-align: left;
+}
+.zenith-ai-container .prose td {
+  padding: 5px 10px;
+  border: 1px solid rgba(14, 210, 247, 0.07);
+  color: #bebebe;
+}
+.zenith-ai-container .prose tr:nth-child(even) td {
+  background: rgba(14, 210, 247, 0.03);
+}
+.zenith-ai-container .prose tr:hover td {
+  background: rgba(14, 210, 247, 0.05);
+}
+
+/* Blockquotes in chat */
+.zenith-ai-container .prose blockquote {
+  border-left: 3px solid rgba(14, 210, 247, 0.35);
+  margin: 8px 0;
+  padding: 6px 12px;
+  background: rgba(14, 210, 247, 0.04);
+  border-radius: 0 4px 4px 0;
+  color: #7aa2f7;
+  font-style: italic;
+}
+
+/* Horizontal rules in prose */
+.zenith-ai-container .prose hr {
+  border: none;
+  background: linear-gradient(to right, transparent, rgba(14, 210, 247, 0.2), transparent);
+  height: 1px;
+  margin: 12px 0;
+}
+
+/* Headings in chat messages */
+.zenith-ai-container .prose h1,
+.zenith-ai-container .prose h2,
+.zenith-ai-container .prose h3 {
+  color: #0fb6d6;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.zenith-ai-container .prose h1 { font-size: 1.2em; }
+.zenith-ai-container .prose h2 { font-size: 1.1em; }
+.zenith-ai-container .prose h3 { font-size: 1em; }
+
+/* Lists in chat messages */
+.zenith-ai-container .prose ul li::marker {
+  color: rgba(14, 210, 247, 0.5);
+}
+.zenith-ai-container .prose ol li::marker {
+  color: rgba(14, 210, 247, 0.5);
+}
+
+/* Tooltip depth — Layer 5 */
+.zenith-ai-container [role="tooltip"],
+.zenith-ai-container [data-radix-popper-content-wrapper] {
+  background: #252136 !important;
+  border: 1px solid rgba(14, 210, 247, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 4px rgba(14, 210, 247, 0.1) !important;
+  border-radius: 6px !important;
+}
+
+/* Input placeholder color */
+.zenith-ai-container input::placeholder,
+.zenith-ai-container textarea::placeholder {
+  color: rgba(69, 170, 255, 0.35);
+}

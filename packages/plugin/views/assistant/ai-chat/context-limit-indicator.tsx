@@ -87,7 +87,7 @@ export function ContextLimitIndicator({
             isOverLimit
               ? "border border-[rgba(244,86,157,0.35)] text-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.15)]"
               : shouldWarn
-              ? "border border-[rgba(255,183,77,0.35)] text-[#ffb74d]"
+              ? "border border-[rgba(255,183,77,0.35)] text-[#ffb74d] shadow-[0_0_6px_rgba(255,183,77,0.2)]"
               : "border border-[rgba(14,210,247,0.12)] text-[#45aaff] hover:border-[rgba(14,210,247,0.25)]"
           }`}
           onMouseEnter={() => setIsTooltipOpen(true)}
@@ -105,7 +105,7 @@ export function ContextLimitIndicator({
 
         {/* Enhanced menu-style tooltip - renders above, stays open on hover */}
         <div
-          className={`absolute left-0 bottom-full mb-1 w-72 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)] transition-opacity z-20 ${
+          className={`absolute left-0 bottom-full mb-1 w-72 bg-[#252136] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)] transition-opacity z-20 ${
             isTooltipOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"

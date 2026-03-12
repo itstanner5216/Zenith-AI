@@ -78,7 +78,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     const filteredFolders = getFilteredFolders();
 
     return (
-      <div className="mb-8 p-4 bg-[#191621] rounded-lg shadow-sm">
+      <div className="mb-8 p-4 bg-[#191621] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.4)] border border-[rgba(14,210,247,0.08)]">
         <div className="mb-4">
           <p className="text-sm text-[#7aa2f7] mb-3">
             Use the search box to verify folder accessibility
@@ -321,7 +321,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
         <div className="setting-item-name">{name}</div>
         <div className="setting-item-description">{description}</div>
         {warnings[settingKey] && (
-          <div className="mt-1 text-xs text-[#ffb74d] flex items-center gap-1">
+          <div className="mt-1 text-xs text-[#ffb74d] flex items-center gap-1" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
             <span>⚠</span> {warnings[settingKey]}
           </div>
         )}

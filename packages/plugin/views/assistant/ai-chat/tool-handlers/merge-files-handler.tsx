@@ -235,7 +235,7 @@ export function MergeFilesHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
+    <div className="p-3 space-y-3 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="flex items-start gap-2">
         <span className="text-[#0fb6d6] text-lg">⚡</span>
         <div className="flex-1">
@@ -276,7 +276,7 @@ export function MergeFilesHandler({
       )}
 
       {deleteSource && (
-        <div className="p-2 bg-[#191621] text-xs text-[#ffb74d]">
+        <div className="p-2 bg-[#191621] text-xs text-[#ffb74d] border border-[rgba(255,183,77,0.2)] rounded" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
           <strong>⚠ Warning:</strong> Source files will be moved to trash after
           merge
         </div>

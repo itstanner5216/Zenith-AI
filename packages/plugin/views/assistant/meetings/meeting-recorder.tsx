@@ -211,12 +211,13 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
           disabled={isSaving}
           className={tw(
             "flex items-center gap-2",
+            "active:scale-[0.97] transition-all duration-150",
             isRecording && "bg-[#f4569d] hover:bg-[rgba(244,86,157,0.85)] shadow-[0_0_12px_rgba(244,86,157,0.5)]"
           )}
         >
           {isSaving ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }} />
               Saving...
             </>
           ) : isRecording ? (

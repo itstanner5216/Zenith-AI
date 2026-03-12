@@ -86,13 +86,13 @@ export const AtomicNotes: React.FC<DocumentChunksProps> = ({ plugin, activeFile,
   }, [chunks, renderMarkdown]);
 
   const renderChunk = (chunk: { concept: string; content: string }, index: number) => (
-    <div key={index} className="chunk-container p-4 border border-[rgba(14,210,247,0.08)] mb-2 bg-[#191621] rounded-lg">
+    <div key={index} className="chunk-container p-4 border border-[rgba(14,210,247,0.08)] mb-2 bg-[#191621] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:bg-[#1e1a2e] hover:border-[rgba(14,210,247,0.15)] transition-all duration-200">
       <div 
         className="chunk-markdown-content mb-3 text-[#bebebe]"
         data-content={chunk.content}
       />
       <button
-        className="bg-[#0fb6d6] text-[#0d0b12] px-3 py-1.5 rounded text-sm font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors"
+        className="bg-[#0fb6d6] text-[#0d0b12] px-3 py-1.5 rounded text-sm font-medium hover:bg-[rgba(14,210,247,0.8)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)]"
         onClick={() => createFileInSameFolder(chunk.concept, chunk.content)}
       >
         Create note

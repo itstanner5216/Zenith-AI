@@ -238,6 +238,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
             <span className="flex items-center justify-center">
               <svg
                 className="animate-spin -ml-1 mr-2 h-4 w-4"
+                style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

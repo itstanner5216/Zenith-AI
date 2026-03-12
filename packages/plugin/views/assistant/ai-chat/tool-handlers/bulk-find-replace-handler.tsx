@@ -215,7 +215,7 @@ export function BulkFindReplaceHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
+    <div className="p-3 space-y-3 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="flex items-start gap-2">
         <span className="text-[#0fb6d6] text-lg">🔍</span>
         <div className="flex-1">
@@ -230,7 +230,7 @@ export function BulkFindReplaceHandler({
         <div className="font-semibold text-[#7aa2f7] uppercase">
           Operation
         </div>
-        <div className="p-2 bg-[#191621] space-y-1">
+        <div className="p-2 bg-[#0d0b12] rounded border border-[rgba(14,210,247,0.06)] space-y-1">
           <div className="text-[#bebebe]">
             <strong>Find:</strong>{" "}
             <code className="px-1 bg-[#0d0b12]">{find}</code>

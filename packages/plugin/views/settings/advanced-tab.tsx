@@ -225,7 +225,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                         ? "text-[#ffb74d]"
                         : "text-[#bebebe]"
                     }`}
-                    style={{ userSelect: "text", WebkitUserSelect: "text" }}
+                    style={{ userSelect: "text", WebkitUserSelect: "text", ...(log.level === "warn" ? { textShadow: '0 0 8px rgba(255,183,77,0.3)' } : {}) }}
                   >
                     <span className="text-[#7aa2f7] text-xs">
                       {new Date(log.timestamp).toLocaleString()}

@@ -75,7 +75,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           )}
         </div>
         {isModelSelectorOpen && plugin.settings.showLocalLLMInChat && (
-          <div className="absolute bottom-full right-0 mb-1 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)] z-50">
+          <div className="absolute bottom-full right-0 mb-1 bg-[#252136] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)] z-50">
             <div className="py-1">
               <div
                 onClick={() => handleModelSelect("gpt-4o-mini")}
@@ -90,7 +90,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                     type="text"
                     value={customModel}
                     onChange={(e) => setCustomModel(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border bg-[#0d0b12] text-[#bebebe] border-[rgba(14,210,247,0.1)] rounded"
+                    className="w-full px-2 py-1 text-sm border bg-[#0d0b12] text-[#bebebe] border-[rgba(14,210,247,0.12)] rounded focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
                     placeholder="Enter model name..."
                   />
                   <div className="flex justify-end mt-2 space-x-2">

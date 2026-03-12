@@ -240,7 +240,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         <h3 className="text-lg font-medium mb-2 mt-0">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0fb6d6]"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[rgba(14,210,247,0.2)] border-t-[#0fb6d6]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}></div>
           </div>
         ) : usageData ? (
           <div className="space-y-3">
@@ -325,6 +325,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                       ? "text-[#50fa7b]"
                       : "text-[#ffb74d]"
                   }`}
+                  style={usageData.subscriptionStatus !== "active" ? { textShadow: '0 0 8px rgba(255,183,77,0.3)' } : undefined}
                 >
                   {usageData.subscriptionStatus === "active"
                     ? "Active"

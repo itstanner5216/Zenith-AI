@@ -66,7 +66,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
     <motion.div
       className={`flex items-start gap-3 py-2.5 ${
         isUser
-          ? "bg-[#191621] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[rgba(244,86,157,0.4)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+          ? "bg-[#191621] hover:bg-[#1e1a2e] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[rgba(244,86,157,0.4)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-colors duration-200"
           : "border-l-2 border-[rgba(14,210,247,0.25)] pl-3 my-1"
       }`}
       initial={{ opacity: 0, y: 5 }}

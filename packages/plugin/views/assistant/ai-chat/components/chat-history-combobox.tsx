@@ -165,8 +165,8 @@ export function ChatHistoryCombobox({
         <div
           className={tw(
             "absolute top-full right-0 mt-1 w-[300px] max-h-[400px]",
-            "bg-[#191621] border border-[rgba(14,210,247,0.15)]",
-            "rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_4px_rgba(14,210,247,0.08)] z-50 overflow-hidden"
+            "bg-[#252136] border border-[rgba(14,210,247,0.15)]",
+            "rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)] z-50 overflow-hidden"
           )}
           style={{
             maxWidth: 'calc(100vw - 2rem)', // Prevent overflow beyond viewport

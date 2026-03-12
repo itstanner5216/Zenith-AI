@@ -22,7 +22,7 @@ export function CollapsibleSection({
   return (
     <div className="mb-2 border border-[rgba(14,210,247,0.08)] rounded-md overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <Button
-        className="w-full flex justify-between items-center px-3 py-2.5 bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.06)] transition-colors duration-150"
+        className="w-full flex justify-between items-center px-3 py-2.5 bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.06)] active:scale-[0.99] transition-all duration-150"
         onClick={onToggle}
         variant="ghost"
       >

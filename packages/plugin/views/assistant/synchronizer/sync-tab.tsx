@@ -435,7 +435,7 @@ export function SyncTab({
         icon = <RotateCw className="w-3 h-3 animate-spin" />;
         break;
       case "pending":
-        className += " bg-[#ffb74d] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
+        className += " bg-[#ffb74d] text-[#0d0b12] border border-[rgba(255,183,77,0.3)] shadow-[0_0_6px_rgba(255,183,77,0.25)]";
         icon = <Clock className="w-3 h-3" />;
         break;
       case "error":
@@ -594,7 +594,7 @@ export function SyncTab({
                     ) : file.status === 'completed' ? (
                       <Download className={tw("w-4 h-4 text-[#7aa2f7] opacity-0 group-hover:opacity-100 transition-opacity")} />
                     ) : (
-                      <Clock className={tw("w-4 h-4 text-[#ffb74d]")} />
+                      <Clock className={tw("w-4 h-4 text-[#ffb74d]")} style={{ filter: 'drop-shadow(0 0 4px rgba(255,183,77,0.4))' }} />
                     )}
                   </div>
                 </div>

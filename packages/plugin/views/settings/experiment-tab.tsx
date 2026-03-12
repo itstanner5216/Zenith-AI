@@ -103,7 +103,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                       AI processing.
                     </p>
                     <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-2">
-                      <p className="text-[#ffb74d]">
+                      <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
                         ⚡ Requires a compatible local LLM setup
                       </p>
                       <p className="text-[#7aa2f7]">Currently supports:</p>
@@ -158,8 +158,8 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                       <div className="space-y-2">
                         <p>Use a larger search context size for more comprehensive web results.</p>
                         <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                          <p className="text-[#ffb74d]">
-                            ⚠️ Uses more tokens
+                         <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                          ⚡ Requires Screenpipes
                           </p>
                           <p className="text-[#7aa2f7]">
                             Provides more detailed information from web sources but consumes additional tokens
@@ -185,8 +185,8 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                   <div className="space-y-2">
                     <p>Show title suggestions in the sidebar.</p>
                     <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                      <p className="text-[#ffb74d]">
-                        ⚠️ Deprecated Feature
+                      <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                        ⚡ Requires Screenpipe
                       </p>
                       <p className="text-[#7aa2f7]">
                         This feature will be removed in a future update. For
@@ -220,7 +220,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
             <h3 className="text-lg font-medium text-[#bebebe] mb-4">
               Integrations (Beta)
             </h3>
-            <div className="bg-[#191621] p-4 rounded-lg mb-4">
+            <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
               <p className="text-sm text-[#7aa2f7]">
                 These integrations are in early beta. Your feedback helps us
                 improve and prioritize features.
@@ -259,9 +259,8 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                   description={
                     <div className="space-y-2">
                       <p>Enable ScreenPipe integration to search your screen activity and audio transcriptions in the AI chat.</p>
-                      <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                        <p className="text-[#0fb6d6]">
-                          📺 Requires ScreenPipe running on localhost:3030
+                      <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">                          <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                            ⚡ Requires Screenpipenning on localhost:3030
                         </p>
                         <p className="text-[#7aa2f7]">
                           Search your screen recordings and meeting transcriptions directly from chat.

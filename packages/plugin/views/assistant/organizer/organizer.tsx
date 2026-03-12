@@ -351,7 +351,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
       </div>
 
       {/* Content sections - consistent padding with other tabs */}
-      <div className={tw("flex flex-col px-3")}>
+      <div className={tw("flex flex-col px-3 bg-[#100e17]")}>
         {renderSection(
           <ClassificationContainer
             plugin={plugin}

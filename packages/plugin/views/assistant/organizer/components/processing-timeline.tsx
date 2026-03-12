@@ -91,7 +91,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
       case "completed":
         return <Check className={tw("w-4 h-4 text-[#50fa7b]")} />;
       case "processing":
-        return <Loader className={tw("w-4 h-4 text-[#0fb6d6] animate-spin")} />;
+        return <Loader className={tw("w-4 h-4 text-[#0fb6d6] animate-spin")} style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.5))' }} />;
       case "error":
         return <AlertCircle className={tw("w-4 h-4 text-[#f4569d]")} />;
       case "skipped":

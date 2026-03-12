@@ -266,12 +266,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <button
             onClick={handleSignup}
             disabled={isLoading}
-            className="w-full bg-[#0fb6d6] text-[#0d0b12] py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.7)] transition-colors disabled:opacity-50"
+            className="w-full bg-[#0fb6d6] text-[#0d0b12] py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_14px_rgba(14,210,247,0.4)]"
           >
             {isLoading ? (
               <span className="flex items-center justify-center">
                 <svg
                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#0d0b12]"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"

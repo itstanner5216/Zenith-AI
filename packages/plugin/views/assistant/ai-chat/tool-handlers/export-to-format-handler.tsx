@@ -90,11 +90,18 @@ export function ExportToFormatHandler({
   <meta charset="UTF-8">
   <title>${baseName}</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
-    h1, h2, h3, h4, h5, h6 { margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
-    code { background: #191621; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
-    pre { background: #191621; padding: 16px; border-radius: 6px; overflow-x: auto; }
-    blockquote { border-left: 4px solid rgba(14, 210, 247, 0.1); padding-left: 16px; color: #7aa2f7; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; background: #100e17; color: #bebebe; }
+    h1 { color: #0fb6d6; font-size: 2em; margin-top: 24px; margin-bottom: 16px; font-weight: 600; }
+    h2, h3, h4, h5, h6 { color: #cbdbe5; margin-top: 24px; margin-bottom: 16px; font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid; border-image: linear-gradient(to right, #f4569d, #100e17, #100e17, #100e17) 1; }
+    a { color: #0fb6d6; }
+    code { background: #191621; color: rgba(14, 210, 247, 0.9); padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; border: 1px solid rgba(14, 210, 247, 0.12); }
+    pre { background: #191621; padding: 16px; border-radius: 6px; overflow-x: auto; border: 1px solid rgba(14, 210, 247, 0.08); }
+    pre code { color: #bebebe; border: none; background: transparent; }
+    blockquote { border-left: 3px solid rgba(14, 210, 247, 0.5); padding-left: 16px; color: #7aa2f7; background: linear-gradient(135deg, rgba(32, 28, 41, 0.45), #100e17); margin: 1em 0; padding: 8px 16px; border-radius: 0 4px 4px 0; }
+    table { border-collapse: collapse; width: 100%; }
+    th { background: #191621; color: #0fb6d6; border: 1px solid rgba(14, 210, 247, 0.1); padding: 6px 12px; text-align: left; }
+    td { border: 1px solid rgba(14, 210, 247, 0.06); padding: 5px 12px; color: #bebebe; }
+    hr { border: none; height: 1px; background: linear-gradient(to right, transparent, rgba(14, 210, 247, 0.15), transparent); margin: 12px 0; }
   </style>
 </head>
 <body>
@@ -203,7 +210,7 @@ ${content.replace(/\n/g, "<br>\n")}
   }
 
   return (
-    <div className="p-3 space-y-3 border border-[rgba(14,210,247,0.08)]">
+    <div className="p-3 space-y-3 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="flex items-start gap-2">
         <span className="text-[#0fb6d6] text-lg">📤</span>
         <div className="flex-1">
@@ -218,7 +225,7 @@ ${content.replace(/\n/g, "<br>\n")}
         <div className="font-semibold text-[#7aa2f7] uppercase">
           Export Settings
         </div>
-        <div className="p-2 bg-[#191621] space-y-1">
+        <div className="p-2 bg-[#0d0b12] rounded border border-[rgba(14,210,247,0.06)] space-y-1">
           <div className="text-[#bebebe]">
             <strong>Format:</strong> {format.toUpperCase()}
           </div>
@@ -254,7 +261,7 @@ ${content.replace(/\n/g, "<br>\n")}
       )}
 
       {format === "pdf" && (
-        <div className="p-2 bg-[#191621] text-xs text-[#ffb74d]">
+        <div className="p-2 bg-[#191621] text-xs text-[#ffb74d] border border-[rgba(255,183,77,0.2)] rounded" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
           <strong>⚠ Note:</strong> PDF export is not yet fully implemented
         </div>
       )}
