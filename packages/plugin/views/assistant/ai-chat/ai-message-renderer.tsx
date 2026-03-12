@@ -183,7 +183,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 <a
                   {...props}
                   href={href || ""}
-                  className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)] underline cursor-pointer"
+                  className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.8)] underline cursor-pointer transition-all duration-150 hover:drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
                 >
                   {children}
                 </a>
@@ -234,16 +234,16 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 </em>
               ),
               h1: ({ children, ...props }) => (
-                <h1 {...props} className="text-lg font-bold text-[#0fb6d6] mt-3 mb-1 border-b border-[rgba(14,210,247,0.15)] pb-1">{children}</h1>
+                <h1 {...props} className="text-lg font-bold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent mt-3 mb-1 border-b border-[rgba(14,210,247,0.15)] pb-1">{children}</h1>
               ),
               h2: ({ children, ...props }) => (
-                <h2 {...props} className="text-base font-semibold text-[#0fb6d6] mt-3 mb-1">{children}</h2>
+                <h2 {...props} className="text-base font-semibold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent mt-3 mb-1">{children}</h2>
               ),
               h3: ({ children, ...props }) => (
-                <h3 {...props} className="text-sm font-semibold text-[#45aaff] mt-2 mb-1">{children}</h3>
+                <h3 {...props} className="text-sm font-semibold text-[#0fb6d6] mt-2 mb-1">{children}</h3>
               ),
               blockquote: ({ children, ...props }) => (
-                <blockquote {...props} className="border-l-2 border-[rgba(14,210,247,0.4)] pl-3 my-2 text-[#45aaff]" style={{ opacity: 0.8 }}>{children}</blockquote>
+                <blockquote {...props} className="border-l-2 border-[rgba(14,210,247,0.4)] pl-3 my-2 text-[#45aaff] bg-gradient-to-r from-[rgba(32,28,41,0.45)] to-transparent rounded-r-md" style={{ opacity: 0.8 }}>{children}</blockquote>
               ),
               li: ({ children, ...props }) => (
                 <li {...props} className="mb-0.5">{children}</li>

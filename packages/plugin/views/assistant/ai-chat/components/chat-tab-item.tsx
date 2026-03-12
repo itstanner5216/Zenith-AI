@@ -27,11 +27,11 @@ export function ChatTabItem({
   return (
     <div
       className={tw(
-        "group flex items-center gap-1 px-2 py-1 rounded text-sm transition-all duration-150 cursor-pointer hover:shadow-[0_0_8px_rgba(14,210,247,0.1)]",
+        "group flex items-center gap-1 px-2 py-1 rounded text-sm transition-all duration-150 cursor-pointer",
         "border-b-2",
         isActive
-          ? "border-[#0fb6d6] bg-[#100e17] shadow-[0_0_6px_rgba(14,210,247,0.12)]"
-          : "border-transparent bg-transparent hover:bg-[rgba(14,210,247,0.05)] hover:border-[rgba(14,210,247,0.2)]"
+          ? "border-[#0fb6d6] bg-[#191621] shadow-[0_4px_12px_rgba(0,0,0,0.4),0_0_8px_rgba(14,210,247,0.1)]"
+          : "border-transparent bg-transparent hover:bg-[#100e17] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
       )}
       onClick={onSelect}
       title={`${session.title} - ${relativeTime}`}
@@ -39,7 +39,7 @@ export function ChatTabItem({
       <span
         className={tw(
           "text-[10px] truncate max-w-[120px]",
-          isActive ? "text-[#0fb6d6] font-medium" : "text-[#45aaff]"
+          isActive ? "text-[#0fb6d6] font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]" : "text-[#45aaff]"
         )}
       >
         {session.title}
