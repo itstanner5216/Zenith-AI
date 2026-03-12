@@ -98,7 +98,7 @@ jobs:
       # ---- Build & push per architecture (native runners, no QEMU) ----
       - name: Build & push (${{ matrix.tag-suffix }})
         id: buildpush
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile.optimized
