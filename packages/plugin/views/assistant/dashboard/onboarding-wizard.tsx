@@ -89,11 +89,11 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
   return (
     <StyledContainer>
       <motion.div
-        className={tw("max-w-xl mx-auto bg-[#191621] p-6 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_0_30px_rgba(14,210,247,0.05)]")}
+        className={tw("max-w-xl mx-auto bg-[#191621] p-6 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_12px_rgba(14,210,247,0.1)]")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <h2 className={tw("text-xl font-bold mb-6 text-[#0fb6d6]")}>
+        <h2 className={tw("text-xl font-bold mb-6 bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent")}>
           {step === 0
             ? "Welcome to Zenith-AI!"
             : step === 1
@@ -215,9 +215,9 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             </Button>
             
             <div className={tw("flex items-center justify-center my-4")}>
-              <div className={tw("flex-grow border-t border-[rgba(14,210,247,0.08)]")}></div>
+              <div className={tw("flex-grow h-px bg-gradient-to-r from-[rgba(244,86,157,0.3)] via-transparent to-transparent")}></div>
               <span className={tw("mx-4 text-[#45aaff] text-sm")}>or</span>
-              <div className={tw("flex-grow border-t border-[rgba(14,210,247,0.08)]")}></div>
+              <div className={tw("flex-grow h-px bg-gradient-to-l from-[rgba(244,86,157,0.3)] via-transparent to-transparent")}></div>
             </div>
             
             <Button 
@@ -238,14 +238,14 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               </svg>
             </div>
             
-            <h4 className={tw("text-lg font-semibold text-center text-[#0fb6d6]")}>You're ready to go!</h4>
+            <h4 className={tw("text-lg font-semibold text-center bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent")}>You're ready to go!</h4>
             
             <p className={tw("text-center text-[#bebebe]")}>
               Zenith-AI is now set up and ready to help you organize your vault.
             </p>
             
-            <div className={tw("bg-[#100e17] p-4 rounded-md border border-[rgba(14,210,247,0.08)]")}>
-              <h4 className={tw("font-medium text-sm mb-2 text-[#0fb6d6]")}>We'll create these folders for you:</h4>
+            <div className={tw("bg-[#0d0b12] p-4 rounded-md border border-[rgba(14,210,247,0.05)]")}>
+              <h4 className={tw("font-medium text-sm mb-2 bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent")}>We'll create these folders for you:</h4>
               <ul className={tw("text-sm space-y-2")}>
                 <li><strong>_NoteCompanion/Inbox</strong>: Files waiting to be processed</li>
                 <li><strong>_NoteCompanion/Processed</strong>: Organized files</li>

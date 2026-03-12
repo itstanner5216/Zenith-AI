@@ -49,7 +49,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
   return (
     <div className="mt-6 space-y-4 m-2 z-50">
       <div className="flex justify-between items-center">
-        <h3 className="text-base font-medium text-[#0fb6d6]">Sources</h3>
+        <h3 className="text-base font-semibold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent">Sources</h3>
         {sources.length > 3 && (
           <button
             onClick={() => setShowAll(!showAll)}
@@ -64,7 +64,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
         {displayedSources.map((source) => (
           <div
             key={source.id}
-            className="flex items-center p-4 bg-[#0d0b12] border border-[rgba(14,210,247,0.1)] hover:border-[rgba(14,210,247,0.3)] transition-colors rounded-md"
+            className="flex items-center p-4 bg-[#191621] border border-[rgba(14,210,247,0.08)] hover:bg-[#1e1a2e] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(14,210,247,0.05)] transition-all duration-150 rounded-md"
           >
             <div className="flex-shrink-0 mr-4">
               <div className="relative">
@@ -73,7 +73,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   alt={source.domain}
                   className="w-8 h-8 rounded"
                 />
-                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[#191621] border border-[rgba(14,210,247,0.3)] rounded-full text-xs font-medium text-[#0fb6d6]">
+                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[#252136] border border-[rgba(14,210,247,0.4)] shadow-[0_0_6px_rgba(14,210,247,0.2)] rounded-full text-xs font-medium text-[#0fb6d6]">
                   {source.id}
                 </div>
               </div>

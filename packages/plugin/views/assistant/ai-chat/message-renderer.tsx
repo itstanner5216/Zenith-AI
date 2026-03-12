@@ -66,8 +66,8 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
     <motion.div
       className={`flex items-start gap-3 py-2.5 ${
         isUser
-          ? "bg-[#191621] hover:bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[rgba(244,86,157,0.4)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
-          : "border-l-2 border-[rgba(14,210,247,0.25)] pl-3 my-1"
+          ? "bg-[#191621] hover:bg-[#1e1a2e] border border-[rgba(244,86,157,0.15)] border-l-2 border-l-[#f4569d] rounded-md px-3 my-1 shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(244,86,157,0.05)] transition-all duration-150"
+          : "bg-[#100e17] border border-[rgba(14,210,247,0.08)] border-l-2 border-l-[#0fb6d6] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
       }`}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
@@ -76,9 +76,9 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
       {/* Icon on the left - top-aligned with small padding to match text baseline */}
       <div className="flex-shrink-0 w-8 h-8 flex items-start justify-center pt-[2px]">
         {isUser ? (
-          <User size={16} className="text-[#f4569d]" />
+          <User size={16} className="text-[#f4569d] drop-shadow-[0_0_4px_rgba(244,86,157,0.4)]" />
         ) : (
-          <Bot size={16} className="text-[#0fb6d6]" />
+          <Bot size={16} className="text-[#0fb6d6] drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]" />
         )}
       </div>
 

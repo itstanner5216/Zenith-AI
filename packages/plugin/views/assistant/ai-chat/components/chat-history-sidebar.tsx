@@ -35,7 +35,7 @@ export function ChatHistorySidebar({
   return (
     <StyledContainer>
       <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[#0d0b12]")} role="navigation" aria-label="Chat history">
-        <div className={tw("text-xs font-semibold text-[#0fb6d6] uppercase mb-2 tracking-wider")}>
+        <div className={tw("text-xs font-semibold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent uppercase mb-2 tracking-wider")}>
           Chat History
         </div>
         <div className={tw("flex-1 overflow-y-auto space-y-1")} role="list">
@@ -67,8 +67,8 @@ export function ChatHistorySidebar({
                   className={tw(
                     "group p-2 rounded cursor-pointer text-sm transition-colors",
                     activeChatId === session.id
-                      ? "bg-[rgba(14,210,247,0.08)] border-l-2 border-[#0fb6d6]"
-                      : "hover:bg-[rgba(14,210,247,0.04)]"
+                      ? "bg-[rgba(14,210,247,0.12)] border-l-2 border-[#0fb6d6] shadow-[0_0_8px_rgba(14,210,247,0.1)]"
+                      : "hover:bg-[#191621] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
                   )}
                   onClick={() => onSelectChat(session.id)}
                   role="listitem"
@@ -79,7 +79,7 @@ export function ChatHistorySidebar({
                       <div className={tw(
                         "truncate",
                         activeChatId === session.id
-                          ? "font-semibold text-[#0fb6d6]"
+                          ? "font-semibold text-[#0fb6d6] drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]"
                           : "font-medium text-[#bebebe]"
                       )}>
                         {session.title}
