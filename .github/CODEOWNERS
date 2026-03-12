@@ -1,0 +1,12 @@
+# Default owner for everything
+* @itstanner5216
+
+# Package-specific
+/packages/plugin/ @itstanner5216
+/packages/web/ @itstanner5216
+/packages/landing/ @itstanner5216
+/packages/mobile/ @itstanner5216
+/packages/release-notes/ @itstanner5216
+
+# CI/CD and security
+/.github/ @itstanner5216
