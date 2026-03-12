@@ -51,3 +51,7 @@ build-*.apk
 *SUMMARY*.MD
 .env.production
 .cecli*
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+**/tsconfig.tsbuildinfo
