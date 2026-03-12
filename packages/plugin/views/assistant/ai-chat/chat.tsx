@@ -2182,9 +2182,9 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
       {/* Unified Command Center Footer */}
       <div className="flex-none border-t border-[rgba(14,210,247,0.1)] bg-[#0d0b12]">
-        <form onSubmit={handleSendMessage} className="p-3">
+        <form onSubmit={handleSendMessage} className="p-3" role="form" aria-label="Chat message input form">
           {/* Row 1: Context attachments - compact chips */}
-          <div className="mb-2">
+          <div className="mb-2" role="region" aria-label="Context attachments">
             <ContextItems />
           </div>
 
@@ -2212,6 +2212,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     : "text-[#100e17] bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
                 }`}
                 title={isGenerating ? "Stop generating" : "Send message"}
+                aria-label={isGenerating ? "Stop generating" : "Send message"}
               >
                 {isGenerating ? (
                   <Square className="w-4 h-4" fill="currentColor" />

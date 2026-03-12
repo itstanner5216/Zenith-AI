@@ -34,11 +34,11 @@ export function ChatHistorySidebar({
 
   return (
     <StyledContainer>
-      <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[#0d0b12]")}>
+      <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[#0d0b12]")} role="navigation" aria-label="Chat history">
         <div className={tw("text-xs font-semibold text-[#0fb6d6] uppercase mb-2 tracking-wider")}>
           Chat History
         </div>
-        <div className={tw("flex-1 overflow-y-auto space-y-1")}>
+        <div className={tw("flex-1 overflow-y-auto space-y-1")} role="list">
           {isLoading ? (
             <div className={tw("space-y-2 p-2")}>
               {[...Array(5)].map((_, i) => (
@@ -71,6 +71,8 @@ export function ChatHistorySidebar({
                       : "hover:bg-[rgba(14,210,247,0.04)]"
                   )}
                   onClick={() => onSelectChat(session.id)}
+                  role="listitem"
+                  aria-label={`${session.title} - ${relativeTime}`}
                 >
                   <div className={tw("flex items-start justify-between gap-2")}>
                     <div className={tw("flex-1 min-w-0")}>
