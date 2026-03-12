@@ -159,7 +159,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                         <p>Use a larger search context size for more comprehensive web results.</p>
                         <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
                          <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
-                          ⚡ Requires Screenpipes
+                          ⚡ Requires ScreenPipe
                           </p>
                           <p className="text-[#45aaff]">
                             Provides more detailed information from web sources but consumes additional tokens
@@ -186,7 +186,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                     <p>Show title suggestions in the sidebar.</p>
                     <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
                       <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
-                        ⚡ Requires Screenpipe
+                        ⚡ Requires ScreenPipe
                       </p>
                       <p className="text-[#45aaff]">
                         This feature will be removed in a future update. For
@@ -260,7 +260,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                     <div className="space-y-2">
                       <p>Enable ScreenPipe integration to search your screen activity and audio transcriptions in the AI chat.</p>
                       <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">                          <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
-                            ⚡ Requires Screenpipenning on localhost:3030
+                            ⚡ Requires ScreenPipe running on localhost:3030
                         </p>
                         <p className="text-[#45aaff]">
                           Search your screen recordings and meeting transcriptions directly from chat.
@@ -292,7 +292,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                               <span className="text-sm text-[#45aaff]">hours</span>
                             </div>
                             <p className="text-xs text-[#45aaff] opacity-70">
-                              Adjust how far back Screenpipe should look for data. Lower
+                              Adjust how far back ScreenPipe should look for data. Lower
                               values mean faster processing but may miss important
                               context.
                             </p>

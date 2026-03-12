@@ -146,7 +146,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
           <div key={step.action} className={tw("flex items-start gap-3")}>
             {/* Timeline connector */}
             <div className={tw("flex flex-col items-center")}>
-              <div className={`w-8 h-8 rounded-full bg-[#0a0910] border-2 flex items-center justify-center ${
+              <div className={`w-8 h-8 rounded-full bg-[#0d0b12] border-2 flex items-center justify-center ${
                 step.status === "completed" ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]" :
                 step.status === "error" ? "border-[#f4569d]" :
                 step.status === "processing" ? "border-[#0fb6d6]" :

@@ -339,24 +339,56 @@ export function SyncTab({
       try {
         await plugin.ensureFolderExists(dateFolderPath);
       } catch (err) {
-        // If date folder fails, just use the main sync folder
-        console.warn("Failed to create date folder, using main sync folder", err);
+        new Notice(`Failed to create date folder: ${dateFolderPath}`);
+        throw err;
       }
 
-      const finalPath = `${dateFolderPath}/${sanitizedFilename}`;
+      if (isImage || isPDF) {
+        // Binary file handling
+        const binaryPath = `${dateFolderPath}/${sanitizedFilename}`;
 
-      // Check if file already exists
-      const existingFile = plugin.app.vault.getAbstractFileByPath(finalPath);
-      if (existingFile) {
-        // If it exists, we could either skip or append a timestamp
-        // For now, let's just mark it as downloaded
-        markFileAsDownloaded(file.id);
-        new Notice(`File already exists: ${sanitizedFilename}`);
+        try {
+          await plugin.app.vault.createBinary(
+            binaryPath,
+            fileResponse.arrayBuffer
+          );
+
+          // Create a markdown file that references the image
+          const baseName = sanitizedFilename.split(".").slice(0, -1).join(".");
+          const markdownContent = `# ${baseName}\n\n![[${dateFolder}/${sanitizedFilename}]]\n\n${
+            file.textContent || ""
+          }`;
+
+          const mdFilePath = `${dateFolderPath}/${baseName}.md`;
+          await plugin.app.vault.create(mdFilePath, markdownContent);
+
+          markFileAsDownloaded(file.id);
+          new Notice(`Downloaded ${sanitizedFilename} to ${dateFolderPath}`);
+        } catch (err) {
+          new Notice(`Failed to save file: ${sanitizedFilename}`);
+          throw err;
+        }
       } else {
-        // Create the file in the vault
-        await plugin.app.vault.createBinary(finalPath, fileResponse.arrayBuffer);
-        markFileAsDownloaded(file.id);
-        new Notice(`Downloaded: ${sanitizedFilename}`);
+        // Text/markdown file handling
+        try {
+          let content = file.textContent || "";
+
+          let finalName = sanitizedFilename;
+          if (!finalName.endsWith(".md")) {
+            finalName = `${sanitizedFilename}.md`;
+          }
+
+          await plugin.app.vault.create(
+            `${dateFolderPath}/${finalName}`,
+            content
+          );
+
+          markFileAsDownloaded(file.id);
+          new Notice(`Downloaded ${finalName} to ${dateFolderPath}`);
+        } catch (err) {
+          new Notice(`Failed to save file: ${sanitizedFilename}`);
+          throw err;
+        }
       }
     } catch (err) {
       new Notice(

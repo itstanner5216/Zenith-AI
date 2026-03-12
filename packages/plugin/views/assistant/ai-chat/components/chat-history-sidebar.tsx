@@ -32,7 +32,7 @@ export function ChatHistorySidebar({
 
   return (
     <StyledContainer>
-      <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[#0a0910]")}>
+      <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[#0d0b12]")}>
         <div className={tw("text-xs font-semibold text-[#0fb6d6] uppercase mb-2 tracking-wider")}>
           Chat History
         </div>

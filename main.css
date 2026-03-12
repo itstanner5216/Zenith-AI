@@ -2289,7 +2289,7 @@
   height: 6px;
 }
 .zenith-ai-container ::-webkit-scrollbar-track {
-  background: #0a0910;
+  background: #0d0b12;
 }
 .zenith-ai-container ::-webkit-scrollbar-thumb {
   background: rgba(15, 182, 214, 0.2);
@@ -2357,7 +2357,7 @@
 
 /* Code blocks in chat messages */
 .zenith-ai-container pre {
-  background: #0a0910 !important;
+  background: #0d0b12 !important;
   border: 1px solid rgba(15, 182, 214, 0.08);
   border-radius: 6px;
 }
@@ -3023,7 +3023,7 @@
 /* Tooltip depth — Layer 5 */
 .zenith-ai-container [role="tooltip"],
 .zenith-ai-container [data-radix-popper-content-wrapper] {
-  background: #252136 !important;
+  background: #191621 !important;
   border: 1px solid rgba(14, 210, 247, 0.12) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 4px rgba(14, 210, 247, 0.1) !important;
   border-radius: 6px !important;
