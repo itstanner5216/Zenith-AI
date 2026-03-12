@@ -1,5 +1,5 @@
 import React from "react";
-import { X } from "lucide-react";
+import { X, MessageSquare } from "lucide-react";
 import { ChatSession } from "../services/chat-history-manager";
 import { tw } from "../../../../lib/utils";
 import { StyledContainer } from "../../../../components/ui/utils";
@@ -12,6 +12,7 @@ interface ChatHistorySidebarProps {
   onDeleteChat: (id: string) => void;
   isOpen?: boolean;
   onToggle?: () => void;
+  isLoading?: boolean;
 }
 
 export function ChatHistorySidebar({
@@ -21,6 +22,7 @@ export function ChatHistorySidebar({
   onDeleteChat,
   isOpen = true,
   onToggle,
+  isLoading = false,
 }: ChatHistorySidebarProps) {
   if (!isOpen) {
     return null;
@@ -37,9 +39,22 @@ export function ChatHistorySidebar({
           Chat History
         </div>
         <div className={tw("flex-1 overflow-y-auto space-y-1")}>
-          {sessions.length === 0 ? (
-            <div className={tw("text-xs text-[#45aaff] py-4 text-center")} style={{ opacity: 0.5 }}>
-              No chat history
+          {isLoading ? (
+            <div className={tw("space-y-2 p-2")}>
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className={tw(
+                    "h-10 rounded-lg bg-[#191621] animate-pulse border border-[rgba(14,210,247,0.05)]"
+                  )}
+                />
+              ))}
+            </div>
+          ) : sessions.length === 0 ? (
+            <div className={tw("flex flex-col items-center justify-center py-8 text-center")}>
+              <MessageSquare className="h-8 w-8 text-[#45aaff] mb-3" style={{ opacity: 0.3 }} />
+              <p className="text-xs text-[#bebebe]" style={{ opacity: 0.5 }}>No chat history yet</p>
+              <p className="text-xs text-[#bebebe] mt-1" style={{ opacity: 0.3 }}>Start a conversation to see it here</p>
             </div>
           ) : (
             sessions.map((session) => {

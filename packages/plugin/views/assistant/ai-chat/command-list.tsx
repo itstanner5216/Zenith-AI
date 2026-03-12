@@ -119,7 +119,7 @@ export const CommandList = forwardRef<
               return (
                 <button
                   key={item.id}
-                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors ${
+                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded cursor-pointer hover:bg-[rgba(14,210,247,0.08)] transition-colors ${
                     isSelected
                       ? "bg-[rgba(14,210,247,0.08)] text-[#0fb6d6]"
                       : "text-[#bebebe]"
@@ -145,8 +145,9 @@ export const CommandList = forwardRef<
       })}
     </div>
   ) : (
-    <div className="px-4 py-3 text-sm text-[#45aaff] text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
-      No matching commands found
+    <div className="flex flex-col items-center justify-center py-6 text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
+      <p className="text-sm text-[#bebebe]" style={{ opacity: 0.5 }}>No matching commands found</p>
+      <p className="text-xs text-[#bebebe] mt-1" style={{ opacity: 0.3 }}>Try a different search term</p>
     </div>
   );
 });

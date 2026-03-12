@@ -27,7 +27,7 @@ export function ChatTabItem({
   return (
     <div
       className={tw(
-        "group flex items-center gap-1.5 px-2 py-1 rounded-t cursor-pointer transition-all duration-150",
+        "group flex items-center gap-1 px-2 py-1 rounded text-sm transition-all duration-150 cursor-pointer hover:shadow-[0_0_8px_rgba(14,210,247,0.1)]",
         "border-b-2",
         isActive
           ? "border-[#0fb6d6] bg-[#100e17] shadow-[0_0_6px_rgba(14,210,247,0.12)]"

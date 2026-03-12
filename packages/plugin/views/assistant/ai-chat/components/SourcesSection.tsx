@@ -53,7 +53,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
         {sources.length > 3 && (
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-sm text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]"
+            className="text-sm text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)] cursor-pointer transition-colors duration-150"
           >
             {showAll ? 'Show less' : 'Show all'}
           </button>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Clock, X } from "lucide-react";
+import { Search, Clock, X, SearchX } from "lucide-react";
 import { ChatSession, ChatHistoryManager } from "../services/chat-history-manager";
 import { tw } from "../../../../lib/utils";
 import { moment, App } from "obsidian";
@@ -195,8 +195,10 @@ export function ChatHistoryCombobox({
           {/* Results List */}
           <div className={tw("overflow-y-auto max-h-[350px]")}>
             {filteredSessions.length === 0 ? (
-              <div className={tw("px-4 py-3 text-xs text-[#45aaff] text-center")}>
-                No chats found
+              <div className={tw("flex flex-col items-center justify-center py-6 text-center")}>
+                <SearchX className="h-6 w-6 text-[#45aaff] mb-2" style={{ opacity: 0.3 }} />
+                <p className="text-xs text-[#bebebe]" style={{ opacity: 0.5 }}>No chats found</p>
+                <p className="text-xs text-[#bebebe] mt-1" style={{ opacity: 0.3 }}>Try a different search term</p>
               </div>
             ) : (
               filteredSessions.map((session, index) => {
