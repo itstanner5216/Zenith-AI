@@ -32,6 +32,10 @@ module.exports = {
           DEFAULT: "var(--text-error)",
           foreground: "var(--text-on-accent)",
         },
+        popover: {
+          DEFAULT: "var(--background-secondary)",
+          foreground: "var(--text-normal)",
+        },
       },
     },
   },

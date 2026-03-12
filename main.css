@@ -3090,3 +3090,200 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+
+/* ========================================
+   OBSIDIANITE CUSTOM STYLES & ANIMATIONS
+   ======================================== */
+
+/* Zenith Cyan Pulse Animation */
+@keyframes zenith-cyan-pulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(15, 182, 214, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(15, 182, 214, 0.5);
+  }
+}
+
+/* Zenith Green Pulse Animation */
+@keyframes zenith-green-pulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(80, 250, 123, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(80, 250, 123, 0.5);
+  }
+}
+
+/* Subtle Glow Animation for Interactive Elements */
+@keyframes zenith-glow-subtle {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(14, 210, 247, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(14, 210, 247, 0.25);
+  }
+}
+
+/* Elevation Shadow System */
+.elevation-subtle {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.elevation-medium {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.elevation-high {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.elevation-glow {
+  box-shadow: 0 0 12px rgba(14, 210, 247, 0.15);
+}
+
+/* Smooth Transitions for Interactive Elements */
+.transition-smooth {
+  transition: all 0.15s ease;
+}
+
+.transition-smooth-hover {
+  transition: all 0.2s ease;
+}
+
+.transition-smooth-layout {
+  transition: all 0.3s ease;
+}
+
+/* Depth Layering Backgrounds */
+.bg-depth-0 {
+  background-color: #0a0910;
+}
+
+.bg-depth-1 {
+  background-color: #0d0b12;
+}
+
+.bg-depth-2 {
+  background-color: #100e17;
+}
+
+.bg-depth-3 {
+  background-color: #191621;
+}
+
+/* Hover Glow Effects */
+.hover-glow-cyan {
+  transition: all 0.2s ease;
+}
+
+.hover-glow-cyan:hover {
+  box-shadow: 0 0 8px rgba(14, 210, 247, 0.2);
+  border-color: rgba(14, 210, 247, 0.15);
+}
+
+.hover-glow-pink {
+  transition: all 0.2s ease;
+}
+
+.hover-glow-pink:hover {
+  box-shadow: 0 0 8px rgba(244, 86, 157, 0.2);
+  border-color: rgba(244, 86, 157, 0.15);
+}
+
+/* Focus Ring Styles */
+.focus-ring-cyan {
+  focus: outline none;
+  focus-visible: ring 1px rgba(14, 210, 247, 0.4);
+}
+
+/* Border Refinement */
+.border-subtle {
+  border-color: rgba(14, 210, 247, 0.05);
+}
+
+.border-defined {
+  border-color: rgba(14, 210, 247, 0.08);
+}
+
+.border-accent {
+  border-color: rgba(14, 210, 247, 0.15);
+}
+
+/* Text Hierarchy Refinement */
+.text-hierarchy-primary {
+  color: #bebebe;
+  font-weight: 450;
+}
+
+.text-hierarchy-secondary {
+  color: #45aaff;
+  opacity: 0.8;
+}
+
+.text-hierarchy-muted {
+  color: #7aa2f7;
+  opacity: 0.7;
+}
+
+.text-hierarchy-accent {
+  color: #0fb6d6;
+  font-weight: 500;
+}
+
+/* Micro-interactions */
+.micro-scale-active:active {
+  transform: scale(0.97);
+}
+
+.micro-scale-hover:hover {
+  transform: scale(1.02);
+}
+
+.micro-lift-hover:hover {
+  transform: translateY(-1px);
+}
+
+/* Loading State Refinement */
+.spinner-glow {
+  filter: drop-shadow(0 0 4px rgba(14, 210, 247, 0.4));
+}
+
+.spinner-pink-glow {
+  filter: drop-shadow(0 0 4px rgba(244, 86, 157, 0.4));
+}
+
+/* Card Elevation Styles */
+.card-elevated {
+  background-color: #191621;
+  border: 1px solid rgba(14, 210, 247, 0.08);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.card-elevated:hover {
+  border-color: rgba(14, 210, 247, 0.15);
+  box-shadow: 0 4px 12px rgba(14, 210, 247, 0.08);
+}
+
+/* Input Focus Glow */
+.input-focus-glow:focus {
+  border-color: rgba(14, 210, 247, 0.5);
+  box-shadow: 0 0 8px rgba(14, 210, 247, 0.1);
+}
+
+/* Smooth Opacity Transitions */
+.opacity-transition {
+  transition: opacity 0.2s ease;
+}
+
+/* Backdrop Blur for Overlays */
+.backdrop-blur-subtle {
+  backdrop-filter: blur(2px);
+}
+
+.backdrop-blur-medium {
+  backdrop-filter: blur(4px);
+}
