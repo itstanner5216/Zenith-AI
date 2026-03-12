@@ -32,10 +32,21 @@ export const ObsidianCodeBlock: React.FC<ObsidianCodeBlockProps> = ({
     };
   }, [code, language, plugin]);
 
+  useEffect(() => {
+    if (!copied) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [copied]);
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
