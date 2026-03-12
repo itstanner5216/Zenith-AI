@@ -547,7 +547,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
               <div
                 key={`${session.key}-${session.start?.getTime() ?? index}`}
                 className={tw(
-                  "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[#1e1a2e] hover:border-[rgba(14,210,247,0.15)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-200"
+                  "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.15)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
                 )}
               >
                 <div

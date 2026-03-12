@@ -87,11 +87,25 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           </div>
         </div>
         <div className="setting-item-control">
-          <input
-            type="checkbox"
-            checked={enableSelfHosting}
-            onChange={e => handleToggleChange(e.target.checked)}
-          />
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={enableSelfHosting}
+              onChange={e => handleToggleChange(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
+              enableSelfHosting
+                ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
+                : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)]'
+            }`}>
+              <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+                enableSelfHosting
+                  ? 'right-0.5 bg-[#0fb6d6]'
+                  : 'left-0.5 bg-[#45aaff] opacity-60'
+              }`} />
+            </div>
+          </label>
         </div>
       </div>
 
@@ -106,6 +120,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               placeholder="Enter your Server URL"
               value={selfHostingURL}
               onChange={e => handleURLChange(e.target.value)}
+              className="w-full bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40"
             />
           </div>
         </div>
@@ -268,7 +283,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               plugin.settings.contentCutoffChars = value;
               plugin.saveSettings();
             }}
-            className="w-24"
+            className="w-24 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
           />
         </div>
       </div>
@@ -295,7 +310,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               plugin.settings.maxFormattingTokens = value;
               plugin.saveSettings();
             }}
-            className="w-24"
+            className="w-24 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
           />
         </div>
       </div>
@@ -319,7 +334,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               plugin.settings.pdfPageLimit = value;
               plugin.saveSettings();
             }}
-            className="w-24"
+            className="w-24 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
           />
         </div>
       </div>
@@ -346,12 +361,25 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
       <div className="text-sm text-[#7aa2f7]">{description}</div>
     </div>
     <div>
-      <input
-        type="checkbox"
-        checked={value}
-        onChange={e => onChange(e.target.checked)}
-        className="form-checkbox text-[#0fb6d6] accent-[#0fb6d6]"
-      />
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={value}
+          onChange={e => onChange(e.target.checked)}
+          className="sr-only peer"
+        />
+        <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
+          value
+            ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
+            : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)]'
+        }`}>
+          <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+            value
+              ? 'right-0.5 bg-[#0fb6d6]'
+              : 'left-0.5 bg-[#45aaff] opacity-60'
+          }`} />
+        </div>
+      </label>
     </div>
   </div>
 );

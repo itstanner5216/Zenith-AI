@@ -287,7 +287,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                                   plugin.settings.screenpipeTimeRange = value;
                                   await plugin.saveSettings();
                                 }}
-                                className="w-20 px-2 py-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded"
+                                className="w-20 px-2 py-1 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
                               />
                               <span className="text-sm text-[#7aa2f7]">hours</span>
                             </div>
@@ -313,7 +313,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                                   plugin.settings.queryScreenpipeLimit = value;
                                   await plugin.saveSettings();
                                 }}
-                                className="w-20 px-2 py-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded"
+                                className="w-20 px-2 py-1 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
                               />
                               <span className="text-sm text-[#7aa2f7]">items</span>
                             </div>
@@ -363,12 +363,25 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
       </div>
     </div>
     <div className="setting-item-control">
-      <input
-        type="checkbox"
-        checked={value}
-        onChange={e => onChange(e.target.checked)}
-        className="text-[#0fb6d6] rounded border-[rgba(14,210,247,0.08)] accent-[#0fb6d6]"
-      />
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={value}
+          onChange={e => onChange(e.target.checked)}
+          className="sr-only peer"
+        />
+        <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
+          value
+            ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
+            : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)]'
+        }`}>
+          <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+            value
+              ? 'right-0.5 bg-[#0fb6d6]'
+              : 'left-0.5 bg-[#45aaff] opacity-60'
+          }`} />
+        </div>
+      </label>
     </div>
   </div>
 );

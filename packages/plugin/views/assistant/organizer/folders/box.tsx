@@ -3,6 +3,7 @@ import { TFile, Notice } from "obsidian";
 import ZenithAI from "../../../../index";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonLoader } from "../components/skeleton-loader";
+import { EmptyState } from "../components/empty-state";
 import { FolderSuggestion } from "../../../../index";
 import { logMessage } from "../../../../someUtils";
 import { ExistingFolderButton, NewFolderButton } from "../components/suggestion-buttons";
@@ -167,7 +168,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
 
     if (existingFolders.length === 0 && newFolders.length === 0) {
       return (
-        <div className="text-[#7aa2f7] p-2">No suitable folders found</div>
+        <EmptyState message="No suitable folders found" />
       );
     }
 
@@ -203,7 +204,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
   };
 
   return (
-    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[rgba(14,210,247,0.15)] transition-colors duration-200">
+    <div className="bg-[#191621] text-[#bebebe] p-4 border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[rgba(14,210,247,0.15)] transition-all duration-150">
       {renderContent()}
     </div>
   );

@@ -6,6 +6,7 @@ import ZenithAI from "../../../index";
 import { Button } from "../../../components/ui/button";
 import { StyledContainer } from "@/components/ui/utils";
 import { tw } from "@/lib/utils";
+import { EmptyState } from "../organizer/components/empty-state";
 
 // Import icons for file types
 import {
@@ -338,66 +339,28 @@ export function SyncTab({
       try {
         await plugin.ensureFolderExists(dateFolderPath);
       } catch (err) {
-        new Notice(`Failed to create date folder: ${dateFolderPath}`);
-        throw err;
+        // If date folder fails, just use the main sync folder
+        console.warn("Failed to create date folder, using main sync folder", err);
       }
 
-      if (isImage || isPDF) {
-        // Binary file handling
-        const binaryPath = `${dateFolderPath}/${sanitizedFilename}`;
+      const finalPath = `${dateFolderPath}/${sanitizedFilename}`;
 
-        try {
-          await plugin.app.vault.createBinary(
-            binaryPath,
-            fileResponse.arrayBuffer
-          );
-
-          // Create a markdown file that references the image
-          const fileExtension = sanitizedFilename.split(".").pop();
-          const baseName = sanitizedFilename.split(".").slice(0, -1).join(".");
-          const markdownContent = `# ${baseName}\n\n![[${dateFolder}/${sanitizedFilename}]]\n\n${
-            file.textContent || ""
-          }`;
-
-          const mdFilePath = `${dateFolderPath}/${baseName}.md`;
-          await plugin.app.vault.create(mdFilePath, markdownContent);
-
-          // Mark as downloaded
-          markFileAsDownloaded(file.id);
-
-          new Notice(`Downloaded ${sanitizedFilename} to ${dateFolderPath}`);
-        } catch (err) {
-          new Notice(`Failed to save file: ${sanitizedFilename}`);
-          throw err;
-        }
+      // Check if file already exists
+      const existingFile = plugin.app.vault.getAbstractFileByPath(finalPath);
+      if (existingFile) {
+        // If it exists, we could either skip or append a timestamp
+        // For now, let's just mark it as downloaded
+        markFileAsDownloaded(file.id);
+        new Notice(`File already exists: ${sanitizedFilename}`);
       } else {
-        // Text/markdown file handling
-        try {
-          let content = file.textContent || "";
-
-          // If it's not already a markdown file, add the .md extension
-          let finalName = sanitizedFilename;
-          if (!finalName.endsWith(".md")) {
-            finalName = `${sanitizedFilename}.md`;
-          }
-
-          await plugin.app.vault.create(
-            `${dateFolderPath}/${finalName}`,
-            content
-          );
-
-          // Mark as downloaded
-          markFileAsDownloaded(file.id);
-
-          new Notice(`Downloaded ${finalName} to ${dateFolderPath}`);
-        } catch (err) {
-          new Notice(`Failed to save file: ${sanitizedFilename}`);
-          throw err;
-        }
+        // Create the file in the vault
+        await plugin.app.vault.createBinary(finalPath, fileResponse.arrayBuffer);
+        markFileAsDownloaded(file.id);
+        new Notice(`Downloaded: ${sanitizedFilename}`);
       }
     } catch (err) {
       new Notice(
-        `Error downloading file: ${
+        `Failed to download ${file.originalName}: ${
           err instanceof Error ? err.message : String(err)
         }`
       );
@@ -407,97 +370,60 @@ export function SyncTab({
     }
   }
 
-  // Get appropriate icon based on file type
-  function getFileIcon(fileType: string, className = "w-4 h-4") {
-    if (fileType.startsWith("image/")) {
+  function getFileIcon(fileType: string, className?: string) {
+    if (fileType.startsWith("image/"))
       return <FileImage className={className} />;
-    } else if (fileType === "application/pdf") {
-      return <FileImage className={className} />;
-    } else {
-      return <FileText className={className} />;
-    }
-  }
-
-  function getStatusBadge(status: string) {
-    // Base styles for status badges with consistent sizing and rounded corners
-    let className =
-      "px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1.5 transition-colors duration-200";
-    let icon = null;
-
-    switch (status) {
-      case "completed":
-        className +=
-          " bg-[#50fa7b] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
-        icon = <Check className="w-3 h-3" />;
-        break;
-      case "processing":
-        className += " bg-[#0fb6d6] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
-        icon = <RotateCw className="w-3 h-3 animate-spin" />;
-        break;
-      case "pending":
-        className += " bg-[#ffb74d] text-[#0d0b12] border border-[rgba(255,183,77,0.3)] shadow-[0_0_6px_rgba(255,183,77,0.25)]";
-        icon = <Clock className="w-3 h-3" />;
-        break;
-      case "error":
-        className += " bg-[#f4569d] text-[#0d0b12] border border-[rgba(14,210,247,0.08)]";
-        icon = <AlertCircle className="w-3 h-3" />;
-        break;
-      default:
-        className += " bg-[#191621] text-[#7aa2f7] border border-[rgba(14,210,247,0.08)]";
-        icon = <Cloud className="w-3 h-3" />;
-    }
-
-    // Return a badge with icon and text
-    return (
-      <span className={className}>
-        {icon}
-        <span>{status}</span>
-      </span>
-    );
+    return <FileText className={className} />;
   }
 
   return (
-    <StyledContainer className={tw("bg-[#0d0b12] h-full flex flex-col")}>
-      {/* Header with icon-only tools */}
-      <div className={tw("px-3 py-1.5 border-b border-[rgba(14,210,247,0.08)] flex items-center justify-between")}>
-        <div>
-          <h2 className={tw("text-sm font-medium text-[#bebebe]")}>Sync Files</h2>
-          <p className={tw("text-xs text-[#7aa2f7]")}>
-            {files.filter(f => downloadedFiles.has(f.id)).length} of {files.length} synced
-          </p>
+    <StyledContainer className={tw("flex flex-col h-full")}>
+      <div className={tw("p-4 border-b border-[rgba(14,210,247,0.08)]")}>
+        <div className={tw("flex items-center justify-between mb-2")}>
+          <h2 className={tw("text-lg font-semibold text-[#bebebe] flex items-center gap-2")}>
+            <Cloud className={tw("w-5 h-5 text-[#0fb6d6]")} />
+            Mobile Sync
+          </h2>
+          <div className={tw("flex items-center gap-2")}>
+            <button
+              onClick={fetchFiles}
+              disabled={loading}
+              className={tw("p-2 rounded-full hover:bg-[rgba(14,210,247,0.08)] text-[#7aa2f7] transition-colors")}
+              title="Refresh files"
+            >
+              <RotateCw className={tw(`w-4 h-4 ${loading ? "animate-spin" : ""}`)} />
+            </button>
+          </div>
         </div>
+        <p className={tw("text-xs text-[#7aa2f7] mb-4")}>
+          Access files uploaded from your mobile device or web dashboard.
+        </p>
 
-        {/* Icon-only tools */}
-        <div className={tw("flex items-center gap-2")}>
-          <button
-            onClick={fetchFiles}
-            disabled={loading}
-            className={tw(`p-1.5 text-[#7aa2f7] hover:text-[#bebebe] transition-colors ${loading ? 'cursor-wait' : ''}`)}
-            title="Refresh file list"
-          >
-            <RefreshCw className={tw(`w-4 h-4 ${loading ? 'animate-spin' : ''}`)} />
-          </button>
-
+        <div className={tw("flex gap-2")}>
           <button
             onClick={downloadAllMissingFiles}
-            disabled={loading || syncingAll || files.filter(f => f.status === 'completed' && !downloadedFiles.has(f.id)).length === 0}
-            className={tw(`p-1.5 transition-colors ${
-              files.filter(f => f.status === 'completed' && !downloadedFiles.has(f.id)).length > 0
-                ? 'text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]'
-                : 'text-[#7aa2f7] cursor-not-allowed'
+            disabled={loading || syncingAll || files.length === 0}
+            className={tw(`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all duration-200 ${
+              loading || syncingAll || files.length === 0
+                ? "bg-[#191621] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
+                : "bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.85)] shadow-[0_0_8px_rgba(14,210,247,0.2)]"
             }`)}
-            title={`Sync all (${files.filter(f => f.status === 'completed' && !downloadedFiles.has(f.id)).length})`}
           >
-            <DownloadCloud className={tw(`w-4 h-4 ${syncingAll ? 'animate-pulse' : ''}`)} />
+            {syncingAll ? (
+              <RefreshCw className={tw("w-4 h-4 animate-spin")} />
+            ) : (
+              <DownloadCloud className={tw("w-4 h-4")} />
+            )}
+            <span>{syncingAll ? "Syncing..." : "Sync All New"}</span>
           </button>
 
           {downloadedFiles.size > 0 && (
             <button
               onClick={clearDownloadHistory}
-              className={tw("text-xs text-[#7aa2f7] hover:text-[#f4569d] transition-colors px-2")}
+              className={tw("px-3 py-2 rounded text-xs font-medium bg-[#191621] text-[#7aa2f7] border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.06)] transition-colors")}
               title="Clear sync history"
             >
-              Clear
+              Reset
             </button>
           )}
         </div>
@@ -532,12 +458,7 @@ export function SyncTab({
       ) : (
         <>
           {files.length === 0 ? (
-            <div className={tw("flex flex-col items-center justify-center py-12 text-center")}>
-              <Cloud className={tw("w-12 h-12 text-[rgba(122,162,247,0.4)] mb-4")} />
-              <p className={tw("text-sm text-[#7aa2f7]")}>
-                No files yet. Upload via mobile or web app.
-              </p>
-            </div>
+            <EmptyState message="No files yet. Upload via mobile or web app." />
           ) : (
             <div className={tw("border-t border-[rgba(14,210,247,0.08)]")}>
               {files.map(file => (

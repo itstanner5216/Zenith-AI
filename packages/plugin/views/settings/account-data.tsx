@@ -182,6 +182,8 @@ export const AccountData: React.FC<AccountDataProps> = ({
     }
   };
 
+  const inputClassName = "w-full bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40";
+
   if (!plugin.settings.API_KEY) {
     return (
       <div className="bg-[#100e17] p-4 rounded-lg">
@@ -231,7 +233,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+              className={inputClassName}
             />
           </div>
 
@@ -244,7 +246,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+              className={inputClassName}
             />
           </div>
 
@@ -258,7 +260,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+                className={inputClassName}
               />
             </div>
           )}
@@ -355,7 +357,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devTokens}
                   onChange={e => setDevTokens(e.target.value)}
-                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+                  className={inputClassName}
                   placeholder="Number of tokens"
                 />
                 <button
@@ -371,7 +373,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devMinutes}
                   onChange={e => setDevMinutes(e.target.value)}
-                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+                  className={inputClassName}
                   placeholder="Number of minutes"
                 />
                 <button
@@ -428,7 +430,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devTokens}
                   onChange={e => setDevTokens(e.target.value)}
-                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+                  className={inputClassName}
                   placeholder="Number of tokens"
                 />
                 <button
@@ -447,7 +449,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                   type="number"
                   value={devMinutes}
                   onChange={e => setDevMinutes(e.target.value)}
-                  className="flex-1 bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] rounded px-3 py-2"
+                  className={inputClassName}
                   placeholder="Number of minutes"
                 />
                 <button

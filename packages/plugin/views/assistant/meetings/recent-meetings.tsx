@@ -6,6 +6,7 @@ import ZenithAI from "../../../index";
 import { tw } from "../../../lib/utils";
 import { Notice } from "obsidian";
 import { logger } from "../../../services/logger";
+import { EmptyState } from "../organizer/components/empty-state";
 import {
   MeetingMetadataManager,
   RecordingMetadata,
@@ -183,10 +184,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
             )}
           </button>
         </div>
-        <div className={tw("text-center py-8 text-[#7aa2f7]")}>
-          <p>No recordings yet.</p>
-          <p className={tw("text-sm mt-2")}>Start recording to see meetings here.</p>
-        </div>
+        <EmptyState message="No recordings yet. Start recording to see meetings here." />
       </div>
     );
   }
@@ -235,7 +233,7 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
             <div
               key={recording.filePath}
               className={tw(
-                "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[#1e1a2e] hover:border-[rgba(14,210,247,0.15)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-200"
+                "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.15)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-200"
               )}
             >
               <div className={tw("flex items-start justify-between mb-2 gap-2")}>
@@ -309,4 +307,3 @@ export const RecentMeetings: React.FC<RecentMeetingsProps> = ({ plugin }) => {
     </div>
   );
 };
-

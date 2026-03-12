@@ -3,6 +3,7 @@ import { TFile } from "obsidian";
 import ZenithAI from "../../../index";
 import { sanitizeTag } from "../../../someUtils";
 import { SkeletonLoader } from "./components/skeleton-loader";
+import { EmptyState } from "./components/empty-state";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ExistingFolderButton,
@@ -84,14 +85,14 @@ export const SimilarTags: React.FC<SimilarTagsProps> = ({
 
   const renderContent = () => {
     if (loading) {
-      return <SkeletonLoader count={4} width="60px" height="24px" rows={1} />;
+      return <SkeletonLoader count={3} rows={2} width="80%" />;
     }
     if (
       initialLoadComplete &&
       existingTags.length === 0 &&
       newTags.length === 0
     ) {
-      return <div className="text-[#7aa2f7] p-2">No tags found</div>;
+      return <EmptyState message="No tags found" />;
     }
 
     return (

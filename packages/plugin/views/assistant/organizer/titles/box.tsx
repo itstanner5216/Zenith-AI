@@ -5,6 +5,7 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { SkeletonLoader } from "../components/skeleton-loader";
 import { ExistingFolderButton } from "../components/suggestion-buttons";
+import { EmptyState } from "../components/empty-state";
 import { logMessage, sanitizeFileName } from "../../../../someUtils";
 import { logger } from "../../../../services/logger";
 
@@ -83,13 +84,13 @@ export const RenameSuggestion: React.FC<RenameSuggestionProps> = ({
   };
 
   return (
-    <div className="bg-[#191621] text-[#bebebe] p-4 border-b border-[rgba(14,210,247,0.05)] rounded-md">
+    <div className="bg-[#191621] text-[#bebebe] p-4 border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       {loading ? (
         <SkeletonLoader count={3} rows={4} width="70%" />
       ) : error ? (
         <ErrorDisplay message={error.message} onRetry={suggestTitles} />
       ) : !suggestions.length ? (
-        <div className="text-[#7aa2f7] p-2">No title suggestions available</div>
+        <EmptyState message="No title suggestions available" />
       ) : (
         <motion.div
           className="flex flex-wrap gap-2"

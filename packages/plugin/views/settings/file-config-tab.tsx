@@ -292,7 +292,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
       const folders = ignoreFolders.split(",");
       if (folders.some(folder => cleanPath(folder) !== folder.trim())) {
         newWarnings["ignoreFolders"] =
-          "Some folder paths may need cleaning. Consider removing spaces or slashes.";
+          "Some folder paths may contain leading/trailing slashes or spaces.";
       }
     }
 
@@ -348,6 +348,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           placeholder="Enter your path"
           value={value}
           onChange={onChange}
+          className="w-full bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40"
         />
       </div>
     </div>
