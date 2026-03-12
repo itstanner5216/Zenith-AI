@@ -97,7 +97,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
 
         {/* Timestamp and buttons row - perfectly aligned */}
         <div className="flex items-baseline justify-between mt-1 gap-2">
-          <div className="text-xs text-[#45aaff] flex-shrink-0" style={{ opacity: 0.6 }}>
+          <div className="text-xs text-[#45aaff] flex-shrink-0 opacity-80">
             {timestamp}
           </div>
           {/* Action buttons on the right - at same baseline as timestamp */}

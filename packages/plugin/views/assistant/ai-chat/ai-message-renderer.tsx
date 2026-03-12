@@ -2,6 +2,7 @@ import React from "react";
 import { App, getLinkpath } from "obsidian";
 import ReactMarkdown from "react-markdown";
 import { usePlugin } from "../provider";
+import { ObsidianCodeBlock } from "./components/obsidian-code-block";
 
 interface AIMarkdownProps {
   content: string;
@@ -187,19 +188,30 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                   {children}
                 </a>
               ),
-              code: ({ inline, children, ...props }) =>
-                inline ? (
-                  <code
-                    {...props}
-                    className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
-                  >
-                    {children}
-                  </code>
-                ) : (
-                  <pre className="code-block bg-[#191621] p-3 rounded border border-[rgba(14,210,247,0.08)] overflow-x-auto">
-                    <code {...props}>{children}</code>
-                  </pre>
-                ),
+              pre: ({ children }) => {
+                // react-markdown v9: block code renders as <pre><code className="language-*">
+                const codeChild = React.Children.toArray(children).find(
+                  (child): child is React.ReactElement =>
+                    React.isValidElement(child) && (child as React.ReactElement).type === "code"
+                );
+                if (codeChild) {
+                  const className = (codeChild.props as { className?: string }).className || "";
+                  const lang = className.replace("language-", "");
+                  const codeStr = String(
+                    (codeChild.props as { children?: React.ReactNode }).children
+                  ).replace(/\n$/, "");
+                  return <ObsidianCodeBlock language={lang} code={codeStr} />;
+                }
+                return <pre>{children}</pre>;
+              },
+              code: ({ children, ...props }) => (
+                <code
+                  {...props}
+                  className="inline-code bg-[#0d0b12] px-1 py-0.5 rounded text-[#0fb6d6]"
+                >
+                  {children}
+                </code>
+              ),
               p: ({ children, ...props }) => (
                 <p
                   {...props}
