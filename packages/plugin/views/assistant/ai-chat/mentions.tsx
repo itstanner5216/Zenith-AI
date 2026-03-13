@@ -87,7 +87,7 @@ export const Mentions = forwardRef<
   }));
 
   return (
-    <div className="rounded-md overflow-hidden border border-[rgba(14,210,247,0.15)] shadow-[0_8px_24px_rgba(0,0,0,0.6),0_0_12px_rgba(14,210,247,0.1)] bg-[var(--bg-depth-3)]">
+    <div className="rounded-md overflow-hidden border border-[var(--border-accent)] shadow-[0_8px_24px_rgba(0,0,0,0.6),0_0_12px_rgba(14,210,247,0.1)] bg-[var(--bg-depth-3)]">
       {props.items.length ? (
         <ul className="max-h-[300px] overflow-y-auto list-none p-1 m-0 zenith-scrollbar">
           {props.items.map((item, index) => (

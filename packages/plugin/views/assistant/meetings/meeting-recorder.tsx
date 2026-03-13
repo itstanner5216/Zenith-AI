@@ -193,7 +193,7 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
   }, []);
 
   return (
-    <div className={tw("border-b border-[rgba(14,210,247,0.08)] p-4")}>
+    <div className={tw("border-b border-[var(--border-defined)] p-4")}>
       <div className={tw("flex items-center justify-between mb-4")}>
         <div className={tw("flex items-center gap-3")}>
           <div

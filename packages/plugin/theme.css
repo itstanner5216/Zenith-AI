@@ -1504,3 +1504,25 @@ pre.line-numbers > code {
   padding-right: 0.8em;
   text-align: right;
 }
+
+@keyframes zenith-neon-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 4px rgba(244, 86, 157, 0.3), 0 0 8px rgba(244, 86, 157, 0.15);
+    border-color: rgba(244, 86, 157, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 8px rgba(244, 86, 157, 0.5), 0 0 16px rgba(244, 86, 157, 0.25);
+    border-color: rgba(244, 86, 157, 0.5);
+  }
+}
+
+@keyframes zenith-typing-pulse {
+  0%, 100% { 
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(14, 210, 247, 0.4));
+  }
+  50% { 
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px rgba(14, 210, 247, 0.7));
+  }
+}

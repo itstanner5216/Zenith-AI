@@ -1918,7 +1918,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   return (
     <StyledContainer className="flex flex-col h-full w-full max-h-full overflow-hidden">
       {/* Chat Header - minimal */}
-      <div className="flex-none border-b border-[rgba(14,210,247,0.08)] px-3 py-1.5 bg-[var(--bg-depth-1)]">
+      <div className="flex-none border-b border-[var(--border-defined)] px-3 py-1.5 bg-[var(--bg-depth-1)]">
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             {/* Export chat as markdown - menu rendered in portal so it isn't clipped by overflow-hidden */}
@@ -1949,7 +1949,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     ref={exportDropdownRef}
                     role="menu"
                     className={tw(
-                      "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.15)]",
+                      "min-w-[200px] py-1 rounded-md border border-[var(--border-accent)]",
                       "bg-[var(--bg-depth-3)] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)]"
                     )}
                     style={{
@@ -2142,7 +2142,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
           {/* Error message - renders as normal message in chat flow */}
           {errorMessage && (
-            <div className="flex items-start gap-2 py-1.5 border-b border-[rgba(14,210,247,0.05)] pb-2">
+            <div className="flex items-start gap-2 py-1.5 border-b border-[var(--border-subtle)] pb-2">
               <div className="w-4 text-xs text-[var(--text-sub-accent)]">⚠</div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
@@ -2181,7 +2181,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       </div>
 
       {/* Unified Command Center Footer */}
-      <div className="flex-none border-t border-[rgba(14,210,247,0.1)] bg-[var(--bg-depth-1)]">
+      <div className="flex-none border-t border-[var(--border-defined)] bg-[var(--bg-depth-1)]">
         <form onSubmit={handleSendMessage} className="p-3" role="form" aria-label="Chat message input form">
           {/* Row 1: Context attachments - compact chips */}
           <div className="mb-2" role="region" aria-label="Context attachments">

@@ -39,7 +39,7 @@ const TabNavigation: React.FC<{
   activeTab: string;
   onTabClick: (tabName: string) => void;
 }> = ({ tabs, activeTab, onTabClick }) => (
-  <div className="flex w-full border-b border-[rgba(14,210,247,0.1)] bg-[var(--bg-depth-1)] overflow-x-auto">
+  <div className="flex w-full border-b border-[var(--border-defined)] bg-[var(--bg-depth-1)] overflow-x-auto">
     {tabs.map((tab) => (
       <TabButton
         key={tab.name}
@@ -60,7 +60,7 @@ const TabButton: React.FC<{
     className={`flex-shrink-0 py-2.5 px-3 text-xs font-medium text-center cursor-pointer select-none transition-all duration-150
       ${isActive
         ? 'text-[var(--text-accent)] border-b-2 border-[var(--text-accent)] bg-[rgba(14,210,247,0.06)] -mb-px shadow-[inset_0_-1px_0_rgba(14,210,247,0.4)]'
-        : 'text-[var(--text-dim)] border-b-2 border-transparent hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.04)] hover:border-[rgba(14,210,247,0.2)]'
+        : 'text-[var(--text-dim)] border-b-2 border-transparent hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.04)] hover:border-[var(--border-accent)]'
       }`}
     onClick={onClick}
     role="tab"

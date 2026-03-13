@@ -57,7 +57,7 @@ export const ExistingFolderButton: React.FC<{
 }> = props => (
   <BaseFolderButton
     {...props}
-    className="bg-[rgba(14,210,247,0.08)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.18)] hover:text-[var(--text-accent)] border border-solid border-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.55)] hover:shadow-[0_0_6px_rgba(14,210,247,0.15)]"
+    className="bg-[rgba(14,210,247,0.08)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.18)] hover:text-[var(--text-accent)] border border-solid border-[var(--border-accent)] hover:border-[var(--border-active)] hover:shadow-[0_0_6px_rgba(14,210,247,0.15)]"
   />
 );
 
@@ -70,6 +70,6 @@ export const NewFolderButton: React.FC<{
 }> = props => (
   <BaseFolderButton
     {...props}
-    className="bg-[rgba(14,210,247,0.03)] text-[var(--text-dim)] hover:bg-[rgba(14,210,247,0.12)] hover:text-[var(--text-accent)] border border-dashed border-[rgba(14,210,247,0.2)] hover:border-[rgba(14,210,247,0.45)] hover:shadow-[0_0_4px_rgba(14,210,247,0.1)]"
+    className="bg-[rgba(14,210,247,0.03)] text-[var(--text-dim)] hover:bg-[rgba(14,210,247,0.12)] hover:text-[var(--text-accent)] border border-dashed border-[var(--border-accent)] hover:border-[var(--border-active)] hover:shadow-[0_0_4px_rgba(14,210,247,0.1)]"
   />
 );

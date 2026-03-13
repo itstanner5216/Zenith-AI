@@ -107,7 +107,7 @@ export const AttachmentHandler: React.FC<AttachmentHandlerProps> = ({
         className={`relative border-2 border-dashed  p-4 transition-colors cursor-pointer
           ${isDragging 
             ? 'border-[var(--text-accent)] bg-[rgba(14,210,247,0.04)]' 
-            : 'border-[rgba(14,210,247,0.08)] hover:border-[var(--text-accent)]'
+            : 'border-[var(--border-defined)] hover:border-[var(--text-accent)]'
           }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

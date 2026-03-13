@@ -178,7 +178,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
       <div className="flex flex-col space-y-2">
         <div className="relative" ref={dropdownRef}>
           <button
-            className="w-full flex items-center justify-between px-3 py-2 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[rgba(14,210,247,0.1)] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
+            className="w-full flex items-center justify-between px-3 py-2 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
             onClick={() => setShowDropdown(!showDropdown)}
           >
             <span>{getDisplayText()}</span>
@@ -198,7 +198,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
             </svg>
           </button>
           {showDropdown && (
-            <div className="absolute z-10 w-full mt-1 bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.15)] rounded shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.1)]">
+            <div className="absolute z-10 w-full mt-1 bg-[var(--bg-depth-3)] border border-[var(--border-accent)] rounded shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.1)]">
               {dropdownTemplates.length > 0 ? (
                 dropdownTemplates.map((templateName, index) => (
                   <div
@@ -228,8 +228,8 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
         <button
           className={`px-4 py-2 transition-colors duration-200 flex items-center justify-center rounded ${
             !selectedTemplateName || formatting
-              ? "bg-[rgba(14,210,247,0.05)] text-[var(--text-dim)] cursor-not-allowed border border-[rgba(14,210,247,0.05)]"
-              : "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[rgba(14,210,247,0.4)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.8)]"
+              ? "bg-[rgba(14,210,247,0.05)] text-[var(--text-dim)] cursor-not-allowed border border-[var(--border-subtle)]"
+              : "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[var(--border-active)]"
           }`}
           disabled={!selectedTemplateName || formatting || isFileTooLarge}
           onClick={handleFormatClick}

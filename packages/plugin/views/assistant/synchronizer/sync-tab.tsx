@@ -410,7 +410,7 @@ export function SyncTab({
 
   return (
     <StyledContainer className={tw("flex flex-col h-full")}>
-      <div className={tw("p-4 border-b border-[rgba(14,210,247,0.08)]")}>
+      <div className={tw("p-4 border-b border-[var(--border-defined)]")}>
         <div className={tw("flex items-center justify-between mb-2")}>
           <h2 className={tw("text-lg font-semibold text-[var(--text-normal)] flex items-center gap-2")}>
             <Cloud className={tw("w-5 h-5 text-[var(--text-accent)]")} />
@@ -452,7 +452,7 @@ export function SyncTab({
           {downloadedFiles.size > 0 && (
             <button
               onClick={clearDownloadHistory}
-              className={tw("px-3 py-2 rounded text-xs font-medium bg-[var(--bg-depth-3)] text-[var(--text-dim)] border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(14,210,247,0.06)] transition-colors")}
+              className={tw("px-3 py-2 rounded text-xs font-medium bg-[var(--bg-depth-3)] text-[var(--text-dim)] border border-[var(--border-defined)] hover:bg-[rgba(14,210,247,0.06)] transition-colors")}
               title="Clear sync history"
             >
               Reset
@@ -475,9 +475,9 @@ export function SyncTab({
       )}
 
       {loading ? (
-        <div className={tw("border-t border-[rgba(14,210,247,0.08)]")}>
+        <div className={tw("border-t border-[var(--border-defined)]")}>
           {[1, 2, 3].map(i => (
-            <div key={i} className={tw("flex items-center px-3 py-2 border-b border-[rgba(14,210,247,0.08)] animate-pulse")}>
+            <div key={i} className={tw("flex items-center px-3 py-2 border-b border-[var(--border-defined)] animate-pulse")}>
               <div className={tw("w-6 h-6 mr-3 bg-[rgba(14,210,247,0.08)]")}></div>
               <div className={tw("flex-1")}>
                 <div className={tw("h-4 bg-[rgba(14,210,247,0.08)] w-2/3")}></div>
@@ -492,14 +492,14 @@ export function SyncTab({
           {files.length === 0 ? (
             <EmptyState message="No files yet. Upload via mobile or web app." />
           ) : (
-            <div className={tw("border-t border-[rgba(14,210,247,0.08)]")}>
+            <div className={tw("border-t border-[var(--border-defined)]")}>
               {files.map(file => (
                 <div
                   key={file.id}
                   onClick={() => file.status === 'completed' && !downloading[file.id] && downloadFile(file)}
-                  className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[rgba(14,210,247,0.08)] transition-colors group ${
+                  className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[var(--border-defined)] transition-colors group ${
                     file.status === 'completed' && !downloading[file.id]
-                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.12)]'
+                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-defined)]'
                       : 'cursor-default'
                   }`)}
                 >
@@ -509,7 +509,7 @@ export function SyncTab({
                       <img
                         src={file.previewUrl || file.blobUrl}
                         alt={file.originalName}
-                        className={tw("w-16 h-16 object-cover border border-[rgba(14,210,247,0.08)]")}
+                        className={tw("w-16 h-16 object-cover border border-[var(--border-defined)]")}
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           const fallback = e.currentTarget.nextElementSibling as HTMLElement;
@@ -556,14 +556,14 @@ export function SyncTab({
           )}
 
           {totalPages > 1 && (
-            <div className={tw("flex justify-between items-center mt-8 bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)] p-4")}>
+            <div className={tw("flex justify-between items-center mt-8 bg-[var(--bg-depth-1)] border border-[var(--border-defined)] p-4")}>
               <Button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className={tw(`px-4 py-2 h-auto transition-colors duration-200 flex items-center gap-2 ${
                   page === 1
                     ? "bg-[var(--bg-depth-3)] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
-                    : "bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)] hover:bg-[var(--bg-depth-3)] text-[var(--text-normal)]"
+                    : "bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-3)] text-[var(--text-normal)]"
                 }`)}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={tw("w-4 h-4")}>
@@ -572,7 +572,7 @@ export function SyncTab({
                 <span>Previous</span>
               </Button>
 
-              <div className={tw("bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.08)] px-4 py-2 text-sm font-medium text-[var(--text-normal)]")}>
+              <div className={tw("bg-[var(--bg-depth-3)] border border-[var(--border-defined)] px-4 py-2 text-sm font-medium text-[var(--text-normal)]")}>
                 Page {page} of {totalPages}
               </div>
 
@@ -582,7 +582,7 @@ export function SyncTab({
                 className={tw(`px-4 py-2 h-auto transition-colors duration-200 flex items-center gap-2 ${
                   page === totalPages
                     ? "bg-[var(--bg-depth-3)] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
-                    : "bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)] hover:bg-[var(--bg-depth-3)] text-[var(--text-normal)]"
+                    : "bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-3)] text-[var(--text-normal)]"
                 }`)}
               >
                 <span>Next</span>

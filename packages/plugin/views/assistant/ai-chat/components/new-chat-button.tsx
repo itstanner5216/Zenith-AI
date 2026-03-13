@@ -12,7 +12,7 @@ export function NewChatButton({ onClick }: NewChatButtonProps) {
       className={tw(
         "flex items-center justify-center w-6 h-6 rounded border border-transparent",
         "text-[var(--text-dim)] hover:text-[var(--text-accent)]",
-        "hover:bg-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)]",
+        "hover:bg-[rgba(14,210,247,0.08)] hover:border-[var(--border-accent)]",
         "transition-all duration-150 active:scale-90"
       )}
       aria-label="Start new chat"

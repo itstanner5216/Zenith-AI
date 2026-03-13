@@ -196,14 +196,14 @@ export function ModifyTextHandler({
 
     return (
       <div className="space-y-2">
-        <div className="flex items-center justify-between border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="flex items-center justify-between border-b border-[var(--border-defined)] pb-2">
           <div className="text-xs font-semibold text-[var(--text-dim)] uppercase">
             Review Changes
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDiscardChanges}
-              className="px-2 py-1 text-xs rounded border border-[rgba(14,210,247,0.15)] text-[var(--text-dim)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
+              className="px-2 py-1 text-xs rounded border border-[var(--border-accent)] text-[var(--text-dim)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
               disabled={isApplying}
             >
               Discard
@@ -229,7 +229,7 @@ export function ModifyTextHandler({
         </div>
 
         {explanation && (
-          <div className="p-2 border-b border-[rgba(14,210,247,0.08)]">
+          <div className="p-2 border-b border-[var(--border-defined)]">
             <div className="text-xs font-semibold text-[var(--text-dim)] uppercase mb-1">
               Summary
             </div>
@@ -239,8 +239,8 @@ export function ModifyTextHandler({
           </div>
         )}
 
-        <div className="border border-[rgba(14,210,247,0.08)]">
-          <div className="border-b border-[rgba(14,210,247,0.08)] px-2 py-1 flex items-center justify-between">
+        <div className="border border-[var(--border-defined)]">
+          <div className="border-b border-[var(--border-defined)] px-2 py-1 flex items-center justify-between">
             <div className="text-xs font-semibold text-[var(--text-dim)] uppercase">
               Diff
             </div>
@@ -269,7 +269,7 @@ export function ModifyTextHandler({
 
   if (modifySuccess) {
     return (
-      <div className="p-3 space-y-2 border-b border-[rgba(14,210,247,0.08)]">
+      <div className="p-3 space-y-2 border-b border-[var(--border-defined)]">
         <div className="flex items-center text-[var(--text-accent)] space-x-2">
           <span className="text-base">✓</span>
           <span className="text-sm font-medium">Changes Applied Successfully</span>
@@ -284,7 +284,7 @@ export function ModifyTextHandler({
   }
 
   return (
-    <div className="p-3 space-y-2 border-b border-[rgba(14,210,247,0.08)]">
+    <div className="p-3 space-y-2 border-b border-[var(--border-defined)]">
       <div className="flex items-center text-[var(--text-sub-accent)] space-x-2">
         <span className="text-base">⚠</span>
         <span className="text-sm font-medium">Failed to Apply Changes</span>

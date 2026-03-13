@@ -78,20 +78,20 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     const filteredFolders = getFilteredFolders();
 
     return (
-      <div className="mb-8 p-4 bg-[var(--bg-depth-3)] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.4)] border border-[rgba(14,210,247,0.08)]">
+      <div className="mb-8 p-4 bg-[var(--bg-depth-3)] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.4)] border border-[var(--border-defined)]">
         <div className="mb-4">
           <p className="text-sm text-[var(--text-dim)] opacity-70 mb-3">
             Use the search box to verify folder accessibility
           </p>
 
           {/* Tabs */}
-          <div className="flex border-b border-[rgba(14,210,247,0.08)]">
+          <div className="flex border-b border-[var(--border-defined)]">
             <button
               onClick={() => setFilterType("all")}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 filterType === "all"
                   ? "border-[var(--text-accent)] text-[var(--text-accent)]"
-                  : "border-transparent text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:border-[rgba(14,210,247,0.08)]"
+                  : "border-transparent text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:border-[var(--border-defined)]"
               }`}
             >
               All Folders
@@ -110,7 +110,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 filterType === "active"
                   ? "border-[var(--text-accent)] text-[var(--text-accent)]"
-                  : "border-transparent text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:border-[rgba(14,210,247,0.08)]"
+                  : "border-transparent text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:border-[var(--border-defined)]"
               }`}
             >
               Active Paths
@@ -129,7 +129,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 filterType === "ignored"
                   ? "border-[var(--text-accent)] text-[var(--text-accent)]"
-                  : "border-transparent text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:border-[rgba(14,210,247,0.08)]"
+                  : "border-transparent text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:border-[var(--border-defined)]"
               }`}
             >
               Ignored Paths
@@ -147,7 +147,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
         </div>
 
         <div className="mb-3">
-          <div className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)] rounded-md focus-within:border-[var(--text-accent)] focus-within:ring-1 focus-within:ring-[var(--text-accent)]">
+          <div className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded-md focus-within:border-[var(--text-accent)] focus-within:ring-1 focus-within:ring-[var(--text-accent)]">
             <Search className="w-4 h-4 text-[var(--text-dim)] shrink-0" />
             <input
               type="text"
@@ -168,7 +168,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           </div>
         </div>
 
-        <div className="max-h-[240px] overflow-y-auto border border-[rgba(14,210,247,0.08)] rounded-md bg-[var(--bg-depth-1)]">
+        <div className="max-h-[240px] overflow-y-auto border border-[var(--border-defined)] rounded-md bg-[var(--bg-depth-1)]">
           {filteredFolders.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-0.5">
               {filteredFolders.map(folder => (
@@ -335,7 +335,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
                   setPathExistence({ ...pathExistence, [value]: true });
                 }
               }}
-              className="px-2 py-0.5 text-xs rounded border border-[rgba(14,210,247,0.2)] text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)] transition-all duration-150"
+              className="px-2 py-0.5 text-xs rounded border border-[var(--border-accent)] text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)] transition-all duration-150"
             >
               Create folder
             </button>
@@ -348,7 +348,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           placeholder="Enter your path"
           value={value}
           onChange={onChange}
-          className="w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-40"
+          className="w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60"
         />
       </div>
     </div>
@@ -367,7 +367,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           <li>Manage attachment and backup locations</li>
           <li>Configure template and pattern directories</li>
         </ul>
-        <div className="p-4 bg-[var(--bg-depth-2)] rounded-lg border border-[rgba(14,210,247,0.08)]">
+        <div className="p-4 bg-[var(--bg-depth-2)] rounded-lg border border-[var(--border-defined)]">
           <p className="text-sm text-[var(--text-accent)]">
             💡 Tip: Use the folder overview below to understand your vault
             structure and verify your path configurations.
@@ -377,7 +377,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
 
       <FolderList key={Object.values(plugin.settings).join(",")} />
 
-      <div className="border-t border-[rgba(14,210,247,0.08)] ">
+      <div className="border-t border-[var(--border-defined)] ">
         <h3 className="mb-4 text-lg font-semibold text-[var(--text-accent)]">
           Path Configuration
         </h3>

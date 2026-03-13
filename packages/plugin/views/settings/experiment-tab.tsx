@@ -66,7 +66,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
             <li>Integrate with external tools</li>
             <li>Use AI-powered formatting</li>
           </ul>
-          <div className="p-4 bg-[var(--bg-depth-2)] rounded-lg border border-[rgba(14,210,247,0.08)]">
+          <div className="p-4 bg-[var(--bg-depth-2)] rounded-lg border border-[var(--border-defined)]">
             <p className="text-sm text-[var(--text-accent)]">
               💡 Tip: Start with one experimental feature at a time to better
               understand its impact on your workflow.
@@ -216,11 +216,11 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
             </div>
           </div>
 
-          <div className="border-t border-[rgba(14,210,247,0.08)] pt-6">
+          <div className="border-t border-[var(--border-defined)] pt-6">
             <h3 className="text-lg font-semibold text-[var(--text-accent)] mb-4">
               Integrations (Beta)
             </h3>
-            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
               <p className="text-sm text-[var(--text-dim)] opacity-70">
                 These integrations are in early beta. Your feedback helps us
                 improve and prioritize features.
@@ -287,7 +287,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                                   plugin.settings.screenpipeTimeRange = value;
                                   await plugin.saveSettings();
                                 }}
-                                className="w-20 px-2 py-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[rgba(14,210,247,0.12)] rounded-md text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
+                                className="w-20 px-2 py-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
                               />
                               <span className="text-sm text-[var(--text-dim)]">hours</span>
                             </div>
@@ -313,7 +313,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                                   plugin.settings.queryScreenpipeLimit = value;
                                   await plugin.saveSettings();
                                 }}
-                                className="w-20 px-2 py-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[rgba(14,210,247,0.12)] rounded-md text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
+                                className="w-20 px-2 py-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
                               />
                               <span className="text-sm text-[var(--text-dim)]">items</span>
                             </div>
@@ -353,7 +353,7 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
   value,
   onChange,
 }) => (
-  <div className="setting-item flex items-center justify-between p-4 bg-[var(--bg-depth-1)] rounded-lg border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.2)] transition-all duration-150">
+  <div className="setting-item flex items-center justify-between p-4 bg-[var(--bg-depth-1)] rounded-lg border border-[var(--border-defined)] hover:border-[var(--border-accent)] transition-all duration-150">
     <div className="setting-item-info flex-1">
       <div className="setting-item-name font-medium text-[var(--text-normal)]">
         {name}
@@ -373,7 +373,7 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
         <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
           value
             ? 'bg-[rgba(14,210,247,0.25)] border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
-            : 'bg-[var(--bg-depth-1)] border-[rgba(14,210,247,0.2)]'
+            : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)]'
         }`}>
           <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
             value

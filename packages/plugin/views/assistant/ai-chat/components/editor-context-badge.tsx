@@ -30,7 +30,7 @@ export function EditorContextBadge({
     <StyledContainer>
       <div
         className={tw(
-          "flex items-center gap-2 px-3 py-1.5 text-xs bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.1)] text-[var(--text-dim)] rounded"
+          "flex items-center gap-2 px-3 py-1.5 text-xs bg-[var(--bg-depth-1)] border border-[var(--border-defined)] text-[var(--text-dim)] rounded"
         )}
       >
         <span className="font-medium">📝 Selection:</span>

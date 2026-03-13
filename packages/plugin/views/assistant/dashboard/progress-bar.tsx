@@ -20,7 +20,7 @@ export function ProgressBar({ value }: ProgressBarProps) {
           isNearFull ? 'text-[var(--text-sub-accent)]' : 'text-[var(--text-accent)]'
         }`}>{clampedValue}%</span>
       </div>
-      <div className="h-1.5 bg-[var(--bg-depth-1)] rounded-full overflow-hidden border border-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
+      <div className="h-1.5 bg-[var(--bg-depth-1)] rounded-full overflow-hidden border border-[var(--border-defined)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{

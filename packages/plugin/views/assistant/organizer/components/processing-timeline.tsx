@@ -131,7 +131,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
   }
 
   return (
-    <StyledContainer className={tw("bg-[var(--bg-depth-1)] rounded p-4 border border-[rgba(14,210,247,0.08)]")}>
+    <StyledContainer className={tw("bg-[var(--bg-depth-1)] rounded p-4 border border-[var(--border-defined)]")}>
       <div className={tw("flex items-center justify-between mb-4")}>
         <h4 className={tw("text-sm font-medium text-[var(--text-accent)]")}>Processing Timeline</h4>
         <div className={tw("text-xs")}>
@@ -150,7 +150,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
                 step.status === "completed" ? "border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]" :
                 step.status === "error" ? "border-[var(--text-sub-accent)]" :
                 step.status === "processing" ? "border-[var(--text-accent)] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]" :
-                "border-[rgba(14,210,247,0.1)]"
+                "border-[var(--border-defined)]"
               }`}>
                 {getStepIcon(step.status)}
               </div>
@@ -172,7 +172,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
                 )}
               </div>
               {step.timestamp && (
-                <div className={tw("text-xs text-[var(--text-dim)] mt-0.5")} className="opacity-40">
+                <div className={tw("text-xs text-[var(--text-dim)] mt-0.5 opacity-60")}>
                   {formatTime(step.timestamp)}
                 </div>
               )}
@@ -188,7 +188,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
 
       {/* Summary stats */}
       {record.status === "completed" && stepsWithDuration.length > 1 && (
-        <div className={tw("mt-4 pt-4 border-t border-[rgba(14,210,247,0.08)]")}>
+        <div className={tw("mt-4 pt-4 border-t border-[var(--border-defined)]")}>
           <div className={tw("flex items-center justify-between text-xs")}>
             <span className={tw("text-[var(--text-dim)]")}>Total time:</span>
             <span className={tw("text-[var(--text-accent)] font-mono font-medium")}>

@@ -45,7 +45,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
       {/* Inbox Processing Section */}
       <section>
         <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">Inbox Processing</h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
           <div className="text-xs text-[var(--text-dim)] opacity-70">
             These settings control how new files are automatically handled when they enter your vault through the inbox.
             Enable or disable automatic processing features and configure how the AI should handle your incoming documents.
@@ -64,7 +64,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             value={enableDocumentClassification}
             onChange={(value) => handleToggleChange(value, setEnableDocumentClassification, 'enableDocumentClassification')}
           />
-          <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
             <div className="font-medium text-[var(--text-normal)] mb-2">Document Type Templates</div>
             <div className="text-xs text-[var(--text-dim)] opacity-70">
               To enable auto-formatting, create template files in the Zenith-AI template folder.
@@ -85,7 +85,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
       {/* General Settings Section */}
       <section>
         <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">General Settings</h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
           <div className="text-xs text-[var(--text-dim)] opacity-70">
             Configure how Zenith-AI behaves across your vault. These settings affect both manual operations
             and provide the base configuration for inbox processing. Customize naming conventions, tagging behavior,
@@ -154,7 +154,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               value={imageInstructions}
               onChange={(value) => handleTextChange(value, setImageInstructions, 'imageInstructions')}
             />
-            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
               <div className="text-xs text-[var(--text-dim)] opacity-70">
                 These instructions will be used to generate descriptions for images in your documents.
                 The AI will analyze the image content and create descriptions based on your specifications.
@@ -228,7 +228,7 @@ interface ToggleSettingProps {
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value, onChange }) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0 group hover:bg-[rgba(14,210,247,0.02)] rounded-md px-1 -mx-1 transition-colors duration-150">
+  <div className="flex items-center justify-between py-2.5 border-b border-[var(--border-subtle)] last:border-b-0 group hover:bg-[rgba(14,210,247,0.02)] rounded-md px-1 -mx-1 transition-colors duration-150">
     <div className="flex-1 mr-4">
       <div className="font-medium text-[var(--text-normal)] text-sm leading-snug">{name}</div>
       <div className="text-xs text-[var(--text-dim)] mt-0.5 leading-relaxed opacity-60">{description}</div>
@@ -245,7 +245,7 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value,
         <div className={`relative w-9 h-5 rounded-full border transition-all duration-250 ${
           value
             ? 'bg-[rgba(14,210,247,0.2)] border-[var(--text-accent)] shadow-[0_0_8px_rgba(14,210,247,0.35),inset_0_0_4px_rgba(14,210,247,0.1)]'
-            : 'bg-[var(--bg-depth-1)] border-[rgba(14,210,247,0.2)] group-hover:border-[rgba(14,210,247,0.4)]'
+            : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)] group-hover:border-[var(--border-active)]'
         }`}>
           {/* Thumb */}
           <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full transition-all duration-250 shadow-sm ${
@@ -333,7 +333,7 @@ const TextAreaSetting: React.FC<TextAreaSettingProps> = ({ name, description, va
       value={value}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className="w-full px-3 py-2 text-[var(--text-normal)] bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.12)] rounded-md focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] disabled:bg-[var(--bg-depth-3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 resize-none text-xs leading-relaxed placeholder:text-[var(--text-dim)] placeholder:opacity-40"
+      className="w-full px-3 py-2 text-[var(--text-normal)] bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded-md focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] disabled:bg-[var(--bg-depth-3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 resize-none text-xs leading-relaxed placeholder:text-[var(--text-dim)] placeholder:opacity-60"
       rows={4}
     />
   </div>

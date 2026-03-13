@@ -415,7 +415,7 @@ function FileCard({ record }: { record: FileRecord }) {
     record.status === "error";
 
   return (
-    <div className="border-b border-[rgba(14,210,247,0.06)] hover:bg-[rgba(14,210,247,0.06)] transition-colors duration-150">
+    <div className="border-b border-[var(--border-subtle)] hover:bg-[rgba(14,210,247,0.06)] transition-colors duration-150">
       <div
         className="px-3 py-2 cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -552,7 +552,7 @@ const InboxAnalytics: React.FC<{
   }) => (
     <div
       key={status}
-      className="bg-[var(--bg-depth-1)] p-4 rounded text-center flex flex-col items-center border border-[rgba(14,210,247,0.05)]"
+      className="bg-[var(--bg-depth-1)] p-4 rounded text-center flex flex-col items-center border border-[var(--border-subtle)]"
     >
       <div className="text-sm capitalize">{status}</div>
       <div className="font-semibold">{byStatus[status] || 0}</div>
@@ -670,7 +670,7 @@ const DateFilterSelect: React.FC<{
         <select
           value={value.range}
           onChange={e => handleRangeChange(e.target.value as DateRange)}
-          className="pl-2 pr-8 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded-l border border-[rgba(14,210,247,0.1)] text-sm appearance-none"
+          className="pl-2 pr-8 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded-l border border-[var(--border-defined)] text-sm appearance-none"
         >
           {ranges.map(({ value, label }) => (
             <option key={value} value={value}>
@@ -686,7 +686,7 @@ const DateFilterSelect: React.FC<{
           type="date"
           value={value.startDate}
           onChange={e => handleDateChange(e.target.value)}
-          className="py-2 pl-6 pr-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded-r border border-[rgba(14,210,247,0.1)] text-sm w-min"
+          className="py-2 pl-6 pr-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded-r border border-[var(--border-defined)] text-sm w-min"
           max={moment().format("YYYY-MM-DD")}
         />
       )}
@@ -729,7 +729,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   ];
 
   return (
-    <div className="bg-[var(--bg-depth-1)] p-4 border border-[rgba(14,210,247,0.08)] rounded space-y-3">
+    <div className="bg-[var(--bg-depth-1)] p-4 border border-[var(--border-defined)] rounded space-y-3">
       {/* Search input row */}
       <div className="pl-10 relative flex-1">
         <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-accent)]" />
@@ -738,7 +738,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           placeholder="Search files, tags, or actions..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-full pl-10 pr-4 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded border border-[rgba(14,210,247,0.1)] text-sm placeholder-[var(--text-dim)]"
+          className="w-full pl-10 pr-4 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded border border-[var(--border-defined)] text-sm placeholder-[var(--text-dim)]"
         />
       </div>
 
@@ -749,7 +749,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <select
             value={selectedStatus}
             onChange={e => onStatusFilter(e.target.value as FileStatus | "")}
-            className="w-full pl-9 pr-4 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded border border-[rgba(14,210,247,0.1)] text-sm appearance-none"
+            className="w-full pl-9 pr-4 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded border border-[var(--border-defined)] text-sm appearance-none"
           >
             {statuses.map(status => (
               <option key={status} value={status}>
@@ -889,7 +889,7 @@ export const InboxLogs: React.FC = () => {
     <div className="flex flex-col h-full">
       {/* Analytics - compact, no padding */}
       {analytics && (
-        <div className="border-b border-[rgba(14,210,247,0.05)]">
+        <div className="border-b border-[var(--border-subtle)]">
           <InboxAnalytics analytics={analytics} />
         </div>
       )}
@@ -898,7 +898,7 @@ export const InboxLogs: React.FC = () => {
       <RecentIssuesPanel plugin={plugin} />
 
       {/* Search bar - flush */}
-      <div className="border-b border-[rgba(14,210,247,0.05)] px-3 py-2">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-2">
         <SearchBar
           onSearch={handleSearch}
           onStatusFilter={handleStatusFilter}
@@ -910,7 +910,7 @@ export const InboxLogs: React.FC = () => {
 
       {/* Date indicator - minimal */}
       {dateFilter.range !== "all" && (
-        <div className="text-xs text-[var(--text-dim)] px-3 py-1 border-b border-[rgba(14,210,247,0.05)]">
+        <div className="text-xs text-[var(--text-dim)] px-3 py-1 border-b border-[var(--border-subtle)]">
           {dateFilter.range === "custom" ? (
             <>{moment(dateFilter.startDate).format("MMM D, YYYY")}</>
           ) : (

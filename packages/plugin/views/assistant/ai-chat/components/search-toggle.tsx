@@ -47,8 +47,8 @@ export function SearchToggle({ selectedModel }: SearchToggleProps) {
         disabled={isSearchModel}
         className={`text-xs px-1.5 py-0.5 border rounded transition-colors ${
           isEnabled || searchAutoEnabled
-            ? "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border-[rgba(14,210,247,0.4)]" 
-            : "bg-transparent text-[var(--text-dim)] border-[rgba(14,210,247,0.1)] hover:text-[var(--text-accent)] hover:border-[rgba(14,210,247,0.3)]"
+            ? "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border-[var(--border-active)]" 
+            : "bg-transparent text-[var(--text-dim)] border-[var(--border-defined)] hover:text-[var(--text-accent)] hover:border-[var(--border-active)]"
         }`}
         title={isEnabled ? "Disable internet search" : "Enable internet search"}
       >
@@ -60,8 +60,8 @@ export function SearchToggle({ selectedModel }: SearchToggleProps) {
           onClick={handleDeepSearchToggle}
           className={`text-xs px-1.5 py-0.5 border rounded transition-colors ${
             isDeepSearch 
-              ? "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border-[rgba(14,210,247,0.4)]" 
-              : "bg-transparent text-[var(--text-dim)] border-[rgba(14,210,247,0.1)] hover:text-[var(--text-accent)] hover:border-[rgba(14,210,247,0.3)]"
+              ? "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border-[var(--border-active)]" 
+              : "bg-transparent text-[var(--text-dim)] border-[var(--border-defined)] hover:text-[var(--text-accent)] hover:border-[var(--border-active)]"
           }`}
           title={isDeepSearch ? "Use standard search context" : "Use deep search with more context"}
         >

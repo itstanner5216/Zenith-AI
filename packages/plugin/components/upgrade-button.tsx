@@ -67,7 +67,7 @@ export function UpgradeButton({
       return "bg-[rgba(255,183,77,0.12)] text-[#ffb74d] border border-[rgba(255,183,77,0.35)] hover:bg-[rgba(255,183,77,0.2)] hover:border-[rgba(255,183,77,0.55)] hover:shadow-[0_0_8px_rgba(255,183,77,0.2)] cursor-pointer";
     } else {
       // Normal - cyan accent
-      return "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.3)] hover:bg-[rgba(14,210,247,0.18)] hover:border-[rgba(14,210,247,0.5)] hover:shadow-[0_0_8px_rgba(14,210,247,0.2)] cursor-pointer";
+      return "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[var(--border-active)] hover:bg-[rgba(14,210,247,0.18)] hover:border-[var(--border-active)] hover:shadow-[0_0_8px_rgba(14,210,247,0.2)] cursor-pointer";
     }
   };
 

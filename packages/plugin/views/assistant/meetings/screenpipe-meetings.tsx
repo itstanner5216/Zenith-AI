@@ -273,7 +273,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
             className={tw(
               "flex items-center gap-1.5 px-2 py-1 text-xs",
               "bg-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.04)]",
-              "border border-[rgba(14,210,247,0.08)] rounded",
+              "border border-[var(--border-defined)] rounded",
               "text-[var(--text-normal)]",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "transition-colors"
@@ -486,7 +486,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
           className={tw(
             "flex items-center gap-1.5 px-2 py-1 text-xs",
             "bg-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.04)]",
-            "border border-[rgba(14,210,247,0.08)] rounded",
+            "border border-[var(--border-defined)] rounded",
             "text-[var(--text-normal)]",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             "transition-colors"
@@ -547,7 +547,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
               <div
                 key={`${session.key}-${session.start?.getTime() ?? index}`}
                 className={tw(
-                  "bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.15)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
+                  "bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
                 )}
               >
                 <div

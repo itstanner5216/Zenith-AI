@@ -34,7 +34,7 @@ export function ChatHistorySidebar({
 
   return (
     <StyledContainer>
-      <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[var(--bg-depth-1)]")} role="navigation" aria-label="Chat history">
+      <div className={tw("w-64 border-r border-[var(--border-subtle)] p-2 flex flex-col h-full bg-[var(--bg-depth-1)]")} role="navigation" aria-label="Chat history">
         <div className={tw("text-xs font-semibold bg-gradient-to-r from-[var(--gradient-blue)] to-[var(--gradient-lavender)] bg-clip-text text-transparent uppercase mb-2 tracking-wider")}>
           Chat History
         </div>
@@ -45,7 +45,7 @@ export function ChatHistorySidebar({
                 <div
                   key={i}
                   className={tw(
-                    "h-10 rounded-lg zenith-shimmer border border-[rgba(14,210,247,0.05)]"
+                    "h-10 rounded-lg zenith-shimmer border border-[var(--border-subtle)]"
                   )}
                 />
               ))}
@@ -68,7 +68,7 @@ export function ChatHistorySidebar({
                     "group p-2 rounded-md cursor-pointer text-sm transition-all duration-150",
                     activeChatId === session.id
                       ? "bg-[rgba(14,210,247,0.1)] border-l-2 border-[var(--text-accent)] shadow-[0_0_10px_rgba(14,210,247,0.12),0_2px_8px_rgba(0,0,0,0.4)]"
-                      : "border-l-2 border-transparent hover:bg-[var(--bg-depth-3)] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                      : "border-l-2 border-transparent hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
                   )}
                   onClick={() => onSelectChat(session.id)}
                   role="listitem"

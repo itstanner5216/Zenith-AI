@@ -127,7 +127,7 @@ export const SimilarTags: React.FC<SimilarTagsProps> = ({
   };
 
   return (
-    <div className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] p-4 border-b border-[rgba(14,210,247,0.05)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[rgba(14,210,247,0.1)] transition-colors duration-200">
+    <div className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] p-4 border-b border-[var(--border-subtle)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[var(--border-defined)] transition-colors duration-200">
       {renderContent()}
     </div>
   );

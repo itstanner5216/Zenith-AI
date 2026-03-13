@@ -548,7 +548,7 @@ export function ScreenpipeHandler({
         {isComplete ? "✓ ScreenPipe search complete" : `⏳ ${status}`}
       </div>
       {error && (
-        <div className="text-xs text-[var(--text-sub-accent)] mt-2 p-2 bg-[var(--bg-depth-3)] rounded border border-[rgba(14,210,247,0.08)]">
+        <div className="text-xs text-[var(--text-sub-accent)] mt-2 p-2 bg-[var(--bg-depth-3)] rounded border border-[var(--border-defined)]">
           <strong>Error:</strong> {error}
         </div>
       )}

@@ -191,7 +191,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">
@@ -206,12 +206,12 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                className={`flex-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-40 ${
+                className={`flex-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60 ${
                   keyStatus === "valid"
                     ? "border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
                     : keyStatus === "invalid" || validationError
                     ? "border-[var(--text-sub-accent)] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
-                    : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
+                    : "border-[var(--border-defined)] focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
                 }`}
                 placeholder="Enter your license key"
                 value={licenseKey}
@@ -236,11 +236,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       </div>
 
       {/* Usage Stats Section - Always visible */}
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[rgba(14,210,247,0.2)] border-t-[var(--text-accent)]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--border-accent)] border-t-[var(--text-accent)]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}></div>
           </div>
         ) : usageData ? (
           <div className="space-y-3">
@@ -258,7 +258,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                   </span>
                 </div>
               </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
                 <div
                   style={{
                     width: `${Math.min(
@@ -293,7 +293,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                     </span>
                   </div>
                 </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
                 <div
                   style={{
                     width: `${Math.min(
@@ -399,7 +399,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         onLicenseKeyChange={handleLicenseKeyChange}
       />
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Quick Tutorial</h3>
         <div className="youtube-embed">
           <iframe
@@ -413,7 +413,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         </div>
       </div>
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <p className="zenith-ai-support-text mb-4">
           Zenith-AI is an open-source initiative. If you find it valuable,
           please{" "}

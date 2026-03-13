@@ -182,11 +182,11 @@ export const AccountData: React.FC<AccountDataProps> = ({
     }
   };
 
-  const inputClassName = "w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-40";
+  const inputClassName = "w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60";
 
   if (!plugin.settings.API_KEY) {
     return (
-      <div className="bg-[var(--bg-depth-2)] p-4 rounded-lg border border-[rgba(14,210,247,0.06)]">
+      <div className="bg-[var(--bg-depth-2)] p-4 rounded-lg border border-[var(--border-subtle)]">
         <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">
           Get Started with Zenith-AI
         </h3>
@@ -305,7 +305,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         {/* Create Account via Web */}
         <div className="mb-6">
-            <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
             <h4 className="font-medium mb-2 mt-0 text-[var(--text-accent)]">Create Account via Web</h4>
             <p className="text-xs text-[var(--text-dim)] opacity-70 mb-4">
               Create an account through our web dashboard for a full-featured
@@ -321,9 +321,9 @@ export const AccountData: React.FC<AccountDataProps> = ({
         </div>
 
         <div className="flex items-center justify-center mb-6">
-          <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
+          <div className="flex-grow border-t border-[var(--border-defined)]"></div>
           <span className="mx-4 text-[var(--text-dim)] text-sm">or</span>
-          <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
+          <div className="flex-grow border-t border-[var(--border-defined)]"></div>
         </div>
 
         {/* Quick Top-up Section */}
@@ -346,7 +346,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
         </div>
 
         {isDevMode && (
-          <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] mt-4">
+          <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[var(--border-defined)] mt-4">
             <h4 className="font-medium mb-2 mt-0">Development Mode</h4>
             <p className="text-xs text-[var(--text-dim)] opacity-70 mb-3">
               Add tokens or minutes to your account for development purposes.
@@ -422,7 +422,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
       {isDevMode && (
         <div className="border-t pt-6">
           <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Development Tools</h3>
-          <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] space-y-3">
+          <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[var(--border-defined)] space-y-3">
             <div>
               <h4 className="font-medium mb-2 mt-0">Add Development Tokens</h4>
               <div className="flex items-center space-x-2">

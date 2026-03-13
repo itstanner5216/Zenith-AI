@@ -124,7 +124,7 @@ export function DeleteFilesHandler({
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+      <div className="text-sm border-b border-[var(--border-defined)] pb-2">
         <div className="text-[var(--text-accent)] text-xs">
           {isDone && !isConfirmed ? "✗ Deletion cancelled" : "✓ Files deleted"}
         </div>
@@ -134,7 +134,7 @@ export function DeleteFilesHandler({
 
   if (validFiles.length === 0 && invalidPaths.length > 0) {
     return (
-      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+      <div className="text-sm border-b border-[var(--border-defined)] pb-2">
         <div className="text-[var(--text-sub-accent)] text-xs">
           ✗ No valid files to delete. All paths were invalid.
         </div>
@@ -143,7 +143,7 @@ export function DeleteFilesHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="flex items-start gap-2">
         <span className="text-[var(--text-sub-accent)] text-lg">⚠</span>
         <div className="flex-1">
@@ -189,7 +189,7 @@ export function DeleteFilesHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[var(--border-accent)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
         >
           Cancel
         </button>

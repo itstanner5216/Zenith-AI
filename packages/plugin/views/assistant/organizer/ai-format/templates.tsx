@@ -311,7 +311,7 @@ export const ClassificationContainer: React.FC<ClassificationBoxProps> = ({
   return (
     <div>
       <div className="font-semibold my-3 text-[var(--text-accent)]">🗳️ AI Templates</div>
-      <div className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] p-4 space-y-4 border-b border-[rgba(14,210,247,0.05)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] p-4 space-y-4 border-b border-[var(--border-subtle)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="flex items-center space-x-2">
           <label htmlFor="formatBehavior" className="font-medium">
             Format Behavior:
@@ -320,7 +320,7 @@ export const ClassificationContainer: React.FC<ClassificationBoxProps> = ({
             id="formatBehavior"
             value={formatBehavior}
             onChange={handleFormatBehaviorChange}
-            className="px-2 py-1 border border-[rgba(14,210,247,0.12)] bg-[var(--bg-depth-1)] text-[var(--text-normal)] rounded focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150 appearance-none cursor-pointer"
+            className="px-2 py-1 border border-[var(--border-defined)] bg-[var(--bg-depth-1)] text-[var(--text-normal)] rounded focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150 appearance-none cursor-pointer"
           >
             <option value="override">Replace</option>
             <option value="newFile">New File</option>

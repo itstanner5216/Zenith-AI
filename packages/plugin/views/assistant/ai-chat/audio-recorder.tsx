@@ -143,7 +143,7 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         onClick={isRecording ? stopRecording : startRecording}
         className={cn(
           "bg-transparent border border-transparent cursor-pointer transition-all duration-150",
-          "hover:border-[rgba(14,210,247,0.2)] hover:bg-[rgba(14,210,247,0.05)] hover:shadow-none",
+          "hover:border-[var(--border-accent)] hover:bg-[rgba(14,210,247,0.05)] hover:shadow-none",
           "shadow-none disabled:shadow-none disabled:cursor-not-allowed disabled:opacity-30",
           isRecording && "border-[rgba(244,86,157,0.3)] bg-[rgba(244,86,157,0.06)] animate-[zenith-neon-pulse_2s_ease-in-out_infinite]",
           isProcessing && "cursor-wait opacity-60",
@@ -168,7 +168,7 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       </Button>
 
       {debug && recordings.length > 0 && (
-        <div className="flex flex-col gap-2 p-2 rounded bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.1)]">
+        <div className="flex flex-col gap-2 p-2 rounded bg-[var(--bg-depth-3)] border border-[var(--border-defined)]">
           <h3 className="text-[var(--text-dim)] text-sm">Recording History</h3>
           {recordings.map((recording, index) => (
             <div key={recording.timestamp} className="flex items-center gap-2">

@@ -38,7 +38,7 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
   if (!groundingMetadata?.groundingSupports?.length) return null;
 
   return (
-    <div className="flex flex-col gap-2 p-3 bg-[var(--bg-depth-3)] m-2 rounded-md border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="flex flex-col gap-2 p-3 bg-[var(--bg-depth-3)] m-2 rounded-md border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="text-[var(--text-dim)] text-sm">Search Results:</div>
       {groundingMetadata.groundingSupports.map((result, index) => {
         const sources = result.groundingChunkIndices.map(idx => {
@@ -51,7 +51,7 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
         return (
           <div 
             key={index} 
-            className="flex flex-col gap-1 p-2 rounded bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)] transition-colors duration-150"
+            className="flex flex-col gap-1 p-2 rounded bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:border-[var(--border-accent)] transition-colors duration-150"
           >
             <div className="flex justify-between items-center">
               <span className="text-[var(--text-accent)] text-sm">

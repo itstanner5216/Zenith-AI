@@ -163,7 +163,7 @@ export function CreateFilesHandler({
   const isComplete = "result" in toolInvocation;
 
   return (
-    <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+    <div className="text-sm border-b border-[var(--border-defined)] pb-2">
       <div className="text-[var(--text-dim)] mb-1">{message}</div>
       {!isComplete ? (
         <div className="text-[var(--text-dim)] text-xs">

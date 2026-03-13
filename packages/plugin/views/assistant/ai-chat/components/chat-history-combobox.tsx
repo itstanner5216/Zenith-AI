@@ -146,7 +146,7 @@ export function ChatHistoryCombobox({
         className={tw(
           "flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-md",
           "bg-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.06)]",
-          "text-[var(--text-normal)] border border-[rgba(14,210,247,0.12)] hover:border-[rgba(14,210,247,0.25)]",
+          "text-[var(--text-normal)] border border-[var(--border-defined)] hover:border-[var(--border-accent)]",
           "min-w-[200px] justify-between transition-all duration-150"
         )}
         title="Search chat history"
@@ -165,7 +165,7 @@ export function ChatHistoryCombobox({
         <div
           className={tw(
             "absolute top-full right-0 mt-1 w-[300px] max-h-[400px]",
-            "bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.15)]",
+            "bg-[var(--bg-depth-3)] border border-[var(--border-accent)]",
             "rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)] z-50 overflow-hidden"
           )}
           style={{
@@ -173,7 +173,7 @@ export function ChatHistoryCombobox({
           }}
         >
           {/* Search Input */}
-          <div className={tw("p-2 border-b border-[rgba(14,210,247,0.08)]")}>
+          <div className={tw("p-2 border-b border-[var(--border-defined)]")}>
             <div className={tw("relative")}>
               <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--text-dim)]")} />
               <input
@@ -185,8 +185,8 @@ export function ChatHistoryCombobox({
                 className={tw(
                   "w-full pl-7 pr-2 py-1.5 text-xs rounded-md",
                   "bg-[var(--bg-depth-1)]",
-                  "text-[var(--text-normal)] border border-[rgba(14,210,247,0.12)] placeholder:text-[var(--text-dim)] placeholder:opacity-50",
-                  "focus:outline-none focus:border-[var(--text-accent)] focus:ring-1 focus:ring-[rgba(14,210,247,0.2)] transition-all duration-150"
+                  "text-[var(--text-normal)] border border-[var(--border-defined)] placeholder:text-[var(--text-dim)] placeholder:opacity-50",
+                  "focus:outline-none focus:border-[var(--text-accent)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
                 )}
               />
             </div>
@@ -212,7 +212,7 @@ export function ChatHistoryCombobox({
                     key={session.id}
                     className={tw(
                       "group px-3 py-2 cursor-pointer transition-colors",
-                      "border-b border-[rgba(14,210,247,0.08)] last:border-b-0",
+                      "border-b border-[var(--border-defined)] last:border-b-0",
                     isSelected && "bg-[rgba(14,210,247,0.08)]",
                     !isSelected && "hover:bg-[rgba(14,210,247,0.05)]"
                     )}

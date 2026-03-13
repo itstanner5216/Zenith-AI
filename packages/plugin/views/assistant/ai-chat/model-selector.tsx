@@ -56,7 +56,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           onClick={() => plugin.settings.showLocalLLMInChat && setIsModelSelectorOpen(!isModelSelectorOpen)}
           className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 ${
             plugin.settings.showLocalLLMInChat
-              ? 'text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[rgba(14,210,247,0.15)]'
+              ? 'text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[var(--border-accent)]'
               : 'text-[var(--text-dim)] opacity-60'
           }`}
         >
@@ -79,7 +79,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           )}
         </div>
         {isModelSelectorOpen && plugin.settings.showLocalLLMInChat && (
-          <div className="absolute bottom-full right-0 mb-1.5 bg-[var(--bg-depth-4)] border border-[rgba(14,210,247,0.18)] rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.7),0_0_12px_rgba(14,210,247,0.1)] z-50 min-w-[140px] overflow-hidden">
+          <div className="absolute bottom-full right-0 mb-1.5 bg-[var(--bg-depth-4)] border border-[var(--border-accent)] rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.7),0_0_12px_rgba(14,210,247,0.1)] z-50 min-w-[140px] overflow-hidden">
             <div className="py-1">
               <div
                 onClick={() => handleModelSelect("gpt-4o-mini")}
@@ -95,7 +95,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                     type="text"
                     value={customModel}
                     onChange={(e) => setCustomModel(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border bg-[var(--bg-depth-1)] text-[var(--text-normal)] border-[rgba(14,210,247,0.12)] rounded focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
+                    className="w-full px-2 py-1 text-sm border bg-[var(--bg-depth-1)] text-[var(--text-normal)] border-[var(--border-defined)] rounded focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
                     placeholder="Enter model name..."
                   />
                   <div className="flex justify-end mt-2 space-x-2">
@@ -107,7 +107,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                     </button>
                     <button
                       onClick={handleCustomModelSave}
-                      className="px-2 py-1 text-xs bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border border-[rgba(14,210,247,0.25)] rounded hover:bg-[rgba(14,210,247,0.18)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] cursor-pointer transition-all duration-150"
+                      className="px-2 py-1 text-xs bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border border-[var(--border-accent)] rounded hover:bg-[rgba(14,210,247,0.18)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] cursor-pointer transition-all duration-150"
                     >
                       Save
                     </button>
@@ -116,7 +116,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               ) : (
                 <div
                   onClick={() => handleModelSelect("custom")}
-                  className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.08)] hover:text-[var(--text-accent)] transition-colors duration-100 border-t border-[rgba(14,210,247,0.06)]"
+                  className="cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.08)] hover:text-[var(--text-accent)] transition-colors duration-100 border-t border-[var(--border-subtle)]"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-sub-accent)] shadow-[0_0_4px_rgba(244,86,157,0.5)] flex-shrink-0" />
                   {getDisplayName("custom")}

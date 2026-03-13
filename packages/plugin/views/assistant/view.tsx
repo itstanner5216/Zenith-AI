@@ -292,7 +292,7 @@ function AssistantContent({
       {/* Native tab navigation */}
       <div
         className={tw(
-          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.08)] bg-[var(--bg-depth-1)] items-center justify-between"
+          "flex gap-0 px-3 pt-2 pb-0 border-b border-[var(--border-defined)] bg-[var(--bg-depth-1)] items-center justify-between"
         )}
       >
         <div className={tw("flex gap-0")}>

@@ -105,7 +105,7 @@ export function MoveFilesHandler({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+    <div className="flex flex-col space-y-4 p-4 border border-[var(--border-defined)]">
       <div className="text-[var(--text-normal)]">
         {toolInvocation.args.message || "Ready to move files"}
       </div>
@@ -160,7 +160,7 @@ export function MoveFilesHandler({
                 })
               )
             }
-            className="px-4 py-2 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
+            className="px-4 py-2 text-xs rounded-md border border-[var(--border-accent)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
           >
             Cancel
           </button>

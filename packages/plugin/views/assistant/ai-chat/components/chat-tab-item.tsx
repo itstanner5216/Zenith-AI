@@ -31,7 +31,7 @@ export function ChatTabItem({
         "border-b-2",
         isActive
           ? "border-[var(--text-accent)] bg-[var(--bg-depth-3)] shadow-[0_2px_8px_rgba(0,0,0,0.4),0_0_10px_rgba(14,210,247,0.12)]"
-          : "border-transparent bg-transparent hover:bg-[var(--bg-depth-2)] hover:border-[rgba(14,210,247,0.25)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
+          : "border-transparent bg-transparent hover:bg-[var(--bg-depth-2)] hover:border-[var(--border-accent)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
       )}
       onClick={onSelect}
       title={`${session.title} — ${relativeTime}`}

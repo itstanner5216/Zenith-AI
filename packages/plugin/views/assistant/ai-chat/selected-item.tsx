@@ -15,7 +15,7 @@ export const SelectedItem: React.FC<SelectedItemProps> = ({
   onRemove,
 }) => (
   <motion.div
-    className="bg-[var(--bg-depth-1)] text-[var(--text-normal)] rounded px-2 py-1 text-sm m-1 flex gap-1 min-w-fit h-fit border border-[rgba(14,210,247,0.15)] hover:border-[rgba(14,210,247,0.3)] transition-colors"
+    className="bg-[var(--bg-depth-1)] text-[var(--text-normal)] rounded px-2 py-1 text-sm m-1 flex gap-1 min-w-fit h-fit border border-[var(--border-accent)] hover:border-[var(--border-active)] transition-colors"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.8 }}

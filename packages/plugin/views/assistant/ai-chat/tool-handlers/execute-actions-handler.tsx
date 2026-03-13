@@ -92,7 +92,7 @@ export function ExecuteActionsHandler({ toolInvocation, handleAddResult, app }: 
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+    <div className="flex flex-col space-y-4 p-4 border border-[var(--border-defined)]">
       <div className="text-[var(--text-normal)]">
         Ready to process {toolInvocation.args.filePaths.length} file(s) based on content analysis
       </div>

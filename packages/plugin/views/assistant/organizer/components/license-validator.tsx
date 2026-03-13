@@ -52,7 +52,7 @@ export const LicenseValidator: React.FC<LicenseValidatorProps> = ({
           <div className="flex gap-2">
             <button
               onClick={validateLicense}
-              className="px-3 py-1.5 rounded bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[rgba(14,210,247,0.4)] hover:bg-[rgba(14,210,247,0.25)] transition-colors duration-200"
+              className="px-3 py-1.5 rounded bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] hover:bg-[rgba(14,210,247,0.25)] transition-colors duration-200"
             >
               Retry
             </button>

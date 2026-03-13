@@ -64,7 +64,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
         {displayedSources.map((source) => (
           <div
             key={source.id}
-            className="flex items-center p-4 bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.08)] hover:bg-[var(--bg-depth-4)] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_10px_rgba(14,210,247,0.08)] active:scale-[0.99] transition-all duration-200 rounded-md cursor-pointer"
+            className="flex items-center p-4 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-4)] hover:border-[var(--border-accent)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_10px_rgba(14,210,247,0.08)] active:scale-[0.99] transition-all duration-200 rounded-md cursor-pointer"
           >
             <div className="flex-shrink-0 mr-4">
               <div className="relative">
@@ -73,7 +73,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   alt={source.domain}
                   className="w-8 h-8 rounded"
                 />
-                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[var(--bg-depth-5)] border border-[rgba(14,210,247,0.4)] shadow-[0_0_6px_rgba(14,210,247,0.2)] rounded-full text-xs font-medium text-[var(--text-accent)]">
+                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[var(--bg-depth-5)] border border-[var(--border-active)] shadow-[0_0_6px_rgba(14,210,247,0.2)] rounded-full text-xs font-medium text-[var(--text-accent)]">
                   {source.id}
                 </div>
               </div>

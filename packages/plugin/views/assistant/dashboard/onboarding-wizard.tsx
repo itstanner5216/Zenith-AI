@@ -89,7 +89,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
   return (
     <StyledContainer>
       <motion.div
-        className={tw("max-w-xl mx-auto bg-[var(--bg-depth-3)] p-6 rounded-xl border border-[rgba(14,210,247,0.12)] shadow-[0_8px_40px_rgba(0,0,0,0.7),0_0_16px_rgba(14,210,247,0.08)]")}
+        className={tw("max-w-xl mx-auto bg-[var(--bg-depth-3)] p-6 rounded-xl border border-[var(--border-defined)] shadow-[0_8px_40px_rgba(0,0,0,0.7),0_0_16px_rgba(14,210,247,0.08)]")}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -171,7 +171,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className={tw("w-full bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.12)] rounded px-3 py-2 text-[var(--text-normal)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150")}
+                className={tw("w-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded px-3 py-2 text-[var(--text-normal)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150")}
               />
             </div>
             
@@ -184,7 +184,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className={tw("w-full bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.12)] rounded px-3 py-2 text-[var(--text-normal)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150")}
+                className={tw("w-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded px-3 py-2 text-[var(--text-normal)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150")}
               />
             </div>
             
@@ -198,7 +198,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={tw("w-full bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.12)] rounded px-3 py-2 text-[var(--text-normal)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150")}
+                  className={tw("w-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded px-3 py-2 text-[var(--text-normal)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150")}
                 />
               </div>
             )}
@@ -251,7 +251,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               Zenith-AI is now set up and ready to help you organize your vault.
             </p>
             
-            <div className={tw("bg-[var(--bg-depth-1)] p-4 rounded-md border border-[rgba(14,210,247,0.1)] shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]")}>
+            <div className={tw("bg-[var(--bg-depth-1)] p-4 rounded-md border border-[var(--border-defined)] shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]")}>
               <h4 className={tw("font-medium text-sm mb-2 bg-gradient-to-r from-[var(--gradient-blue)] to-[var(--gradient-lavender)] bg-clip-text text-transparent")}>We'll create these folders for you:</h4>
               <ul className={tw("text-sm space-y-2")}>
                 <li><strong>_NoteCompanion/Inbox</strong>: Files waiting to be processed</li>
