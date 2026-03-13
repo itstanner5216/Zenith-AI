@@ -376,10 +376,21 @@ export class Inbox {
         );
       }
 
-      // Independent API calls — run concurrently
+      // Try embeddings first — falls through to model if unavailable or low confidence
+      context = await safeExecuteStep(
+        context,
+        recommendFolderWithEmbeddingsStep,
+        Action.MOVING,
+        Action.ERROR_MOVING
+      );
+
+      // Run remaining independent API calls concurrently
+      // Only call model folder routing if embeddings didn't resolve the folder
       await Promise.all([
         safeExecuteStep(context, recommendClassificationStep, Action.CLASSIFY, Action.ERROR_CLASSIFY),
-        safeExecuteStep(context, recommendFolderStep, Action.MOVING, Action.ERROR_MOVING),
+        ...(!context.newPath
+          ? [safeExecuteStep(context, recommendFolderStep, Action.MOVING, Action.ERROR_MOVING)]
+          : []),
         safeExecuteStep(context, recommendNameStep, Action.RENAME, Action.ERROR_RENAME),
       ]);
 
@@ -497,6 +508,85 @@ async function recommendNameStep(
   return context;
 }
 
+async function recommendFolderWithEmbeddingsStep(
+  context: ProcessingContext
+): Promise<ProcessingContext> {
+  const client = context.plugin.vertexBrainClient;
+  if (!client) return context; // Brain not configured, let model handle it
+
+  try {
+    const contentSample = context.content?.slice(0, 3000) ?? "";
+    if (!contentSample.trim()) return context;
+
+    // 1. Find similar notes via vector search
+    const similar = await client.vectorSearch(contentSample, 20);
+    if (!similar.length) return context;
+
+    // 2. Tally folder frequencies from similar notes
+    const folderCounts = new Map<string, number>();
+    for (const note of similar) {
+      if (note.folder_path && note.similarity > 0.5) {
+        folderCounts.set(
+          note.folder_path,
+          (folderCounts.get(note.folder_path) ?? 0) + note.similarity
+        );
+      }
+    }
+    if (!folderCounts.size) return context;
+
+    // 3. Read Cosmic Vault Structure for context
+    const rules =
+      (await context.plugin.organizationPreferences?.getRules()) ?? "";
+
+    // 4. Build candidates for ranker
+    const candidates = Array.from(folderCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([folder, score]) => ({
+        id: folder,
+        title: folder,
+        content: `Folder: ${folder} (weighted similarity: ${score.toFixed(2)}). Rules: ${rules.slice(0, 500)}`,
+      }));
+
+    // 5. Rank candidates
+    const ranked = await client.rank(
+      contentSample.slice(0, 1500),
+      candidates
+    );
+    if (!ranked.length) return context;
+
+    const best = ranked[0];
+
+    // 6. Context-aware threshold selection
+    const isInGeneral = context.inboxFile.path.includes("/General/");
+    const isInProjects = context.inboxFile.path.includes(
+      `/${context.plugin.settings.projectsPath}/`
+    );
+
+    let threshold = context.plugin.settings.autoSortConfidenceThreshold;
+    if (isInGeneral) {
+      threshold = context.plugin.settings.generalMergeThreshold;
+    } else if (!isInProjects) {
+      threshold = context.plugin.settings.globalMergeThreshold;
+    }
+
+    if (best.score < threshold) return context; // low confidence, fall through to model
+
+    // 7. Apply folder
+    context.newPath = best.title;
+    context.recordManager.setFolder(context.hash, best.title);
+    logger.info(
+      `[Embeddings] Auto-sorted to ${best.title} (score: ${best.score.toFixed(2)})`
+    );
+  } catch (e) {
+    logger.warn(
+      `[Embeddings] Folder routing failed, falling back to model: ${e}`
+    );
+  }
+
+  return context;
+}
+
 async function recommendFolderStep(
   context: ProcessingContext
 ): Promise<ProcessingContext> {
@@ -513,6 +603,16 @@ async function recommendFolderStep(
     logger.info(
       "Skipping folder recommendation: missing content or container file"
     );
+    return context;
+  }
+
+  // Skip auto-sort if file is #pinned
+  const cache = context.plugin.app.metadataCache.getFileCache(context.containerFile);
+  const inlineTags = cache?.tags?.map(t => t.tag.replace('#', '')) || [];
+  const frontmatterTags = cache?.frontmatter?.tags || [];
+  const allTags = [...inlineTags, ...(Array.isArray(frontmatterTags) ? frontmatterTags : [frontmatterTags])];
+  if (allTags.includes(context.plugin.settings.pinnedTag)) {
+    logger.info("Skipping folder recommendation: file has #pinned tag");
     return context;
   }
 
@@ -809,6 +909,34 @@ async function formatContentStep(
     throw error;
   }
 }
+async function findSimilarTagsFromEmbeddings(
+  context: ProcessingContext
+): Promise<string[]> {
+  const client = context.plugin.vertexBrainClient;
+  if (!client) return [];
+
+  try {
+    const similar = await client.vectorSearch(
+      context.content?.slice(0, 2000) ?? "",
+      15
+    );
+    const tagCounts = new Map<string, number>();
+    for (const note of similar) {
+      if (note.similarity > 0.6) {
+        for (const tag of note.tags ?? []) {
+          tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + note.similarity);
+        }
+      }
+    }
+    return Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([tag]) => tag);
+  } catch {
+    return [];
+  }
+}
+
 async function recommendTagsStep(
   context: ProcessingContext
 ): Promise<ProcessingContext> {
@@ -818,6 +946,12 @@ async function recommendTagsStep(
       "Skipping tag recommendation: missing content or container file"
     );
     return context;
+  }
+
+  // Pre-populate from embeddings (existing tags from similar notes)
+  const embeddingTags = await findSimilarTagsFromEmbeddings(context);
+  if (embeddingTags.length) {
+    context.tags = [...new Set([...(context.tags ?? []), ...embeddingTags])];
   }
 
   const tags = await context.plugin.recommendTags(
