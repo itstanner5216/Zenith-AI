@@ -149,9 +149,9 @@ export function ExtractHighlightsHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[#45aaff]">Extracting content...</div>
+        <div className="text-[var(--text-dim)]">Extracting content...</div>
       ) : (
-        <div className="text-[#bebebe]">
+        <div className="text-[var(--text-normal)]">
           Done — content ready for highlights
         </div>
       )}

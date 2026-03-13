@@ -104,7 +104,7 @@ const Tiptap: React.FC<TiptapProps> = ({
       MentionWithSpaces.configure({
         HTMLAttributes: {
           class:
-            "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] px-1 py-0.5 rounded",
+            "bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] px-1 py-0.5 rounded",
         },
         suggestion: {
           char: "@",
@@ -112,7 +112,7 @@ const Tiptap: React.FC<TiptapProps> = ({
           render: () => suggestion.render(),
           command: handleMentionCommand,
           decorationClass:
-            "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] px-1 py-0.5 rounded",
+            "bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] px-1 py-0.5 rounded",
         },
       }),
       SlashCommand.configure({
@@ -247,12 +247,12 @@ const Tiptap: React.FC<TiptapProps> = ({
 
   return (
     <div
-      className="tiptap-editor relative rounded-md border border-[rgba(14,210,247,0.12)] bg-[#0d0b12] transition-all duration-150 focus-within:border-[rgba(14,210,247,0.45)] focus-within:shadow-[0_0_0_1px_rgba(14,210,247,0.15),0_0_8px_rgba(14,210,247,0.08)]"
+      className="tiptap-editor relative rounded-md border border-[var(--border-defined)] bg-[var(--bg-depth-1)] transition-all duration-150 focus-within:border-[var(--border-active)] focus-within:shadow-[0_0_0_1px_rgba(14,210,247,0.15),0_0_8px_rgba(14,210,247,0.08)]"
       onKeyDown={onKeyDown}
     >
       <EditorContent editor={editor} />
       {isEmpty && editor && (
-        <div className="absolute left-[10px] top-[10px] pointer-events-none text-[#45aaff] text-sm select-none opacity-40 italic">
+        <div className="absolute left-[10px] top-[10px] pointer-events-none text-[var(--text-dim)] text-sm select-none opacity-60 italic">
           Type @ to mention files, folders, or tags, or / for commands...
         </div>
       )}

@@ -23,7 +23,7 @@ export const CopyButton: React.FC<CopyButtonProps> = ({ content }) => {
       style={{ width: '22px', height: '22px' }}
       title="Copy to clipboard"
     >
-      <Copy size={14} className="text-[#45aaff] group-hover:text-[#0fb6d6] transition-colors duration-150" />
+      <Copy size={14} className="text-[var(--text-dim)] group-hover:text-[var(--text-accent)] transition-colors duration-150" />
     </button>
   );
 };

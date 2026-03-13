@@ -57,17 +57,17 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
     <CatalystGate plugin={plugin}>
       <div className="experiment-settings p-4 space-y-8">
         <div className="mb-8">
-          <p className="text-[#45aaff] mb-4">
+          <p className="text-[var(--text-dim)] mb-4">
             These experimental features enhance your File Organizer experience.
             Enable them to:
           </p>
-          <ul className="list-disc pl-6 text-[#45aaff] space-y-1 mb-6">
+          <ul className="list-disc pl-6 text-[var(--text-dim)] space-y-1 mb-6">
             <li>Generate atomic notes from your content</li>
             <li>Integrate with external tools</li>
             <li>Use AI-powered formatting</li>
           </ul>
-          <div className="p-4 bg-[#100e17] rounded-lg border border-[rgba(14,210,247,0.08)]">
-            <p className="text-sm text-[#0fb6d6]">
+          <div className="p-4 bg-[var(--bg-depth-2)] rounded-lg border border-[var(--border-defined)]">
+            <p className="text-sm text-[var(--text-accent)]">
               💡 Tip: Start with one experimental feature at a time to better
               understand its impact on your workflow.
             </p>
@@ -76,7 +76,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
 
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-[#0fb6d6] mb-4">
+            <h3 className="text-lg font-semibold text-[var(--text-accent)] mb-4">
               Core Experiments
             </h3>
             <div className="space-y-3">
@@ -102,12 +102,12 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                       Enable local LLM options in the chat interface for offline
                       AI processing.
                     </p>
-                    <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-2">
-                      <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                    <div className="mt-2 p-3 bg-[var(--bg-depth-3)] rounded text-sm space-y-2">
+                      <p className="text-[var(--text-warning)]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
                         ⚡ Requires a compatible local LLM setup
                       </p>
-                      <p className="text-[#45aaff]">Currently supports:</p>
-                      <ul className="list-disc pl-4 text-[#45aaff]">
+                      <p className="text-[var(--text-dim)]">Currently supports:</p>
+                      <ul className="list-disc pl-4 text-[var(--text-dim)]">
                         <li>Any Ollama local model (e.g. Llama 3.2, Deepseek r1)</li>
                       </ul>
                       <p className="text-xs text-[rgba(122,162,247,0.4)]">
@@ -130,11 +130,11 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                 description={
                   <div className="space-y-2">
                     <p>Enable web search capabilities to enhance AI responses with up-to-date information.</p>
-                    <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                      <p className="text-[#0fb6d6]">
+                    <div className="mt-2 p-3 bg-[var(--bg-depth-3)] rounded text-sm space-y-1">
+                      <p className="text-[var(--text-accent)]">
                         🌎 Powered by OpenAI's web search feature
                       </p>
-                      <p className="text-[#45aaff]">
+                      <p className="text-[var(--text-dim)]">
                         Automatically includes citations for information from the web
                       </p>
                     </div>
@@ -151,17 +151,17 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
               />
 
               {enableSearchGrounding && (
-                <div className="ml-4 border-l-2 border-[#0fb6d6] pl-4">
+                <div className="ml-4 border-l-2 border-[var(--text-accent)] pl-4">
                   <ToggleSetting
                     name="Deep Search Context"
                     description={
                       <div className="space-y-2">
                         <p>Use a larger search context size for more comprehensive web results.</p>
-                        <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                         <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                        <div className="mt-2 p-3 bg-[var(--bg-depth-3)] rounded text-sm space-y-1">
+                         <p className="text-[var(--text-warning)]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
                           ⚡ Requires ScreenPipe
                           </p>
-                          <p className="text-[#45aaff]">
+                          <p className="text-[var(--text-dim)]">
                             Provides more detailed information from web sources but consumes additional tokens
                           </p>
                         </div>
@@ -184,15 +184,15 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                 description={
                   <div className="space-y-2">
                     <p>Show title suggestions in the sidebar.</p>
-                    <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                      <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                    <div className="mt-2 p-3 bg-[var(--bg-depth-3)] rounded text-sm space-y-1">
+                      <p className="text-[var(--text-warning)]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
                         ⚡ Requires ScreenPipe
                       </p>
-                      <p className="text-[#45aaff]">
+                      <p className="text-[var(--text-dim)]">
                         This feature will be removed in a future update. For
                         file renaming:
                       </p>
-                      <ul className="list-disc pl-4 text-[#45aaff]">
+                      <ul className="list-disc pl-4 text-[var(--text-dim)]">
                         <li>
                           Use the rename instructions in Organization
                           preferences
@@ -216,12 +216,12 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
             </div>
           </div>
 
-          <div className="border-t border-[rgba(14,210,247,0.08)] pt-6">
-            <h3 className="text-lg font-semibold text-[#0fb6d6] mb-4">
+          <div className="border-t border-[var(--border-defined)] pt-6">
+            <h3 className="text-lg font-semibold text-[var(--text-accent)] mb-4">
               Integrations (Beta)
             </h3>
-            <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-              <p className="text-sm text-[#45aaff] opacity-70">
+            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+              <p className="text-sm text-[var(--text-dim)] opacity-70">
                 These integrations are in early beta. Your feedback helps us
                 improve and prioritize features.
               </p>
@@ -236,11 +236,11 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                   description={
                     <div className="space-y-2">
                       <p>Enable the Sync tab in the Assistant sidebar for mobile app file synchronization.</p>
-                      <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">
-                        <p className="text-[#ffb74d]">
+                      <div className="mt-2 p-3 bg-[var(--bg-depth-3)] rounded text-sm space-y-1">
+                        <p className="text-[var(--text-warning)]">
                           ⚠️ Advanced Feature
                         </p>
-                        <p className="text-[#45aaff]">
+                        <p className="text-[var(--text-dim)]">
                           This feature is designed for users of the Zenith-AI mobile app who want to sync files between mobile and desktop.
                         </p>
                         <p className="text-xs text-[rgba(122,162,247,0.4)]">
@@ -259,10 +259,10 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                   description={
                     <div className="space-y-2">
                       <p>Enable ScreenPipe integration to search your screen activity and audio transcriptions in the AI chat.</p>
-                      <div className="mt-2 p-3 bg-[#191621] rounded text-sm space-y-1">                          <p className="text-[#ffb74d]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+                      <div className="mt-2 p-3 bg-[var(--bg-depth-3)] rounded text-sm space-y-1">                          <p className="text-[var(--text-warning)]" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
                             ⚡ Requires ScreenPipe running on localhost:3030
                         </p>
-                        <p className="text-[#45aaff]">
+                        <p className="text-[var(--text-dim)]">
                           Search your screen recordings and meeting transcriptions directly from chat.
                         </p>
                         <p className="text-xs text-[rgba(122,162,247,0.4)]">
@@ -270,9 +270,9 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                         </p>
                       </div>
                       {enableScreenpipe && (
-                        <div className="mt-4 ml-4 p-4 bg-[#100e17] rounded-lg border-l-2 border-[#0fb6d6] space-y-4">
+                        <div className="mt-4 ml-4 p-4 bg-[var(--bg-depth-2)] rounded-lg border-l-2 border-[var(--text-accent)] space-y-4">
                           <div className="space-y-2">
-                            <label className="text-sm text-[#bebebe] font-medium">
+                            <label className="text-sm text-[var(--text-normal)] font-medium">
                               Time Range (hours)
                             </label>
                             <div className="flex items-center space-x-2">
@@ -287,18 +287,18 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                                   plugin.settings.screenpipeTimeRange = value;
                                   await plugin.saveSettings();
                                 }}
-                                className="w-20 px-2 py-1 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
+                                className="w-20 px-2 py-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
                               />
-                              <span className="text-sm text-[#45aaff]">hours</span>
+                              <span className="text-sm text-[var(--text-dim)]">hours</span>
                             </div>
-                            <p className="text-xs text-[#45aaff] opacity-70">
+                            <p className="text-xs text-[var(--text-dim)] opacity-70">
                               Adjust how far back ScreenPipe should look for data. Lower
                               values mean faster processing but may miss important
                               context.
                             </p>
                           </div>
                           <div className="space-y-2">
-                            <label className="text-sm text-[#bebebe] font-medium">
+                            <label className="text-sm text-[var(--text-normal)] font-medium">
                               Query Limit
                             </label>
                             <div className="flex items-center space-x-2">
@@ -313,11 +313,11 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                                   plugin.settings.queryScreenpipeLimit = value;
                                   await plugin.saveSettings();
                                 }}
-                                className="w-20 px-2 py-1 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
+                                className="w-20 px-2 py-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
                               />
-                              <span className="text-sm text-[#45aaff]">items</span>
+                              <span className="text-sm text-[var(--text-dim)]">items</span>
                             </div>
-                            <p className="text-xs text-[#45aaff] opacity-70">
+                            <p className="text-xs text-[var(--text-dim)] opacity-70">
                               Maximum number of items to fetch per query. Higher limits
                               provide more context but may impact performance.
                             </p>
@@ -353,12 +353,12 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
   value,
   onChange,
 }) => (
-  <div className="setting-item flex items-center justify-between p-4 bg-[#0d0b12] rounded-lg border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.2)] transition-all duration-150">
+  <div className="setting-item flex items-center justify-between p-4 bg-[var(--bg-depth-1)] rounded-lg border border-[var(--border-defined)] hover:border-[var(--border-accent)] transition-all duration-150">
     <div className="setting-item-info flex-1">
-      <div className="setting-item-name font-medium text-[#bebebe]">
+      <div className="setting-item-name font-medium text-[var(--text-normal)]">
         {name}
       </div>
-      <div className="setting-item-description text-xs text-[#45aaff] opacity-70">
+      <div className="setting-item-description text-xs text-[var(--text-dim)] opacity-70">
         {description}
       </div>
     </div>
@@ -372,13 +372,13 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
         />
         <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
           value
-            ? 'bg-[rgba(14,210,247,0.25)] border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
-            : 'bg-[#0d0b12] border-[rgba(14,210,247,0.2)]'
+            ? 'bg-[rgba(14,210,247,0.25)] border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
+            : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)]'
         }`}>
           <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
             value
-              ? 'right-0.5 bg-[#0fb6d6]'
-              : 'left-0.5 bg-[#45aaff] opacity-60'
+              ? 'right-0.5 bg-[var(--text-accent)]'
+              : 'left-0.5 bg-[var(--text-dim)] opacity-60'
           }`} />
         </div>
       </label>

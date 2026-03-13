@@ -33,7 +33,7 @@ export const AppendButton: React.FC<AppendButtonProps> = ({ content }) => {
       style={{ width: '22px', height: '22px' }}
       title="Append to current note"
     >
-      <FileText size={14} className="text-[#45aaff] group-hover:text-[#0fb6d6] transition-colors duration-150" />
+      <FileText size={14} className="text-[var(--text-dim)] group-hover:text-[var(--text-accent)] transition-colors duration-150" />
     </button>
   );
 };

@@ -132,10 +132,10 @@ export function MainDashboard() {
 
   // Otherwise, render the main "merged" UI
   return (
-    <div className="flex flex-col h-full relative p-2 bg-[#100e17] zenith-scrollbar overflow-y-auto">
+    <div className="flex flex-col h-full relative p-2 bg-[var(--bg-depth-0)] zenith-scrollbar overflow-y-auto">
       {/** 1) Basic progress feedback if a background task is running */}
       {isLongTaskRunning && (
-        <div className="p-2 bg-[#191621] mb-2 rounded border border-[rgba(14,210,247,0.08)] shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(14,210,247,0.05)]">
+        <div className="p-2 bg-[var(--bg-depth-3)] mb-2 rounded border border-[var(--border-defined)] shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(14,210,247,0.05)]">
           <ProgressBar value={longTaskProgress} />
         </div>
       )}

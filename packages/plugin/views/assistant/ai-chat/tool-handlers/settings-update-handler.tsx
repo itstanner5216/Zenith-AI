@@ -9,18 +9,18 @@ interface SettingUpdateProps {
 }
 
 const SettingUpdate = ({ setting, value, onValidate, isValidated }: SettingUpdateProps) => (
-  <div className="flex items-center justify-between p-2.5 rounded-md border border-[rgba(14,210,247,0.1)] mb-2 bg-[#191621] hover:border-[rgba(14,210,247,0.18)] transition-colors duration-150">
+  <div className="flex items-center justify-between p-2.5 rounded-md border border-[var(--border-defined)] mb-2 bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] transition-colors duration-150">
     <div className="flex-1">
-      <div className="font-medium text-[#bebebe] text-xs">{setting}</div>
-      <div className="text-xs text-[#45aaff] break-all mt-0.5 opacity-70">{value}</div>
+      <div className="font-medium text-[var(--text-normal)] text-xs">{setting}</div>
+      <div className="text-xs text-[var(--text-dim)] break-all mt-0.5 opacity-70">{value}</div>
     </div>
     <button
       onClick={onValidate}
       disabled={isValidated}
       className={`ml-3 px-3 py-1 text-xs rounded-md font-medium transition-all duration-150 ${
         isValidated 
-          ? 'bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.3)] cursor-default' 
-          : 'bg-[#0fb6d6] text-[#0d0b12] font-semibold border border-[#0fb6d6] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] shadow-[0_0_6px_rgba(14,210,247,0.2)]'
+          ? 'bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] cursor-default' 
+          : 'bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold border border-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] shadow-[0_0_6px_rgba(14,210,247,0.2)]'
       }`}
     >
       {isValidated ? '✓ Applied' : 'Apply'}
@@ -56,7 +56,7 @@ export function SettingsUpdateHandler({
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-[#bebebe] mb-2">
+      <div className="text-sm text-[var(--text-normal)] mb-2">
         Review and apply the suggested settings:
       </div>
       {Object.entries(settings).map(([key, value]) => (

@@ -164,7 +164,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
             <a
               key={i}
               href={linkpath}
-              className="internal-link text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)] underline cursor-pointer"
+              className="internal-link text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)] underline cursor-pointer"
               data-href={linkpath}
               rel="noopener"
               aria-label={`Open note ${displayText}`}
@@ -183,7 +183,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 <a
                   {...props}
                   href={href || ""}
-                  className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.8)] underline cursor-pointer transition-all duration-150 hover:drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
+                  className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.8)] underline cursor-pointer transition-all duration-150 hover:drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
                 >
                   {children}
                 </a>
@@ -207,7 +207,7 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
               code: ({ children, ...props }) => (
                 <code
                   {...props}
-                  className="inline-code bg-[#0d0b12] border border-[rgba(14,210,247,0.15)] px-1.5 py-0.5 rounded text-[#0fb6d6] text-[0.8em] font-mono"
+                  className="inline-code bg-[var(--bg-depth-1)] border border-[var(--border-accent)] px-1.5 py-0.5 rounded text-[var(--text-accent)] text-[0.8em] font-mono"
                 >
                   {children}
                 </code>
@@ -223,27 +223,27 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
               strong: ({ children, ...props }) => (
                 <strong
                   {...props}
-                  className="font-semibold text-[#0fb6d6]"
+                  className="font-semibold text-[var(--text-accent)]"
                 >
                   {children}
                 </strong>
               ),
               em: ({ children, ...props }) => (
-                <em {...props} className="italic text-[#45aaff] opacity-85">
+                <em {...props} className="italic text-[var(--text-dim)] opacity-85">
                   {children}
                 </em>
               ),
               h1: ({ children, ...props }) => (
-                <h1 {...props} className="text-lg font-bold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent mt-3 mb-1 border-b border-[rgba(14,210,247,0.15)] pb-1">{children}</h1>
+                <h1 {...props} className="text-lg font-bold bg-gradient-to-r from-[var(--gradient-blue)] to-[var(--gradient-lavender)] bg-clip-text text-transparent mt-3 mb-1 border-b border-[var(--border-accent)] pb-1">{children}</h1>
               ),
               h2: ({ children, ...props }) => (
-                <h2 {...props} className="text-base font-semibold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent mt-3 mb-1">{children}</h2>
+                <h2 {...props} className="text-base font-semibold bg-gradient-to-r from-[var(--gradient-blue)] to-[var(--gradient-lavender)] bg-clip-text text-transparent mt-3 mb-1">{children}</h2>
               ),
               h3: ({ children, ...props }) => (
-                <h3 {...props} className="text-sm font-semibold text-[#0fb6d6] mt-2 mb-1">{children}</h3>
+                <h3 {...props} className="text-sm font-semibold text-[var(--text-accent)] mt-2 mb-1">{children}</h3>
               ),
               blockquote: ({ children, ...props }) => (
-                <blockquote {...props} className="border-l-2 border-[rgba(14,210,247,0.4)] pl-3 my-2 text-[#45aaff] opacity-85 bg-gradient-to-r from-[rgba(32,28,41,0.5)] to-transparent rounded-r-md py-1">{children}</blockquote>
+                <blockquote {...props} className="border-l-2 border-[var(--border-active)] pl-3 my-2 text-[var(--text-dim)] opacity-85 bg-gradient-to-r from-[var(--bg-depth-3)] to-transparent rounded-r-md py-1">{children}</blockquote>
               ),
               table: ({ children, ...props }) => (
                 <div className="overflow-x-auto my-2">
@@ -251,13 +251,13 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
                 </div>
               ),
               thead: ({ children, ...props }) => (
-                <thead {...props} className="bg-[#0d0b12] border-b border-[rgba(14,210,247,0.2)]">{children}</thead>
+                <thead {...props} className="bg-[var(--bg-depth-1)] border-b border-[var(--border-accent)]">{children}</thead>
               ),
               th: ({ children, ...props }) => (
-                <th {...props} className="px-2 py-1.5 text-left text-[#0fb6d6] font-semibold text-[10px] uppercase tracking-wider">{children}</th>
+                <th {...props} className="px-2 py-1.5 text-left text-[var(--text-accent)] font-semibold text-[10px] uppercase tracking-wider">{children}</th>
               ),
               td: ({ children, ...props }) => (
-                <td {...props} className="px-2 py-1.5 text-[#bebebe] border-b border-[rgba(14,210,247,0.06)]">{children}</td>
+                <td {...props} className="px-2 py-1.5 text-[var(--text-normal)] border-b border-[var(--border-subtle)]">{children}</td>
               ),
               tr: ({ children, ...props }) => (
                 <tr {...props} className="hover:bg-[rgba(14,210,247,0.03)] transition-colors duration-100">{children}</tr>

@@ -395,7 +395,7 @@ export const EnhanceNoteHandler: React.FC<EnhanceNoteHandlerProps> = ({
     <div className={tw("flex flex-col gap-2")}>
       {error && (
         <div
-          className={tw("flex items-center gap-2 text-xs text-[#f4569d]")}
+          className={tw("flex items-center gap-2 text-xs text-[var(--text-sub-accent)]")}
         >
           <AlertCircle className="w-3 h-3" />
           <span className={tw("flex-1")}>{error}</span>

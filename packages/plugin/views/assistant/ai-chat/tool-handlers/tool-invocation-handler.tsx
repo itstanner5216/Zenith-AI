@@ -31,8 +31,8 @@ import { MergeFilesHandler } from "./merge-files-handler";
 import { CreateTemplateHandler } from "./create-template-handler";
 import { BulkFindReplaceHandler } from "./bulk-find-replace-handler";
 import { ExportToFormatHandler } from "./export-to-format-handler";
-import { ScreenpipeHandler } from "./screenpipe-handler";
 import { BrokenLinksHandler } from "./broken-links-handler";
+import { UpdateVaultStructureHandler } from "./update-vault-structure-handler";
 
 const processedToolCallIds = new Set<string>();
 
@@ -114,8 +114,8 @@ function ToolInvocationHandler({
       createTemplate: "Creating Template",
       bulkFindReplace: "Find & Replace",
       exportToFormat: "Exporting Files",
-      searchScreenpipe: "Search ScreenPipe",
       findBrokenLinks: "Find Broken Links",
+      update_vault_structure: "Update Cosmic Vault Structure",
     };
     return toolTitles[toolName] ;
   };
@@ -324,18 +324,18 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      searchScreenpipe: () => (
-        <ScreenpipeHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
+
       findBrokenLinks: () => (
         <BrokenLinksHandler
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}
+        />
+      ),
+      update_vault_structure: () => (
+        <UpdateVaultStructureHandler
+          toolInvocation={toolInvocation}
+          handleAddResult={handleAddResult}
         />
       ),
     };
@@ -349,7 +349,7 @@ function ToolInvocationHandler({
         );
       }
       return (
-        <div className="text-xs text-[#f4569d] p-2">
+        <div className="text-xs text-[var(--text-sub-accent)] p-2">
           Unknown tool: {toolInvocation.toolName}
         </div>
       );
@@ -361,21 +361,21 @@ function ToolInvocationHandler({
   
   return (
     <motion.div
-      className="my-1.5 rounded-md overflow-hidden border border-[rgba(14,210,247,0.1)] shadow-[0_2px_10px_rgba(0,0,0,0.45)] bg-[#191621] transition-all duration-200"
+      className="my-1.5 rounded-md overflow-hidden border border-[var(--border-defined)] shadow-[0_2px_10px_rgba(0,0,0,0.45)] bg-[var(--bg-depth-3)] transition-all duration-200"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
     >
       {/* Tool header bar */}
-      <div className="flex items-center gap-2 px-3 py-2 bg-[#0d0b12] border-b border-[rgba(14,210,247,0.1)]">
+      <div className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-depth-1)] border-b border-[var(--border-defined)]">
         {/* Pulsing indicator dot */}
-        <span className="w-1.5 h-1.5 rounded-full bg-[#0fb6d6] shadow-[0_0_4px_rgba(14,210,247,0.6)] animate-pulse flex-shrink-0" />
-        <h4 className="m-0 text-[#0fb6d6] text-xs font-semibold uppercase tracking-wider">
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-accent)] shadow-[0_0_4px_rgba(14,210,247,0.6)] animate-pulse flex-shrink-0" />
+        <h4 className="m-0 text-[var(--text-accent)] text-xs font-semibold uppercase tracking-wider">
           {getToolTitle(toolInvocation.toolName) || toolInvocation.toolName}
         </h4>
       </div>
       {/* Tool content */}
-      <div className="p-3 text-sm text-[#bebebe]">{content}</div>
+      <div className="p-3 text-sm text-[var(--text-normal)]">{content}</div>
     </motion.div>
   );
 }

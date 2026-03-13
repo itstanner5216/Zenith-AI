@@ -66,8 +66,8 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
     <motion.div
       className={`flex items-start gap-3 py-2.5 ${
         isUser
-          ? "bg-[#191621] hover:bg-[#1e1a2e] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[#f4569d] rounded-md px-3 my-1 shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(244,86,157,0.06)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.6),0_0_10px_rgba(244,86,157,0.1)] transition-all duration-200"
-          : "bg-[#100e17] hover:bg-[#191621] border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.14)] border-l-2 border-l-[#0fb6d6] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.4),0_0_6px_rgba(14,210,247,0.06)] transition-all duration-200"
+          ? "bg-[var(--bg-depth-3)] hover:bg-[var(--bg-depth-4)] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[var(--text-sub-accent)] rounded-md px-3 my-1 shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(244,86,157,0.06)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.6),0_0_10px_rgba(244,86,157,0.1)] transition-all duration-200"
+          : "bg-[var(--bg-depth-2)] hover:bg-[var(--bg-depth-3)] border border-[var(--border-defined)] hover:border-[var(--border-defined)] border-l-2 border-l-[var(--text-accent)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.4),0_0_6px_rgba(14,210,247,0.06)] transition-all duration-200"
       }`}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
@@ -76,16 +76,16 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
       {/* Icon on the left - top-aligned with small padding to match text baseline */}
       <div className="flex-shrink-0 w-8 h-8 flex items-start justify-center pt-[2px]">
         {isUser ? (
-          <User size={16} className="text-[#f4569d] drop-shadow-[0_0_4px_rgba(244,86,157,0.4)]" />
+          <User size={16} className="text-[var(--text-sub-accent)] drop-shadow-[0_0_4px_rgba(244,86,157,0.4)]" />
         ) : (
-          <Bot size={16} className="text-[#0fb6d6] drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]" />
+          <Bot size={16} className="text-[var(--text-accent)] drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]" />
         )}
       </div>
 
       {/* Message content - top-aligned, consistent line height */}
       <div className="flex-1 min-w-0 flex flex-col leading-snug">
         <div
-          className="text-sm leading-snug m-0 text-[#bebebe]"
+          className="text-sm leading-snug m-0 text-[var(--text-normal)]"
           style={{ marginTop: 0, paddingTop: 0, marginLeft: 0, paddingLeft: 0 }}
         >
           {isUser ? (
@@ -97,7 +97,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
 
         {/* Timestamp and buttons row - perfectly aligned */}
         <div className="flex items-baseline justify-between mt-1 gap-2">
-          <div className="text-xs text-[#45aaff] flex-shrink-0 opacity-80">
+          <div className="text-xs text-[var(--text-dim)] flex-shrink-0 opacity-80">
             {timestamp}
           </div>
           {/* Action buttons on the right - at same baseline as timestamp */}
@@ -130,9 +130,9 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
                       className="w-full h-32 object-cover rounded"
                     />
                   ) : (
-                    <div className="w-full h-32 flex items-center justify-center bg-[#191621] rounded">
+                    <div className="w-full h-32 flex items-center justify-center bg-[var(--bg-depth-3)] rounded">
                       <svg
-                        className="h-8 w-8 text-[#45aaff]"
+                        className="h-8 w-8 text-[var(--text-dim)]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -147,11 +147,11 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
                     </div>
                   )}
                   {attachment.url && (
-                    <div className="absolute inset-0 bg-[#0d0b12] bg-opacity-0 group-hover:bg-opacity-75 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 rounded">
+                    <div className="absolute inset-0 bg-[var(--bg-depth-1)] bg-opacity-0 group-hover:bg-opacity-75 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 rounded">
                       <a
                         href={attachment.url}
                         download={attachment.name}
-                        className="text-[#0fb6d6] text-sm bg-[#100e17] bg-opacity-90 px-3 py-1 rounded-full border border-[rgba(14,210,247,0.3)]"
+                        className="text-[var(--text-accent)] text-sm bg-[var(--bg-depth-2)] bg-opacity-90 px-3 py-1 rounded-full border border-[var(--border-active)]"
                       >
                         Download
                       </a>

@@ -34,8 +34,8 @@ export function ChatHistorySidebar({
 
   return (
     <StyledContainer>
-      <div className={tw("w-64 border-r border-[rgba(14,210,247,0.05)] p-2 flex flex-col h-full bg-[#0d0b12]")} role="navigation" aria-label="Chat history">
-        <div className={tw("text-xs font-semibold bg-gradient-to-r from-[#87c2fd] to-[#dcb9fc] bg-clip-text text-transparent uppercase mb-2 tracking-wider")}>
+      <div className={tw("w-64 border-r border-[var(--border-subtle)] p-2 flex flex-col h-full bg-[var(--bg-depth-1)]")} role="navigation" aria-label="Chat history">
+        <div className={tw("text-xs font-semibold bg-gradient-to-r from-[var(--gradient-blue)] to-[var(--gradient-lavender)] bg-clip-text text-transparent uppercase mb-2 tracking-wider")}>
           Chat History
         </div>
         <div className={tw("flex-1 overflow-y-auto space-y-1")} role="list">
@@ -45,16 +45,16 @@ export function ChatHistorySidebar({
                 <div
                   key={i}
                   className={tw(
-                    "h-10 rounded-lg zenith-shimmer border border-[rgba(14,210,247,0.05)]"
+                    "h-10 rounded-lg zenith-shimmer border border-[var(--border-subtle)]"
                   )}
                 />
               ))}
             </div>
           ) : sessions.length === 0 ? (
             <div className={tw("flex flex-col items-center justify-center py-8 text-center")}>
-              <MessageSquare className="h-8 w-8 text-[#45aaff] mb-3 opacity-30" />
-              <p className="text-xs text-[#bebebe] opacity-50">No chat history yet</p>
-              <p className="text-xs text-[#bebebe] mt-1 opacity-30">Start a conversation to see it here</p>
+              <MessageSquare className="h-8 w-8 text-[var(--text-dim)] mb-3 opacity-30" />
+              <p className="text-xs text-[var(--text-normal)] opacity-50">No chat history yet</p>
+              <p className="text-xs text-[var(--text-normal)] mt-1 opacity-30">Start a conversation to see it here</p>
             </div>
           ) : (
             sessions.map((session) => {
@@ -67,8 +67,8 @@ export function ChatHistorySidebar({
                   className={tw(
                     "group p-2 rounded-md cursor-pointer text-sm transition-all duration-150",
                     activeChatId === session.id
-                      ? "bg-[rgba(14,210,247,0.1)] border-l-2 border-[#0fb6d6] shadow-[0_0_10px_rgba(14,210,247,0.12),0_2px_8px_rgba(0,0,0,0.4)]"
-                      : "border-l-2 border-transparent hover:bg-[#191621] hover:border-[rgba(14,210,247,0.2)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                      ? "bg-[rgba(14,210,247,0.1)] border-l-2 border-[var(--text-accent)] shadow-[0_0_10px_rgba(14,210,247,0.12),0_2px_8px_rgba(0,0,0,0.4)]"
+                      : "border-l-2 border-transparent hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
                   )}
                   onClick={() => onSelectChat(session.id)}
                   role="listitem"
@@ -79,12 +79,12 @@ export function ChatHistorySidebar({
                       <div className={tw(
                         "truncate",
                         activeChatId === session.id
-                          ? "font-semibold text-[#0fb6d6] drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]"
-                          : "font-medium text-[#bebebe]"
+                          ? "font-semibold text-[var(--text-accent)] drop-shadow-[0_0_4px_rgba(14,210,247,0.3)]"
+                          : "font-medium text-[var(--text-normal)]"
                       )}>
                         {session.title}
                       </div>
-                      <div className={tw("text-xs text-[#45aaff] mt-0.5 flex items-center gap-2 opacity-60")}>
+                      <div className={tw("text-xs text-[var(--text-dim)] mt-0.5 flex items-center gap-2 opacity-60")}>
                         <span>{relativeTime}</span>
                         {messageCount > 0 && (
                           <>
@@ -101,7 +101,7 @@ export function ChatHistorySidebar({
                       }}
                       className={tw(
                         "opacity-0 group-hover:opacity-100 transition-opacity",
-                        "hover:text-[#f4569d] flex-shrink-0",
+                        "hover:text-[var(--text-sub-accent)] flex-shrink-0",
                         "p-1 rounded hover:bg-[rgba(244,86,157,0.1)]"
                       )}
                       aria-label="Delete chat"

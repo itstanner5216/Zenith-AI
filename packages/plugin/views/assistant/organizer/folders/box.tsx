@@ -128,10 +128,10 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
     >
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-[#f4569d] font-medium mb-1">
+          <div className="text-[var(--text-sub-accent)] font-medium mb-1">
             Error: Failed to fetch
           </div>
-          <p className="text-sm text-[#45aaff]">
+          <p className="text-sm text-[var(--text-dim)]">
             {error?.message || "An unexpected error occurred"}
           </p>
         </div>
@@ -142,13 +142,13 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
           <button
             onClick={handleRetry}
             disabled={loading}
-            className="px-3 py-1.5 bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.4)] rounded hover:bg-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.8)] disabled:opacity-50 transition-colors duration-200"
+            className="px-3 py-1.5 bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] rounded hover:bg-[rgba(14,210,247,0.25)] hover:border-[var(--border-active)] disabled:opacity-50 transition-colors duration-200"
           >
             {loading ? "Retrying..." : "Retry"}
           </button>
           <button
             onClick={() => setError(null)}
-            className="px-3 py-1.5 border border-[rgba(14,210,247,0.1)] text-[#bebebe] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
+            className="px-3 py-1.5 border border-[var(--border-defined)] text-[var(--text-normal)] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
           >
             Dismiss
           </button>
@@ -204,7 +204,7 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
   };
 
   return (
-    <div className="bg-[#191621] text-[#bebebe] p-4 border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[rgba(14,210,247,0.15)] transition-all duration-150">
+    <div className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] p-4 border border-[var(--border-defined)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:border-[var(--border-accent)] transition-all duration-150">
       {renderContent()}
     </div>
   );

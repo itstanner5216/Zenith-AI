@@ -101,8 +101,8 @@ export function CreateTemplateHandler({
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#0fb6d6] text-xs">
+      <div className="text-sm border-b border-[var(--border-defined)] pb-2">
+        <div className="text-[var(--text-accent)] text-xs">
           {isDone && !isConfirmed
             ? "✗ Template creation cancelled"
             : "✓ Template created"}
@@ -112,34 +112,34 @@ export function CreateTemplateHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="flex items-start gap-2">
-        <span className="text-[#0fb6d6] text-lg">📋</span>
+        <span className="text-[var(--text-accent)] text-lg">📋</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[#bebebe] mb-1">
+          <div className="text-sm font-semibold text-[var(--text-normal)] mb-1">
             Create Template
           </div>
-          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
+          <div className="text-xs text-[var(--text-dim)] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#45aaff] uppercase">
+        <div className="font-semibold text-[var(--text-dim)] uppercase">
           Template Details
         </div>
-        <div className="text-[#bebebe] pl-2">
+        <div className="text-[var(--text-normal)] pl-2">
           <strong>Name:</strong> {templateName}
         </div>
-        <div className="text-[#bebebe] pl-2">
+        <div className="text-[var(--text-normal)] pl-2">
           <strong>Description:</strong> {description}
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#45aaff] uppercase">
+        <div className="font-semibold text-[var(--text-dim)] uppercase">
           Template Preview
         </div>
-        <div className="p-2 bg-[#0d0b12] text-[#45aaff] font-mono text-xs max-h-32 overflow-y-auto whitespace-pre-wrap rounded border border-[rgba(14,210,247,0.06)]">
+        <div className="p-2 bg-[var(--bg-depth-1)] text-[var(--text-dim)] font-mono text-xs max-h-32 overflow-y-auto whitespace-pre-wrap rounded border border-[var(--border-subtle)]">
           {templateContent.slice(0, 300)}
           {templateContent.length > 300 && "..."}
         </div>
@@ -148,7 +148,7 @@ export function CreateTemplateHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[var(--border-accent)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
         >
           Cancel
         </button>
@@ -157,7 +157,7 @@ export function CreateTemplateHandler({
             setIsConfirmed(true);
             handleConfirmCreate();
           }}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
         >
           Create Template
         </button>

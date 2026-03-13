@@ -254,7 +254,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
 
   if (isLoading) {
     return (
-      <div className={tw("p-4 text-center text-[#45aaff]")}>
+      <div className={tw("p-4 text-center text-[var(--text-dim)]")}>
         Loading from ScreenPipe...
       </div>
     );
@@ -264,7 +264,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
     return (
       <div className={tw("p-4")}>
         <div className={tw("flex items-center justify-between mb-2")}>
-          <h3 className={tw("text-lg font-medium text-[#bebebe]")}>
+          <h3 className={tw("text-lg font-medium text-[var(--text-normal)]")}>
             From ScreenPipe
           </h3>
           <button
@@ -272,9 +272,9 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
             disabled={isRefreshing}
             className={tw(
               "flex items-center gap-1.5 px-2 py-1 text-xs",
-              "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)]",
-              "border border-[rgba(14,210,247,0.08)] rounded",
-              "text-[#bebebe]",
+              "bg-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.04)]",
+              "border border-[var(--border-defined)] rounded",
+              "text-[var(--text-normal)]",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "transition-colors"
             )}
@@ -290,7 +290,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
             )}
           </button>
         </div>
-        <p className={tw("text-sm text-[#45aaff]")}>
+        <p className={tw("text-sm text-[var(--text-dim)]")}>
           ScreenPipe unavailable. Start ScreenPipe (e.g. localhost:3030), then
           click Retry to load meetings—no need to reload Obsidian.
         </p>
@@ -477,7 +477,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
   return (
     <div className={tw("p-4 flex-1 overflow-y-auto")}>
       <div className={tw("flex items-center justify-between mb-4")}>
-        <h3 className={tw("text-lg font-medium text-[#bebebe]")}>
+        <h3 className={tw("text-lg font-medium text-[var(--text-normal)]")}>
           From ScreenPipe
         </h3>
         <button
@@ -485,9 +485,9 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
           disabled={isRefreshing}
           className={tw(
             "flex items-center gap-1.5 px-2 py-1 text-xs",
-            "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.04)]",
-            "border border-[rgba(14,210,247,0.08)] rounded",
-            "text-[#bebebe]",
+            "bg-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.04)]",
+            "border border-[var(--border-defined)] rounded",
+            "text-[var(--text-normal)]",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             "transition-colors"
           )}
@@ -505,7 +505,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
       </div>
 
       {sessions.length === 0 ? (
-        <p className={tw("text-sm text-[#45aaff]")}>
+        <p className={tw("text-sm text-[var(--text-dim)]")}>
           No meetings in the last{" "}
           {plugin.settings.screenpipeTimeRange ?? 4} hours.
         </p>
@@ -547,7 +547,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
               <div
                 key={`${session.key}-${session.start?.getTime() ?? index}`}
                 className={tw(
-                  "bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.15)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
+                  "bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
                 )}
               >
                 <div
@@ -559,14 +559,14 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     >
                       <span
                         className={tw(
-                          "text-sm font-medium text-[#bebebe]"
+                          "text-sm font-medium text-[var(--text-normal)]"
                         )}
                       >
                         {session.title}
                       </span>
                     </div>
                     <div
-                      className={tw("text-xs text-[#45aaff] space-x-3")}
+                      className={tw("text-xs text-[var(--text-dim)] space-x-3")}
                     >
                       <span title="Session time range (from ScreenPipe)">
                         {timeRange}
@@ -574,7 +574,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     </div>
                     <p
                       className={tw(
-                        "text-xs text-[#45aaff] mt-0.5"
+                        "text-xs text-[var(--text-dim)] mt-0.5"
                       )}
                       title="Evidence: window and URL host"
                     >
@@ -583,7 +583,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     </p>
                     <p
                       className={tw(
-                        "text-xs text-[#45aaff] mt-0.5 capitalize"
+                        "text-xs text-[var(--text-dim)] mt-0.5 capitalize"
                       )}
                       title="How this meeting was detected"
                     >
@@ -591,7 +591,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                     </p>
                     <p
                       className={tw(
-                        "text-xs text-[#45aaff] mt-1 truncate"
+                        "text-xs text-[var(--text-dim)] mt-1 truncate"
                       )}
                       title={
                         hasTranscript ? session.transcript : undefined

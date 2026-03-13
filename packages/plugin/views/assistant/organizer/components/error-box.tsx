@@ -16,16 +16,16 @@ export const ErrorBox: React.FC<ErrorBoxProps> = ({
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-4 bg-[#191621] border border-[rgba(244,86,157,0.2)] rounded-md shadow-[0_0_12px_rgba(244,86,157,0.08)]"
+      className="p-4 bg-[var(--bg-depth-3)] border border-[rgba(244,86,157,0.2)] rounded-md shadow-[0_0_12px_rgba(244,86,157,0.08)]"
     >
       <div className="space-y-3">
         <div className="flex items-start justify-between">
           <div>
-            <div className="text-[#f4569d] font-medium mb-1">
+            <div className="text-[var(--text-sub-accent)] font-medium mb-1">
               {message}
             </div>
             {description && (
-              <p className="text-sm text-[#45aaff]">
+              <p className="text-sm text-[var(--text-dim)]">
                 {description}
               </p>
             )}

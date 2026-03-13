@@ -131,11 +131,11 @@ export const ContextItems: React.FC = () => {
           <div className="flex items-center justify-end mb-1 gap-2">
             {showClearConfirm ? (
               <div className="flex items-center gap-1.5 text-xs">
-                <span className="text-[#45aaff]">Clear context?</span>
+                <span className="text-[var(--text-dim)]">Clear context?</span>
                 <button
                   onClick={handleClearAll}
                   className={tw(
-                    "text-[#f4569d] hover:text-[#f4569d]",
+                    "text-[var(--text-sub-accent)] hover:text-[var(--text-sub-accent)]",
                     "flex items-center gap-1 px-2 py-1 rounded",
                     "hover:bg-[rgba(244,86,157,0.1)] transition-colors",
                     "font-medium"
@@ -147,7 +147,7 @@ export const ContextItems: React.FC = () => {
                 <button
                   onClick={() => setShowClearConfirm(false)}
                   className={tw(
-                    "text-[#45aaff] hover:text-[#bebebe]",
+                    "text-[var(--text-dim)] hover:text-[var(--text-normal)]",
                     "px-2 py-1 rounded",
                     "hover:bg-[rgba(14,210,247,0.08)] transition-colors"
                   )}
@@ -159,7 +159,7 @@ export const ContextItems: React.FC = () => {
               <button
                 onClick={handleClearAll}
                 className={tw(
-                  "text-xs text-[#45aaff] hover:text-[#0fb6d6]",
+                  "text-xs text-[var(--text-dim)] hover:text-[var(--text-accent)]",
                   "flex items-center gap-1 px-2 py-1 rounded",
                   "hover:bg-[rgba(14,210,247,0.08)] transition-colors"
                 )}

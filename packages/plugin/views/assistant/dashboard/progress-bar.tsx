@@ -15,19 +15,19 @@ export function ProgressBar({ value }: ProgressBarProps) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-[#45aaff] uppercase tracking-wider">Progress</span>
+        <span className="text-[10px] text-[var(--text-dim)] uppercase tracking-wider">Progress</span>
         <span className={`text-[10px] font-semibold ${
-          isNearFull ? 'text-[#f4569d]' : 'text-[#0fb6d6]'
+          isNearFull ? 'text-[var(--text-sub-accent)]' : 'text-[var(--text-accent)]'
         }`}>{clampedValue}%</span>
       </div>
-      <div className="h-1.5 bg-[#0d0b12] rounded-full overflow-hidden border border-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
+      <div className="h-1.5 bg-[var(--bg-depth-1)] rounded-full overflow-hidden border border-[var(--border-defined)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{
             width: `${clampedValue}%`,
             background: isNearFull
-              ? 'linear-gradient(90deg, #f4569d, rgba(244,86,157,0.7))'
-              : 'linear-gradient(90deg, #0fb6d6, #3dd7fb)',
+              ? 'linear-gradient(90deg, var(--text-sub-accent), rgba(244,86,157,0.7))'
+              : 'linear-gradient(90deg, var(--text-accent), var(--interactive-accent-rgb))',
             boxShadow: isNearFull
               ? '0 0 8px rgba(244,86,157,0.5)'
               : '0 0 8px rgba(14,210,247,0.5)',
