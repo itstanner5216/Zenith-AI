@@ -132,7 +132,7 @@ export function MetadataHandler({
   const isComplete = "result" in toolInvocation;
 
   return (
-    <div className="text-sm text-[#45aaff]">
+    <div className="text-sm text-[var(--text-dim)]">
       {!isComplete
         ? `Extracting metadata from ${args.filePaths.length} file(s)...`
         : `Metadata extracted for ${args.filePaths.length} file(s)`}

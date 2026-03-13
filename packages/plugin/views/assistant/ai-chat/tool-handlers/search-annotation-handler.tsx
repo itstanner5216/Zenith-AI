@@ -38,8 +38,8 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
   if (!groundingMetadata?.groundingSupports?.length) return null;
 
   return (
-    <div className="flex flex-col gap-2 p-3 bg-[#191621] m-2 rounded-md border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-      <div className="text-[#45aaff] text-sm">Search Results:</div>
+    <div className="flex flex-col gap-2 p-3 bg-[var(--bg-depth-3)] m-2 rounded-md border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="text-[var(--text-dim)] text-sm">Search Results:</div>
       {groundingMetadata.groundingSupports.map((result, index) => {
         const sources = result.groundingChunkIndices.map(idx => {
           const chunk = groundingMetadata.groundingChunks[idx]?.web;
@@ -51,10 +51,10 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
         return (
           <div 
             key={index} 
-            className="flex flex-col gap-1 p-2 rounded bg-[#0d0b12] border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)] transition-colors duration-150"
+            className="flex flex-col gap-1 p-2 rounded bg-[var(--bg-depth-1)] border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)] transition-colors duration-150"
           >
             <div className="flex justify-between items-center">
-              <span className="text-[#0fb6d6] text-sm">
+              <span className="text-[var(--text-accent)] text-sm">
                 {sources.map((source, i) => (
                   <React.Fragment key={i}>
                     {i > 0 && ', '}
@@ -69,11 +69,11 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
                   </React.Fragment>
                 ))}
               </span>
-              <span className="text-[#45aaff] text-xs">
+              <span className="text-[var(--text-dim)] text-xs">
                 Score: {(maxScore * 100).toFixed(1)}%
               </span>
             </div>
-            <div className="text-[#bebebe] text-sm whitespace-pre-wrap">
+            <div className="text-[var(--text-normal)] text-sm whitespace-pre-wrap">
               {result.segment.text}
             </div>
           </div>

@@ -152,13 +152,13 @@ function TabButton({
       className={tw(
         "px-3 py-2 text-xs transition-all duration-150 relative flex items-center gap-1.5 cursor-pointer select-none",
         isActive
-          ? "text-[#0fb6d6] font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
-          : "text-[#45aaff] opacity-70 hover:opacity-100 hover:text-[#0fb6d6]"
+          ? "text-[var(--text-accent)] font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
+          : "text-[var(--text-dim)] opacity-70 hover:opacity-100 hover:text-[var(--text-accent)]"
       )}
       style={
         isActive
           ? {
-              borderBottom: "2px solid #0fb6d6",
+              borderBottom: "2px solid var(--text-accent)",
               marginBottom: "-1px",
               textShadow: "0 0 8px rgba(14,210,247,0.3)",
             }
@@ -172,8 +172,8 @@ function TabButton({
           className={tw(
             "ml-0.5 px-1.5 py-0.5 text-[9px] rounded-full font-semibold min-w-[1.1rem] text-center",
             badge > 0
-              ? "bg-[rgba(244,86,157,0.2)] text-[#f4569d] shadow-[0_0_4px_rgba(244,86,157,0.3)]"
-              : "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6]"
+              ? "bg-[rgba(244,86,157,0.2)] text-[var(--text-sub-accent)] shadow-[0_0_4px_rgba(244,86,157,0.3)]"
+              : "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)]"
           )}
         >
           {badge}
@@ -288,11 +288,11 @@ function AssistantContent({
   const showSyncTab = plugin.settings.showSyncTab;
 
   return (
-    <div className={tw("flex flex-col h-full w-full bg-[#0d0b12]")}>
+    <div className={tw("flex flex-col h-full w-full bg-[var(--bg-depth-1)]")}>
       {/* Native tab navigation */}
       <div
         className={tw(
-          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12] items-center justify-between"
+          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.08)] bg-[var(--bg-depth-1)] items-center justify-between"
         )}
       >
         <div className={tw("flex gap-0")}>
@@ -351,7 +351,7 @@ function AssistantContent({
       </div>
 
       {/* Content area - Layer 2 */}
-      <div className={tw("flex-1 min-h-0 w-full overflow-hidden bg-[#100e17]")}>
+      <div className={tw("flex-1 min-h-0 w-full overflow-hidden bg-[var(--bg-depth-2)]")}>
         <TabContent
           activeTab={activeTab}
           plugin={plugin}

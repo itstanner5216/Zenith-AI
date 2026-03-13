@@ -164,14 +164,14 @@ export function CreateFilesHandler({
 
   return (
     <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-      <div className="text-[#45aaff] mb-1">{message}</div>
+      <div className="text-[var(--text-dim)] mb-1">{message}</div>
       {!isComplete ? (
-        <div className="text-[#45aaff] text-xs">
+        <div className="text-[var(--text-dim)] text-xs">
           Creating {files.length} file(s)...
         </div>
       ) : (
         <div className="space-y-1">
-          <div className="text-[#0fb6d6] text-xs">
+          <div className="text-[var(--text-accent)] text-xs">
             ✓ Files created successfully
           </div>
           {createdFiles.length > 0 && (

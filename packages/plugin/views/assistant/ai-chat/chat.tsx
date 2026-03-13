@@ -1918,7 +1918,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   return (
     <StyledContainer className="flex flex-col h-full w-full max-h-full overflow-hidden">
       {/* Chat Header - minimal */}
-      <div className="flex-none border-b border-[rgba(14,210,247,0.08)] px-3 py-1.5 bg-[#0d0b12]">
+      <div className="flex-none border-b border-[rgba(14,210,247,0.08)] px-3 py-1.5 bg-[var(--bg-depth-1)]">
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             {/* Export chat as markdown - menu rendered in portal so it isn't clipped by overflow-hidden */}
@@ -1935,8 +1935,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 className={tw(
                   "clickable-icon flex items-center justify-center w-8 h-8 rounded-md transition-colors",
                   messages.length === 0
-                    ? "text-[#45aaff] cursor-not-allowed opacity-50"
-                    : "text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)]"
+                    ? "text-[var(--text-dim)] cursor-not-allowed opacity-50"
+                    : "text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)]"
                 )}
                 aria-label="Export chat as markdown"
               >
@@ -1950,7 +1950,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     role="menu"
                     className={tw(
                       "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.15)]",
-                      "bg-[#191621] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)]"
+                      "bg-[var(--bg-depth-3)] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)]"
                     )}
                     style={{
                       position: "fixed",
@@ -1963,7 +1963,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                       type="button"
                       role="menuitem"
                       className={tw(
-                        "w-full text-left px-3 py-2 text-sm text-[#bebebe] whitespace-nowrap",
+                        "w-full text-left px-3 py-2 text-sm text-[var(--text-normal)] whitespace-nowrap",
                         "hover:bg-[rgba(14,210,247,0.08)]"
                       )}
                       onClick={(e) => {
@@ -1977,7 +1977,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                       type="button"
                       role="menuitem"
                       className={tw(
-                        "w-full text-left px-3 py-2 text-sm text-[#bebebe] whitespace-nowrap",
+                        "w-full text-left px-3 py-2 text-sm text-[var(--text-normal)] whitespace-nowrap",
                         "hover:bg-[rgba(14,210,247,0.08)]"
                       )}
                       onClick={(e) => {
@@ -2006,7 +2006,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       </div>
 
       {/* Chat Messages - compressed spacing */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 bg-[#100e17]">
+      <div className="flex-1 overflow-y-auto px-3 py-2 bg-[var(--bg-depth-2)]">
         <div className="flex flex-col space-y-1">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8">
@@ -2122,19 +2122,19 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(14,210,247,0.15)_0%,transparent_70%)] animate-[zenith-typing-pulse_2s_ease-in-out_infinite]" />
                 <Bot
                   size={16}
-                  className="text-[#0fb6d6] relative z-10 drop-shadow-[0_0_6px_rgba(14,210,247,0.5)]"
+                  className="text-[var(--text-accent)] relative z-10 drop-shadow-[0_0_6px_rgba(14,210,247,0.5)]"
                 />
               </div>
 
               <div className="h-8 flex items-center gap-1.5">
                 <span
-                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:0ms]"
+                  className="w-1.5 h-1.5 bg-[var(--text-accent)] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:0ms]"
                 />
                 <span
-                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:200ms]"
+                  className="w-1.5 h-1.5 bg-[var(--text-accent)] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:200ms]"
                 />
                 <span
-                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:400ms]"
+                  className="w-1.5 h-1.5 bg-[var(--text-accent)] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:400ms]"
                 />
               </div>
             </div>
@@ -2143,21 +2143,21 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           {/* Error message - renders as normal message in chat flow */}
           {errorMessage && (
             <div className="flex items-start gap-2 py-1.5 border-b border-[rgba(14,210,247,0.05)] pb-2">
-              <div className="w-4 text-xs text-[#f4569d]">⚠</div>
+              <div className="w-4 text-xs text-[var(--text-sub-accent)]">⚠</div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-[#f4569d] font-medium">
+                  <div className="text-sm text-[var(--text-sub-accent)] font-medium">
                     Error
                   </div>
                   <button
                     onClick={handleDismissError}
-                    className="text-[#45aaff] hover:text-[#bebebe] text-xs"
+                    className="text-[var(--text-dim)] hover:text-[var(--text-normal)] text-xs"
                     title="Dismiss error"
                   >
                     ✕
                   </button>
                 </div>
-                <div className="text-sm text-[#bebebe] whitespace-pre-wrap select-text">
+                <div className="text-sm text-[var(--text-normal)] whitespace-pre-wrap select-text">
                   {errorMessage}
                 </div>
                 <Button
@@ -2181,7 +2181,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       </div>
 
       {/* Unified Command Center Footer */}
-      <div className="flex-none border-t border-[rgba(14,210,247,0.1)] bg-[#0d0b12]">
+      <div className="flex-none border-t border-[rgba(14,210,247,0.1)] bg-[var(--bg-depth-1)]">
         <form onSubmit={handleSendMessage} className="p-3" role="form" aria-label="Chat message input form">
           {/* Row 1: Context attachments - compact chips */}
           <div className="mb-2" role="region" aria-label="Context attachments">
@@ -2208,8 +2208,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 disabled={isGenerating || !input.trim()}
                 className={`flex items-center justify-center transition-all rounded-md w-8 h-8 ${
                   isGenerating || !input.trim()
-                    ? "text-[#45aaff] cursor-not-allowed opacity-50"
-                    : "text-[#100e17] bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
+                    ? "text-[var(--text-dim)] cursor-not-allowed opacity-50"
+                    : "text-[var(--bg-depth-2)] bg-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
                 }`}
                 title={isGenerating ? "Stop generating" : "Send message"}
                 aria-label={isGenerating ? "Stop generating" : "Send message"}
@@ -2224,7 +2224,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           </div>
 
           {/* Row 3: Modifier bar - subtle toggles and status */}
-          <div className="flex items-center justify-between mt-1.5 text-xs text-[#45aaff]">
+          <div className="flex items-center justify-between mt-1.5 text-xs text-[var(--text-dim)]">
             <div className="flex items-center gap-3">
               <ContextLimitIndicator
                 unifiedContext={contextString}

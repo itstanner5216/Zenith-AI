@@ -199,7 +199,7 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#0d0b12]">
+    <div className="flex flex-col h-full w-full bg-[var(--bg-depth-1)]">
       <ChatTabs
         sessions={chatSessions}
         activeChatId={activeChatId}
@@ -207,7 +207,7 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
       />
-      <div className="flex-1 min-h-0 w-full bg-[#100e17]">
+      <div className="flex-1 min-h-0 w-full bg-[var(--bg-depth-2)]">
         <ChatComponent
           plugin={plugin}
           apiKey={apiKey}

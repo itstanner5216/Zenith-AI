@@ -97,7 +97,7 @@ export function DateRangeHandler({
   const fileCount = Object.keys(files).length;
 
   return (
-    <div className="text-sm text-[#45aaff]">
+    <div className="text-sm text-[var(--text-dim)]">
       {!("result" in toolInvocation) 
         ? `Filtering notes by date range... ${progress.total > 0 ? `(${progress.done}/${progress.total})` : ""}`
         : fileCount > 0

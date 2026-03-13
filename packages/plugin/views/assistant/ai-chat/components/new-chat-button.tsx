@@ -11,7 +11,7 @@ export function NewChatButton({ onClick }: NewChatButtonProps) {
       onClick={onClick}
       className={tw(
         "flex items-center justify-center w-6 h-6 rounded border border-transparent",
-        "text-[#45aaff] hover:text-[#0fb6d6]",
+        "text-[var(--text-dim)] hover:text-[var(--text-accent)]",
         "hover:bg-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)]",
         "transition-all duration-150 active:scale-90"
       )}

@@ -84,7 +84,7 @@ export const RenameSuggestion: React.FC<RenameSuggestionProps> = ({
   };
 
   return (
-    <div className="bg-[#191621] text-[#bebebe] p-4 border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] p-4 border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       {loading ? (
         <SkeletonLoader count={3} rows={4} width="70%" />
       ) : error ? (
@@ -120,7 +120,7 @@ const ErrorDisplay: React.FC<{ message: string; onRetry: () => void }> = ({
   onRetry,
 }) => (
   <div className="space-y-2">
-    <p className="text-[#f4569d] text-sm">Error: {message}</p>
-    <button onClick={onRetry} className="px-3 py-1.5 bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.4)] rounded hover:bg-[rgba(14,210,247,0.25)] transition-colors duration-200 text-sm">Retry</button>
+    <p className="text-[var(--text-sub-accent)] text-sm">Error: {message}</p>
+    <button onClick={onRetry} className="px-3 py-1.5 bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[rgba(14,210,247,0.4)] rounded hover:bg-[rgba(14,210,247,0.25)] transition-colors duration-200 text-sm">Retry</button>
   </div>
 );

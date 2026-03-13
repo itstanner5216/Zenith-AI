@@ -159,20 +159,20 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         disabled={isProcessing }
       >
         {isProcessing ? (
-          <Loader2 className="w-4 h-4 animate-spin text-[#0fb6d6]" />
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-accent)]" />
         ) : isRecording ? (
-          <StopCircle className="w-4 h-4 text-[#0fb6d6] animate-[zenith-typing-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_6px_rgba(14,210,247,0.6)]" />
+          <StopCircle className="w-4 h-4 text-[var(--text-accent)] animate-[zenith-typing-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_6px_rgba(14,210,247,0.6)]" />
         ) : (
-          <MicIcon className="w-4 h-4 text-[#45aaff]" />
+          <MicIcon className="w-4 h-4 text-[var(--text-dim)]" />
         )}
       </Button>
 
       {debug && recordings.length > 0 && (
-        <div className="flex flex-col gap-2 p-2 rounded bg-[#191621] border border-[rgba(14,210,247,0.1)]">
-          <h3 className="text-[#45aaff] text-sm">Recording History</h3>
+        <div className="flex flex-col gap-2 p-2 rounded bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.1)]">
+          <h3 className="text-[var(--text-dim)] text-sm">Recording History</h3>
           {recordings.map((recording, index) => (
             <div key={recording.timestamp} className="flex items-center gap-2">
-              <span className="text-xs text-[#45aaff]">
+              <span className="text-xs text-[var(--text-dim)]">
                 {recording.timestamp}
               </span>
               <audio controls src={recording.url} className="h-8" />

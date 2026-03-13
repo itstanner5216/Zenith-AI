@@ -72,14 +72,14 @@ export const ExamplePrompts: React.FC<{
         <button
           key={index}
           onClick={() => onExampleClick(example.prompt)}
-          className="text-left p-3 border border-[rgba(14,210,247,0.1)] hover:border-[rgba(14,210,247,0.28)] bg-[#191621] hover:bg-[#1e1a2e] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.5),0_0_10px_rgba(14,210,247,0.08)] active:scale-[0.98] transition-all duration-150 flex items-start gap-3 group w-full rounded-md cursor-pointer"
+          className="text-left p-3 border border-[rgba(14,210,247,0.1)] hover:border-[rgba(14,210,247,0.28)] bg-[var(--bg-depth-3)] hover:bg-[var(--bg-depth-4)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.5),0_0_10px_rgba(14,210,247,0.08)] active:scale-[0.98] transition-all duration-150 flex items-start gap-3 group w-full rounded-md cursor-pointer"
         >
-          <div className="text-[#45aaff] group-hover:text-[#0fb6d6] text-xl transition-colors">
+          <div className="text-[var(--text-dim)] group-hover:text-[var(--text-accent)] text-xl transition-colors">
             {example.icon}
           </div>
           <div className="flex-1">
-            <p className="text-[#bebebe] font-medium mb-1 group-hover:text-[#0fb6d6] transition-colors">{example.prompt}</p>
-            <span className="text-[#45aaff] text-xs opacity-70">{example.description}</span>
+            <p className="text-[var(--text-normal)] font-medium mb-1 group-hover:text-[var(--text-accent)] transition-colors">{example.prompt}</p>
+            <span className="text-[var(--text-dim)] text-xs opacity-70">{example.description}</span>
           </div>
         </button>
       ))}

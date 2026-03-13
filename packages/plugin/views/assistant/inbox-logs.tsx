@@ -76,17 +76,17 @@ const LogEntryDisplay: React.FC<{ entry: LogEntry; step: Action }> = ({
       <div
         className={`w-2 h-2 rounded-full ${
           hasError
-            ? "bg-[#f4569d]"
+            ? "bg-[var(--text-sub-accent)]"
             : entry.skipped
-            ? "bg-[#45aaff]"
+            ? "bg-[var(--text-dim)]"
             : entry.completed
-            ? "bg-[#0fb6d6]"
-            : "bg-[#0fb6d6] animate-pulse"
+            ? "bg-[var(--text-accent)]"
+            : "bg-[var(--text-accent)] animate-pulse"
         }`}
       />
 
       {/* Timestamp */}
-      <span className="text-[#45aaff] w-20 text-xs" className="opacity-60">
+      <span className="text-[var(--text-dim)] w-20 text-xs" className="opacity-60">
         {moment(entry.timestamp).format("HH:mm:ss")}
       </span>
 
@@ -94,10 +94,10 @@ const LogEntryDisplay: React.FC<{ entry: LogEntry; step: Action }> = ({
       <span
         className={`text-sm ${
           hasError
-            ? "text-[#f4569d]"
+            ? "text-[var(--text-sub-accent)]"
             : entry.skipped
-            ? "text-[#45aaff] line-through"
-            : "text-[#bebebe]"
+            ? "text-[var(--text-dim)] line-through"
+            : "text-[var(--text-normal)]"
         }`}
       >
         {getDisplayText(step)}
@@ -107,7 +107,7 @@ const LogEntryDisplay: React.FC<{ entry: LogEntry; step: Action }> = ({
       {/* Error display */}
       {entry.error && (
         <div
-          className="flex items-center gap-1 text-[#f4569d] text-sm ml-auto"
+          className="flex items-center gap-1 text-[var(--text-sub-accent)] text-sm ml-auto"
           title={`Error: ${entry.error.message}${
             entry.error.stack ? "\n\n" + entry.error.stack : ""
           }`}
@@ -126,7 +126,7 @@ const FileNameDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
 
   if (!hasNewName) {
     return (
-      <span className="text-[#0fb6d6]">
+      <span className="text-[var(--text-accent)]">
         {record.originalName || "No file"}
       </span>
     );
@@ -134,11 +134,11 @@ const FileNameDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[#45aaff] line-through">
+      <span className="text-[var(--text-dim)] line-through">
         {record.originalName}
       </span>
-      <span className="text-[#45aaff]">→</span>
-      <span className="text-[#0fb6d6]">{record.newName}</span>
+      <span className="text-[var(--text-dim)]">→</span>
+      <span className="text-[var(--text-accent)]">{record.newName}</span>
     </div>
   );
 };
@@ -149,8 +149,8 @@ const PathDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="text-[#45aaff]">→</span>
-      <span className="text-[#0fb6d6]">{record.newPath}</span>
+      <span className="text-[var(--text-dim)]">→</span>
+      <span className="text-[var(--text-accent)]">{record.newPath}</span>
     </div>
   );
 };
@@ -254,7 +254,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
         <div className="text-sm">
           Renamed as{" "}
           <span
-            className="text-[#0fb6d6] cursor-pointer hover:underline"
+            className="text-[var(--text-accent)] cursor-pointer hover:underline"
             onClick={() => {
               if (record.file) {
                 plugin.app.workspace.getLeaf().openFile(record.file);
@@ -273,7 +273,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.newName}
           </span>{" "}
-          <span className="text-[#45aaff] text-xs" className="opacity-50">
+          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
             {formatTimestamp(getActionTimestamp("RENAME_DONE"))}
           </span>
         </div>
@@ -283,7 +283,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
         <div className="text-sm">
           Moved to{" "}
           <span
-            className="text-[#0fb6d6] cursor-pointer hover:underline"
+            className="text-[var(--text-accent)] cursor-pointer hover:underline"
             onClick={() => {
               if (record.file) {
                 plugin.app.workspace.getLeaf().openFile(record.file);
@@ -306,7 +306,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.newPath}
           </span>{" "}
-          <span className="text-[#45aaff] text-xs" className="opacity-50">
+          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
             {formatTimestamp(getActionTimestamp("MOVING_DONE"))}
           </span>
         </div>
@@ -315,7 +315,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasTranscribedAudio && (
         <div className="text-sm">
           Transcribed audio{" "}
-          <span className="text-[#45aaff] text-xs" className="opacity-50">
+          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
             {formatTimestamp(audioTimestamp)}
           </span>
         </div>
@@ -324,7 +324,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasProcessedImage && (
         <div className="text-sm">
           Processed image{" "}
-          <span className="text-[#45aaff] text-xs" className="opacity-50">
+          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
             {formatTimestamp(imageTimestamp)}
           </span>
         </div>
@@ -334,7 +334,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
         <div className="text-sm">
           Note formatted as{" "}
           <span
-            className="text-[#0fb6d6] cursor-pointer hover:underline"
+            className="text-[var(--text-accent)] cursor-pointer hover:underline"
             onClick={() => {
               // Open the template file when clicked
               if (record.classification) {
@@ -354,7 +354,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
           >
             {record.classification || "document"}
           </span>{" "}
-          <span className="text-[#45aaff] text-xs" className="opacity-50">
+          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
             {formatTimestamp(formattingTimestamp)}
           </span>
         </div>
@@ -367,7 +367,7 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
       {hasYouTubeTranscript && (
         <div className="text-sm">
           Extracted YouTube transcript{" "}
-          <span className="text-[#45aaff] text-xs" className="opacity-50">
+          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
             {formatTimestamp(youtubeTimestamp)}
           </span>
         </div>
@@ -427,9 +427,9 @@ function FileCard({ record }: { record: FileRecord }) {
             {hasExpandableContent && (
               <div className="flex-shrink-0">
                 {isExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-[#0fb6d6]" />
+                  <ChevronDown className="w-4 h-4 text-[var(--text-accent)]" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-[#45aaff]" />
+                  <ChevronRight className="w-4 h-4 text-[var(--text-dim)]" />
                 )}
               </div>
             )}
@@ -459,12 +459,12 @@ function FileCard({ record }: { record: FileRecord }) {
               <StatusBadge status={record.status} />
               <FileNameDisplay record={record} />
               {queuePosition && (
-                <span className="text-[#45aaff] text-xs">
+                <span className="text-[var(--text-dim)] text-xs">
                   (Queue: {queuePosition.position}/{queuePosition.total})
                 </span>
               )}
               {errorSummary && (
-                <span className="text-[#f4569d] text-xs truncate">
+                <span className="text-[var(--text-sub-accent)] text-xs truncate">
                   • {errorSummary}
                 </span>
               )}
@@ -498,13 +498,13 @@ const StatusBadge: React.FC<{ status: FileStatus }> = ({ status }) => {
   const getStatusColor = () => {
     switch (status) {
       case "completed":
-        return "bg-[#0fb6d6]";
+        return "bg-[var(--text-accent)]";
       case "error":
-        return "bg-[#f4569d]";
+        return "bg-[var(--text-sub-accent)]";
       case "processing":
-        return "bg-[#0fb6d6]";
+        return "bg-[var(--text-accent)]";
       default:
-        return "bg-[#45aaff]";
+        return "bg-[var(--text-dim)]";
     }
   };
 
@@ -552,16 +552,16 @@ const InboxAnalytics: React.FC<{
   }) => (
     <div
       key={status}
-      className="bg-[#0d0b12] p-4 rounded text-center flex flex-col items-center border border-[rgba(14,210,247,0.05)]"
+      className="bg-[var(--bg-depth-1)] p-4 rounded text-center flex flex-col items-center border border-[rgba(14,210,247,0.05)]"
     >
       <div className="text-sm capitalize">{status}</div>
       <div className="font-semibold">{byStatus[status] || 0}</div>
-      <div className="mt-1 text-[#45aaff]">{icon}</div>
+      <div className="mt-1 text-[var(--text-dim)]">{icon}</div>
     </div>
   );
 
   return (
-    <div className="bg-[#100e17] h-full">
+    <div className="bg-[var(--bg-depth-2)] h-full">
       <div className="space-y-2">
         {/* Main flow row */}
         <div className="grid grid-cols-3 gap-2">
@@ -666,11 +666,11 @@ const DateFilterSelect: React.FC<{
   return (
     <div className="flex items-center gap-2">
       <div className="relative flex items-center gap-2">
-        <Calendar className="w-4 h-4 text-[#0fb6d6]" />
+        <Calendar className="w-4 h-4 text-[var(--text-accent)]" />
         <select
           value={value.range}
           onChange={e => handleRangeChange(e.target.value as DateRange)}
-          className="pl-2 pr-8 h-min py-2 bg-[#191621] text-[#bebebe] rounded-l border border-[rgba(14,210,247,0.1)] text-sm appearance-none"
+          className="pl-2 pr-8 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded-l border border-[rgba(14,210,247,0.1)] text-sm appearance-none"
         >
           {ranges.map(({ value, label }) => (
             <option key={value} value={value}>
@@ -686,7 +686,7 @@ const DateFilterSelect: React.FC<{
           type="date"
           value={value.startDate}
           onChange={e => handleDateChange(e.target.value)}
-          className="py-2 pl-6 pr-2 bg-[#191621] text-[#bebebe] rounded-r border border-[rgba(14,210,247,0.1)] text-sm w-min"
+          className="py-2 pl-6 pr-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded-r border border-[rgba(14,210,247,0.1)] text-sm w-min"
           max={moment().format("YYYY-MM-DD")}
         />
       )}
@@ -729,27 +729,27 @@ const SearchBar: React.FC<SearchBarProps> = ({
   ];
 
   return (
-    <div className="bg-[#0d0b12] p-4 border border-[rgba(14,210,247,0.08)] rounded space-y-3">
+    <div className="bg-[var(--bg-depth-1)] p-4 border border-[rgba(14,210,247,0.08)] rounded space-y-3">
       {/* Search input row */}
       <div className="pl-10 relative flex-1">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#0fb6d6]" />
+        <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-accent)]" />
         <input
           type="text"
           placeholder="Search files, tags, or actions..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-full pl-10 pr-4 h-min py-2 bg-[#191621] text-[#bebebe] rounded border border-[rgba(14,210,247,0.1)] text-sm placeholder-[#45aaff]"
+          className="w-full pl-10 pr-4 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded border border-[rgba(14,210,247,0.1)] text-sm placeholder-[var(--text-dim)]"
         />
       </div>
 
       {/* Filters row */}
       <div className="flex items-center gap-3">
         <div className="relative w-[200px]">
-          <Filter className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#0fb6d6]" />
+          <Filter className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-accent)]" />
           <select
             value={selectedStatus}
             onChange={e => onStatusFilter(e.target.value as FileStatus | "")}
-            className="w-full pl-9 pr-4 h-min py-2 bg-[#191621] text-[#bebebe] rounded border border-[rgba(14,210,247,0.1)] text-sm appearance-none"
+            className="w-full pl-9 pr-4 h-min py-2 bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded border border-[rgba(14,210,247,0.1)] text-sm appearance-none"
           >
             {statuses.map(status => (
               <option key={status} value={status}>
@@ -910,7 +910,7 @@ export const InboxLogs: React.FC = () => {
 
       {/* Date indicator - minimal */}
       {dateFilter.range !== "all" && (
-        <div className="text-xs text-[#45aaff] px-3 py-1 border-b border-[rgba(14,210,247,0.05)]">
+        <div className="text-xs text-[var(--text-dim)] px-3 py-1 border-b border-[rgba(14,210,247,0.05)]">
           {dateFilter.range === "custom" ? (
             <>{moment(dateFilter.startDate).format("MMM D, YYYY")}</>
           ) : (
@@ -929,7 +929,7 @@ export const InboxLogs: React.FC = () => {
           <FileCard key={record.id} record={record} />
         ))}
         {filteredRecords.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-xs text-[#45aaff]" className="opacity-50">
+          <div className="flex items-center justify-center h-32 text-xs text-[var(--text-dim)]" className="opacity-50">
             {records.length === 0 ? "No records found" : "No matching records"}
           </div>
         )}

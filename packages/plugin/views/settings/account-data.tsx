@@ -182,15 +182,15 @@ export const AccountData: React.FC<AccountDataProps> = ({
     }
   };
 
-  const inputClassName = "w-full bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40";
+  const inputClassName = "w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-40";
 
   if (!plugin.settings.API_KEY) {
     return (
-      <div className="bg-[#100e17] p-4 rounded-lg border border-[rgba(14,210,247,0.06)]">
-        <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">
+      <div className="bg-[var(--bg-depth-2)] p-4 rounded-lg border border-[rgba(14,210,247,0.06)]">
+        <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">
           Get Started with Zenith-AI
         </h3>
-        <p className="text-xs text-[#45aaff] opacity-70 mb-4">
+        <p className="text-xs text-[var(--text-dim)] opacity-70 mb-4">
           Create an account or sign in to access all features.
         </p>
 
@@ -198,8 +198,8 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <div
             className={`cursor-pointer px-4 py-2 font-medium ${
               isSignup
-                ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]"
-                : "text-[#45aaff]"
+                ? "text-[var(--text-accent)] border-b-2 border-[var(--text-accent)]"
+                : "text-[var(--text-dim)]"
             }`}
             onClick={() => setIsSignup(true)}
           >
@@ -208,8 +208,8 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <div
             className={`cursor-pointer px-4 py-2 font-medium ${
               !isSignup
-                ? "text-[#0fb6d6] border-b-2 border-[#0fb6d6]"
-                : "text-[#45aaff]"
+                ? "text-[var(--text-accent)] border-b-2 border-[var(--text-accent)]"
+                : "text-[var(--text-dim)]"
             }`}
             onClick={() => setIsSignup(false)}
           >
@@ -219,13 +219,13 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         <div className="space-y-4 mb-6">
           {error && (
-            <div className="bg-[rgba(244,86,157,0.1)] text-[#f4569d] p-3 rounded-md text-sm border border-[rgba(244,86,157,0.2)]">
+            <div className="bg-[rgba(244,86,157,0.1)] text-[var(--text-sub-accent)] p-3 rounded-md text-sm border border-[rgba(244,86,157,0.2)]">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-[#bebebe] mb-1 text-sm font-medium">
+            <label className="block text-[var(--text-normal)] mb-1 text-sm font-medium">
               Email
             </label>
             <input
@@ -238,7 +238,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
           </div>
 
           <div>
-            <label className="block text-[#bebebe] mb-1 text-sm font-medium">
+            <label className="block text-[var(--text-normal)] mb-1 text-sm font-medium">
               Password
             </label>
             <input
@@ -252,7 +252,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
           {isSignup && (
             <div>
-              <label className="block text-[#bebebe] mb-1 text-sm font-medium">
+              <label className="block text-[var(--text-normal)] mb-1 text-sm font-medium">
                 Confirm Password
               </label>
               <input
@@ -268,12 +268,12 @@ export const AccountData: React.FC<AccountDataProps> = ({
           <button
             onClick={handleSignup}
             disabled={isLoading}
-            className="w-full bg-[#0fb6d6] text-[#0d0b12] py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_14px_rgba(14,210,247,0.4)]"
+            className="w-full bg-[var(--text-accent)] text-[var(--bg-depth-1)] py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_14px_rgba(14,210,247,0.4)]"
           >
             {isLoading ? (
               <span className="flex items-center justify-center">
                 <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#0d0b12]"
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-[var(--bg-depth-1)]"
                   style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -305,15 +305,15 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         {/* Create Account via Web */}
         <div className="mb-6">
-            <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-            <h4 className="font-medium mb-2 mt-0 text-[#0fb6d6]">Create Account via Web</h4>
-            <p className="text-xs text-[#45aaff] opacity-70 mb-4">
+            <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <h4 className="font-medium mb-2 mt-0 text-[var(--text-accent)]">Create Account via Web</h4>
+            <p className="text-xs text-[var(--text-dim)] opacity-70 mb-4">
               Create an account through our web dashboard for a full-featured
               experience.
             </p>
             <div
               onClick={() => window.open(plugin.getServerUrl(), "_blank")}
-              className="cursor-pointer bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 text-center font-semibold shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_14px_rgba(14,210,247,0.4)]"
+              className="cursor-pointer bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 rounded hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 text-center font-semibold shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_14px_rgba(14,210,247,0.4)]"
             >
               Open Dashboard
             </div>
@@ -322,14 +322,14 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         <div className="flex items-center justify-center mb-6">
           <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
-          <span className="mx-4 text-[#45aaff] text-sm">or</span>
+          <span className="mx-4 text-[var(--text-dim)] text-sm">or</span>
           <div className="flex-grow border-t border-[rgba(14,210,247,0.08)]"></div>
         </div>
 
         {/* Quick Top-up Section */}
         <div className="mb-6">
           <h4 className="font-medium mb-3 mt-0">Quick Top-up</h4>
-          <p className="text-xs text-[#45aaff] opacity-70 mb-3">
+          <p className="text-xs text-[var(--text-dim)] opacity-70 mb-3">
             Start immediately with a one-time credit purchase. No account
             needed.
           </p>
@@ -346,9 +346,9 @@ export const AccountData: React.FC<AccountDataProps> = ({
         </div>
 
         {isDevMode && (
-          <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] mt-4">
+          <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] mt-4">
             <h4 className="font-medium mb-2 mt-0">Development Mode</h4>
-            <p className="text-xs text-[#45aaff] opacity-70 mb-3">
+            <p className="text-xs text-[var(--text-dim)] opacity-70 mb-3">
               Add tokens or minutes to your account for development purposes.
             </p>
             <div className="space-y-3">
@@ -363,7 +363,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUp}
                   disabled={isLoading}
-                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Tokens"}
                 </button>
@@ -379,7 +379,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUpMinutes}
                   disabled={isLoading}
-                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Minutes"}
                 </button>
@@ -388,7 +388,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
           </div>
         )}
 
-        <div className="text-[#45aaff] text-sm mt-6">
+        <div className="text-[var(--text-dim)] text-sm mt-6">
           <p className="mb-2">
             💡 <strong>Benefits of having an account:</strong>
           </p>
@@ -406,7 +406,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
   return (
     <div className="space-y-6">
       <div className="pt-6">
-        <h3 className="text-lg font-semibold mb-4 mt-0 text-[#0fb6d6]">Need more credits?</h3>
+        <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Need more credits?</h3>
         <div className="space-y-3">
           <TopUpCredits
             plugin={plugin}
@@ -421,8 +421,8 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
       {isDevMode && (
         <div className="border-t pt-6">
-          <h3 className="text-lg font-semibold mb-4 mt-0 text-[#0fb6d6]">Development Tools</h3>
-          <div className="bg-[#0d0b12] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] space-y-3">
+          <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Development Tools</h3>
+          <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] space-y-3">
             <div>
               <h4 className="font-medium mb-2 mt-0">Add Development Tokens</h4>
               <div className="flex items-center space-x-2">
@@ -436,7 +436,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUp}
                   disabled={isLoading}
-                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Tokens"}
                 </button>
@@ -455,7 +455,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
                 <button
                   onClick={handleDevTopUpMinutes}
                   disabled={isLoading}
-                  className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
+                  className="bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 rounded-md font-medium hover:bg-[rgba(14,210,247,0.8)] transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Adding..." : "Add Minutes"}
                 </button>

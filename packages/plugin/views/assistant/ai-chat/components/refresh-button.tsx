@@ -21,7 +21,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
       style={{ width: '24px', height: '24px' }}
       title="Regenerate response"
     >
-      <RefreshCw size={14} className="text-[#45aaff] group-hover:text-[#0fb6d6] transition-colors duration-150" />
+      <RefreshCw size={14} className="text-[var(--text-dim)] group-hover:text-[var(--text-accent)] transition-colors duration-150" />
     </button>
   );
 };

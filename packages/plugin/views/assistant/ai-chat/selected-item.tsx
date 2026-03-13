@@ -15,7 +15,7 @@ export const SelectedItem: React.FC<SelectedItemProps> = ({
   onRemove,
 }) => (
   <motion.div
-    className="bg-[#0d0b12] text-[#bebebe] rounded px-2 py-1 text-sm m-1 flex gap-1 min-w-fit h-fit border border-[rgba(14,210,247,0.15)] hover:border-[rgba(14,210,247,0.3)] transition-colors"
+    className="bg-[var(--bg-depth-1)] text-[var(--text-normal)] rounded px-2 py-1 text-sm m-1 flex gap-1 min-w-fit h-fit border border-[rgba(14,210,247,0.15)] hover:border-[rgba(14,210,247,0.3)] transition-colors"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.8 }}
@@ -23,14 +23,14 @@ export const SelectedItem: React.FC<SelectedItemProps> = ({
   >
     <span
       onClick={onClick}
-      className="cursor-pointer hover:text-[#0fb6d6] transition-colors"
+      className="cursor-pointer hover:text-[var(--text-accent)] transition-colors"
     >
       {prefix}
       {item}
     </span>
     <div
       onClick={onRemove}
-      className="text-[#45aaff] hover:text-[#f4569d] cursor-pointer transition-colors"
+      className="text-[var(--text-dim)] hover:text-[var(--text-sub-accent)] cursor-pointer transition-colors"
     >
       ×
     </div>

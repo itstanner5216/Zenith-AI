@@ -199,10 +199,10 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
           <div
             className={tw(
               "h-3 w-3 rounded-full transition-all",
-              isRecording ? "bg-[#f4569d] animate-pulse shadow-[0_0_8px_rgba(244,86,157,0.8)]" : "bg-[#45aaff] opacity-60"
+              isRecording ? "bg-[var(--text-sub-accent)] animate-pulse shadow-[0_0_8px_rgba(244,86,157,0.8)]" : "bg-[var(--text-dim)] opacity-60"
             )}
           />
-          <h3 className={tw("text-lg font-medium text-[#bebebe]")}>
+          <h3 className={tw("text-lg font-medium text-[var(--text-normal)]")}>
             Meeting Recorder
           </h3>
         </div>
@@ -212,7 +212,7 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
           className={tw(
             "flex items-center gap-2",
             "active:scale-[0.97] transition-all duration-150",
-            isRecording && "bg-[#f4569d] hover:bg-[rgba(244,86,157,0.85)] shadow-[0_0_12px_rgba(244,86,157,0.5)]"
+            isRecording && "bg-[var(--text-sub-accent)] hover:bg-[rgba(244,86,157,0.85)] shadow-[0_0_12px_rgba(244,86,157,0.5)]"
           )}
         >
           {isSaving ? (
@@ -235,7 +235,7 @@ export const MeetingRecorder: React.FC<MeetingRecorderProps> = ({ plugin }) => {
       </div>
       {isRecording && (
         <div
-          className={tw("flex items-center gap-2 text-sm text-[#45aaff]")}
+          className={tw("flex items-center gap-2 text-sm text-[var(--text-dim)]")}
         >
           <span>Recording: {formatDuration(duration)}</span>
         </div>

@@ -111,8 +111,8 @@ export function FrontmatterHandler({
 
   return (
     <div className="text-sm">
-      <div className="text-[#45aaff] mb-1">{args.message}</div>
-      <div className="text-[#45aaff] text-xs">
+      <div className="text-[var(--text-dim)] mb-1">{args.message}</div>
+      <div className="text-[var(--text-dim)] text-xs">
         {!isComplete
           ? `Updating frontmatter for ${args.filePath}...`
           : "Frontmatter updated successfully"}

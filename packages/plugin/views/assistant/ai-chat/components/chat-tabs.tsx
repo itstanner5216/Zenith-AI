@@ -29,7 +29,7 @@ export function ChatTabs({
     <div
       className={tw(
         "flex-none flex items-center gap-0.5 border-b border-[rgba(14,210,247,0.08)]",
-        "px-1.5 py-1 bg-[#0d0b12] min-h-[32px]",
+        "px-1.5 py-1 bg-[var(--bg-depth-1)] min-h-[32px]",
         "relative z-10 w-full"
       )}
     >

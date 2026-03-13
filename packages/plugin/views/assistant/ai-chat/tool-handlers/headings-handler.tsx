@@ -89,11 +89,11 @@ export function HeadingsHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[#45aaff]">
+        <div className="text-[var(--text-dim)]">
           Extracting headings from {filePaths.length} file(s)...
         </div>
       ) : (
-        <div className="text-[#bebebe]">
+        <div className="text-[var(--text-normal)]">
           ✓ Headings extracted from {filePaths.length} file(s)
         </div>
       )}

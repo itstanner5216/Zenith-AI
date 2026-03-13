@@ -185,7 +185,7 @@ export function BulkFindReplaceHandler({
   if (isComplete || isDone) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#0fb6d6] text-xs">
+        <div className="text-[var(--text-accent)] text-xs">
           {isDone && !isConfirmed
             ? "✗ Find/Replace cancelled"
             : "✓ Find/Replace complete"}
@@ -197,7 +197,7 @@ export function BulkFindReplaceHandler({
   if (validFiles.length === 0) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#f4569d] text-xs">
+        <div className="text-[var(--text-sub-accent)] text-xs">
           ✗ No valid files to search.
         </div>
       </div>
@@ -207,7 +207,7 @@ export function BulkFindReplaceHandler({
   if (totalMatches === 0) {
     return (
       <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
-        <div className="text-[#45aaff] text-xs">
+        <div className="text-[var(--text-dim)] text-xs">
           No matches found in {validFiles.length} file(s)
         </div>
       </div>
@@ -215,52 +215,52 @@ export function BulkFindReplaceHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.08)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
       <div className="flex items-start gap-2">
-        <span className="text-[#0fb6d6] text-lg">🔍</span>
+        <span className="text-[var(--text-accent)] text-lg">🔍</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[#bebebe] mb-1">
+          <div className="text-sm font-semibold text-[var(--text-normal)] mb-1">
             Confirm Find & Replace
           </div>
-          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
+          <div className="text-xs text-[var(--text-dim)] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#45aaff] uppercase">
+        <div className="font-semibold text-[var(--text-dim)] uppercase">
           Operation
         </div>
-        <div className="p-2 bg-[#0d0b12] rounded border border-[rgba(14,210,247,0.06)] space-y-1">
-          <div className="text-[#bebebe]">
+        <div className="p-2 bg-[var(--bg-depth-1)] rounded border border-[rgba(14,210,247,0.06)] space-y-1">
+          <div className="text-[var(--text-normal)]">
             <strong>Find:</strong>{" "}
-            <code className="px-1 bg-[#0d0b12]">{find}</code>
+            <code className="px-1 bg-[var(--bg-depth-1)]">{find}</code>
             {useRegex && <span className="text-[rgba(122,162,247,0.4)] ml-1">(regex)</span>}
           </div>
-          <div className="text-[#bebebe]">
+          <div className="text-[var(--text-normal)]">
             <strong>Replace:</strong>{" "}
-            <code className="px-1 bg-[#0d0b12]">{replace}</code>
+            <code className="px-1 bg-[var(--bg-depth-1)]">{replace}</code>
           </div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#45aaff] uppercase">
+        <div className="font-semibold text-[var(--text-dim)] uppercase">
           Impact
         </div>
-        <div className="text-[#bebebe] pl-2">
+        <div className="text-[var(--text-normal)] pl-2">
           <strong>{totalMatches}</strong> match(es) in <strong>{filesWithMatches}</strong> file(s)
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[#45aaff] uppercase">
+        <div className="font-semibold text-[var(--text-dim)] uppercase">
           Files ({filesWithMatches} with matches)
         </div>
         {matchCounts
           .filter((m) => m.count > 0)
           .slice(0, 5)
           .map((item) => (
-            <div key={item.path} className="text-[#bebebe] pl-2">
+            <div key={item.path} className="text-[var(--text-normal)] pl-2">
               • {item.path.split("/").pop()} ({item.count} match{item.count !== 1 ? "es" : ""})
             </div>
           ))}
@@ -272,7 +272,7 @@ export function BulkFindReplaceHandler({
       </div>
 
       {invalidPaths.length > 0 && (
-        <div className="text-xs text-[#f4569d]">
+        <div className="text-xs text-[var(--text-sub-accent)]">
           ⚠ {invalidPaths.length} invalid path(s) will be skipped
         </div>
       )}
@@ -280,7 +280,7 @@ export function BulkFindReplaceHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.3)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
         >
           Cancel
         </button>
@@ -289,7 +289,7 @@ export function BulkFindReplaceHandler({
             setIsConfirmed(true);
             handleConfirmReplace();
           }}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
         >
           Replace {totalMatches} Match{totalMatches !== 1 ? "es" : ""}
         </button>

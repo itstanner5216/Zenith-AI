@@ -145,19 +145,19 @@ export function ChatHistoryCombobox({
         onClick={() => setIsOpen(!isOpen)}
         className={tw(
           "flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-md",
-          "bg-[#0d0b12] hover:bg-[rgba(14,210,247,0.06)]",
-          "text-[#bebebe] border border-[rgba(14,210,247,0.12)] hover:border-[rgba(14,210,247,0.25)]",
+          "bg-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.06)]",
+          "text-[var(--text-normal)] border border-[rgba(14,210,247,0.12)] hover:border-[rgba(14,210,247,0.25)]",
           "min-w-[200px] justify-between transition-all duration-150"
         )}
         title="Search chat history"
       >
         <div className={tw("flex items-center gap-2 flex-1 min-w-0")}>
-          <Search className="w-3 h-3 text-[#45aaff] flex-shrink-0" />
+          <Search className="w-3 h-3 text-[var(--text-dim)] flex-shrink-0" />
           <span className={tw("truncate")}>
             {activeSession?.title || "Select chat..."}
           </span>
         </div>
-        <Clock className="w-3 h-3 text-[#45aaff] flex-shrink-0" />
+        <Clock className="w-3 h-3 text-[var(--text-dim)] flex-shrink-0" />
       </button>
 
       {/* Dropdown */}
@@ -165,7 +165,7 @@ export function ChatHistoryCombobox({
         <div
           className={tw(
             "absolute top-full right-0 mt-1 w-[300px] max-h-[400px]",
-            "bg-[#191621] border border-[rgba(14,210,247,0.15)]",
+            "bg-[var(--bg-depth-3)] border border-[rgba(14,210,247,0.15)]",
             "rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)] z-50 overflow-hidden"
           )}
           style={{
@@ -175,7 +175,7 @@ export function ChatHistoryCombobox({
           {/* Search Input */}
           <div className={tw("p-2 border-b border-[rgba(14,210,247,0.08)]")}>
             <div className={tw("relative")}>
-              <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[#45aaff]")} />
+              <Search className={tw("absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--text-dim)]")} />
               <input
                 ref={inputRef}
                 type="text"
@@ -184,9 +184,9 @@ export function ChatHistoryCombobox({
                 placeholder="Search chats..."
                 className={tw(
                   "w-full pl-7 pr-2 py-1.5 text-xs rounded-md",
-                  "bg-[#0d0b12]",
-                  "text-[#bebebe] border border-[rgba(14,210,247,0.12)] placeholder:text-[#45aaff] placeholder:opacity-50",
-                  "focus:outline-none focus:border-[#0fb6d6] focus:ring-1 focus:ring-[rgba(14,210,247,0.2)] transition-all duration-150"
+                  "bg-[var(--bg-depth-1)]",
+                  "text-[var(--text-normal)] border border-[rgba(14,210,247,0.12)] placeholder:text-[var(--text-dim)] placeholder:opacity-50",
+                  "focus:outline-none focus:border-[var(--text-accent)] focus:ring-1 focus:ring-[rgba(14,210,247,0.2)] transition-all duration-150"
                 )}
               />
             </div>
@@ -196,9 +196,9 @@ export function ChatHistoryCombobox({
           <div className={tw("overflow-y-auto max-h-[350px]")}>
             {filteredSessions.length === 0 ? (
               <div className={tw("flex flex-col items-center justify-center py-6 text-center")}>
-                <SearchX className="h-6 w-6 text-[#45aaff] mb-2 opacity-30" />
-                <p className="text-xs text-[#bebebe] opacity-50">No chats found</p>
-                <p className="text-xs text-[#bebebe] mt-1 opacity-30">Try a different search term</p>
+                <SearchX className="h-6 w-6 text-[var(--text-dim)] mb-2 opacity-30" />
+                <p className="text-xs text-[var(--text-normal)] opacity-50">No chats found</p>
+                <p className="text-xs text-[var(--text-normal)] mt-1 opacity-30">Try a different search term</p>
               </div>
             ) : (
               filteredSessions.map((session, index) => {
@@ -227,15 +227,15 @@ export function ChatHistoryCombobox({
                       <div className={tw("flex-1 min-w-0")}>
                         <div
                           className={tw(
-                            "text-xs font-medium text-[#bebebe] truncate",
-                            isActive && "text-[#0fb6d6]"
+                            "text-xs font-medium text-[var(--text-normal)] truncate",
+                            isActive && "text-[var(--text-accent)]"
                           )}
                         >
                           {session.title}
                         </div>
                         <div
                           className={tw(
-                            "text-[10px] text-[#45aaff] mt-0.5 flex items-center gap-1.5"
+                            "text-[10px] text-[var(--text-dim)] mt-0.5 flex items-center gap-1.5"
                           )}
                         >
                           <span>{relativeTime}</span>
@@ -254,7 +254,7 @@ export function ChatHistoryCombobox({
                         }}
                         className={tw(
                           "opacity-0 group-hover:opacity-100 transition-all duration-150",
-                          "text-[#45aaff] hover:text-[#f4569d] flex-shrink-0",
+                          "text-[var(--text-dim)] hover:text-[var(--text-sub-accent)] flex-shrink-0",
                           "p-1 rounded hover:bg-[rgba(244,86,157,0.1)]"
                         )}
                         aria-label="Delete chat"

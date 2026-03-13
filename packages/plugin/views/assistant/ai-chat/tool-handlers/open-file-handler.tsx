@@ -61,7 +61,7 @@ export function OpenFileHandler({
   const isComplete = "result" in toolInvocation;
 
   return (
-    <div className="text-sm text-[#45aaff]">
+    <div className="text-sm text-[var(--text-dim)]">
       {!isComplete ? `Opening ${args.filePath}...` : `File opened`}
     </div>
   );
