@@ -104,7 +104,7 @@ export const CommandList = forwardRef<
   const categories = ["format", "action", "ai"] as const;
 
   return props.items.length ? (
-    <div className="max-h-[400px] overflow-y-auto bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-lg w-80">
+    <div className="max-h-[400px] overflow-y-auto bg-depth-3 border border-defined rounded-md shadow-lg w-80">
       {categories.map(category => {
         const items = groupedItems[category] || [];
         if (items.length === 0) return null;
@@ -145,9 +145,9 @@ export const CommandList = forwardRef<
       })}
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center py-6 text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md">
-      <p className="text-sm text-[#bebebe]" className="opacity-50">No matching commands found</p>
-      <p className="text-xs text-[#bebebe] mt-1" className="opacity-30">Try a different search term</p>
+    <div className="flex flex-col items-center justify-center py-6 text-center bg-depth-3 border border-defined rounded-md">
+      <p className="text-sm text-[var(--text-normal)] opacity-50">No matching commands found</p>
+      <p className="text-xs text-[var(--text-normal)] mt-1 opacity-30">Try a different search term</p>
     </div>
   );
 });
