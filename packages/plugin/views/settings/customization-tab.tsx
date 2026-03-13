@@ -15,6 +15,10 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
   const [imageInstructions, setImageInstructions] = useState(plugin.settings.imageInstructions);
   const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
+  const [vertexBrainUrl, setVertexBrainUrl] = useState(plugin.settings.vertexBrainUrl ?? "");
+  const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
+  const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
+  const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath ?? "");
 
   // force set user embeddings to false
   useEffect(() => {
@@ -63,7 +67,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
           <div className="bg-[#191621] p-4 rounded-lg mt-2 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
             <div className="font-medium text-[#bebebe] mb-2">Document Type Templates</div>
             <div className="text-xs text-[#45aaff] opacity-70">
-              To enable auto-formatting, create template files in the File Organizer template folder.
+              To enable auto-formatting, create template files in the Zenith-AI template folder.
               Name each file according to its document type (e.g., 'workout.md', 'meeting-notes.md').
               The content of each file should contain the formatting instructions.
               You can manage these templates through the AI sidebar.
@@ -83,7 +87,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
         <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">General Settings</h3>
         <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
           <div className="text-xs text-[#45aaff] opacity-70">
-            Configure how File Organizer behaves across your vault. These settings affect both manual operations
+            Configure how Zenith-AI behaves across your vault. These settings affect both manual operations
             and provide the base configuration for inbox processing. Customize naming conventions, tagging behavior,
             and folder organization to match your workflow.
           </div>
@@ -159,6 +163,59 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
           </div>
         </div>
       </section>
+
+      {/* Vault Intelligence Section */}
+      <section>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--text-accent)" }}>Vault Intelligence</h3>
+        <div className="rounded-lg mb-4 p-4" style={{ background: "var(--bg-depth-3)", border: "1px solid var(--border-defined)" }}>
+          <div className="text-xs opacity-70" style={{ color: "var(--text-dim)" }}>
+            Semantic auto-sorting powered by your Vertex AI Brain
+          </div>
+        </div>
+        <div className="space-y-4">
+          <TextInputSetting
+            name="Vertex Brain URL"
+            description="URL of your Vertex AI Brain gateway (leave empty to disable)"
+            value={vertexBrainUrl}
+            placeholder="http://localhost:8085"
+            onChange={async (value) => {
+              setVertexBrainUrl(value);
+              (plugin.settings.vertexBrainUrl as string) = value;
+              await plugin.saveSettings();
+            }}
+          />
+          <ToggleSetting
+            name="Enable Vector Auto-Sort"
+            description="Automatically route General files using semantic embeddings"
+            value={enableVectorAutoSort}
+            onChange={(value) => handleToggleChange(value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
+          />
+          <NumberInputSetting
+            name="Auto-Sort Confidence Threshold"
+            description="Minimum confidence (0–1) to auto-sort without showing suggestion UI. Default: 0.75"
+            value={autoSortConfidenceThreshold}
+            min={0}
+            max={1}
+            step={0.05}
+            onChange={async (value) => {
+              setAutoSortConfidenceThreshold(value);
+              (plugin.settings.autoSortConfidenceThreshold as number) = value;
+              await plugin.saveSettings();
+            }}
+          />
+          <TextInputSetting
+            name="Cosmic Vault Structure Path"
+            description="Path to the note that defines your Cosmic Vault Structure"
+            value={organizationRulesPath}
+            placeholder="System/Cosmic Vault Structure.md"
+            onChange={async (value) => {
+              setOrganizationRulesPath(value);
+              (plugin.settings.organizationRulesPath as string) = value;
+              await plugin.saveSettings();
+            }}
+          />
+        </div>
+      </section>
     </div>
   );
 };
@@ -209,6 +266,64 @@ interface TextAreaSettingProps {
   onChange: (value: string) => void;
   disabled?: boolean;
 }
+
+interface TextInputSettingProps {
+  name: string;
+  description: string;
+  value: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
+}
+
+const TextInputSetting: React.FC<TextInputSettingProps> = ({ name, description, value, placeholder, onChange }) => (
+  <div className="py-2">
+    <div className="font-medium" style={{ color: "var(--text-normal)" }}>{name}</div>
+    <div className="text-xs mb-1 opacity-60" style={{ color: "var(--text-dim)" }}>{description}</div>
+    <input
+      type="text"
+      value={value}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full px-3 py-2 text-xs rounded-md transition-all duration-150"
+      style={{
+        color: "var(--text-normal)",
+        background: "var(--bg-depth-1)",
+        border: "1px solid var(--border-defined)",
+      }}
+    />
+  </div>
+);
+
+interface NumberInputSettingProps {
+  name: string;
+  description: string;
+  value: number;
+  min?: number;
+  max?: number;
+  step?: number;
+  onChange: (value: number) => void;
+}
+
+const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, description, value, min, max, step, onChange }) => (
+  <div className="py-2">
+    <div className="font-medium" style={{ color: "var(--text-normal)" }}>{name}</div>
+    <div className="text-xs mb-1 opacity-60" style={{ color: "var(--text-dim)" }}>{description}</div>
+    <input
+      type="number"
+      value={value}
+      min={min}
+      max={max}
+      step={step}
+      onChange={(e) => onChange(parseFloat(e.target.value))}
+      className="w-24 px-3 py-2 text-xs rounded-md transition-all duration-150"
+      style={{
+        color: "var(--text-normal)",
+        background: "var(--bg-depth-1)",
+        border: "1px solid var(--border-defined)",
+      }}
+    />
+  </div>
+);
 
 const TextAreaSetting: React.FC<TextAreaSettingProps> = ({ name, description, value, onChange, disabled }) => (
   <div className="py-2">
