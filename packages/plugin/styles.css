@@ -68,8 +68,8 @@
 
 /* Make sure text is readable */
 .sync-tab-container {
-  color: #bebebe;
-  background-color: #100e17;
+  color: var(--text-normal);
+  background-color: var(--bg-depth-2);
   padding: 1.5rem;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .sync-subtitle {
-  color: rgba(190, 190, 190, 0.7);
+  color: var(--text-faint);
   margin-top: 0.25rem;
   margin-bottom: 0;
   font-size: 0.875rem;
@@ -87,10 +87,10 @@
 
 /* How-to card styles */
 .sync-how-to-card {
-  background-color: #191621;
-  border: 1px solid rgba(14, 210, 247, 0.08);
+  background-color: var(--bg-depth-3);
+  border: 1px solid var(--border-defined);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  color: #bebebe;
+  color: var(--text-normal);
   padding: 1.5rem;
   border-radius: 0.5rem;
   margin-bottom: 2rem;
@@ -114,13 +114,13 @@
 .sync-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #0fb6d6;
+  color: var(--text-accent);
 }
 
 .sync-card-title {
   font-weight: 500;
   font-size: 1.125rem;
-  color: #0fb6d6;
+  color: var(--text-accent);
   margin-bottom: 0.5rem;
 }
 
@@ -128,7 +128,7 @@
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: 0.75rem;
-  color: rgba(190, 190, 190, 0.8);
+  color: var(--text-normal);
 }
 
 .sync-steps {
@@ -146,7 +146,7 @@
 
 .sync-step-number {
   background-color: rgba(14, 210, 247, 0.1);
-  color: #0fb6d6;
+  color: var(--text-accent);
   border-radius: 9999px;
   width: 1.25rem;
   height: 1.25rem;
@@ -162,29 +162,29 @@
 .sync-step-text {
   font-size: 0.875rem;
   margin: 0;
-  color: rgba(190, 190, 190, 0.8);
+  color: var(--text-normal);
 }
 
 .sync-footer-note {
   font-size: 0.75rem;
-  color: #7aa2f7;
+  color: var(--text-faint);
   padding-top: 0.75rem;
   margin-top: 0.75rem;
-  border-top: 1px solid rgba(14, 210, 247, 0.05);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .sync-code {
   background-color: rgba(14, 210, 247, 0.05);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
-  color: #0fb6d6;
+  color: var(--text-accent);
   font-family: 'OperatorMonoSSmLig-Book', monospace;
 }
 
 /* Special card styles for sync tab */
 .sync-file-card {
-  background-color: #191621;
-  border: 1px solid rgba(14, 210, 247, 0.08);
+  background-color: var(--bg-depth-3);
+  border: 1px solid var(--border-defined);
   border-radius: 0.5rem;
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -193,7 +193,7 @@
 }
 
 .sync-file-card:hover {
-  border-color: rgba(14, 210, 247, 0.15);
+  border-color: var(--border-accent);
   box-shadow: 0 4px 12px rgba(14, 210, 247, 0.08);
 }
 
@@ -204,32 +204,32 @@
 
 /* Button styles */
 .sync-button {
-  background-color: rgba(14, 210, 247, 0.5);
-  color: #0fb6d6;
+  background-color: var(--interactive-accent);
+  color: var(--text-accent);
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid rgba(14, 210, 247, 0.3);
+  border: 1px solid var(--border-accent);
 }
 
 .sync-button:hover {
   background-color: rgba(14, 210, 247, 0.7);
-  border-color: rgba(14, 210, 247, 0.5);
+  border-color: var(--border-active);
 }
 
 .sync-button:disabled {
   background-color: rgba(14, 210, 247, 0.08);
   color: rgba(190, 190, 190, 0.3);
   cursor: not-allowed;
-  border-color: rgba(14, 210, 247, 0.05);
+  border-color: var(--border-subtle);
 }
 
 .sync-secondary-button {
   background-color: transparent;
-  color: #0fb6d6;
-  border: 1px solid rgba(14, 210, 247, 0.3);
+  color: var(--text-accent);
+  border: 1px solid var(--border-accent);
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   font-weight: 500;
@@ -239,7 +239,7 @@
 
 .sync-secondary-button:hover {
   background-color: rgba(14, 210, 247, 0.08);
-  border-color: rgba(14, 210, 247, 0.5);
+  border-color: var(--border-active);
 }
 
 /* Custom styles that might still be needed */
@@ -405,7 +405,7 @@
 }
 
 .tag:hover {
-  color: #0d0b12;
+  color: var(--text-on-accent);
   background: var(--interactive-accent);
   font-weight: var(--nav-item-weight-hover);
 }
@@ -426,7 +426,7 @@
 .title-suggestion:hover,
 .folder-suggestion:hover {
   background-color: var(--interactive-accent) !important;
-  color: #0d0b12;
+  color: var(--text-on-accent);
   font-weight: var(--nav-item-weight-hover);
 }
 
@@ -471,4 +471,211 @@
   color: var(--text-on-accent);
   font-size: 12px;
   font-weight: bold;
+}
+
+/* ============================================
+   Zenith-AI Animation System
+   ============================================ */
+
+/* Shimmer loading effect */
+@keyframes zenith-shimmer-keyframes {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.zenith-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-depth-3) 25%,
+    rgba(14, 210, 247, 0.06) 50%,
+    var(--bg-depth-3) 75%
+  );
+  background-size: 200% 100%;
+  animation: zenith-shimmer-keyframes 1.8s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+.zenith-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.zenith-scrollbar::-webkit-scrollbar-track {
+  background: var(--bg-depth-0);
+}
+.zenith-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-accent);
+  border-radius: 3px;
+}
+.zenith-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--border-active);
+}
+
+/* Typing indicator pulse */
+@keyframes zenith-typing-pulse-keyframes {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.zenith-typing-pulse {
+  animation: zenith-typing-pulse-keyframes 1.4s ease-in-out infinite;
+}
+
+/* Typing dot bounce */
+@keyframes zenith-dot-pulse-keyframes {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.zenith-dot-pulse {
+  animation: zenith-dot-pulse-keyframes 1.4s ease-in-out infinite;
+}
+.zenith-dot-pulse:nth-child(2) { animation-delay: 0.2s; }
+.zenith-dot-pulse:nth-child(3) { animation-delay: 0.4s; }
+
+/* Cyan pulse glow */
+@keyframes zenith-cyan-pulse-keyframes {
+  0%, 100% { box-shadow: 0 0 4px rgba(14, 210, 247, 0.15); }
+  50% { box-shadow: 0 0 12px rgba(14, 210, 247, 0.35); }
+}
+.zenith-cyan-pulse {
+  animation: zenith-cyan-pulse-keyframes 2s ease-in-out infinite;
+}
+
+/* Neon pulse glow */
+@keyframes zenith-neon-pulse-keyframes {
+  0%, 100% { box-shadow: 0 0 6px rgba(14, 210, 247, 0.2); }
+  50% { box-shadow: 0 0 16px rgba(14, 210, 247, 0.45); }
+}
+.zenith-neon-pulse {
+  animation: zenith-neon-pulse-keyframes 2.5s ease-in-out infinite;
+}
+
+/* Obsidianite gradient heading text */
+.text-gradient-heading {
+  background: var(--gradient-heading);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Markdown Renderer — Obsidianite Themed
+   Scoped to .zenith-markdown-content
+   ============================================ */
+.zenith-markdown-content .markdown-rendered {
+  margin: 0;
+  padding: 0;
+}
+.zenith-markdown-content .markdown-rendered > *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  margin-left: 0;
+  padding-left: 0;
+}
+.zenith-markdown-content .markdown-rendered p:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  margin-left: 0;
+  padding-left: 0;
+}
+.zenith-markdown-content .markdown-rendered p {
+  margin-left: 0;
+  padding-left: 0;
+}
+.zenith-markdown-content .markdown-rendered ul,
+.zenith-markdown-content .markdown-rendered ol {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding-left: 1.5em;
+}
+.zenith-markdown-content .markdown-rendered li {
+  margin-top: 0;
+  margin-bottom: 0.1em;
+}
+.zenith-markdown-content .markdown-rendered li > p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.zenith-markdown-content .markdown-rendered code {
+  background-color: var(--border-defined);
+  color: var(--text-accent);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'OperatorMonoSSmLig-Book', monospace;
+  font-size: 0.9em;
+}
+.zenith-markdown-content .markdown-rendered pre {
+  background-color: var(--bg-depth-3);
+  border: 1px solid var(--border-accent);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 0.5em 0;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.zenith-markdown-content .markdown-rendered pre code {
+  background-color: transparent;
+  color: var(--text-normal);
+  padding: 0;
+  border-radius: 0;
+}
+.zenith-markdown-content .markdown-rendered blockquote {
+  border-left: 3px solid var(--text-accent);
+  background-color: rgba(14, 210, 247, 0.05);
+  padding: 8px 12px;
+  margin: 0.5em 0;
+  color: var(--text-normal);
+  font-style: italic;
+}
+.zenith-markdown-content .markdown-rendered a {
+  color: var(--text-dim);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(69, 170, 255, 0.3);
+  transition: all 0.15s ease;
+}
+.zenith-markdown-content .markdown-rendered a:hover {
+  color: var(--text-accent);
+  border-bottom-color: var(--text-accent);
+  text-decoration: none;
+}
+.zenith-markdown-content .markdown-rendered table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0;
+  border: 1px solid var(--border-accent);
+}
+.zenith-markdown-content .markdown-rendered table th {
+  background-color: var(--border-defined);
+  color: var(--text-accent);
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-accent);
+}
+.zenith-markdown-content .markdown-rendered table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-defined);
+  color: var(--text-normal);
+}
+.zenith-markdown-content .markdown-rendered table tr:hover {
+  background-color: rgba(14, 210, 247, 0.04);
+}
+.zenith-markdown-content .markdown-rendered strong {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+.zenith-markdown-content .markdown-rendered em {
+  color: var(--text-sub-accent);
+  font-style: italic;
+}
+.zenith-markdown-content .markdown-rendered h1,
+.zenith-markdown-content .markdown-rendered h2,
+.zenith-markdown-content .markdown-rendered h3,
+.zenith-markdown-content .markdown-rendered h4,
+.zenith-markdown-content .markdown-rendered h5,
+.zenith-markdown-content .markdown-rendered h6 {
+  color: var(--text-accent);
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+}
+.zenith-markdown-content .markdown-rendered hr {
+  border: none;
+  border-top: 1px solid var(--border-accent);
+  margin: 0.5em 0;
 }

@@ -70,7 +70,7 @@ export const ExamplePrompts: React.FC<{
     <div className="flex flex-col gap-3 p-4 mx-auto max-w-xl">
       {displayedExamples.map((example, index) => (
         <button
-          key={index}
+          key={example.prompt}
           onClick={() => onExampleClick(example.prompt)}
           className="text-left p-3 border border-[rgba(14,210,247,0.1)] hover:border-[rgba(14,210,247,0.28)] bg-[#191621] hover:bg-[#1e1a2e] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.5),0_0_10px_rgba(14,210,247,0.08)] active:scale-[0.98] transition-all duration-150 flex items-start gap-3 group w-full rounded-md cursor-pointer"
         >

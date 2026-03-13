@@ -72,6 +72,11 @@ import { ProcessingStatusBar } from "./components/processing-status-bar";
 import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 
+import { VertexBrainClient } from "./services/vertex-brain-client";
+import { OrganizationPreferencesService } from "./services/organization-preferences";
+import { VaultIndexer } from "./services/vault-indexer";
+import { BackgroundScribe } from "./services/background-scribe";
+
 type TagCounts = {
   [key: string]: number;
 };
@@ -129,6 +134,11 @@ export default class ZenithAI extends Plugin {
   settings: ZenithAISettings;
   private statusBarItem: HTMLElement | null = null;
   private statusBarRoot: Root | null = null;
+
+  vertexBrainClient: VertexBrainClient | null = null;
+  organizationPreferences: OrganizationPreferencesService | null = null;
+  vaultIndexer: VaultIndexer | null = null;
+  backgroundScribe: BackgroundScribe | null = null;
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
@@ -1374,6 +1384,13 @@ export default class ZenithAI extends Plugin {
     return suggestedTags;
   }
 
+  async getOrganizationRulesContext(): Promise<string> {
+    if (!this.organizationPreferences) return "";
+    const rules = await this.organizationPreferences.getRules();
+    if (!rules.trim()) return "";
+    return `\n\n## Cosmic Vault Structure\nThe user has defined this structure for how their vault is organized. Follow it strictly:\n\n${rules}`;
+  }
+
   async recommendFolders(
     content: string,
     fileName: string
@@ -1416,7 +1433,7 @@ export default class ZenithAI extends Plugin {
             ", "
           )}. If none are relevant, suggest new folders. ${
             customInstructions ? `Instructions: "${customInstructions}"` : ""
-          }`,
+          }${await this.getOrganizationRulesContext()}`,
           prompt: `Content: "${trimmedContent}"`,
         });
 
@@ -1444,6 +1461,7 @@ export default class ZenithAI extends Plugin {
     }
 
     // Use server-based approach (default or fallback)
+    const rulesContext = await this.getOrganizationRulesContext();
     const response = await fetch(`${this.getServerUrl()}/api/folders/v2`, {
       method: "POST",
       headers: {
@@ -1454,7 +1472,7 @@ export default class ZenithAI extends Plugin {
         content: trimmedContent,
         fileName: fileName,
         folders,
-        customInstructions,
+        customInstructions: `${customInstructions}${rulesContext}`,
       }),
     });
 
@@ -1610,11 +1628,41 @@ export default class ZenithAI extends Plugin {
 
     initializeInboxQueue(this);
 
+    // Initialize Vault Intelligence services
+    this.organizationPreferences = new OrganizationPreferencesService(this);
+    this.vaultIndexer = new VaultIndexer(this);
+
+    if (this.settings.enableVectorAutoSort && this.settings.vertexBrainUrl) {
+      this.vertexBrainClient = new VertexBrainClient(this.settings.vertexBrainUrl);
+      const healthy = await this.vertexBrainClient.health();
+      if (healthy) {
+        await this.organizationPreferences.ensureExists();
+        // Background index — non-blocking
+        this.vaultIndexer.indexAll().catch((e) =>
+          console.debug("[VaultIndexer] Initial index failed:", e)
+        );
+        // Initialize BackgroundScribe (activated only via explicit UI toggle)
+        this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
+      } else {
+        console.warn("[ZenithAI] Vertex Brain unavailable, vector auto-sort disabled");
+        this.vertexBrainClient = null;
+      }
+    }
+
     // Initialize different features
     initializeOrganizer(this);
     initializeFileOrganizationCommands(this);
 
     this.app.workspace.onLayoutReady(() => registerEventHandlers(this));
+
+    this.registerEvent(
+      this.app.vault.on("modify", (file) => {
+        if (file instanceof TFile && file.extension === "md") {
+          this.vaultIndexer?.enqueue(file);
+        }
+      })
+    );
+
     this.processBacklog();
 
     this.addCommand({
