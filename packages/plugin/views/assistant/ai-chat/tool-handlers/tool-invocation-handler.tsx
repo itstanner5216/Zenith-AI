@@ -33,6 +33,7 @@ import { BulkFindReplaceHandler } from "./bulk-find-replace-handler";
 import { ExportToFormatHandler } from "./export-to-format-handler";
 import { ScreenpipeHandler } from "./screenpipe-handler";
 import { BrokenLinksHandler } from "./broken-links-handler";
+import { UpdateVaultStructureHandler } from "./update-vault-structure-handler";
 
 const processedToolCallIds = new Set<string>();
 
@@ -116,6 +117,7 @@ function ToolInvocationHandler({
       exportToFormat: "Exporting Files",
       searchScreenpipe: "Search ScreenPipe",
       findBrokenLinks: "Find Broken Links",
+      update_vault_structure: "Update Cosmic Vault Structure",
     };
     return toolTitles[toolName] ;
   };
@@ -336,6 +338,12 @@ function ToolInvocationHandler({
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}
+        />
+      ),
+      update_vault_structure: () => (
+        <UpdateVaultStructureHandler
+          toolInvocation={toolInvocation}
+          handleAddResult={handleAddResult}
         />
       ),
     };

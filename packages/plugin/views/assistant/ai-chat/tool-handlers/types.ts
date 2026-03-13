@@ -11,4 +11,10 @@ export interface ToolHandlerProps {
   toolInvocation: ToolInvocation;
   handleAddResult: (result: string) => void;
   app: App;
-} 
+}
+
+export interface ToolHandlerResult {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
