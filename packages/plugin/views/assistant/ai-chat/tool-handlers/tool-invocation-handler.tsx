@@ -31,7 +31,6 @@ import { MergeFilesHandler } from "./merge-files-handler";
 import { CreateTemplateHandler } from "./create-template-handler";
 import { BulkFindReplaceHandler } from "./bulk-find-replace-handler";
 import { ExportToFormatHandler } from "./export-to-format-handler";
-import { ScreenpipeHandler } from "./screenpipe-handler";
 import { BrokenLinksHandler } from "./broken-links-handler";
 import { UpdateVaultStructureHandler } from "./update-vault-structure-handler";
 
@@ -115,7 +114,6 @@ function ToolInvocationHandler({
       createTemplate: "Creating Template",
       bulkFindReplace: "Find & Replace",
       exportToFormat: "Exporting Files",
-      searchScreenpipe: "Search ScreenPipe",
       findBrokenLinks: "Find Broken Links",
       update_vault_structure: "Update Cosmic Vault Structure",
     };
@@ -326,13 +324,7 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      searchScreenpipe: () => (
-        <ScreenpipeHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
+
       findBrokenLinks: () => (
         <BrokenLinksHandler
           toolInvocation={toolInvocation}

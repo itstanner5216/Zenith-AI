@@ -9,10 +9,10 @@ import { AppContext } from "./provider";
 import AIChatSidebar from "./ai-chat/container";
 import ReactMarkdown from "react-markdown";
 import { SyncTab } from "./synchronizer/sync-tab";
-import { MeetingsTab } from "./meetings";
+import { ProjectContextTab } from "./context";
 import { StyledContainer } from "../../components/ui/utils";
 import { tw } from "../../lib/utils";
-import { Sparkles, Inbox, MessageSquare, Cloud, Mic } from "lucide-react";
+import { Sparkles, Inbox, MessageSquare, Cloud, Compass } from "lucide-react";
 import { UpgradeButton } from "../../components/upgrade-button";
 import { UsageData } from "../..";
 import { Inbox as InboxService } from "../../inbox";
@@ -20,7 +20,7 @@ import { FREE_TIER_TOKEN_LIMIT } from "../../constants";
 
 export const ORGANIZER_VIEW_TYPE = "fo2k.assistant.sidebar2";
 
-type Tab = "organizer" | "inbox" | "chat" | "sync" | "meetings";
+type Tab = "organizer" | "inbox" | "chat" | "sync" | "context";
 
 function TabContent({
   activeTab,
@@ -124,10 +124,10 @@ function TabContent({
       <div
         className={tw(
           "flex-1 min-h-0 w-full",
-          activeTab === "meetings" ? "block" : "hidden"
+          activeTab === "context" ? "block" : "hidden"
         )}
       >
-        <MeetingsTab plugin={plugin} />
+        <ProjectContextTab />
       </div>
     </div>
   );
@@ -319,11 +319,11 @@ function AssistantContent({
             Chat
           </TabButton>
           <TabButton
-            isActive={activeTab === "meetings"}
-            onClick={() => setActiveTab("meetings")}
-            icon={<Mic className="w-4 h-4" />}
+            isActive={activeTab === "context"}
+            onClick={() => setActiveTab("context")}
+            icon={<Compass className="w-4 h-4" />}
           >
-            Meetings
+            Context
           </TabButton>
           {showSyncTab && (
             <TabButton
@@ -394,9 +394,9 @@ export class AssistantViewWrapper extends ItemView {
     });
 
     this.plugin.addCommand({
-      id: "open-meetings-tab",
-      name: "Open Meetings Tab",
-      callback: () => this.activateTab("meetings"),
+      id: "open-context-tab",
+      name: "Open Cosmic Context Tab",
+      callback: () => this.activateTab("context"),
     });
 
     // Only register sync tab command if enabled in settings

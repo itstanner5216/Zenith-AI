@@ -90,6 +90,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const plugin = usePlugin();
   const app = plugin.app;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [scribeActive, setScribeActive] = useState(false);
 
   // Chat history manager instance
   const chatHistoryManager = useMemo(
@@ -964,6 +965,22 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             console.warn("[Chat] ⚠️ onFinish: No messages to save");
           }
         }, 500);
+
+        // Dispatch vault-intelligence event for Cosmic Context tab
+        try {
+          const currentMessages = messagesRef.current;
+          const summary = currentMessages
+            .filter(m => m.role === "user" || m.role === "assistant")
+            .slice(-6)
+            .map(m => `${m.role}: ${typeof m.content === 'string' ? m.content.slice(0, 300) : ''}`)
+            .join("\n");
+          (app.workspace as any).trigger("vault-intelligence:chat-turn", {
+            conversationSummary: summary,
+            activeFile: app.workspace.getActiveFile(),
+          });
+        } catch (e) {
+          console.warn("[ZenithAI] Failed to dispatch chat-turn event:", e);
+        }
       } else {
         console.warn(
           "[Chat] ❌ onFinish: message missing id or not assistant:",
@@ -1406,6 +1423,17 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     activeChatId,
     chatHistoryManager,
   ]);
+
+  const toggleScribe = useCallback(() => {
+    if (!plugin.backgroundScribe) return;
+    if (scribeActive) {
+      plugin.backgroundScribe.deactivate();
+      setScribeActive(false);
+    } else {
+      plugin.backgroundScribe.activate();
+      setScribeActive(true);
+    }
+  }, [plugin.backgroundScribe, scribeActive]);
 
   const [attachments, setAttachments] = useState<LocalAttachment[]>([]);
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
@@ -2231,6 +2259,20 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 maxContextSize={maxContextSize}
               />
               {/* Removed SearchToggle - search grounding now auto-triggered by tools */}
+              {plugin.backgroundScribe && (
+                <button
+                  onClick={toggleScribe}
+                  className={tw(
+                    "px-2 py-1 text-[10px] rounded transition-all duration-150 border",
+                    scribeActive
+                      ? "bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border-[var(--border-accent)] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
+                      : "text-[var(--text-dim)] border-[var(--border-subtle)] hover:text-[var(--text-accent)] hover:border-[var(--border-defined)]"
+                  )}
+                  title={scribeActive ? "Background Scribe: Active" : "Background Scribe: Inactive"}
+                >
+                  {scribeActive ? "⏸ Scribe" : "▶ Scribe"}
+                </button>
+              )}
             </div>
             <ModelSelector
               selectedModel={selectedModel}
