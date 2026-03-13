@@ -104,6 +104,20 @@
   --glow-pink-md: 0 0 12px rgba(244, 86, 157, 0.35);
   --gradient-heading: linear-gradient(62deg, #87c2fd, #dcb9fc);
   --gradient-divider: linear-gradient(to right, #f4569d, transparent);
+
+  /* Gradient color stops (for Tailwind from-[var()] to-[var()] usage) */
+  --gradient-blue: #87c2fd;
+  --gradient-lavender: #dcb9fc;
+
+  /* Elevation shadows */
+  --elevation-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --elevation-md: 0 2px 8px rgba(0,0,0,0.4);
+  --elevation-lg: 0 4px 16px rgba(0,0,0,0.5);
+  --elevation-xl: 0 8px 32px rgba(0,0,0,0.6);
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(14, 210, 247, 0.15);
+  --scrollbar-thumb-hover: rgba(14, 210, 247, 0.3);
 }
 
 /******************************************
