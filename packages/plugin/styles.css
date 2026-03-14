@@ -89,7 +89,7 @@
 .sync-how-to-card {
   background-color: var(--bg-depth-3);
   border: 1px solid var(--border-defined);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--elevation-md);
   color: var(--text-normal);
   padding: 1.5rem;
   border-radius: 0.5rem;
@@ -188,7 +188,7 @@
   border-radius: 0.5rem;
   padding: 1.25rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--elevation-md);
   transition: all 0.2s;
 }
 
@@ -607,7 +607,7 @@
   padding: 12px;
   margin: 0.5em 0;
   overflow-x: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--elevation-md);
 }
 .zenith-markdown-content .markdown-rendered pre code {
   background-color: transparent;

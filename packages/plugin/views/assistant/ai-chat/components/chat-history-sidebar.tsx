@@ -67,8 +67,8 @@ export function ChatHistorySidebar({
                   className={tw(
                     "group p-2 rounded-md cursor-pointer text-sm transition-all duration-150",
                     activeChatId === session.id
-                      ? "bg-[rgba(14,210,247,0.1)] border-l-2 border-[var(--text-accent)] shadow-[0_0_10px_rgba(14,210,247,0.12),0_2px_8px_rgba(0,0,0,0.4)]"
-                      : "border-l-2 border-transparent hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                      ? "bg-[rgba(14,210,247,0.1)] border-l-2 border-[var(--text-accent)] shadow-[var(--glow-cyan-sm),var(--elevation-md)]"
+                      : "border-l-2 border-transparent hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-elevation-md"
                   )}
                   onClick={() => onSelectChat(session.id)}
                   role="listitem"
@@ -100,7 +100,7 @@ export function ChatHistorySidebar({
                         onDeleteChat(session.id);
                       }}
                       className={tw(
-                        "opacity-0 group-hover:opacity-100 transition-opacity",
+                        "opacity-0 group-hover:opacity-100 transition-all duration-150",
                         "hover:text-[var(--text-sub-accent)] flex-shrink-0",
                         "p-1 rounded hover:bg-[rgba(244,86,157,0.1)]"
                       )}

@@ -67,9 +67,9 @@ export const ObsidianCodeBlock: React.FC<ObsidianCodeBlockProps> = ({
   const displayLang = language || "text";
 
   return (
-    <div className="obsidian-code-block-wrapper relative group my-2.5 rounded-md overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_1px_rgba(14,210,247,0.08)]">
+    <div className="obsidian-code-block-wrapper relative group my-2.5 rounded-md overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_1px_rgba(14,210,247,0.12)]">
       {/* Header bar */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[var(--bg-depth-1)] border border-b-0 border-[var(--border-defined)] rounded-t-md">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[var(--bg-depth-1)] border border-b border-[var(--border-defined)] border-b-[rgba(14,210,247,0.12)] rounded-t-md">
         {/* Language badge with traffic-light dots */}
         <div className="flex items-center gap-2">
           <div className="flex gap-1 items-center">

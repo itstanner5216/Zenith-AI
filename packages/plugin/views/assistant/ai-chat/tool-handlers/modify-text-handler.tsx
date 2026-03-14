@@ -215,7 +215,7 @@ export function ModifyTextHandler({
             >
               {isApplying ? (
                 <>
-                  <span className="animate-spin">⟳</span>
+                  <span className="animate-spin zenith-spinner-glow">⟳</span>
                   <span>Applying...</span>
                 </>
               ) : (

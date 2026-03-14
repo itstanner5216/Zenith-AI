@@ -91,7 +91,7 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
       case "completed":
         return <Check className={tw("w-4 h-4 text-[var(--text-accent)]")} style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.5))' }} />;
       case "processing":
-        return <Loader className={tw("w-4 h-4 text-[var(--text-accent)] animate-spin")} style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.5))' }} />;
+        return <Loader className={tw("w-4 h-4 text-[var(--text-accent)] animate-spin zenith-spinner-glow")} />;
       case "error":
         return <AlertCircle className={tw("w-4 h-4 text-[var(--text-sub-accent)]")} />;
       case "skipped":
@@ -146,10 +146,10 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
           <div key={step.action} className={tw("flex items-start gap-3")}>
             {/* Timeline connector */}
             <div className={tw("flex flex-col items-center")}>
-              <div className={`w-8 h-8 rounded-full bg-[var(--bg-depth-1)] border-2 flex items-center justify-center ${
-                step.status === "completed" ? "border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]" :
-                step.status === "error" ? "border-[var(--text-sub-accent)]" :
-                step.status === "processing" ? "border-[var(--text-accent)] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]" :
+              <div className={`w-8 h-8 rounded-full bg-[var(--bg-depth-1)] border-2 flex items-center justify-center transition-all duration-200 ${
+                step.status === "completed" ? "border-[var(--text-accent)] shadow-[var(--glow-cyan-sm)]" :
+                step.status === "error" ? "border-[var(--text-sub-accent)] shadow-[var(--glow-pink-sm)]" :
+                step.status === "processing" ? "border-[var(--text-accent)] shadow-[var(--glow-cyan-sm)] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]" :
                 "border-[var(--border-defined)]"
               }`}>
                 {getStepIcon(step.status)}
@@ -166,18 +166,18 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
                   {step.label}
                 </span>
                 {step.duration !== undefined && step.duration > 0 && (
-                  <span className={tw("text-xs text-[var(--text-dim)] font-mono")} className="opacity-60">
+                  <span className={tw("text-xs text-[var(--text-dim)] font-mono opacity-75")}>
                     {formatDuration(step.duration)}
                   </span>
                 )}
               </div>
               {step.timestamp && (
-                <div className={tw("text-xs text-[var(--text-dim)] mt-0.5 opacity-60")}>
+                <div className={tw("text-xs text-[var(--text-dim)] mt-0.5 opacity-75")}>
                   {formatTime(step.timestamp)}
                 </div>
               )}
               {step.status === "skipped" && (
-                <div className={tw("text-xs text-[var(--text-dim)] italic mt-1")} className="opacity-50">
+                <div className={tw("text-xs text-[var(--text-dim)] italic mt-1 opacity-50")}>
                   Skipped
                 </div>
               )}

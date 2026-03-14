@@ -30,8 +30,8 @@ export function ChatTabItem({
         "group flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm transition-all duration-150 cursor-pointer select-none",
         "border-b-2",
         isActive
-          ? "border-[var(--text-accent)] bg-[var(--bg-depth-3)] shadow-[0_2px_8px_rgba(0,0,0,0.4),0_0_10px_rgba(14,210,247,0.12)]"
-          : "border-transparent bg-transparent hover:bg-[var(--bg-depth-2)] hover:border-[var(--border-accent)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
+          ? "border-[var(--text-accent)] bg-[var(--bg-depth-3)] shadow-[var(--elevation-md),var(--glow-cyan-sm)]"
+          : "border-transparent bg-transparent hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-[var(--elevation-sm)]"
       )}
       onClick={onSelect}
       title={`${session.title} — ${relativeTime}`}

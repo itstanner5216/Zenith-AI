@@ -73,7 +73,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   alt={source.domain}
                   className="w-8 h-8 rounded"
                 />
-                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[var(--bg-depth-5)] border border-[var(--border-active)] shadow-[0_0_6px_rgba(14,210,247,0.2)] rounded-full text-xs font-medium text-[var(--text-accent)]">
+                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[var(--bg-depth-5)] border border-[var(--border-active)] shadow-glow-cyan-sm rounded-full text-xs font-medium text-[var(--text-accent)]">
                   {source.id}
                 </div>
               </div>

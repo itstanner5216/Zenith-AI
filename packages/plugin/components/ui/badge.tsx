@@ -3,17 +3,17 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[var(--border-active)] focus:ring-offset-2 focus:ring-offset-[var(--bg-depth-2)]",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          "bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border-[var(--border-accent)]",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-[var(--bg-depth-3)] text-[var(--text-normal)] border-[var(--border-defined)]",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+          "bg-[rgba(244,86,157,0.1)] text-[var(--text-sub-accent)] border-[rgba(244,86,157,0.2)]",
+        outline: "text-[var(--text-normal)] border-[var(--border-defined)]",
         success:
           "border-transparent bg-[var(--text-success)] text-[var(--bg-depth-1)] hover:bg-[var(--text-success)]/80",
       },

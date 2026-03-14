@@ -163,7 +163,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         return (
           <div className="flex items-center text-[var(--text-dim)] text-sm">
             <svg
-              className="w-4 h-4 mr-1.5 animate-spin"
+              className="w-4 h-4 mr-1.5 animate-spin zenith-spinner-glow"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -191,7 +191,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">
@@ -208,9 +208,9 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 type="text"
                 className={`flex-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60 ${
                   keyStatus === "valid"
-                    ? "border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
+                    ? "border-[var(--text-accent)] shadow-glow-cyan-sm"
                     : keyStatus === "invalid" || validationError
-                    ? "border-[var(--text-sub-accent)] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
+                    ? "border-[var(--text-sub-accent)] shadow-glow-pink-sm"
                     : "border-[var(--border-defined)] focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
                 }`}
                 placeholder="Enter your license key"
@@ -236,7 +236,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       </div>
 
       {/* Usage Stats Section - Always visible */}
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
         <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
@@ -399,7 +399,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         onLicenseKeyChange={handleLicenseKeyChange}
       />
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
         <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Quick Tutorial</h3>
         <div className="youtube-embed">
           <iframe
@@ -413,7 +413,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         </div>
       </div>
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
         <p className="zenith-ai-support-text mb-4">
           Zenith-AI is an open-source initiative. If you find it valuable,
           please{" "}
@@ -421,7 +421,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             href="https://notecompanion.ai/?utm_source=obsidian&utm_medium=in-app&utm_campaign=support-us"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)]"
+            className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)] transition-colors duration-150"
           >
             consider supporting us
           </a>{" "}
@@ -432,7 +432,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             href="https://discord.gg/UWH53WqFuE"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)]"
+            className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)] transition-colors duration-150"
           >
             Need help? Ask me on Discord.
           </a>

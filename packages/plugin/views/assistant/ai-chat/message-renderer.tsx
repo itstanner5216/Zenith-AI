@@ -66,8 +66,8 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
     <motion.div
       className={`flex items-start gap-3 py-2.5 ${
         isUser
-          ? "bg-[var(--bg-depth-3)] hover:bg-[var(--bg-depth-4)] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[var(--text-sub-accent)] rounded-md px-3 my-1 shadow-[0_4px_12px_rgba(0,0,0,0.5),0_0_8px_rgba(244,86,157,0.06)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.6),0_0_10px_rgba(244,86,157,0.1)] transition-all duration-200"
-          : "bg-[var(--bg-depth-2)] hover:bg-[var(--bg-depth-3)] border border-[var(--border-defined)] hover:border-[var(--border-defined)] border-l-2 border-l-[var(--text-accent)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.4),0_0_6px_rgba(14,210,247,0.06)] transition-all duration-200"
+          ? "bg-[var(--bg-depth-3)] hover:bg-[var(--bg-depth-4)] border border-[rgba(244,86,157,0.12)] border-l-2 border-l-[var(--text-sub-accent)] rounded-md px-3 my-1 shadow-[0_4px_12px_rgba(0,0,0,0.5),var(--glow-pink-sm)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.6),var(--glow-pink-md)] hover:translate-y-[-0.5px] transition-all duration-200"
+          : "bg-[var(--bg-depth-2)] hover:bg-[var(--bg-depth-3)] border border-[var(--border-defined)] hover:border-[var(--border-accent)] border-l-2 border-l-[var(--text-accent)] rounded-md px-3 my-1 shadow-[0_2px_8px_rgba(0,0,0,0.3),var(--glow-cyan-sm)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.4),var(--glow-cyan-md)] hover:translate-y-[-0.5px] transition-all duration-200"
       }`}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}

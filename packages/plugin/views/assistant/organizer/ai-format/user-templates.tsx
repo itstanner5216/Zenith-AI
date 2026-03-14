@@ -203,7 +203,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
                 dropdownTemplates.map((templateName, index) => (
                   <div
                     key={index}
-                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] text-[var(--text-normal)]"
+                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] text-[var(--text-normal)] transition-colors duration-150"
                     onClick={() => {
                       setSelectedTemplateName(templateName);
                       setShowDropdown(false);
@@ -237,7 +237,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
           {formatting ? (
             <span className="flex items-center justify-center">
               <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4"
+                className="animate-spin -ml-1 mr-2 h-4 w-4 zenith-spinner-glow"
                 style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

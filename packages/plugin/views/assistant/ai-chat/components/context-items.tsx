@@ -137,7 +137,8 @@ export const ContextItems: React.FC = () => {
                   className={tw(
                     "text-[var(--text-sub-accent)] hover:text-[var(--text-sub-accent)]",
                     "flex items-center gap-1 px-2 py-1 rounded",
-                    "hover:bg-[rgba(244,86,157,0.1)] transition-colors",
+                    "hover:bg-[rgba(244,86,157,0.1)] hover:shadow-[var(--glow-pink-sm)]",
+                    "active:scale-[0.97] transition-all duration-150",
                     "font-medium"
                   )}
                 >
@@ -149,7 +150,7 @@ export const ContextItems: React.FC = () => {
                   className={tw(
                     "text-[var(--text-dim)] hover:text-[var(--text-normal)]",
                     "px-2 py-1 rounded",
-                    "hover:bg-[rgba(14,210,247,0.08)] transition-colors"
+                    "hover:bg-[rgba(14,210,247,0.08)] transition-all duration-150"
                   )}
                 >
                   Cancel
@@ -161,7 +162,8 @@ export const ContextItems: React.FC = () => {
                 className={tw(
                   "text-xs text-[var(--text-dim)] hover:text-[var(--text-accent)]",
                   "flex items-center gap-1 px-2 py-1 rounded",
-                  "hover:bg-[rgba(14,210,247,0.08)] transition-colors"
+                  "hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)]",
+                  "transition-all duration-150"
                 )}
                 title="Clear all context items (files, folders, tags, etc.)"
               >

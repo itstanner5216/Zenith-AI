@@ -45,7 +45,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
       {/* Inbox Processing Section */}
       <section>
         <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">Inbox Processing</h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
           <div className="text-xs text-[var(--text-dim)] opacity-70">
             These settings control how new files are automatically handled when they enter your vault through the inbox.
             Enable or disable automatic processing features and configure how the AI should handle your incoming documents.
@@ -64,7 +64,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             value={enableDocumentClassification}
             onChange={(value) => handleToggleChange(value, setEnableDocumentClassification, 'enableDocumentClassification')}
           />
-          <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-elevation-md">
             <div className="font-medium text-[var(--text-normal)] mb-2">Document Type Templates</div>
             <div className="text-xs text-[var(--text-dim)] opacity-70">
               To enable auto-formatting, create template files in the Zenith-AI template folder.
@@ -85,7 +85,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
       {/* General Settings Section */}
       <section>
         <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">General Settings</h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
           <div className="text-xs text-[var(--text-dim)] opacity-70">
             Configure how Zenith-AI behaves across your vault. These settings affect both manual operations
             and provide the base configuration for inbox processing. Customize naming conventions, tagging behavior,
@@ -154,7 +154,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               value={imageInstructions}
               onChange={(value) => handleTextChange(value, setImageInstructions, 'imageInstructions')}
             />
-            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
               <div className="text-xs text-[var(--text-dim)] opacity-70">
                 These instructions will be used to generate descriptions for images in your documents.
                 The AI will analyze the image content and create descriptions based on your specifications.
@@ -278,18 +278,13 @@ interface TextInputSettingProps {
 const TextInputSetting: React.FC<TextInputSettingProps> = ({ name, description, value, placeholder, onChange }) => (
   <div className="py-2">
     <div className="font-medium" style={{ color: "var(--text-normal)" }}>{name}</div>
-    <div className="text-xs mb-1 opacity-60" style={{ color: "var(--text-dim)" }}>{description}</div>
+    <div className="text-xs mb-1 opacity-75" style={{ color: "var(--text-dim)" }}>{description}</div>
     <input
       type="text"
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-3 py-2 text-xs rounded-md transition-all duration-150"
-      style={{
-        color: "var(--text-normal)",
-        background: "var(--bg-depth-1)",
-        border: "1px solid var(--border-defined)",
-      }}
+      className="w-full px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60"
     />
   </div>
 );
@@ -307,7 +302,7 @@ interface NumberInputSettingProps {
 const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, description, value, min, max, step, onChange }) => (
   <div className="py-2">
     <div className="font-medium" style={{ color: "var(--text-normal)" }}>{name}</div>
-    <div className="text-xs mb-1 opacity-60" style={{ color: "var(--text-dim)" }}>{description}</div>
+    <div className="text-xs mb-1 opacity-75" style={{ color: "var(--text-dim)" }}>{description}</div>
     <input
       type="number"
       value={value}
@@ -315,12 +310,7 @@ const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, descripti
       max={max}
       step={step}
       onChange={(e) => onChange(parseFloat(e.target.value))}
-      className="w-24 px-3 py-2 text-xs rounded-md transition-all duration-150"
-      style={{
-        color: "var(--text-normal)",
-        background: "var(--bg-depth-1)",
-        border: "1px solid var(--border-defined)",
-      }}
+      className="w-24 px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
     />
   </div>
 );

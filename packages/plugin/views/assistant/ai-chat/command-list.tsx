@@ -21,9 +21,11 @@ interface CommandListProps {
   command: (item: CommandItem) => void;
 }
 
-const CommandIcon = ({ icon }: { icon: React.ReactNode }) => {
+const CommandIcon = ({ icon, selected }: { icon: React.ReactNode; selected?: boolean }) => {
   return (
-    <span className="text-[var(--text-dim)] flex-shrink-0 w-5 h-5 flex items-center justify-center">
+    <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors duration-150 ${
+      selected ? 'text-[var(--text-accent)]' : 'text-[var(--text-dim)]'
+    }`}>
       {icon}
     </span>
   );
@@ -104,7 +106,7 @@ export const CommandList = forwardRef<
   const categories = ["format", "action", "ai"] as const;
 
   return props.items.length ? (
-    <div className="max-h-[400px] overflow-y-auto bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-lg w-80">
+    <div className="max-h-[400px] overflow-y-auto bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-lg shadow-[var(--elevation-lg),var(--glow-cyan-sm)] w-80 zenith-scrollbar">
       {categories.map(category => {
         const items = groupedItems[category] || [];
         if (items.length === 0) return null;
@@ -119,14 +121,14 @@ export const CommandList = forwardRef<
               return (
                 <button
                   key={item.id}
-                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded cursor-pointer hover:bg-[rgba(14,210,247,0.08)] transition-colors ${
+                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] ${
                     isSelected
-                      ? "bg-[rgba(14,210,247,0.08)] text-[var(--text-accent)]"
-                      : "text-[var(--text-normal)]"
+                      ? "bg-[rgba(14,210,247,0.08)] text-[var(--text-accent)] border-l-2 border-l-[var(--text-accent)] shadow-[var(--glow-cyan-sm)]"
+                      : "text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:shadow-[var(--glow-cyan-sm)]"
                   }`}
                   onClick={() => selectItem(item.originalIndex)}
                 >
-                  <CommandIcon icon={item.icon} />
+                  <CommandIcon icon={item.icon} selected={isSelected} />
                   <div className="flex-grow min-w-0 flex items-center gap-2">
                     <span className="font-medium text-sm leading-tight">
                       {item.label}
@@ -145,9 +147,9 @@ export const CommandList = forwardRef<
       })}
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center py-6 text-center bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md">
-      <p className="text-sm text-[var(--text-normal)]" className="opacity-50">No matching commands found</p>
-      <p className="text-xs text-[var(--text-normal)] mt-1" className="opacity-30">Try a different search term</p>
+    <div className="flex flex-col items-center justify-center py-6 text-center bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-lg shadow-[var(--elevation-lg)]">
+      <p className="text-sm text-[var(--text-normal)] opacity-50">No matching commands found</p>
+      <p className="text-xs text-[var(--text-dim)] mt-1 opacity-70">Try a different search term</p>
     </div>
   );
 });

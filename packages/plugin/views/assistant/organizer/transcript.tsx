@@ -98,14 +98,14 @@ export const TranscriptionButton: React.FC<TranscriptionButtonProps> = ({
   return (
     <div className="flex flex-col gap-2">
       <button
-        className="flex items-center gap-2 bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 hover:bg-[rgba(14,210,247,0.7)] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 hover:bg-[rgba(14,210,247,0.7)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
         onClick={handleTranscribe}
         disabled={transcribing || !validation.valid}
         title={!validation.valid ? validation.error : undefined}
       >
         {transcribing ? (
           <>
-            <span className="animate-spin">⟳</span>
+            <span className="animate-spin zenith-spinner-glow">⟳</span>
             <span>Transcribing...</span>
           </>
         ) : (

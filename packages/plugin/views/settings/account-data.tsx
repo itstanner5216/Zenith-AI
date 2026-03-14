@@ -273,7 +273,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
             {isLoading ? (
               <span className="flex items-center justify-center">
                 <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-[var(--bg-depth-1)]"
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-[var(--bg-depth-1)] zenith-spinner-glow"
                   style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -305,7 +305,7 @@ export const AccountData: React.FC<AccountDataProps> = ({
 
         {/* Create Account via Web */}
         <div className="mb-6">
-            <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <div className="bg-[var(--bg-depth-1)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
             <h4 className="font-medium mb-2 mt-0 text-[var(--text-accent)]">Create Account via Web</h4>
             <p className="text-xs text-[var(--text-dim)] opacity-70 mb-4">
               Create an account through our web dashboard for a full-featured

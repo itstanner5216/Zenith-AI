@@ -209,6 +209,21 @@ const suggestion = {
           interactive: true,
           trigger: "manual",
           placement: "bottom-start",
+          maxWidth: "none",
+          onCreate(instance: any) {
+            const box = instance.popper.querySelector('.tippy-box');
+            if (box) {
+              box.style.background = 'var(--bg-depth-3)';
+              box.style.border = '1px solid var(--border-defined)';
+              box.style.boxShadow = 'var(--elevation-lg), var(--glow-cyan-sm)';
+              box.style.borderRadius = '8px';
+              box.style.overflow = 'hidden';
+            }
+            const content = instance.popper.querySelector('.tippy-content');
+            if (content) {
+              content.style.padding = '0';
+            }
+          },
         });
         console.log("Slash command popup created");
       },

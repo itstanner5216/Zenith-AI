@@ -404,11 +404,11 @@ export const EnhanceNoteHandler: React.FC<EnhanceNoteHandlerProps> = ({
       <Button
         onClick={enhanceNote}
         disabled={isEnhancing}
-        className={tw("flex items-center gap-2 text-xs")}
+        className={tw("flex items-center gap-2 text-xs transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
       >
         {isEnhancing ? (
           <>
-            <Loader2 className="w-3 h-3 animate-spin" style={{ filter: 'drop-shadow(0 0 3px rgba(14,210,247,0.5))' }} />
+            <Loader2 className="w-3 h-3 animate-spin zenith-spinner-glow" />
             Enhancing...
           </>
         ) : error ? (

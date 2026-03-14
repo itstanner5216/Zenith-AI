@@ -91,8 +91,8 @@
   --bg-depth-1: #0d0b12;
   --bg-depth-2: #100e17;
   --bg-depth-3: #191621;
-  --bg-depth-4: #1e1a2e;
-  --bg-depth-5: #252136;
+  --bg-depth-4: rgba(25, 22, 33, 0.85); /* depth-3 #191621 lightened via alpha blend with subtle accent */
+  --bg-depth-5: rgba(25, 22, 33, 0.7);
   --border-subtle: rgba(14, 210, 247, 0.05);
   --border-defined: rgba(14, 210, 247, 0.08);
   --border-accent: rgba(14, 210, 247, 0.15);

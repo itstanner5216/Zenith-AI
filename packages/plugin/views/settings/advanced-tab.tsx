@@ -54,7 +54,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
 
   return (
     <div className="p-4 space-y-6">
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
         <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Logging & Debug</h3>
         <ToggleSetting
         name="Zenith-AI File Logs"
@@ -80,7 +80,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
       />
       </div>
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
         <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Self-Hosting</h3>
       <div className="setting-item">
         <div className="setting-item-info">
@@ -133,7 +133,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
       </div>
 
       {useLogs && (
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-2">
+        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-2">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-[var(--text-normal)]">View Logs</div>
@@ -265,7 +265,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         </div>
       )}
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
         <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Performance Limits</h3>
       <div className="setting-item">
         <div className="setting-item-info">
@@ -288,7 +288,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               plugin.settings.contentCutoffChars = value;
               plugin.saveSettings();
             }}
-            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
+            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
         </div>
       </div>
@@ -315,7 +315,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               plugin.settings.maxFormattingTokens = value;
               plugin.saveSettings();
             }}
-            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
+            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
         </div>
       </div>
@@ -339,7 +339,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               plugin.settings.pdfPageLimit = value;
               plugin.saveSettings();
             }}
-            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] transition-all duration-150"
+            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
         </div>
       </div>
