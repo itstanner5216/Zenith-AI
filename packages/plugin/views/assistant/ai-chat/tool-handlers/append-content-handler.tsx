@@ -57,7 +57,7 @@ export function AppendContentHandler({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="flex flex-col space-y-4 p-4 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-elevation-md">
       <div className="text-[var(--text-normal)]">
         {toolInvocation.args.message ||
           "Would you like to append the following content?"}

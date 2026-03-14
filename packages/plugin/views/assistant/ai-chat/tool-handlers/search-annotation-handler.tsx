@@ -38,7 +38,7 @@ export const SearchAnnotationHandler: React.FC<SearchAnnotationProps> = ({
   if (!groundingMetadata?.groundingSupports?.length) return null;
 
   return (
-    <div className="flex flex-col gap-2 p-3 bg-[var(--bg-depth-3)] m-2 rounded-md border border-[var(--border-defined)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="flex flex-col gap-2 p-3 bg-[var(--bg-depth-3)] m-2 rounded-md border border-[var(--border-defined)] shadow-elevation-md">
       <div className="text-[var(--text-dim)] text-sm">Search Results:</div>
       {groundingMetadata.groundingSupports.map((result, index) => {
         const sources = result.groundingChunkIndices.map(idx => {

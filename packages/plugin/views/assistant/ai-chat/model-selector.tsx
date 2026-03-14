@@ -4,7 +4,7 @@ import { usePlugin } from '../provider';
 
 // Add a mapping for display names
 const MODEL_DISPLAY_NAMES: Record<ModelType, string> = {
-  'gpt-4o-mini': 'gpt-4o-mini',
+  'gpt-4o-mini': 'Cloud',
   'custom': 'Ollama Model'
 } as const;
 
@@ -53,26 +53,32 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     <div className="relative">
       <div className="flex items-center justify-end">
         <div
-          onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-          className="flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[var(--border-accent)]"
+          onClick={() => plugin.settings.showLocalLLMInChat && setIsModelSelectorOpen(!isModelSelectorOpen)}
+          className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 ${
+            plugin.settings.showLocalLLMInChat
+              ? 'text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[var(--border-accent)]'
+              : 'text-[var(--text-dim)] opacity-75'
+          }`}
         >
           <span className="font-medium">{getDisplayName(selectedModel)}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className={`w-3 h-3 transition-transform ${
-              isModelSelectorOpen ? "rotate-180" : ""
-            }`}
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
+          {plugin.settings.showLocalLLMInChat && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className={`w-3 h-3 transition-transform ${
+                isModelSelectorOpen ? "rotate-180" : ""
+              }`}
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          )}
         </div>
-        {isModelSelectorOpen && (
+        {isModelSelectorOpen && plugin.settings.showLocalLLMInChat && (
           <div className="absolute bottom-full right-0 mb-1.5 bg-[var(--bg-depth-4)] border border-[var(--border-accent)] rounded-md shadow-[var(--elevation-xl),var(--glow-cyan-sm)] z-50 min-w-[140px] overflow-hidden">
             <div className="py-1">
               <div
