@@ -120,7 +120,7 @@ const IssueCard: React.FC<{
           className={tw("flex items-center gap-1 text-xs border-[var(--border-accent)] text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)]")}
           title="Retry processing this file"
         >
-          <RotateCcw className={tw(`w-3 h-3 ${isRetrying ? "animate-spin" : ""}`)} />
+          <RotateCcw className={tw(`w-3 h-3 ${isRetrying ? "animate-spin zenith-spinner-glow" : ""}`)} />
           {isRetrying ? "Retrying..." : "Retry"}
         </Button>
       </div>

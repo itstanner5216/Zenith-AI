@@ -12,10 +12,10 @@ const buttonVariants = cva(
       variant: {
         // Primary: solid cyan fill — for the most important CTA in a view
         default:
-          "bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold border border-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.85)] hover:border-[var(--border-active)] shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)] active:scale-[0.97]",
+          "bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold border border-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.85)] hover:border-[var(--border-active)] shadow-glow-cyan-sm hover:shadow-glow-cyan-md active:scale-[0.97]",
         // Destructive: hot-pink for dangerous/irreversible actions
         destructive:
-          "bg-[var(--text-sub-accent)] text-[var(--bg-depth-1)] font-semibold border border-[var(--text-sub-accent)] hover:bg-[rgba(244,86,157,0.85)] hover:border-[rgba(244,86,157,0.85)] shadow-[0_0_8px_rgba(244,86,157,0.2)] hover:shadow-[0_0_12px_rgba(244,86,157,0.35)] active:scale-[0.97]",
+          "bg-[var(--text-sub-accent)] text-[var(--bg-depth-1)] font-semibold border border-[var(--text-sub-accent)] hover:bg-[rgba(244,86,157,0.85)] hover:border-[rgba(244,86,157,0.85)] shadow-glow-pink-sm hover:shadow-glow-pink-md active:scale-[0.97]",
         // Outline: recessed input-style, cyan border on hover
         outline:
           "bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.04)] active:scale-[0.97]",
