@@ -17,7 +17,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   onDelete
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md w-full max-w-md mx-auto mt-4 shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+    <div className="flex flex-col items-center justify-center p-6 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-lg w-full max-w-md mx-auto mt-4 shadow-elevation-lg">
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
