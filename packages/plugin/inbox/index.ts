@@ -30,11 +30,8 @@ import {
 } from "../fileUtils";
 import { sanitizeContent } from "../fileUtils";
 import {
-  extractYouTubeVideoId,
-  getYouTubeContent,
   getOriginalContent,
-  YouTubeError,
-} from "./services/youtube-service";
+} from "../fileUtils";
 
 // Move constants to the top level and ensure they're used consistently
 const MAX_CONCURRENT_TASKS = 5;
@@ -366,15 +363,6 @@ export class Inbox {
         Action.CLEANUP,
         Action.ERROR_CLEANUP
       );
-
-      if (await shouldProcessYouTube(context)) {
-        await safeExecuteStep(
-          context,
-          fetchYouTubeTranscriptStep,
-          Action.FETCH_YOUTUBE,
-          Action.ERROR_FETCH_YOUTUBE
-        );
-      }
 
       // Try embeddings first — falls through to model if unavailable or low confidence
       context = await safeExecuteStep(
@@ -715,62 +703,6 @@ async function getContentStep(
   return context;
 }
 
-async function fetchYouTubeTranscriptStep(
-  context: ProcessingContext
-): Promise<ProcessingContext> {
-  try {
-    if (!context.content || !context.containerFile) {
-      logger.info(
-        "Skipping YouTube transcript: missing content or container file"
-      );
-      return context;
-    }
-
-    const videoId = extractYouTubeVideoId(context.content);
-    if (!videoId) {
-      // This should never happen now, but just in case
-      return context;
-    }
-
-    const youtubeContent = await getYouTubeContent(videoId, context.plugin);
-    const { title, transcript } = youtubeContent;
-    const appendContent = `\n\n## YouTube Video: ${title}\n\n### Transcript\n\n${transcript}`;
-
-    await context.plugin.app.vault.modify(
-      context.containerFile,
-      context.content + appendContent
-    );
-
-    // Update the context content to include the transcript
-    context.content += appendContent;
-
-    // Explicitly log the completion of YouTube transcript fetching
-    context.recordManager.completeAction(
-      context.hash,
-      Action.FETCH_YOUTUBE_DONE
-    );
-
-    return context;
-  } catch (error) {
-    if (error instanceof YouTubeError) {
-      context.recordManager.addError(context.hash, {
-        action: Action.ERROR_FETCH_YOUTUBE,
-        message: error.message,
-        stack: error.stack,
-      });
-
-      // For any YouTube error, log it but continue processing
-      logger.warn(
-        "YouTube transcript error, continuing with processing:",
-        error.message
-      );
-      return context;
-    }
-    // For other errors, use default error handling
-    throw error;
-  }
-}
-
 async function cleanupStep(
   context: ProcessingContext
 ): Promise<ProcessingContext> {
@@ -959,7 +891,8 @@ async function recommendTagsStep(
     context.containerFile.path,
     existingTags
   );
-  context.tags = tags?.map(t => t.tag);
+  const modelTags = tags?.map(t => t.tag) ?? [];
+  context.tags = [...new Set([...(context.tags ?? []), ...modelTags])];
   // for each tag, append it to the file
   if (context.tags && context.containerFile) {
     await context.plugin.appendTags(context.containerFile, context.tags);
@@ -1031,11 +964,6 @@ async function handleError(
     case Action.ERROR_TAGGING:
       destinationFolder = context.plugin.settings.backupFolderPath;
       errorType = "AI processing error";
-      await moveToBackupFolder(context);
-      break;
-    case Action.ERROR_FETCH_YOUTUBE:
-      destinationFolder = context.plugin.settings.backupFolderPath;
-      errorType = "YouTube transcript error";
       await moveToBackupFolder(context);
       break;
     default:
@@ -1125,7 +1053,6 @@ function formatErrorMessage(
     [Action.ERROR_MOVING_ATTACHMENT]: "Failed to move attachment",
     [Action.ERROR_CLASSIFY]: "Failed to classify document",
     [Action.ERROR_TAGGING]: "Failed to generate tags",
-    [Action.ERROR_FETCH_YOUTUBE]: "Failed to fetch YouTube transcript",
     [Action.ERROR_EXTRACT]: "Failed to extract content",
     [Action.ERROR_RENAME]: "Failed to rename file",
     [Action.ERROR_FORMATTING]: "Failed to format content",
@@ -1293,12 +1220,4 @@ async function safeExecuteStep(
   }
 }
 
-// Add this function to check if content contains a YouTube URL
-async function shouldProcessYouTube(
-  context: ProcessingContext
-): Promise<boolean> {
-  if (!context.content) return false;
 
-  const videoId = await extractYouTubeVideoId(context.content);
-  return !!videoId;
-}

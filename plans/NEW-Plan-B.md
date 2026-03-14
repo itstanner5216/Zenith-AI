@@ -7,9 +7,11 @@ Parallel agents are running simultaneously in separate worktrees. Crossing into 
 **Your worktree:** `/home/tanner/Projects/Zenith-AI-plan-b`
 **Your branch:** `plan-b-implementation`
 
-
-**If you dispatch subagents**, you MUST include this in every subagent prompt:
-> "CRITICAL: You are working in /home/tanner/Projects/Zenith-AI-plan-b on branch plan-b-implementation. Before ANY git operation, verify with `pwd` and `git branch --show-current`. Do NOT touch any other worktree or branch."
+- **Prioritize parallel execution**: Launch multiple subagents concurrently. Maintain **at least 5 active implementing subagents** at all times throughout plan execution.
+- **Implementation phase**: Work through the plan by dispatching parallel batches of implementation tasks. As subagents complete, immediately backfill to keep ≥5 active.
+- **Review phase**: Once all tasks are implemented, launch a **separate wave of review subagents** — again in batches of at least 5 — to verify each task's implementation.
+- **Concurrency limits**: **Never exceed 20 active subagents** at once. Prefer to stay **at or below 15** concurrent subagents. Do not allow subagents to sub-launch additional agents that would push the total beyond these limits.
+Parallel agents are running simultaneously in separate worktrees. Crossing into another agent's worktree WILL contaminate branches and cause hours of cleanup. **This MUST NOT happen.**
 
 ---
 

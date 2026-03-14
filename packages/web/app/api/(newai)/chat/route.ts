@@ -207,49 +207,9 @@ export async function POST(req: NextRequest) {
                   contextItems.files &&
                   Object.keys(contextItems.files).length > 0
                 ),
-                hasYouTubeVideos: !!(
-                  contextItems.youtubeVideos &&
-                  Object.keys(contextItems.youtubeVideos).length > 0
-                ),
-                youtubeVideoCount: contextItems.youtubeVideos
-                  ? Object.keys(contextItems.youtubeVideos).length
-                  : 0,
-                youtubeVideoIds: contextItems.youtubeVideos
-                  ? Object.keys(contextItems.youtubeVideos)
-                  : [],
                 allKeys: Object.keys(contextItems),
-                youtubeVideosType: typeof contextItems.youtubeVideos,
-                youtubeVideosValue: contextItems.youtubeVideos,
               });
 
-              // Debug: Log the actual structure
-              if (contextItems.youtubeVideos) {
-                console.log(
-                  `[Chat API] YouTube videos object:`,
-                  contextItems.youtubeVideos != null
-                    ? JSON.stringify(
-                        contextItems.youtubeVideos,
-                        null,
-                        2
-                      ).substring(0, 1000)
-                    : '(no videos)'
-                );
-                const firstVideoId = Object.keys(contextItems.youtubeVideos)[0];
-                if (firstVideoId) {
-                  const firstVideo = contextItems.youtubeVideos[firstVideoId];
-                  console.log(`[Chat API] First video details:`, {
-                    id: firstVideo?.id,
-                    videoId: firstVideo?.videoId,
-                    title: firstVideo?.title,
-                    hasTranscript: !!firstVideo?.transcript,
-                    transcriptLength: firstVideo?.transcript?.length || 0,
-                    transcriptPreview: firstVideo?.transcript?.substring(
-                      0,
-                      100
-                    ),
-                  });
-                }
-              }
               const parts: string[] = [];
 
               // Format files
@@ -266,60 +226,6 @@ export async function POST(req: NextRequest) {
                     }`
                   );
                 });
-              }
-
-              // Format YouTube videos - Limit to prevent timeout
-              if (
-                contextItems.youtubeVideos &&
-                Object.keys(contextItems.youtubeVideos).length > 0
-              ) {
-                const MAX_YOUTUBE_TRANSCRIPTS = 10; // Limit to prevent timeout
-                const MAX_TRANSCRIPT_LENGTH = 8000; // Truncate very long transcripts
-                const youtubeVideos = Object.values(contextItems.youtubeVideos);
-                const videosToProcess = youtubeVideos.slice(
-                  0,
-                  MAX_YOUTUBE_TRANSCRIPTS
-                );
-                const skippedCount =
-                  youtubeVideos.length - videosToProcess.length;
-
-                videosToProcess.forEach((video: any) => {
-                  let transcript = video.transcript || '';
-
-                  // Truncate very long transcripts
-                  if (transcript.length > MAX_TRANSCRIPT_LENGTH) {
-                    transcript =
-                      transcript.substring(0, MAX_TRANSCRIPT_LENGTH) +
-                      `\n\n[Transcript truncated - original length: ${video.transcript.length} chars]`;
-                  }
-
-                  parts.push(
-                    `YouTube Video: ${video.title || 'Untitled'}\n\nVideo ID: ${
-                      video.videoId || ''
-                    }\n\nFull Transcript:\n${transcript}\nReference: ${
-                      video.reference || ''
-                    }`
-                  );
-                });
-
-                if (skippedCount > 0) {
-                  console.warn(
-                    `[Chat API] WARNING: ${youtubeVideos.length} YouTube videos in context, but only ${MAX_YOUTUBE_TRANSCRIPTS} processed to prevent timeout. ${skippedCount} video(s) skipped.`
-                  );
-
-                  // Send user-facing notification via data stream
-                  dataStream.writeData(
-                    JSON.stringify({
-                      type: 'notification',
-                      message: `⚠️ Processing limit: Only the first ${MAX_YOUTUBE_TRANSCRIPTS} YouTube videos will be processed in this request. ${skippedCount} additional video(s) were skipped to prevent timeout. Please make a separate request to process the remaining videos.`,
-                    })
-                  );
-
-                  // Add notice to context so AI can inform user
-                  parts.push(
-                    `\n\n[IMPORTANT NOTICE: Due to processing limits, only the first ${MAX_YOUTUBE_TRANSCRIPTS} YouTube video transcripts were processed in this request. ${skippedCount} additional video(s) were skipped to prevent timeout. Please make a separate request to process the remaining videos.]`
-                  );
-                }
               }
 
               // Format folders
@@ -491,9 +397,6 @@ export async function POST(req: NextRequest) {
                   ? JSON.stringify(tool.content).length
                   : 0,
               contentPreview: resultPreview,
-              hasYouTubeTranscript:
-                typeof tool.content === 'string' &&
-                tool.content.includes('FULL TRANSCRIPT'),
             });
           });
         } else {
@@ -537,9 +440,6 @@ export async function POST(req: NextRequest) {
                       : invocation.result != null
                       ? JSON.stringify(invocation.result).substring(0, 500)
                       : '(no result)',
-                  hasYouTubeTranscript:
-                    typeof invocation.result === 'string' &&
-                    invocation.result.includes('FULL TRANSCRIPT'),
                 };
                 
                 // For ScreenPipe searches, log the search parameters and result summary
@@ -573,14 +473,12 @@ export async function POST(req: NextRequest) {
                 
                 console.log(`[Chat API] Tool invocation ${idx + 1}:`, logData);
 
-                // CRITICAL: If this is a YouTube tool with a result, ensure it's accessible to the AI
-                // The result should be in the tool invocation, and convertToCoreMessages should extract it
+                // CRITICAL: If this is a tool with a result, ensure it's accessible to the AI
                 if (
-                  invocation.toolName === 'getYoutubeVideoId' &&
                   invocation.result
                 ) {
                   console.log(
-                    `[Chat API] YouTube tool result detected - will be included in core messages`
+                    `[Chat API] Tool result detected for ${invocation.toolName} - will be included in core messages`
                   );
                 }
               }
@@ -712,18 +610,9 @@ export async function POST(req: NextRequest) {
           console.log('Chat using default model (no search)');
 
           // Log context for debugging
-          const hasYouTubeVideos = contextString.includes('YouTube Video:');
           console.log(
-            `[Chat API] Context length: ${contextString.length}, Has YouTube videos: ${hasYouTubeVideos}`
+            `[Chat API] Context length: ${contextString.length}`
           );
-          if (hasYouTubeVideos) {
-            const videoMatch = contextString.match(/YouTube Video: ([^\n]+)/);
-            console.log(
-              `[Chat API] YouTube video in context: ${
-                videoMatch ? videoMatch[1] : 'found but title not extracted'
-              }`
-            );
-          }
 
           // Messages are already filtered above, but double-check before converting
           // Final safety check - strip any unmatched tool calls
@@ -793,13 +682,7 @@ export async function POST(req: NextRequest) {
             `[Chat API] Converted ${messages.length} messages to ${coreMessages.length} core messages`
           );
 
-          // Extract toolCallId/toolName and YouTube transcripts from tool messages
-          // Also add YouTube transcripts to contextString so model can definitely see them
-          let youtubeTranscriptsInContext = '';
-          let youtubeTranscriptCount = 0;
-          const MAX_YOUTUBE_TRANSCRIPTS = 10; // Limit to prevent timeout
-          const MAX_TRANSCRIPT_LENGTH = 8000; // Truncate very long transcripts
-
+          // Extract toolCallId/toolName from tool messages that have content arrays
           const finalCoreMessages = coreMessages
             .map((message) => {
               if (message.role !== 'tool') {
@@ -825,49 +708,6 @@ export async function POST(req: NextRequest) {
                   console.log(
                     `[Chat API] Extracting toolCallId/toolName from content array: ${firstItem.toolCallId}, ${firstItem.toolName}`
                   );
-
-                  // If this is a YouTube video tool result, extract the transcript and add to context
-                  if (
-                    firstItem.toolName === 'getYoutubeVideoId' &&
-                    firstItem.result &&
-                    typeof firstItem.result === 'string' &&
-                    firstItem.result.includes('FULL TRANSCRIPT')
-                  ) {
-                    youtubeTranscriptCount++;
-
-                    // Limit number of transcripts to prevent timeout
-                    if (youtubeTranscriptCount <= MAX_YOUTUBE_TRANSCRIPTS) {
-                      let transcript = firstItem.result;
-
-                      // Truncate very long transcripts
-                      if (transcript.length > MAX_TRANSCRIPT_LENGTH) {
-                        transcript =
-                          transcript.substring(0, MAX_TRANSCRIPT_LENGTH) +
-                          `\n\n[Transcript truncated - original length: ${firstItem.result.length} chars]`;
-                        console.log(
-                          `[Chat API] Truncated YouTube transcript from ${firstItem.result.length} to ${transcript.length} chars`
-                        );
-                      }
-
-                      console.log(
-                        `[Chat API] Extracting YouTube transcript ${youtubeTranscriptCount} from tool result to add to context (${transcript.length} chars)`
-                      );
-                      youtubeTranscriptsInContext += `\n\nYouTube Video Transcript ${youtubeTranscriptCount}:\n${transcript}\n`;
-
-                      // Return the message (include it in finalCoreMessages)
-                      return {
-                        ...message,
-                        toolCallId: firstItem.toolCallId,
-                        toolName: firstItem.toolName,
-                      } as any;
-                    } else {
-                      console.log(
-                        `[Chat API] Skipping YouTube transcript ${youtubeTranscriptCount} - exceeded limit of ${MAX_YOUTUBE_TRANSCRIPTS} transcripts. Filtering out tool message.`
-                      );
-                      // Return null to filter out this message
-                      return null as any;
-                    }
-                  }
                 }
 
                 return {
@@ -882,39 +722,7 @@ export async function POST(req: NextRequest) {
             .filter(
               (message): message is NonNullable<typeof message> =>
                 message !== null
-            ); // Filter out null messages (exceeded limit)
-
-          // Add YouTube transcripts to context string if found
-          if (youtubeTranscriptsInContext) {
-            contextString += youtubeTranscriptsInContext;
-            console.log(
-              `[Chat API] Added ${Math.min(
-                youtubeTranscriptCount,
-                MAX_YOUTUBE_TRANSCRIPTS
-              )} YouTube transcript(s) to context string (${
-                youtubeTranscriptsInContext.length
-              } chars)`
             );
-
-            if (youtubeTranscriptCount > MAX_YOUTUBE_TRANSCRIPTS) {
-              const skippedCount =
-                youtubeTranscriptCount - MAX_YOUTUBE_TRANSCRIPTS;
-              console.warn(
-                `[Chat API] WARNING: ${youtubeTranscriptCount} YouTube transcripts found, but only ${MAX_YOUTUBE_TRANSCRIPTS} added to context to prevent timeout`
-              );
-
-              // Send user-facing notification via data stream
-              dataStream.writeData(
-                JSON.stringify({
-                  type: 'notification',
-                  message: `⚠️ Processing limit: Only the first ${MAX_YOUTUBE_TRANSCRIPTS} YouTube videos will be processed in this request. ${skippedCount} additional video(s) were skipped to prevent timeout. Please make a separate request to process the remaining videos.`,
-                })
-              );
-
-              // Add notice to context so AI can also mention it naturally
-              contextString += `\n\n[IMPORTANT NOTICE: Due to processing limits, only the first ${MAX_YOUTUBE_TRANSCRIPTS} YouTube video transcripts were processed in this request. ${skippedCount} additional video(s) were skipped to prevent timeout. Please make a separate request to process the remaining videos.]`;
-            }
-          }
 
           // Log tool messages to verify format
           const toolMessages = finalCoreMessages.filter(
@@ -939,7 +747,6 @@ export async function POST(req: NextRequest) {
                   contentIsArray: Array.isArray(toolAny.content),
                   contentLength: contentStr.length,
                   contentPreview,
-                  hasYouTubeTranscript: contentStr.includes('FULL TRANSCRIPT'),
                 }
               );
             });

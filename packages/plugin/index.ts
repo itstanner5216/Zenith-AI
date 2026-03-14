@@ -356,29 +356,8 @@ export default class ZenithAI extends Plugin {
    * Cleans up tags in formatted content by removing extra # symbols
    * Fixes cases where AI generates tags with # that then appear as ## in Obsidian
    * Also removes # from tags in frontmatter (frontmatter tags should not have #)
-   * Also fixes YouTube embeds to use thumbnail image URLs instead of watch URLs
    */
   private cleanupTagsInContent(content: string): string {
-    // Fix YouTube embeds to use Obsidian's embed syntax
-    // Convert [![YouTube Video](https://www.youtube.com/watch?v=VIDEO_ID)](https://www.youtube.com/watch?v=VIDEO_ID)
-    // Or [![YouTube Video](https://img.youtube.com/vi/VIDEO_ID/...)](https://www.youtube.com/watch?v=VIDEO_ID)
-    // To: ![](https://www.youtube.com/watch?v=VIDEO_ID) (Obsidian embed format)
-    content = content.replace(
-      /\[!\[([^\]]*)\]\(https:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)\)\]\(https:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)\)/g,
-      (match, altText, videoId1, videoId2) => {
-        // Use the first video ID (they should be the same, but handle both)
-        const videoId = videoId1 || videoId2;
-        return `![](https://www.youtube.com/watch?v=${videoId})`;
-      }
-    );
-    // Also convert thumbnail image links to embeds
-    content = content.replace(
-      /\[!\[([^\]]*)\]\(https:\/\/img\.youtube\.com\/vi\/([a-zA-Z0-9_-]+)\/[^)]+\)\]\(https:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)\)/g,
-      (match, altText, videoId1, videoId2) => {
-        const videoId = videoId1 || videoId2;
-        return `![](https://www.youtube.com/watch?v=${videoId})`;
-      }
-    );
     // First, handle frontmatter tags
     const frontmatterRegex = /^---\n([\s\S]*?)\n---(\n|$)/;
     const frontmatterMatch = content.match(frontmatterRegex);
@@ -1723,7 +1702,6 @@ export default class ZenithAI extends Plugin {
               });
               const list = contentEl.createEl("ul");
               list.createEl("li", { text: "meeting_note.md" });
-              list.createEl("li", { text: "youtube_video.md" });
               list.createEl("li", { text: "enhance.md" });
               list.createEl("li", { text: "research_paper.md" });
               list.createEl("li", { text: "flash_cards.md" });

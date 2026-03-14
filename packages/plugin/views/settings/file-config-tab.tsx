@@ -460,7 +460,7 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           <div className="setting-item-info">
             <div className="setting-item-name">Restore Default Templates</div>
             <div className="setting-item-description">
-              Restore the default plugin templates (meeting_note.md, youtube_video.md, enhance.md, research_paper.md, flash_cards.md) to their original versions. Your custom templates will not be affected.
+              Restore the default plugin templates (meeting_note.md, enhance.md, research_paper.md, flash_cards.md) to their original versions. Your custom templates will not be affected.
             </div>
           </div>
           <div className="setting-item-control">
@@ -477,7 +477,6 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
                       });
                       const list = contentEl.createEl("ul");
                       list.createEl("li", { text: "meeting_note.md" });
-                      list.createEl("li", { text: "youtube_video.md" });
                       list.createEl("li", { text: "enhance.md" });
                       list.createEl("li", { text: "research_paper.md" });
                       list.createEl("li", { text: "flash_cards.md" });
