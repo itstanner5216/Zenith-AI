@@ -35,7 +35,7 @@ const BaseFolderButton: React.FC<{
   reason?: string;
 }> = ({ folder, onClick, className, score, reason }) => (
   <motion.button
-    className={`px-2.5 py-1 text-xs transition-all duration-150 active:scale-[0.96] ${className} flex items-center justify-between rounded-md`}
+    className={`px-2.5 py-1 text-xs transition-all duration-150 active:scale-[0.96] ${className} flex items-center justify-between rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]`}
     onClick={() => onClick(folder)}
     initial={{ opacity: 0, scale: 0.85 }}
     animate={{ opacity: 1, scale: 1 }}

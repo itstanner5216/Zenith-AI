@@ -3542,3 +3542,75 @@
 .zenith-scrollbar::-webkit-scrollbar-track { background: #0a0910; }
 .zenith-scrollbar::-webkit-scrollbar-thumb { background: rgba(14,210,247,0.15); border-radius: 10px; }
 .zenith-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(14,210,247,0.3); }
+
+/* ============================================
+   ZENITH-AI PLUGIN — ENHANCED DEEP SPACE STYLES
+   ============================================ */
+
+/* Gradient text utility */
+.zenith-gradient-text {
+  background: var(--gradient-heading);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shimmer loading animation — already defined above, skipping duplicate */
+
+/* AI message renderer layout resets (moved from inline <style> injection) */
+.zenith-ai-markdown {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.zenith-ai-markdown > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.zenith-ai-markdown p:first-child,
+.zenith-ai-markdown div:first-child,
+.zenith-ai-markdown ul:first-child,
+.zenith-ai-markdown ol:first-child,
+.zenith-ai-markdown blockquote:first-child,
+.zenith-ai-markdown h1:first-child,
+.zenith-ai-markdown h2:first-child,
+.zenith-ai-markdown h3:first-child,
+.zenith-ai-markdown h4:first-child,
+.zenith-ai-markdown h5:first-child,
+.zenith-ai-markdown h6:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.zenith-ai-markdown p {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.zenith-ai-markdown .markdown-preview-section > *:first-child {
+  margin-top: 0 !important;
+}
+
+/* Spinner glow utility */
+.zenith-spinner-glow {
+  filter: drop-shadow(0 0 4px rgba(14, 210, 247, 0.4));
+}
+
+/* Card hover lift */
+.zenith-card-hover {
+  transition: all 200ms ease;
+}
+.zenith-card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--elevation-md), var(--glow-cyan-sm);
+}
+
+/* Active glow indicator */
+.zenith-active-glow {
+  animation: zenith-cyan-pulse 2s ease-in-out infinite;
+}

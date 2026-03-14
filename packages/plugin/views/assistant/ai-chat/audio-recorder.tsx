@@ -159,7 +159,7 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         disabled={isProcessing }
       >
         {isProcessing ? (
-          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-accent)]" />
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-accent)] zenith-spinner-glow" />
         ) : isRecording ? (
           <StopCircle className="w-4 h-4 text-[var(--text-accent)] animate-[zenith-typing-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_6px_rgba(14,210,247,0.6)]" />
         ) : (

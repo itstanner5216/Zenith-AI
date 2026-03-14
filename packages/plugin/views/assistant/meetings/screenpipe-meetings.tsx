@@ -281,7 +281,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
             title="Retry after starting ScreenPipe"
           >
             {isRefreshing ? (
-              <RefreshCw className={tw("w-3.5 h-3.5 animate-spin")} />
+              <RefreshCw className={tw("w-3.5 h-3.5 animate-spin zenith-spinner-glow")} />
             ) : (
               <>
                 <RefreshCw className={tw("w-3.5 h-3.5")} />
@@ -494,7 +494,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
           title="Refresh ScreenPipe meetings"
         >
           {isRefreshing ? (
-            <RefreshCw className={tw("w-3.5 h-3.5 animate-spin")} />
+            <RefreshCw className={tw("w-3.5 h-3.5 animate-spin zenith-spinner-glow")} />
           ) : (
             <>
               <RefreshCw className={tw("w-3.5 h-3.5")} />
@@ -547,7 +547,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
               <div
                 key={`${session.key}-${session.start?.getTime() ?? index}`}
                 className={tw(
-                  "bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
+                  "bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] shadow-elevation-md transition-all duration-150"
                 )}
               >
                 <div

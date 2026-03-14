@@ -423,7 +423,7 @@ export function SyncTab({
               className={tw("p-2 rounded-full hover:bg-[rgba(14,210,247,0.08)] text-[var(--text-dim)] transition-colors")}
               title="Refresh files"
             >
-              <RotateCw className={tw(`w-4 h-4 ${loading ? "animate-spin" : ""}`)} />
+              <RotateCw className={tw(`w-4 h-4 ${loading ? "animate-spin zenith-spinner-glow" : ""}`)} />
             </button>
           </div>
         </div>
@@ -442,7 +442,7 @@ export function SyncTab({
             }`)}
           >
             {syncingAll ? (
-              <RefreshCw className={tw("w-4 h-4 animate-spin")} />
+              <RefreshCw className={tw("w-4 h-4 animate-spin zenith-spinner-glow")} />
             ) : (
               <DownloadCloud className={tw("w-4 h-4")} />
             )}

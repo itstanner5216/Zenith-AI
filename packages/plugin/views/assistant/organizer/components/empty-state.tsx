@@ -41,7 +41,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             onClick={onRefresh}
-            className="flex items-center space-x-2 px-4 py-2 bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border border-[var(--border-active)] rounded-md hover:bg-[rgba(14,210,247,0.2)] hover:border-[var(--border-active)] hover:shadow-[0_0_10px_rgba(14,210,247,0.2)] transition-all duration-150 cursor-pointer active:scale-[0.97]"
+            className="flex items-center space-x-2 px-4 py-2 bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border border-[var(--border-active)] rounded-md hover:bg-[rgba(14,210,247,0.2)] hover:border-[var(--border-active)] hover:shadow-[0_0_10px_rgba(14,210,247,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-active)] transition-all duration-150 cursor-pointer active:scale-[0.97]"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -56,7 +56,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             onClick={onDelete}
-            className="flex items-center space-x-2 px-4 py-2 bg-[rgba(244,86,157,0.1)] text-[var(--text-sub-accent)] border border-[rgba(244,86,157,0.3)] rounded-md hover:bg-[rgba(244,86,157,0.2)] hover:border-[rgba(244,86,157,0.6)] hover:shadow-[0_0_10px_rgba(244,86,157,0.2)] transition-all duration-150 cursor-pointer active:scale-[0.97]"
+            className="flex items-center space-x-2 px-4 py-2 bg-[rgba(244,86,157,0.1)] text-[var(--text-sub-accent)] border border-[rgba(244,86,157,0.3)] rounded-md hover:bg-[rgba(244,86,157,0.2)] hover:border-[rgba(244,86,157,0.6)] hover:shadow-[0_0_10px_rgba(244,86,157,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-active)] transition-all duration-150 cursor-pointer active:scale-[0.97]"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
