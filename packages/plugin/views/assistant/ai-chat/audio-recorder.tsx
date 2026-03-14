@@ -145,7 +145,8 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
           "bg-transparent border border-transparent cursor-pointer transition-all duration-150",
           "hover:border-[var(--border-accent)] hover:bg-[rgba(14,210,247,0.05)] hover:shadow-none",
           "shadow-none disabled:shadow-none disabled:cursor-not-allowed disabled:opacity-30",
-          isRecording && "border-[rgba(244,86,157,0.3)] bg-[rgba(244,86,157,0.06)] animate-[zenith-neon-pulse_2s_ease-in-out_infinite]",
+          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]",
+          isRecording && "border-[rgba(244,86,157,0.3)] bg-[rgba(244,86,157,0.06)] shadow-[var(--glow-pink-sm)] animate-[zenith-neon-pulse_2s_ease-in-out_infinite]",
           isProcessing && "cursor-wait opacity-60",
           !isRecording && !isProcessing && "opacity-60 hover:opacity-100"
         )}
@@ -159,7 +160,7 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
         disabled={isProcessing }
       >
         {isProcessing ? (
-          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-accent)]" />
+          <Loader2 className="w-4 h-4 animate-spin zenith-spinner-glow text-[var(--text-accent)]" />
         ) : isRecording ? (
           <StopCircle className="w-4 h-4 text-[var(--text-accent)] animate-[zenith-typing-pulse_2s_ease-in-out_infinite] drop-shadow-[0_0_6px_rgba(14,210,247,0.6)]" />
         ) : (

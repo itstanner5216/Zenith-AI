@@ -420,10 +420,10 @@ export function SyncTab({
             <button
               onClick={fetchFiles}
               disabled={loading}
-              className={tw("p-2 rounded-full hover:bg-[rgba(14,210,247,0.08)] text-[var(--text-dim)] transition-colors")}
+              className={tw("p-2 rounded-full hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)] text-[var(--text-dim)] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
               title="Refresh files"
             >
-              <RotateCw className={tw(`w-4 h-4 ${loading ? "animate-spin" : ""}`)} />
+              <RotateCw className={tw(`w-4 h-4 ${loading ? "animate-spin zenith-spinner-glow" : ""}`)} />
             </button>
           </div>
         </div>
@@ -435,14 +435,14 @@ export function SyncTab({
           <button
             onClick={downloadAllMissingFiles}
             disabled={loading || syncingAll || files.length === 0}
-            className={tw(`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all duration-200 ${
+            className={tw(`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-active)] ${
               loading || syncingAll || files.length === 0
                 ? "bg-[var(--bg-depth-3)] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
-                : "bg-[var(--text-accent)] text-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.85)] shadow-[0_0_8px_rgba(14,210,247,0.2)]"
+                : "bg-[var(--text-accent)] text-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.85)] shadow-[var(--glow-cyan-sm)] hover:shadow-[var(--glow-cyan-md)]"
             }`)}
           >
             {syncingAll ? (
-              <RefreshCw className={tw("w-4 h-4 animate-spin")} />
+              <RefreshCw className={tw("w-4 h-4 animate-spin zenith-spinner-glow")} />
             ) : (
               <DownloadCloud className={tw("w-4 h-4")} />
             )}
@@ -452,7 +452,7 @@ export function SyncTab({
           {downloadedFiles.size > 0 && (
             <button
               onClick={clearDownloadHistory}
-              className={tw("px-3 py-2 rounded text-xs font-medium bg-[var(--bg-depth-3)] text-[var(--text-dim)] border border-[var(--border-defined)] hover:bg-[rgba(14,210,247,0.06)] transition-colors")}
+              className={tw("px-3 py-2 rounded text-xs font-medium bg-[var(--bg-depth-3)] text-[var(--text-dim)] border border-[var(--border-defined)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
               title="Clear sync history"
             >
               Reset
@@ -462,7 +462,7 @@ export function SyncTab({
       </div>
 
       {/* File list - compact rows */}
-      <div className={tw("flex-1 overflow-y-auto")}>
+      <div className={tw("flex-1 overflow-y-auto zenith-scrollbar")}>
 
 
       {error && (
@@ -497,9 +497,9 @@ export function SyncTab({
                 <div
                   key={file.id}
                   onClick={() => file.status === 'completed' && !downloading[file.id] && downloadFile(file)}
-                  className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[var(--border-defined)] transition-colors group ${
+                  className={tw(`flex items-center gap-3 px-3 py-2 border-b border-[var(--border-defined)] transition-all duration-200 group ${
                     file.status === 'completed' && !downloading[file.id]
-                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-defined)]'
+                      ? 'cursor-pointer hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] hover:shadow-[var(--elevation-md),var(--glow-cyan-sm)] hover:translate-y-[-0.5px]'
                       : 'cursor-default'
                   }`)}
                 >
@@ -560,10 +560,10 @@ export function SyncTab({
               <Button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className={tw(`px-4 py-2 h-auto transition-colors duration-200 flex items-center gap-2 ${
+                className={tw(`px-4 py-2 h-auto transition-all duration-200 flex items-center gap-2 ${
                   page === 1
                     ? "bg-[var(--bg-depth-3)] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
-                    : "bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-3)] text-[var(--text-normal)]"
+                    : "bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)] text-[var(--text-normal)]"
                 }`)}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={tw("w-4 h-4")}>
@@ -579,10 +579,10 @@ export function SyncTab({
               <Button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className={tw(`px-4 py-2 h-auto transition-colors duration-200 flex items-center gap-2 ${
+                className={tw(`px-4 py-2 h-auto transition-all duration-200 flex items-center gap-2 ${
                   page === totalPages
                     ? "bg-[var(--bg-depth-3)] text-[rgba(122,162,247,0.4)] cursor-not-allowed"
-                    : "bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-3)] text-[var(--text-normal)]"
+                    : "bg-[var(--bg-depth-1)] border border-[var(--border-defined)] hover:bg-[var(--bg-depth-3)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)] text-[var(--text-normal)]"
                 }`)}
               >
                 <span>Next</span>

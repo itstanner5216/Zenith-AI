@@ -3542,3 +3542,18 @@
 .zenith-scrollbar::-webkit-scrollbar-track { background: #0a0910; }
 .zenith-scrollbar::-webkit-scrollbar-thumb { background: rgba(14,210,247,0.15); border-radius: 10px; }
 .zenith-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(14,210,247,0.3); }
+
+/* Accessibility — Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .zenith-active-glow,
+  .zenith-shimmer,
+  .zenith-spinner-glow,
+  .zenith-card-hover {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .zenith-card-hover:hover {
+    transform: none !important;
+  }
+}

@@ -13,7 +13,8 @@ export function NewChatButton({ onClick }: NewChatButtonProps) {
         "flex items-center justify-center w-6 h-6 rounded border border-transparent",
         "text-[var(--text-dim)] hover:text-[var(--text-accent)]",
         "hover:bg-[rgba(14,210,247,0.08)] hover:border-[var(--border-accent)]",
-        "transition-all duration-150 active:scale-90"
+        "transition-all duration-150 active:scale-90",
+        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]"
       )}
       aria-label="Start new chat"
       title="New chat"

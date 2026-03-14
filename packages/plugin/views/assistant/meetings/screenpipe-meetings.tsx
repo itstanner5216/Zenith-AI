@@ -276,12 +276,14 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
               "border border-[var(--border-defined)] rounded",
               "text-[var(--text-normal)]",
               "disabled:opacity-50 disabled:cursor-not-allowed",
-              "transition-colors"
+              "hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)]",
+              "transition-all duration-150",
+              "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]"
             )}
             title="Retry after starting ScreenPipe"
           >
             {isRefreshing ? (
-              <RefreshCw className={tw("w-3.5 h-3.5 animate-spin")} />
+              <RefreshCw className={tw("w-3.5 h-3.5 animate-spin zenith-spinner-glow")} />
             ) : (
               <>
                 <RefreshCw className={tw("w-3.5 h-3.5")} />
@@ -489,12 +491,14 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
             "border border-[var(--border-defined)] rounded",
             "text-[var(--text-normal)]",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            "transition-colors"
+            "hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)]",
+            "transition-all duration-150",
+            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]"
           )}
           title="Refresh ScreenPipe meetings"
         >
           {isRefreshing ? (
-            <RefreshCw className={tw("w-3.5 h-3.5 animate-spin")} />
+            <RefreshCw className={tw("w-3.5 h-3.5 animate-spin zenith-spinner-glow")} />
           ) : (
             <>
               <RefreshCw className={tw("w-3.5 h-3.5")} />
@@ -547,7 +551,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
               <div
                 key={`${session.key}-${session.start?.getTime() ?? index}`}
                 className={tw(
-                  "bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-150"
+                  "bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded p-3 hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-accent)] shadow-elevation-md hover:shadow-[var(--elevation-md),var(--glow-cyan-sm)] transition-all duration-150"
                 )}
               >
                 <div
@@ -605,7 +609,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                   <Button
                     onClick={() => handleEnhanceNote(session)}
                     disabled={!hasTranscript}
-                    className={tw("flex items-center gap-2 text-xs")}
+                    className={tw("flex items-center gap-2 text-xs transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
                     title={
                       hasTranscript
                         ? "Enhance active note with this transcript"
@@ -618,7 +622,7 @@ export const ScreenpipeMeetings: React.FC<ScreenpipeMeetingsProps> = ({
                   <Button
                     onClick={() => handleCreateNote(session)}
                     disabled={!hasTranscript}
-                    className={tw("flex items-center gap-2 text-xs")}
+                    className={tw("flex items-center gap-2 text-xs transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
                     title={
                       hasTranscript
                         ? "Create new note from this transcript"

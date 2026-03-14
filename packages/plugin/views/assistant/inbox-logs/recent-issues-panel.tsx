@@ -12,7 +12,7 @@ const StatusBadge: React.FC<{ status: FileStatus }> = ({ status }) => {
   const getStatusColor = () => {
     switch (status) {
       case "error":
-        return "bg-[var(--text-sub-accent)]";
+        return "bg-[var(--text-sub-accent)] shadow-[var(--glow-pink-sm)]";
       case "bypassed":
         return "bg-[var(--text-dim)]";
       default:
@@ -94,7 +94,7 @@ const IssueCard: React.FC<{
   };
 
   return (
-    <div className="border-b border-[var(--border-subtle)] p-2 hover:bg-[rgba(14,210,247,0.04)]">
+    <div className="border-b border-[var(--border-subtle)] p-2 hover:bg-[rgba(14,210,247,0.04)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)] transition-all duration-150">
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -103,11 +103,11 @@ const IssueCard: React.FC<{
               {record.originalName}
             </div>
           </div>
-          <div className="text-xs text-[var(--text-sub-accent)] truncate" className="opacity-80">
+          <div className="text-xs text-[var(--text-sub-accent)] truncate opacity-80">
             {errorMessage}
           </div>
           {getMostRecentTimestamp() && (
-            <div className="text-xs text-[var(--text-dim)] mt-0.5 opacity-60">
+            <div className="text-xs text-[var(--text-dim)] mt-0.5 opacity-75">
               {new Date(getMostRecentTimestamp()).toLocaleString()}
             </div>
           )}
@@ -117,10 +117,10 @@ const IssueCard: React.FC<{
           disabled={isRetrying}
           size="sm"
           variant="outline"
-          className={tw("flex items-center gap-1 text-xs border-[var(--border-accent)] text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)]")}
+          className={tw("flex items-center gap-1 text-xs border-[var(--border-accent)] text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
           title="Retry processing this file"
         >
-          <RotateCcw className={tw(`w-3 h-3 ${isRetrying ? "animate-spin" : ""}`)} />
+          <RotateCcw className={tw(`w-3 h-3 ${isRetrying ? "animate-spin zenith-spinner-glow" : ""}`)} />
           {isRetrying ? "Retrying..." : "Retry"}
         </Button>
       </div>
@@ -293,16 +293,16 @@ export const RecentIssuesPanel: React.FC<{ plugin: any }> = ({ plugin }) => {
     <div className="border-b border-[var(--border-subtle)]">
       <div className="px-3 py-2 bg-[var(--bg-depth-2)]">
         <div className="flex items-center gap-2 mb-2">
-          <AlertCircle className="w-4 h-4 text-[var(--text-sub-accent)]" />
+          <AlertCircle className="w-4 h-4 text-[var(--text-sub-accent)] drop-shadow-[0_0_4px_rgba(244,86,157,0.4)]" />
           <h3 className="text-sm font-semibold text-[var(--text-sub-accent)]">
             Recent Issues ({issues.length})
           </h3>
         </div>
-        <div className="text-xs text-[var(--text-dim)] mb-2" className="opacity-60">
+        <div className="text-xs text-[var(--text-dim)] mb-2 opacity-75">
           Files that failed processing or were bypassed
         </div>
       </div>
-      <div className="max-h-64 overflow-y-auto">
+      <div className="max-h-64 overflow-y-auto zenith-scrollbar">
         {issues.map((record) => (
           <IssueCard
             key={record.id}
