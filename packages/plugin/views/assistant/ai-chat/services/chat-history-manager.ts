@@ -17,7 +17,6 @@ export interface ChatSession {
     files?: Record<string, any>;
     folders?: Record<string, any>;
     tags?: Record<string, any>;
-    youtubeVideos?: Record<string, any>;
     searchResults?: Record<string, any>;
     textSelections?: Record<string, any>;
     currentFile?: any | null;

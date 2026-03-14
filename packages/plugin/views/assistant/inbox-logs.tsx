@@ -220,14 +220,6 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
     ? getActionTimestamp("EXTRACT_DONE")
     : null;
 
-  const hasYouTubeTranscript = Object.keys(record.logs).some(action =>
-    action.includes("FETCH_YOUTUBE")
-  );
-
-  const youtubeTimestamp = hasYouTubeTranscript
-    ? getActionTimestamp("FETCH_YOUTUBE_DONE")
-    : null;
-
   const hasFormatted =
     record.formatted ||
     Object.keys(record.logs).some(action => action.includes("FORMATTING_DONE"));
@@ -242,7 +234,6 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
     !hasTranscribedAudio &&
     !hasProcessedImage &&
     record.tags.length === 0 &&
-    !hasYouTubeTranscript &&
     !hasFormatted
   ) {
     return null;
@@ -364,14 +355,6 @@ const EssentialInfoDisplay: React.FC<{ record: FileRecord }> = ({ record }) => {
         <div className="text-sm">Added tags: {record.tags.join(", ")}</div>
       )}
 
-      {hasYouTubeTranscript && (
-        <div className="text-sm">
-          Extracted YouTube transcript{" "}
-          <span className="text-[var(--text-dim)] text-xs" className="opacity-50">
-            {formatTimestamp(youtubeTimestamp)}
-          </span>
-        </div>
-      )}
     </div>
   );
 };

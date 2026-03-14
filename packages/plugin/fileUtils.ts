@@ -2,10 +2,26 @@ import { App, TFolder, TFile, normalizePath, parseYaml } from "obsidian";
 import { ZenithAISettings } from "./settings";
 import { logger } from "./services/logger";
 
+/**
+ * Strips appended transcript/media sections from content to get the original user content.
+ * Removes audio transcript headers.
+ */
+export function getOriginalContent(content: string): string {
+  let original = content;
+
+  // Remove audio file link and transcript header if present
+  const audioLinkPattern = /^!\[\[[^\]]+\]\]\s*\n\n/;
+  const transcriptHeaderPattern = /^## Transcript for [^\n]+\n\n/;
+
+  original = original.replace(audioLinkPattern, '');
+  original = original.replace(transcriptHeaderPattern, '');
+
+  return original;
+}
+
 // Default template names that come with the plugin
 export const DEFAULT_TEMPLATE_NAMES = [
   "meeting_note.md",
-  "youtube_video.md",
   "enhance.md",
   "research_paper.md",
   "flash_cards.md",
@@ -147,94 +163,6 @@ citation: "[Complete citation in APA/MLA format]"
 - **Related papers in vault**: [[Paper 1]], [[Paper 2]]
 - **Related concepts**: [[Concept 1]], [[Concept 2]]
 `;
-}
-
-function getYoutubeVideoTemplateContent(): string {
-  return `Please create an Obsidian note using the video link and any available transcript or additional context. The note must include:
-
-1. Frontmatter (at the top) with the following properties:
-
----
-
-title: "{{video title - extract from YouTube Video Information section or transcript}}"
-
-channel: "{{channel name if available, otherwise leave empty}}"
-
-date_published: "{{video publication date if available in transcript or metadata, otherwise leave empty}}"
-
-topics: ["{{relevant topic 1}}", "{{relevant topic 2}}"]
-
-tags: ["youtube", "{{any other relevant tags based on content}}"]
-
-summary: "{{short summary of the video's main theme and key takeaways}}"
-
----
-
-2. A YouTube video embed in the following format (Obsidian will automatically embed the video):
-
-![](https://www.youtube.com/watch?v=VIDEO_ID)
-
-3. A comprehensive, detailed summary of the key points from the video (below the embed link).
-
-**Instructions:**
-
-- Extract the video title from the "YouTube Video Information" section if provided, or infer from the transcript content.
-
-- Use the **Channel** and **Date Published** values from the "YouTube Video Information" section when present for the frontmatter \`channel\` and \`date_published\` fields. If not provided in that section, leave them empty.
-
-- Extract topics by analyzing the main themes discussed in the transcript. Use 2-5 specific, relevant topics.
-
-- Generate tags based on the video content. Always include "youtube" and add 2-4 additional relevant tags. Tags in frontmatter should NOT include the "#" symbol (only use "#" for inline tags in the content body). **CRITICAL: Tags must have NO spaces between words. Use hyphens or underscores to connect multi-word tags (e.g., "web-development" or "machine_learning", not "web development" or "machine learning").**
-
-- Create a concise summary (1-2 sentences) that captures the video's main theme and key takeaways.
-
-- If a full transcript is provided in the "Full Transcript" section, use it to create an accurate, detailed summary below the embed link.
-
-- If "Date Published" is in the YouTube Video Information section, use it for \`date_published\`. Otherwise extract from transcript if mentioned, or leave empty.
-
-- Maintain the exact markdown syntax for the frontmatter block (\`---\` at the top and bottom).
-
-- Extract the video ID from the YouTube URL in the content, then create the embed using Obsidian's embed syntax:
-  - Format: ![](https://www.youtube.com/watch?v=VIDEO_ID) (replace VIDEO_ID with the actual video ID)
-  - This will automatically embed the YouTube video player in Obsidian
-
-- In the main body, provide a comprehensive summary with bullet points covering all major points from the video transcript.
-
-- **CRITICAL - NO SPONSOR CONTENT: Never include sponsor segments, promotional content, or ads in the summary or body. Exclude: "sponsored by", "use code X", "check out our sponsor", "this video is brought to you by", discount/promo codes, product plugs, and mid-roll ad segments. Summarize ONLY the main educational or informational content of the video. If the transcript contains sponsor blocks, skip them entirely—do not paraphrase or mention them.**
-
-- Do not use \`\`\` code blocks or markdown code formatting in the summary.
-
-- Focus on accuracy and completeness based on the actual transcript content provided.
-
-**Example Output Format:**
-
----
-
-title: "How to Build a React App in 2024"
-
-channel: "Tech Tutorials"
-
-date_published: "2024-01-15"
-
-topics: ["React", "Web Development", "JavaScript", "Tutorial"]
-
-tags: ["youtube", "react", "webdev", "tutorial"]
-
-summary: "A comprehensive guide to building modern React applications with hooks, context API, and best practices for 2024."
-
----
-
-![](https://www.youtube.com/watch?v=VIDEO_ID)
-
-## Detailed Summary
-
-- Introduction to React fundamentals and modern development practices
-- Setting up a new React project with Vite
-- Using React Hooks for state management
-- Implementing Context API for global state
-- Best practices for component structure and organization
-- Performance optimization techniques
-- Deployment strategies and recommendations`;
 }
 
 function getEnhanceTemplateContent(): string {
@@ -381,7 +309,7 @@ Photosynthesis occurs in two stages:
 
 Important Notes:
 - ALWAYS include frontmatter with total, topics, and created date
-- Each property in frontmatter must be on its own line (no nesting, flat structure like the YouTube template)
+- Each property in frontmatter must be on its own line (no nesting, flat structure)
 - Topics should be an array: topics: ["Topic 1", "Topic 2", "Topic 3"]
 - Created should be a string in quotes: created: "2025-01-09"
 - Total should be a number without quotes: total: 15
@@ -424,7 +352,6 @@ export async function checkAndCreateTemplates(
   settings: ZenithAISettings
 ) {
   const meetingNoteTemplatePath = `${settings.templatePaths}/meeting_note.md`;
-  const youtubeVideoTemplatePath = `${settings.templatePaths}/youtube_video.md`;
   const enhanceTemplatePath = `${settings.templatePaths}/enhance.md`;
   const researchPaperTemplatePath = `${settings.templatePaths}/research_paper.md`;
   const flashCardsTemplatePath = `${settings.templatePaths}/flash_cards.md`;
@@ -440,13 +367,6 @@ export async function checkAndCreateTemplates(
     await app.vault.create(
       researchPaperTemplatePath,
       getResearchPaperTemplateContent()
-    );
-  }
-
-  if (!(await app.vault.adapter.exists(youtubeVideoTemplatePath))) {
-    await app.vault.create(
-      youtubeVideoTemplatePath,
-      getYoutubeVideoTemplateContent()
     );
   }
 
@@ -470,7 +390,6 @@ export async function restoreDefaultTemplates(
 ) {
   const templatePaths = {
     meetingNote: `${settings.templatePaths}/meeting_note.md`,
-    youtubeVideo: `${settings.templatePaths}/youtube_video.md`,
     enhance: `${settings.templatePaths}/enhance.md`,
     researchPaper: `${settings.templatePaths}/research_paper.md`,
     flashCards: `${settings.templatePaths}/flash_cards.md`,
@@ -478,7 +397,6 @@ export async function restoreDefaultTemplates(
 
   const templateContents = {
     meetingNote: getMeetingNoteTemplateContent(),
-    youtubeVideo: getYoutubeVideoTemplateContent(),
     enhance: getEnhanceTemplateContent(),
     researchPaper: getResearchPaperTemplateContent(),
     flashCards: getFlashCardsTemplateContent(),

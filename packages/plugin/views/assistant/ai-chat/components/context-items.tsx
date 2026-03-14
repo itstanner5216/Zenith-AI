@@ -15,7 +15,6 @@ export const ContextItems: React.FC = () => {
     includeCurrentFile,
     files,
     folders,
-    youtubeVideos,
     tags,
     searchResults,
     removeByReference,
@@ -32,7 +31,6 @@ export const ContextItems: React.FC = () => {
     Object.keys(files).length > 0 ||
     Object.keys(folders).length > 0 ||
     Object.keys(tags).length > 0 ||
-    Object.keys(youtubeVideos).length > 0 ||
     Object.keys(searchResults).length > 0 ||
     Object.keys(textSelections).length > 0;
 
@@ -52,8 +50,6 @@ export const ContextItems: React.FC = () => {
     file: "📄",
     folder: "📁",
     tag: "🏷️",
-    youtube: "🎥",
-
     search: "🔍",
     "text-selection": "✂️",
   } as const;
@@ -69,10 +65,6 @@ export const ContextItems: React.FC = () => {
         break;
       case "folder":
         handleOpenFolder(title);
-        break;
-      case "youtube":
-        const videoId = id.replace("youtube-", "");
-        window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
         break;
       case "tag":
         handleOpenTag(title);
@@ -231,23 +223,6 @@ export const ContextItems: React.FC = () => {
                 onClick={() => handleItemClick("tag", tag.id, tag.name)}
                 onRemove={() => removeByReference(tag.reference)}
                 prefix={`${prefixMap.tag} `}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* YouTube section */}
-        {Object.values(youtubeVideos).length > 0 && (
-          <div className="flex space-x-2">
-            {Object.values(youtubeVideos).map(video => (
-              <SelectedItem
-                key={video.id}
-                item={video.title}
-                onClick={() =>
-                  handleItemClick("youtube", video.id, video.title)
-                }
-                onRemove={() => removeByReference(video.reference)}
-                prefix={`${prefixMap.youtube} `}
               />
             ))}
           </div>

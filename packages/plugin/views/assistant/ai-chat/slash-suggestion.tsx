@@ -7,7 +7,6 @@ import {
   Search,
   FileText,
   Zap,
-  Video,
   Wand2,
   BookOpen,
   FileCode,
@@ -28,9 +27,6 @@ interface CommandItem {
 // Helper function to get icon for template name
 const getTemplateIcon = (templateName: string): React.ReactNode => {
   const lowerName = templateName.toLowerCase();
-  if (lowerName.includes("youtube") || lowerName.includes("video")) {
-    return <Video className="w-4 h-4" />;
-  }
   if (lowerName.includes("enhance")) {
     return <Wand2 className="w-4 h-4" />;
   }

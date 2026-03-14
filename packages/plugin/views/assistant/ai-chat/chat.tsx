@@ -141,7 +141,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     tags,
     searchResults,
     currentFile,
-    youtubeVideos,
     textSelections,
     isLightweightMode,
   } = useContextItems();
@@ -164,7 +163,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     folders,
     tags,
     currentFile,
-    youtubeVideos,
     searchResults,
     textSelections,
   };
@@ -204,12 +202,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
               ...search,
               results: search.results.map(r => ({ ...r, content: "" })),
             },
-          ])
-        ),
-        youtubeVideos: Object.fromEntries(
-          Object.entries(youtubeVideos).map(([id, video]) => [
-            id,
-            { ...video, transcript: "" }, // Remove transcript in lightweight mode
           ])
         ),
         // Keep these as is
@@ -319,35 +311,14 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         folders: store.folders || {},
         tags: store.tags || {},
         currentFile: store.currentFile || null,
-        youtubeVideos: store.youtubeVideos || {}, // CRITICAL: Ensure youtubeVideos is always an object
         searchResults: store.searchResults || {},
         textSelections: store.textSelections || {},
       };
 
       // Debug: Log store state
       console.log("[Chat] prepareRequestBody - Store state:", {
-        hasYoutubeVideos: !!store.youtubeVideos,
-        youtubeVideosType: typeof store.youtubeVideos,
-        youtubeVideosKeys: store.youtubeVideos
-          ? Object.keys(store.youtubeVideos)
-          : [],
         allStoreKeys: Object.keys(store),
       });
-
-      // Ensure youtubeVideos is always an object (defensive)
-      if (
-        !freshContextItems.youtubeVideos ||
-        typeof freshContextItems.youtubeVideos !== "object"
-      ) {
-        console.warn(
-          "[Chat] prepareRequestBody: youtubeVideos is not an object, fixing it:",
-          {
-            type: typeof freshContextItems.youtubeVideos,
-            value: freshContextItems.youtubeVideos,
-          }
-        );
-        freshContextItems.youtubeVideos = {};
-      }
 
       const contextJson = store.isLightweightMode
         ? JSON.stringify({
@@ -381,11 +352,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     results: search.results.map(r => ({ ...r, content: "" })),
                   },
                 ]
-              )
-            ),
-            youtubeVideos: Object.fromEntries(
-              Object.entries(freshContextItems.youtubeVideos).map(
-                ([id, video]) => [id, { ...video, transcript: "" }]
               )
             ),
             currentFile: freshContextItems.currentFile
@@ -464,14 +430,9 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         "[Chat] prepareRequestBody: Saved context for snapshotting, length:",
         contextToSend.length
       );
-      const hasYouTube =
-        Object.keys(freshContextItems.youtubeVideos).length > 0;
       const contextStringLength = freshContextString.length;
       console.log("[Chat] prepareRequestBody - Context summary:", {
         messagesCount: messages.length,
-        hasYouTube,
-        youtubeVideoCount: Object.keys(freshContextItems.youtubeVideos).length,
-        youtubeVideoIds: Object.keys(freshContextItems.youtubeVideos),
         contextStringLength,
         isLightweightMode: store.isLightweightMode,
         hasEditorContext: !!freshEditorContext,
@@ -487,31 +448,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         hasCurrentFile: !!freshContextItems.currentFile,
         contextPreview: freshContextString.substring(0, 200),
       });
-
-      if (hasYouTube) {
-        // Log first video details
-        const firstVideo = Object.values(
-          freshContextItems.youtubeVideos
-        )[0] as any;
-        console.log("[Chat] First YouTube video:", {
-          id: firstVideo?.id,
-          title: firstVideo?.title,
-          transcriptLength: firstVideo?.transcript?.length || 0,
-          videoId: firstVideo?.videoId,
-        });
-      } else {
-        // Log when YouTube videos are missing
-        console.warn(
-          "[Chat] prepareRequestBody: No YouTube videos in context!",
-          {
-            storeYoutubeVideos: Object.keys(store.youtubeVideos),
-            freshContextItemsYoutubeVideos: Object.keys(
-              freshContextItems.youtubeVideos
-            ),
-            allStoreKeys: Object.keys(store),
-          }
-        );
-      }
 
       const requestBody = {
         messages: normalizedMessages,
@@ -718,7 +654,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             folders: store.folders || {},
             tags: store.tags || {},
             currentFile: store.currentFile || null,
-            youtubeVideos: store.youtubeVideos || {},
             searchResults: store.searchResults || {},
             textSelections: store.textSelections || {},
           };
@@ -762,11 +697,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                         })),
                       },
                     ]
-                  )
-                ),
-                youtubeVideos: Object.fromEntries(
-                  Object.entries(freshContextItems.youtubeVideos).map(
-                    ([id, video]) => [id, { ...video, transcript: "" }]
                   )
                 ),
                 currentFile: freshContextItems.currentFile
@@ -921,7 +851,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 files: { ...store.files },
                 folders: { ...store.folders },
                 tags: { ...store.tags },
-                youtubeVideos: { ...store.youtubeVideos },
                 searchResults: { ...store.searchResults },
                 textSelections: { ...store.textSelections },
                 currentFile: store.currentFile
@@ -1170,11 +1099,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
               store.addTag(tag);
             });
           }
-          if (session.contextItems.youtubeVideos) {
-            Object.values(session.contextItems.youtubeVideos).forEach(video => {
-              store.addYouTubeVideo(video);
-            });
-          }
           if (session.contextItems.searchResults) {
             Object.values(session.contextItems.searchResults).forEach(
               search => {
@@ -1342,7 +1266,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           files: { ...files },
           folders: { ...folders },
           tags: { ...tags },
-          youtubeVideos: { ...youtubeVideos },
           searchResults: { ...searchResults },
           textSelections: { ...textSelections },
           currentFile: currentFile ? { ...currentFile } : null,
@@ -1388,7 +1311,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           files: { ...files },
           folders: { ...folders },
           tags: { ...tags },
-          youtubeVideos: { ...youtubeVideos },
           searchResults: { ...searchResults },
           textSelections: { ...textSelections },
           currentFile: currentFile ? { ...currentFile } : null,
@@ -1416,7 +1338,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     files,
     folders,
     tags,
-    youtubeVideos,
     searchResults,
     textSelections,
     currentFile,
@@ -1823,39 +1744,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
               let fileContent = await app.vault.read(activeFile);
               if (typeof fileContent !== "string") {
                 throw new Error("File content is not a string");
-              }
-
-              // Handle YouTube video special case
-              if (
-                templateName === "youtube_video" ||
-                templateName === "youtube_video.md"
-              ) {
-                const { extractYouTubeVideoId, getYouTubeContent } =
-                  await import("../../../inbox/services/youtube-service");
-                const videoId = extractYouTubeVideoId(fileContent);
-                if (videoId) {
-                  try {
-                    new Notice("Fetching YouTube transcript...", 2000);
-                    const { title, transcript } = await getYouTubeContent(
-                      videoId,
-                      plugin
-                    );
-                    const videoInfo = `\n\n## YouTube Video Information\n\nTitle: ${title}\nVideo ID: ${videoId}\n\n## Full Transcript\n\n${transcript}`;
-                    fileContent = fileContent + videoInfo;
-                    new Notice("Transcript fetched, formatting...", 2000);
-                  } catch (error) {
-                    logger.warn(
-                      "Failed to fetch YouTube transcript, formatting without it:",
-                      error
-                    );
-                    new Notice(
-                      `Could not fetch transcript: ${
-                        error instanceof Error ? error.message : String(error)
-                      }. Formatting with available content.`,
-                      5000
-                    );
-                  }
-                }
               }
 
               // Get template instructions and format

@@ -401,16 +401,6 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
       <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
         <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Quick Tutorial</h3>
-        <div className="youtube-embed">
-          <iframe
-            width="100%"
-            height="315"
-            src="https://www.youtube.com/embed/X4yN4ykTJIo?si=QoMN-wNZSo1woQcB"
-            style={{ border: "none" }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
       </div>
 
       <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">

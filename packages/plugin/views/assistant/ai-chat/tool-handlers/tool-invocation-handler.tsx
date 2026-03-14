@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { App } from "obsidian";
 import { ToolInvocation } from "ai";
-import { YouTubeHandler } from "./youtube-handler";
 import { SearchHandler } from "./search-handler";
 import { DateRangeHandler } from "./date-range-handler";
 import { LastModifiedHandler } from "./last-modified-handler";
@@ -83,7 +82,6 @@ function ToolInvocationHandler({
       getNotesForDateRange: "Fetching Notes",
       getSearchQuery: "Searching Notes",
       askForConfirmation: "Confirmation Required",
-      getYoutubeVideoId: "YouTube Transcript",
       modifyCurrentNote: "Note Modification",
       getLastModifiedFiles: "Recent File Activity",
 
@@ -133,12 +131,6 @@ function ToolInvocationHandler({
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}
-        />
-      ),
-      getYoutubeVideoId: () => (
-        <YouTubeHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
         />
       ),
       getNotesForDateRange: () => (

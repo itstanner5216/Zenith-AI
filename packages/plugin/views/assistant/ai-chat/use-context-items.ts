@@ -30,13 +30,6 @@ interface FolderContextItem extends BaseContextItem {
   files: ProcessedFile[];
 }
 
-interface YouTubeContextItem extends BaseContextItem {
-  type: "youtube";
-  videoId: string;
-  title: string;
-  transcript: string;
-}
-
 interface TagContextItem extends BaseContextItem {
   type: "tag";
   name: string;
@@ -69,7 +62,6 @@ interface TextSelectionContextItem extends BaseContextItem {
 type ContextCollections = {
   files: Record<string, FileContextItem>;
   folders: Record<string, FolderContextItem>;
-  youtubeVideos: Record<string, YouTubeContextItem>;
   tags: Record<string, TagContextItem>;
 
   searchResults: Record<string, SearchContextItem>;
@@ -84,7 +76,6 @@ interface ContextItemsState extends ContextCollections {
   // Actions for each type
   addFile: (file: FileContextItem) => void;
   addFolder: (folder: FolderContextItem) => void;
-  addYouTubeVideo: (video: YouTubeContextItem) => void;
   addTag: (tag: TagContextItem) => void;
 
   addSearchResults: (search: SearchContextItem) => void;
@@ -113,7 +104,6 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
   // Initial state
   files: {},
   folders: {},
-  youtubeVideos: {},
   tags: {},
   searchResults: {},
   textSelections: {},
@@ -176,14 +166,6 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
       };
     }),
 
-  // Add YouTube video without lightweight mode
-  addYouTubeVideo: video =>
-    set(state => ({
-      youtubeVideos: { ...state.youtubeVideos, [video.id]: video },
-    })),
-
-
-
   // Update addTag to handle lightweight mode
   addTag: tag =>
     set(state => {
@@ -230,7 +212,6 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
       const collectionMap: Record<ContextItemType, keyof ContextCollections> = {
         file: "files",
         folder: "folders",
-        youtube: "youtubeVideos",
         tag: "tags",
 
         search: "searchResults",
@@ -256,7 +237,6 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
     set({
       files: {},
       folders: {},
-      youtubeVideos: {},
       tags: {},
       searchResults: {},
       textSelections: {},
@@ -272,9 +252,6 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
       ),
       folders: Object.fromEntries(
         Object.entries(state.folders).filter(([_, item]) => !item.ephemeral)
-      ),
-      youtubeVideos: Object.fromEntries(
-        Object.entries(state.youtubeVideos).filter(([_, item]) => !item.ephemeral)
       ),
       tags: Object.fromEntries(
         Object.entries(state.tags).filter(([_, item]) => !item.ephemeral)
@@ -327,7 +304,6 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
       const collections: (keyof ContextCollections)[] = [
         "files",
         "folders",
-        "youtubeVideos",
         "tags",
 
         "searchResults",
@@ -400,46 +376,6 @@ export const addFileReference = (file: {
     reference,
     createdAt: Date.now(),
     ephemeral: true, // Always ephemeral for references
-  });
-};
-
-export const addYouTubeContext = (video: {
-  videoId: string;
-  title: string;
-  transcript: string;
-}) => {
-  console.log("[addYouTubeContext] Adding video to store:", {
-    videoId: video.videoId,
-    title: video.title,
-    transcriptLength: video.transcript.length,
-  });
-
-  const store = useContextItems.getState();
-  console.log("[addYouTubeContext] Store state before add:", {
-    hasYoutubeVideos: !!store.youtubeVideos,
-    youtubeVideosType: typeof store.youtubeVideos,
-    youtubeVideosKeys: store.youtubeVideos ? Object.keys(store.youtubeVideos) : [],
-  });
-
-  store.addYouTubeVideo({
-    id: `youtube-${video.videoId}`,
-    type: "youtube",
-    videoId: video.videoId,
-    title: video.title,
-    transcript: video.transcript,
-    reference: `YouTube Video: ${video.title}`,
-    createdAt: Date.now(),
-    ephemeral: false, // CRITICAL: Explicitly set to false so it's NOT cleared by clearEphemeral
-  });
-
-  // Verify it was added
-  const storeAfter = useContextItems.getState();
-  const addedVideo = storeAfter.youtubeVideos?.[`youtube-${video.videoId}`];
-  console.log("[addYouTubeContext] Store state after add:", {
-    hasYoutubeVideos: !!storeAfter.youtubeVideos,
-    youtubeVideosKeys: storeAfter.youtubeVideos ? Object.keys(storeAfter.youtubeVideos) : [],
-    videoAdded: !!addedVideo,
-    videoId: addedVideo?.videoId,
   });
 };
 
@@ -527,7 +463,6 @@ export const addTextSelectionContext = (params: {
 export type ContextItemType =
   | "file"
   | "folder"
-  | "youtube"
   | "tag"
 
   | "search"
@@ -535,7 +470,6 @@ export type ContextItemType =
 export type {
   FileContextItem,
   FolderContextItem,
-  YouTubeContextItem,
   TagContextItem,
 
   BaseContextItem,
@@ -555,7 +489,6 @@ export const getUniqueReferences = () => {
   const collections = {
     files: store.files,
     folders: store.folders,
-    youtubeVideos: store.youtubeVideos,
     tags: store.tags,
 
     searchResults: store.searchResults,

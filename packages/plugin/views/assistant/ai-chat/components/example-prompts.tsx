@@ -49,9 +49,9 @@ const examples: Example[] = [
     icon: "🕒"
   },
   {
-    prompt: "Summarize this video https://www.youtube.com/watch?v=AyLXmbTnJIY&t=1s",
-    description: "Content import",
-    icon: "▶️"
+    prompt: "Help me organize my recent notes",
+    description: "Note organization",
+    icon: "📋"
   }
 ];
 

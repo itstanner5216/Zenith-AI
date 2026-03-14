@@ -48,17 +48,6 @@ export const chatTools = {
         .describe("The full path of the file to open (e.g., 'folder/note.md')"),
     }),
   },
-  getYoutubeVideoId: {
-    description:
-      'Retrieve YouTube video transcript and add it to context. After retrieving, automatically provide a summary of the video content based on the transcript. Use this when the user asks to summarize, analyze, or get information from a YouTube video.',
-    parameters: z.object({
-      videoId: z
-        .string()
-        .describe(
-          "The YouTube video ID or full URL (e.g., 'ooNeVSVlCX4' or 'https://www.youtube.com/watch?v=ooNeVSVlCX4')"
-        ),
-    }),
-  },
   getLastModifiedFiles: {
     description:
       'Retrieve recently modified files to track changes and activity in the vault',
