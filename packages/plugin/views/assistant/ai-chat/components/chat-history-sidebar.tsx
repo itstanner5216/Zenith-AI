@@ -3,7 +3,7 @@ import { X, MessageSquare } from "lucide-react";
 import { ChatSession } from "../services/chat-history-manager";
 import { tw } from "../../../../lib/utils";
 import { StyledContainer } from "../../../../components/ui/utils";
-import { moment } from "obsidian";
+import moment from "moment";
 
 interface ChatHistorySidebarProps {
   sessions: ChatSession[];

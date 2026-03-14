@@ -62,11 +62,10 @@ export const SimilarFolderBox: React.FC<SimilarFolderBoxProps> = ({
     } catch (err) {
       logger.error("Error fetching folders:", err);
 
-      // Check if this is a token limit error
+      // Check if this is a usage limit error.
       if (err && typeof err === 'object' && 'status' in err && (err as any).status === 429) {
-        const errorMessage = (err as any).message || "Token limit exceeded. Please upgrade your plan for more tokens.";
+        const errorMessage = (err as any).message || "Usage limit exceeded for this cycle. Try again later.";
         setError(new Error(errorMessage));
-        // Notify parent component to show upgrade button
         onTokenLimitError?.(errorMessage);
         return;
       }

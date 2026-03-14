@@ -1,28 +1,10 @@
 'use server';
-import { auth } from '@clerk/nextjs/server';
 import { Unkey } from '@unkey/api';
-import { db, UserUsageTable as UserUsageTableImport } from '@/drizzle/schema';
-import { eq } from 'drizzle-orm';
-
-import { checkUserSubscriptionStatus } from '../drizzle/schema';
+import { auth } from '@clerk/nextjs/server';
 
 export type CreateLicenseKeyResponse =
   | { error: string }
   | { key: { key: string } };
-
-export type GetLicenseKeyResponse =
-  | { error: string }
-  | { key: string | null };
-
-export async function isPaidUser(userId: string) {
-  try {
-    const isSubscribed = await checkUserSubscriptionStatus(userId);
-    return isSubscribed;
-  } catch (error) {
-    console.error('Error checking subscription status:', error);
-    return false;
-  }
-}
 
 export async function createLicenseKeyFromUserId(
   userId: string
@@ -50,7 +32,7 @@ export async function createLicenseKeyFromUserId(
   // Unkey v2 uses 'rootKey' instead of 'token'
   const unkey = new Unkey({ rootKey: token });
 
-  console.log('Creating Unkey license key', {
+  console.log('Creating Unkey API key', {
     apiId,
     externalId: userId,
     name,
@@ -81,7 +63,7 @@ export async function createLicenseKeyFromUserId(
     if (responseWithError?.error) {
       console.error('Unkey API returned an error:', responseWithError.error);
       return {
-        error: `Failed to create license key: ${JSON.stringify(
+        error: `Failed to create API key: ${JSON.stringify(
           responseWithError.error
         )}`,
       };
@@ -91,12 +73,12 @@ export async function createLicenseKeyFromUserId(
     const keyResult = responseWithError?.data;
 
     if (!keyResult) {
-      console.error('Failed to create license key - no data in response', {
+      console.error('Failed to create API key - no data in response', {
         hasKeyResult: !!keyResult,
         response,
       });
       return {
-        error: 'Failed to create license key: No data in response',
+        error: 'Failed to create API key: No data in response',
       };
     }
 
@@ -113,11 +95,11 @@ export async function createLicenseKeyFromUserId(
           typeof keyResult === 'object' ? Object.keys(keyResult) : [],
       });
       return {
-        error: 'Failed to create license key: Key not found in response',
+        error: 'Failed to create API key: Key not found in response',
       };
     }
 
-    console.log('License key created successfully', {
+    console.log('API key created successfully', {
       keyResult,
       actualKey: actualKey ? actualKey.substring(0, 10) + '...' : 'missing',
       fullActualKey: typeof actualKey === 'string' ? actualKey : 'not a string',
@@ -131,9 +113,9 @@ export async function createLicenseKeyFromUserId(
       key: typeof actualKey === 'string' ? { key: actualKey } : keyResult,
     };
   } catch (error) {
-    console.error('Exception while creating license key:', error);
+    console.error('Exception while creating API key:', error);
     return {
-      error: `Failed to create license key: ${
+      error: `Failed to create API key: ${
         error instanceof Error ? error.message : 'Unknown error'
       }`,
     };
@@ -142,131 +124,11 @@ export async function createLicenseKeyFromUserId(
 
 export async function createLicenseKey(): Promise<CreateLicenseKeyResponse> {
   const { userId } = await auth();
-  console.log('Creating license key - User authenticated:', !!userId);
+  console.log('Creating API key - User authenticated:', !!userId);
   if (!userId) {
     return {
       error: 'User not authenticated. Please log in and try again.',
     };
   }
   return createLicenseKeyFromUserId(userId);
-}
-
-export async function getLicenseKey(): Promise<GetLicenseKeyResponse> {
-  const { userId } = await auth();
-  if (!userId) {
-    return {
-      error: 'User not authenticated. Please log in and try again.',
-    };
-  }
-  return getLicenseKeyFromUserId(userId);
-}
-
-export async function getLicenseKeyFromUserId(
-  userId: string
-): Promise<GetLicenseKeyResponse> {
-  const token = process.env.UNKEY_ROOT_KEY;
-  const apiId = process.env.UNKEY_API_ID;
-
-  if (!token || !apiId) {
-    return {
-      error: 'Unkey configuration is missing. Please contact support.',
-    };
-  }
-
-  const unkey = new Unkey({ rootKey: token });
-
-  try {
-    // Unkey v2: Try to list keys by ownerId/externalId
-    // The SDK might have keys.list() or similar method
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const unkeyAny = unkey as any;
-
-    // Try different possible methods to list keys
-    let keys: any[] = [];
-
-    // Method 1: Try keys.list() with ownerId
-    if (unkeyAny.keys?.list) {
-      try {
-        const response = await unkeyAny.keys.list({
-          ownerId: userId,
-          apiId,
-        });
-        keys = response?.data?.keys || response?.keys || [];
-      } catch (e) {
-        console.log('keys.list() method not available or failed:', e);
-      }
-    }
-
-    // Method 2: Try keys.listByOwnerId()
-    if (keys.length === 0 && unkeyAny.keys?.listByOwnerId) {
-      try {
-        const response = await unkeyAny.keys.listByOwnerId({
-          ownerId: userId,
-          apiId,
-        });
-        keys = response?.data?.keys || response?.keys || [];
-      } catch (e) {
-        console.log('keys.listByOwnerId() method not available or failed:', e);
-      }
-    }
-
-    // Method 3: Try direct API call to v2 endpoint if SDK methods don't work
-    if (keys.length === 0) {
-      try {
-        // Unkey v2: Use v2 API endpoint with ownerId parameter
-        const response = await fetch(
-          `https://api.unkey.com/v2/keys?ownerId=${userId}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          keys = data?.keys || [];
-        }
-      } catch (e) {
-        console.log('Direct API call to v2 endpoint failed:', e);
-      }
-    }
-
-    // If we found keys, return the first one (most recent)
-    // Note: Unkey doesn't return the actual key string for security,
-    // only metadata. We'll need to handle this differently.
-    if (keys.length > 0) {
-      // Since Unkey doesn't return the actual key string when listing,
-      // we'll return a flag indicating a key exists
-      // The user will need to use the key they already have
-      return {
-        key: null, // We can't retrieve the actual key string for security reasons
-      };
-    }
-
-    // No keys found
-    return { key: null };
-  } catch (error) {
-    console.error('Error fetching license key:', error);
-    // If we can't determine if a key exists, assume none exists
-    // This allows users to create a new key
-    return { key: null };
-  }
-}
-
-export async function getUserBillingCycle(userId: string) {
-  if (!userId) return 'none'; // Default to monthly if no userId
-
-  try {
-    const user = await db
-      .select({ billingCycle: UserUsageTableImport.billingCycle })
-      .from(UserUsageTableImport)
-      .where(eq(UserUsageTableImport.userId, userId))
-      .limit(1);
-
-    return user[0]?.billingCycle || 'none'; // Default to monthly if not found
-  } catch (error) {
-    console.error('Error fetching user billing cycle:', error);
-    return 'none'; // Default to monthly in case of error
-  }
 }

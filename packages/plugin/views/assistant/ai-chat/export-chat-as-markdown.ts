@@ -25,7 +25,10 @@ interface ToolInvocationLike {
  * Normalize message content to string (handles AI SDK string or array of parts).
  */
 function getMessageContentAsString(message: Message): string {
-  const content = message.content;
+  const content = message.content as
+    | string
+    | Array<{ type?: string; text?: string }>
+    | unknown;
   if (typeof content === "string") return content;
   if (Array.isArray(content)) {
     return content

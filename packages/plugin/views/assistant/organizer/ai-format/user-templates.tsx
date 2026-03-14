@@ -109,10 +109,9 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
       } catch (error) {
         logger.error("Error in fetchClassificationAndTemplates:", error);
 
-        // Check if this is a token limit error
+        // Check if this is a usage limit error.
         if (error && typeof error === 'object' && 'status' in error && (error as any).status === 429) {
-          const errorMessage = (error as any).message || "Token limit exceeded. Please upgrade your plan for more tokens.";
-          // Notify parent component to show upgrade button
+          const errorMessage = (error as any).message || "Usage limit exceeded for this cycle. Try again later.";
           onTokenLimitError?.(errorMessage);
         }
 

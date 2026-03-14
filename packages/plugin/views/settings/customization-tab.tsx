@@ -13,7 +13,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [useVaultTitles, setUseVaultTitles] = useState(plugin.settings.useVaultTitles);
   const [customFolderInstructions, setCustomFolderInstructions] = useState(plugin.settings.customFolderInstructions);
   const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
-  const [imageInstructions, setImageInstructions] = useState(plugin.settings.imageInstructions);
   const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
   const [vertexBrainUrl, setVertexBrainUrl] = useState(plugin.settings.vertexBrainUrl ?? "");
   const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
@@ -144,24 +143,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
           </div>
         </div>
 
-        {/* Image Processing Section */}
-        <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">Image Processing</h4>
-          <div className="space-y-4">
-            <TextAreaSetting
-              name="Image Instructions"
-              description="Provide instructions for how to process and describe images in your documents."
-              value={imageInstructions}
-              onChange={(value) => handleTextChange(value, setImageInstructions, 'imageInstructions')}
-            />
-            <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
-              <div className="text-xs text-[var(--text-dim)] opacity-70">
-                These instructions will be used to generate descriptions for images in your documents.
-                The AI will analyze the image content and create descriptions based on your specifications.
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Vault Intelligence Section */}

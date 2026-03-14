@@ -23,11 +23,12 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
       }
 
-      // Create empty usage for this user if needed - initialized with legacy plan
+      // Create an initial usage row for this user if needed
       await createEmptyUserUsage(userId);
 
       return NextResponse.json({
         success: true,
+        apiKey: licenseKeyResult.key.key,
         licenseKey: licenseKeyResult.key.key,
         userId,
         message: "Development mode: Using current session",
@@ -82,7 +83,7 @@ export async function POST(req: NextRequest) {
       password,
     });
 
-    // Generate a license key for the new user
+    // Generate an API key for the new user
     const licenseKeyResult = await createLicenseKeyFromUserId(user.id);
 
     if ('error' in licenseKeyResult) {
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      apiKey: licenseKeyResult.key.key,
       licenseKey: licenseKeyResult.key.key,
       userId: user.id,
     });

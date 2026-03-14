@@ -12,8 +12,8 @@ import { AssistantView as Organizer } from "../organizer/organizer";
 type SectionType = "organizer" | "inbox" | "chat";
 
 /**
- * This is the main container merging the top-level features:
- *  - Onboarding
+ * This is the dormant planning-workspace shell that merges top-level features:
+ *  - First-run setup
  *  - Collapsible sections (organizer, inbox, chat)
  *  - Floating Action Button for context-aware quick actions
  *  - Basic real-time progress status
@@ -21,7 +21,7 @@ type SectionType = "organizer" | "inbox" | "chat";
 export function MainDashboard() {
   const plugin = usePlugin();
   
-  // Track whether user finished onboarding
+  // Track whether the dormant setup flow has already been completed
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(
     plugin.settings.hasRunOnboarding ?? false
   );
@@ -91,7 +91,7 @@ export function MainDashboard() {
     });
   };
 
-  // Handle finishing the onboarding wizard
+  // Handle finishing the setup wizard
   const handleOnboardingComplete = () => {
     setIsOnboardingComplete(true);
     plugin.settings.hasRunOnboarding = true;
@@ -125,7 +125,7 @@ export function MainDashboard() {
     }
   };
 
-  // If the user hasn't completed onboarding, show that first
+  // If the user hasn't completed setup, show that first
   if (!isOnboardingComplete) {
     return <OnboardingWizard plugin={plugin} onComplete={handleOnboardingComplete} />;
   }

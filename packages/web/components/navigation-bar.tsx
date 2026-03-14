@@ -6,9 +6,6 @@ import { usePathname } from 'next/navigation';
 import { 
   Home, 
   Cloud, 
-  CreditCard, 
-  Server, 
-  Key, 
   Settings, 
   LifeBuoy, 
   ChevronDown
@@ -21,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
-import { useUser } from "@clerk/nextjs";
 
 export interface NavigationItem {
   name: string;
@@ -34,32 +30,6 @@ export interface NavigationItem {
 
 export function NavigationBar() {
   const pathname = usePathname();
-  const { user, isLoaded } = useUser();
-  const [mounted, setMounted] = React.useState(false);
-  const [userSubscription, setUserSubscription] = React.useState({
-    active: false,
-    currentProduct: null as string | null
-  });
-  
-  // Use useEffect to handle client-side mounting
-  React.useEffect(() => {
-    setMounted(true);
-    
-    // Fetch subscription status from the server if user is loaded
-    if (isLoaded && user) {
-      fetch('/api/user/subscription-status')
-        .then(res => res.json())
-        .then(data => {
-          setUserSubscription({
-            active: data.active,
-            currentProduct: data.currentProduct
-          });
-        })
-        .catch(err => {
-          console.error('Error fetching subscription status:', err);
-        });
-    }
-  }, [isLoaded, user]);
   
   // Base navigation items always shown
   const navigation: NavigationItem[] = [
@@ -70,27 +40,7 @@ export function NavigationBar() {
       icon: <Cloud className="h-5 w-5" />, 
       current: pathname?.includes('/dashboard/sync') 
     },
-    { 
-      name: 'Pricing', 
-      href: '/dashboard/pricing', 
-      icon: <CreditCard className="h-5 w-5" />, 
-      current: pathname?.includes('/dashboard/pricing') 
-    },
   ];
-  
-  // Only add conditional navigation items if we're mounted and user is loaded
-  if (mounted && isLoaded && user) {
-    // Add API Keys for any subscriber
-    if (userSubscription.active) {
-      navigation.push({
-        name: 'API Keys',
-        href: '/dashboard/subscribers',
-        icon: <Key className="h-5 w-5" />,
-        current: pathname?.includes('/dashboard/subscribers'),
-        requiresSubscription: true
-      });
-    }
-  }
   
   // Settings and help are always shown at the end
   navigation.push(
@@ -114,10 +64,11 @@ export function NavigationBar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-1">
           {navigation.map((item) => (
-            <Link
+            <a
               key={item.name}
               href={item.href}
               target={item.name === 'Help' ? "_blank" : undefined}
+              rel={item.name === 'Help' ? 'noopener noreferrer' : undefined}
               className={cn(
                 "flex items-center px-3 py-2 text-sm font-medium rounded-md relative",
                 item.current ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -133,7 +84,7 @@ export function NavigationBar() {
                   </span>
                 </span>
               )}
-            </Link>
+            </a>
           ))}
         </div>
 
@@ -149,9 +100,10 @@ export function NavigationBar() {
             <DropdownMenuContent align="end" className="w-56">
               {navigation.map((item) => (
                 <DropdownMenuItem key={item.name} className="cursor-pointer" asChild>
-                  <Link 
+                  <a 
                     href={item.href} 
                     target={item.name === 'Help' ? "_blank" : undefined}
+                    rel={item.name === 'Help' ? 'noopener noreferrer' : undefined}
                     className="flex items-center w-full"
                   >
                     {item.icon}
@@ -161,7 +113,7 @@ export function NavigationBar() {
                         {item.badge}
                       </span>
                     )}
-                  </Link>
+                  </a>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>

@@ -19,7 +19,6 @@ import {
 import {
   isValidExtension,
   VALID_MEDIA_EXTENSIONS,
-  VALID_AUDIO_EXTENSIONS,
 } from "../constants";
 import {
   safeCreate,
@@ -365,7 +364,7 @@ export class Inbox {
       );
 
       // Try embeddings first — falls through to model if unavailable or low confidence
-      context = await safeExecuteStep(
+      const contextWithEmbeddings = await safeExecuteStep(
         context,
         recommendFolderWithEmbeddingsStep,
         Action.MOVING,
@@ -375,34 +374,34 @@ export class Inbox {
       // Run remaining independent API calls concurrently
       // Only call model folder routing if embeddings didn't resolve the folder
       await Promise.all([
-        safeExecuteStep(context, recommendClassificationStep, Action.CLASSIFY, Action.ERROR_CLASSIFY),
-        ...(!context.newPath
-          ? [safeExecuteStep(context, recommendFolderStep, Action.MOVING, Action.ERROR_MOVING)]
+        safeExecuteStep(contextWithEmbeddings, recommendClassificationStep, Action.CLASSIFY, Action.ERROR_CLASSIFY),
+        ...(!contextWithEmbeddings.newPath
+          ? [safeExecuteStep(contextWithEmbeddings, recommendFolderStep, Action.MOVING, Action.ERROR_MOVING)]
           : []),
-        safeExecuteStep(context, recommendNameStep, Action.RENAME, Action.ERROR_RENAME),
+        safeExecuteStep(contextWithEmbeddings, recommendNameStep, Action.RENAME, Action.ERROR_RENAME),
       ]);
 
       // These depend on results above or are local operations
       await safeExecuteStep(
-        context,
+        contextWithEmbeddings,
         formatContentStep,
         Action.FORMATTING,
         Action.ERROR_FORMATTING
       );
       await executeStep(
-        context,
+        contextWithEmbeddings,
         appendAttachmentStep,
         Action.APPEND,
         Action.ERROR_APPEND
       );
       await safeExecuteStep(
-        context,
+        contextWithEmbeddings,
         recommendTagsStep,
         Action.TAGGING,
         Action.ERROR_TAGGING
       );
       await executeStep(
-        context,
+        contextWithEmbeddings,
         completeProcessing,
         Action.COMPLETED,
         Action.ERROR_COMPLETE
@@ -678,26 +677,12 @@ async function getContentStep(
   const fileToRead = context.inboxFile;
   const content = await context.plugin.getTextFromFile(fileToRead);
 
-  // For audio files, prepend the audio file link and title at the top
-  let finalContent = content;
-  if (
-    VALID_AUDIO_EXTENSIONS.includes(context.inboxFile?.extension) &&
-    context.attachmentFile &&
-    context.containerFile
-  ) {
-    const audioFileName = context.attachmentFile.name;
-    const audioLink = `![[${context.attachmentFile.path}]]\n\n`;
-    const transcriptHeader = `## Transcript for ${audioFileName}\n\n`;
-    finalContent = audioLink + transcriptHeader + content;
-  }
-
-  context.content = finalContent;
+  context.content = content;
   if (context.containerFile) {
-    await context.plugin.app.vault.modify(context.containerFile, finalContent);
+    await context.plugin.app.vault.modify(context.containerFile, content);
   }
 
   // Explicitly log the completion of content extraction
-  // This will be used to track audio transcription and image processing
   context.recordManager.completeAction(context.hash, Action.EXTRACT_DONE);
 
   return context;
@@ -904,18 +889,11 @@ async function appendAttachmentStep(
   context: ProcessingContext
 ): Promise<ProcessingContext> {
   if (context.attachmentFile && context.containerFile) {
-    // Skip audio files - they're already added at the top in getContentStep
-    if (VALID_AUDIO_EXTENSIONS.includes(context.attachmentFile.extension)) {
-      return context;
-    }
-
-    // For other media types (images), append at the end as before
-    // Use Obsidian's link generation for guaranteed recognition:
+    // Preserve a reference to the source attachment for container-based flows
     const link = context.plugin.app.fileManager.generateMarkdownLink(
       context.attachmentFile,
       context.containerFile.parent?.path ?? ""
     );
-    // Add '!' prefix to embed the audio file instead of just linking
     await context.plugin.app.vault.append(context.containerFile, `\n\n${link}`);
   }
   return context;
@@ -1219,5 +1197,3 @@ async function safeExecuteStep(
     return context;
   }
 }
-
-

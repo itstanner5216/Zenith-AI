@@ -21,13 +21,12 @@ import {
   Modal,
   TFolder,
   TFile,
-  moment,
   normalizePath,
   loadPdfJs,
-  arrayBufferToBase64,
   CachedMetadata,
   LinkCache,
 } from "obsidian";
+import moment from "moment";
 import { logMessage, sanitizeTag } from "./someUtils";
 import { ZenithAISettingTab } from "./views/settings/view";
 import {
@@ -38,7 +37,6 @@ import {
   DashboardView,
   DASHBOARD_VIEW_TYPE,
 } from "./views/assistant/dashboard/view";
-import Jimp from "jimp/es/index";
 
 import { ZenithAISettings, DEFAULT_SETTINGS } from "./settings";
 
@@ -55,16 +53,6 @@ import {
   moveFile,
 } from "./fileUtils";
 
-import { checkLicenseKey } from "./apiUtils";
-import { generateObject } from "ai";
-import { ollama } from "ollama-ai-provider";
-import { z } from "zod";
-
-import {
-  VALID_IMAGE_EXTENSIONS,
-  VALID_AUDIO_EXTENSIONS,
-  VALID_MEDIA_EXTENSIONS,
-} from "./constants";
 import { initializeInboxQueue, Inbox } from "./inbox";
 import { logger } from "./services/logger";
 import { addTextSelectionContext } from "./views/assistant/ai-chat/use-context-items";
@@ -122,10 +110,6 @@ interface TitleSuggestion {
 export interface UsageData {
   tokenUsage: number;
   maxTokenUsage: number;
-  audioTranscriptionMinutes: number;
-  maxAudioTranscriptionMinutes: number;
-  subscriptionStatus: string;
-  currentPlan: string;
   isActive?: boolean;
 }
 
@@ -149,38 +133,6 @@ export default class ZenithAI extends Plugin {
       await this.saveSettings();
     }
   }
-
-  async checkCatalystAccess(): Promise<boolean> {
-    // fetch the file organizer premium status
-    // if process env prod then point to prod server if not to localhost
-    const serverUrl =
-      process.env.NODE_ENV === "production"
-        ? "https://app.notecompanion.ai"
-        : this.getServerUrl();
-    const premiumStatus = await fetch(`${serverUrl}/api/check-premium`, {
-      headers: {
-        Authorization: `Bearer ${this.settings.API_KEY}`,
-      },
-    });
-    const { hasCatalystAccess } = await premiumStatus.json();
-    return hasCatalystAccess;
-  }
-
-  async isLicenseKeyValid(key: string): Promise<boolean> {
-    try {
-      const isValid = await checkLicenseKey(this.getServerUrl(), key);
-
-      this.settings.isLicenseValid = isValid;
-      this.settings.API_KEY = key;
-      await this.saveSettings();
-      return isValid;
-    } catch (error) {
-      logger.error("Error checking API key:", error);
-      this.settings.isLicenseValid = false;
-      await this.saveSettings();
-      return false;
-    }
-  }
   getServerUrl(): string {
     let serverUrl = this.settings.enableSelfHosting
       ? this.settings.selfHostingURL
@@ -194,10 +146,7 @@ export default class ZenithAI extends Plugin {
   }
 
   shouldCreateMarkdownContainer(file: TFile): boolean {
-    return (
-      VALID_MEDIA_EXTENSIONS.includes(file.extension) ||
-      file.extension === "pdf"
-    );
+    return file.extension === "pdf";
   }
 
   async identifyConceptsAndFetchChunks(content: string) {
@@ -666,256 +615,11 @@ export default class ZenithAI extends Plugin {
     return formattedContent;
   }
 
-  /**
-   * Direct upload method for audio transcription (used for files < 4MB or as fallback when R2 is not configured)
-   */
-  async transcribeAudioDirectUpload(
-    audioBuffer: ArrayBuffer,
-    fileExtension: string
-  ): Promise<Response> {
-    const formData = new FormData();
-    const blob = new Blob([audioBuffer], { type: `audio/${fileExtension}` });
-    formData.append("audio", blob, `audio.${fileExtension}`);
-
-    const response = await fetch(`${this.getServerUrl()}/api/transcribe`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${this.settings.API_KEY}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Transcription failed: ${errorData.error}`);
-    }
-    return response;
-  }
-
-  async transcribeAudio(
-    audioBuffer: ArrayBuffer,
-    fileExtension: string
-  ): Promise<Response> {
-    const fileSizeInMB = audioBuffer.byteLength / (1024 * 1024);
-    const PRESIGNED_URL_THRESHOLD_MB = 4; // Use pre-signed URL for files > 4MB to avoid Vercel limits
-
-    // For larger files, use pre-signed URL upload to bypass Vercel body size limit
-    if (fileSizeInMB > PRESIGNED_URL_THRESHOLD_MB) {
-      return this.transcribeAudioViaPresignedUrl(audioBuffer, fileExtension);
-    }
-
-    // For smaller files, use direct form data upload
-    return this.transcribeAudioDirectUpload(audioBuffer, fileExtension);
-  }
-
-  async transcribeAudioViaPresignedUrl(
-    audioBuffer: ArrayBuffer,
-    fileExtension: string
-  ): Promise<Response> {
-    const fileName = `audio-${Date.now()}.${fileExtension}`;
-    const mimeType = `audio/${fileExtension}`;
-
-    try {
-      // Step 1: Get presigned URL from backend (small JSON request, bypasses Vercel body size limit)
-      const presignedUrlResponse = await fetch(
-        `${this.getServerUrl()}/api/create-upload-url`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.settings.API_KEY}`,
-          },
-          body: JSON.stringify({
-            filename: fileName,
-            contentType: mimeType,
-          }),
-        }
-      );
-
-      if (!presignedUrlResponse.ok) {
-        const errorData = await presignedUrlResponse.json();
-        const errorMessage =
-          errorData.error || errorData.details || "Unknown error";
-
-        // Check if error is due to missing R2 configuration
-        if (
-          errorMessage.includes("Missing R2 configuration") ||
-          errorMessage.includes("R2 storage is not properly configured") ||
-          errorMessage.includes("R2_PUBLIC_URL")
-        ) {
-          // Fall back to direct upload for self-hosted instances without R2
-          console.log(
-            "R2 not configured, falling back to direct upload for self-hosted instance"
-          );
-          return this.transcribeAudioDirectUpload(audioBuffer, fileExtension);
-        }
-
-        throw new Error(`Failed to get presigned URL: ${errorMessage}`);
-      }
-
-      const { uploadUrl, key, publicUrl } = await presignedUrlResponse.json();
-
-      if (!uploadUrl || !key || !publicUrl) {
-        throw new Error("Invalid response from create-upload-url endpoint");
-      }
-
-      // Step 2: Upload directly to R2 using presigned URL (bypasses Vercel completely)
-      // This avoids Vercel's 4.5MB body size limit
-      // CORS is configured on R2 bucket, so we can use fetch with ArrayBuffer directly
-      // This ensures binary data integrity without any string conversion
-      const uploadResponse = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": mimeType,
-          // DO NOT include Authorization header - presigned URL handles auth
-        },
-        body: audioBuffer, // Send ArrayBuffer directly - no conversion needed
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error(
-          `Failed to upload audio to R2: ${uploadResponse.status} ${uploadResponse.statusText}`
-        );
-      }
-
-      // Step 3: Trigger transcription with the uploaded file URL
-      const transcribeResponse = await fetch(
-        `${this.getServerUrl()}/api/transcribe`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${this.settings.API_KEY}`,
-          },
-          body: JSON.stringify({
-            fileUrl: publicUrl,
-            key: key,
-            extension: fileExtension,
-          }),
-        }
-      );
-
-      if (!transcribeResponse.ok) {
-        const errorData = await transcribeResponse.json();
-        throw new Error(`Transcription failed: ${errorData.error}`);
-      }
-
-      return transcribeResponse;
-    } catch (error) {
-      // If any error related to presigned URL or R2, try direct upload as fallback
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      if (
-        errorMessage.includes("presigned URL") ||
-        errorMessage.includes("R2") ||
-        errorMessage.includes("Failed to upload audio to R2")
-      ) {
-        console.log(
-          "R2 upload failed, falling back to direct upload for self-hosted instance"
-        );
-        return this.transcribeAudioDirectUpload(audioBuffer, fileExtension);
-      }
-      // Re-throw other errors (network, auth, etc.)
-      throw error;
-    }
-  }
-
-  async generateTranscriptFromAudio(
-    file: TFile
-  ): Promise<AsyncIterableIterator<string>> {
-    try {
-      const fileSizeInMB = file.stat.size / (1024 * 1024);
-      const audioBuffer = await this.app.vault.readBinary(file);
-      console.log(
-        `[Plugin] Transcribing audio file: ${
-          file.name
-        }, size: ${fileSizeInMB.toFixed(2)}MB`
-      );
-
-      const response = await this.transcribeAudio(audioBuffer, file.extension);
-
-      const data = await response.json();
-      const transcript = data.text;
-      const transcriptLength = transcript?.length || 0;
-
-      console.log(
-        `[Plugin] Received transcript: ${transcriptLength} characters`
-      );
-
-      if (data.length) {
-        console.log(
-          `[Plugin] Server reported transcript length: ${data.length} characters`
-        );
-        if (transcriptLength !== data.length) {
-          console.warn(
-            `[Plugin] WARNING: Transcript length mismatch! Received ${transcriptLength} but server reported ${data.length}`
-          );
-        }
-      }
-
-      // Convert the single transcript to an async iterator for compatibility
-      async function* generateTranscript() {
-        yield transcript;
-      }
-
-      return generateTranscript();
-    } catch (error) {
-      console.error("Error generating transcript from audio:", error);
-      throw error;
-    }
-  }
-
   async classifyContentV2(
     content: string,
     classifications: string[]
   ): Promise<string> {
     const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
-
-    // Check if local LLM should be used (same logic as chat component)
-    // Use local LLM if showLocalLLMInChat is enabled and model is not a cloud model
-    const isCloudModel = this.settings.selectedModel === "gpt-4o-mini";
-    const shouldUseLocalLLM =
-      this.settings.showLocalLLMInChat && !isCloudModel;
-
-    if (shouldUseLocalLLM) {
-      // Use local Ollama model directly
-      const modelName =
-        this.settings.selectedModel === "llama3.2"
-          ? "llama3.2"
-          : this.settings.customModelName || "llama3.2";
-
-      try {
-        const response = await generateObject({
-          model: ollama(modelName),
-          schema: z.object({
-            documentType: z.string().optional(),
-          }),
-          system:
-            "Only answer with the name of the document type if it matches one of the template types. Otherwise, answer with an empty string.",
-          prompt: `Given the text content:
-
-          "${trimmedContent}"
-
-          Please identify which of the following document types best matches the content:
-
-          Template Types:
-          ${classifications.join(", ")}
-
-          If the content clearly matches one of the provided template types, respond with the name of that document type. If the content does not clearly match any of the template types, respond with an empty string.`,
-        });
-
-        return response.object.documentType || "";
-      } catch (error) {
-        logger.error("Error classifying with local LLM:", error);
-        // Throw error instead of falling back to server
-        // This ensures local-only mode doesn't require external connection
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Failed to classify document with local LLM";
-        throw new Error(errorMessage);
-      }
-    }
 
     // Use server-based approach (default or fallback)
     const serverUrl = this.getServerUrl();
@@ -935,7 +639,7 @@ export default class ZenithAI extends Plugin {
       // Special handling for 429 (token limit exceeded)
       if (response.status === 429) {
         let errorMessage =
-          "Token limit exceeded. Please upgrade your plan for more tokens.";
+          "Token limit exceeded for the current cycle. Please review your provider usage.";
         try {
           const errorData = await response.json();
           if (errorData?.error) {
@@ -975,17 +679,6 @@ export default class ZenithAI extends Plugin {
       case file.extension === "pdf": {
         const pdfContent = await this.extractTextFromPDF(file);
         return pdfContent;
-      }
-      case VALID_IMAGE_EXTENSIONS.includes(file.extension):
-        return await this.generateImageAnnotation(file);
-      case VALID_AUDIO_EXTENSIONS.includes(file.extension): {
-        // Change this part to consume the iterator
-        const transcriptIterator = await this.generateTranscriptFromAudio(file);
-        let transcriptText = "";
-        for await (const chunk of transcriptIterator) {
-          transcriptText += chunk;
-        }
-        return transcriptText;
       }
       default:
         throw new Error(`Unsupported file type: ${file.extension}`);
@@ -1103,90 +796,6 @@ export default class ZenithAI extends Plugin {
     });
   }
 
-  async compressImage(fileContent: Buffer): Promise<Buffer> {
-    const image = await Jimp.read(fileContent);
-
-    // Check if the image is bigger than 1000 pixels in either width or height
-    if (image.getWidth() > 1000 || image.getHeight() > 1000) {
-      // Resize the image to a maximum of 1000x1000 while preserving aspect ratio
-      image.scaleToFit(1000, 1000);
-    }
-
-    const resizedImage = await image.getBufferAsync(Jimp.MIME_PNG);
-    return resizedImage;
-  }
-
-  isWebP(fileContent: Buffer): boolean {
-    // Check if the file starts with the WebP signature
-    return (
-      fileContent.slice(0, 4).toString("hex") === "52494646" &&
-      fileContent.slice(8, 12).toString("hex") === "57454250"
-    );
-  }
-
-  async generateImageAnnotation(file: TFile) {
-    const arrayBuffer = await this.app.vault.readBinary(file);
-    const fileContent = Buffer.from(arrayBuffer);
-    const imageSize = fileContent.byteLength;
-    const imageSizeInMB2 = imageSize / (1024 * 1024);
-    logMessage(`Image size: ${imageSizeInMB2.toFixed(2)} MB`);
-
-    let processedArrayBuffer: ArrayBuffer;
-
-    if (!this.isWebP(fileContent)) {
-      // Compress the image if it's not a WebP
-      const resizedImage = await this.compressImage(fileContent);
-      // Convert the Buffer to an ArrayBuffer
-      const tempArray = new Uint8Array(resizedImage.byteLength);
-      for (let i = 0; i < resizedImage.byteLength; i++) {
-        tempArray[i] = resizedImage[i];
-      }
-      processedArrayBuffer = tempArray.buffer;
-    } else {
-      // If it's a WebP, use the original file content directly
-      processedArrayBuffer = arrayBuffer;
-    }
-
-    const processedContent = await this.extractTextFromImage(
-      processedArrayBuffer
-    );
-
-    return processedContent;
-  }
-
-  async extractTextFromImage(image: ArrayBuffer): Promise<string> {
-    const base64Image = arrayBufferToBase64(image);
-
-    const response = await fetch(`${this.getServerUrl()}/api/vision`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.settings.API_KEY}`,
-      },
-      body: JSON.stringify({
-        image: base64Image,
-        instructions: this.settings.imageInstructions,
-      }),
-    });
-
-    if (!response.ok) {
-      // Try to extract error message from response body
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      try {
-        const errorData = await response.json();
-        if (errorData?.error) {
-          errorMessage = errorData.error;
-        }
-      } catch {
-        // If parsing fails, use the default error message
-      }
-      throw new Error(errorMessage);
-    }
-
-    const { text } = await response.json();
-    return text;
-  }
-
   async getBacklog() {
     const pathToWatch = this.settings.pathToWatch;
     if (!pathToWatch) return [];
@@ -1236,81 +845,6 @@ export default class ZenithAI extends Plugin {
   > {
     const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
 
-    // Check if local LLM should be used (same logic as chat component)
-    const isCloudModel = this.settings.selectedModel === "gpt-4o-mini";
-    const shouldUseLocalLLM =
-      this.settings.showLocalLLMInChat && !isCloudModel;
-
-    if (shouldUseLocalLLM) {
-      // Use local Ollama model directly
-      const modelName =
-        this.settings.selectedModel === "llama3.2"
-          ? "llama3.2"
-          : this.settings.customModelName || "llama3.2";
-
-      try {
-        const count = 3; // Default count
-        const response = await generateObject({
-          model: ollama(modelName),
-          schema: z.object({
-            suggestedTags: z.array(
-              z.object({
-                score: z.number().min(0).max(100),
-                isNew: z.boolean(),
-                tag: z.string(),
-                reason: z.string().min(1),
-              })
-            ),
-          }),
-          system: `You are a precise tag generator. Analyze content and suggest ${count} relevant tags.
-              ${existingTags.length ? `Consider existing tags: ${existingTags.join(", ")}` : "Create new tags if needed."}
-              ${this.settings.customTagInstructions ? `Follow these custom instructions: ${this.settings.customTagInstructions}` : ""}
-
-              Guidelines:
-              - Prefer existing tags when appropriate (score them higher)
-              - Create specific, meaningful new tags when needed
-              - Score based on relevance (0-100)
-              - REQUIRED: Each tag MUST include a "reason" field explaining why it's relevant
-              - The reason should be a brief sentence (1-2 sentences) explaining the tag's relevance
-              - Focus on key themes, topics, and document type
-
-              Response format: Each tag object must have: score (number), isNew (boolean), tag (string), and reason (string).`,
-          prompt: `File: "${filePath}"
-
-              Content: """
-              ${trimmedContent}
-              """`,
-        });
-
-        // Sort tags by score and format response
-        // Ensure all required fields are present (explicit mapping to avoid optional types)
-        const sortedTags: Array<{
-          score: number;
-          tag: string;
-          reason: string;
-          isNew: boolean;
-        }> = response.object.suggestedTags
-          .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-          .map((tag) => ({
-            score: tag.score ?? 0,
-            isNew: tag.isNew ?? false,
-            tag: tag.tag.startsWith("#") ? tag.tag : `#${tag.tag}`,
-            reason: tag.reason || "Relevant to content theme",
-          }));
-
-        return sortedTags;
-      } catch (error) {
-        logger.error("Error recommending tags with local LLM:", error);
-        // Throw error instead of falling back to server
-        // This ensures local-only mode doesn't require external connection
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Failed to recommend tags with local LLM";
-        throw new Error(errorMessage);
-      }
-    }
-
     // Use server-based approach (default or fallback)
     const response = await fetch(`${this.getServerUrl()}/api/tags/v2`, {
       method: "POST",
@@ -1330,7 +864,7 @@ export default class ZenithAI extends Plugin {
       // Special handling for 429 (token limit exceeded)
       if (response.status === 429) {
         let errorMessage =
-          "Token limit exceeded. Please upgrade your plan for more tokens.";
+          "Token limit exceeded for the current cycle. Please review your provider usage.";
         try {
           const errorData = await response.json();
           if (errorData?.error) {
@@ -1379,66 +913,6 @@ export default class ZenithAI extends Plugin {
 
     const folders = this.getAllUserFolders();
 
-    // Check if local LLM should be used (same logic as chat component)
-    const isCloudModel = this.settings.selectedModel === "gpt-4o-mini";
-    const shouldUseLocalLLM =
-      this.settings.showLocalLLMInChat && !isCloudModel;
-
-    if (shouldUseLocalLLM) {
-      // Use local Ollama model directly
-      const modelName =
-        this.settings.selectedModel === "llama3.2"
-          ? "llama3.2"
-          : this.settings.customModelName || "llama3.2";
-
-      try {
-        const count = 3; // Default count
-        const response = await generateObject({
-          model: ollama(modelName),
-          schema: z.object({
-            suggestedFolders: z
-              .array(
-                z.object({
-                  score: z.number().min(0).max(100),
-                  isNewFolder: z.boolean(),
-                  folder: z.string(),
-                  reason: z.string(),
-                })
-              )
-              .min(1)
-              .max(count),
-          }),
-          system: `Given the content and file name: "${fileName}", suggest exactly ${count} folders. You can use: ${folders.join(
-            ", "
-          )}. If none are relevant, suggest new folders. ${
-            customInstructions ? `Instructions: "${customInstructions}"` : ""
-          }${await this.getOrganizationRulesContext()}`,
-          prompt: `Content: "${trimmedContent}"`,
-        });
-
-        // Ensure all required fields are present and match FolderSuggestion type
-        const sortedFolders = response.object.suggestedFolders
-          .sort((a, b) => b.score - a.score)
-          .map((folder) => ({
-            score: folder.score ?? 0,
-            isNewFolder: folder.isNewFolder ?? false,
-            folder: folder.folder ?? "",
-            reason: folder.reason ?? "",
-          }));
-
-        return sortedFolders;
-      } catch (error) {
-        logger.error("Error recommending folders with local LLM:", error);
-        // Throw error instead of falling back to server
-        // This ensures local-only mode doesn't require external connection
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Failed to recommend folders with local LLM";
-        throw new Error(errorMessage);
-      }
-    }
-
     // Use server-based approach (default or fallback)
     const rulesContext = await this.getOrganizationRulesContext();
     const response = await fetch(`${this.getServerUrl()}/api/folders/v2`, {
@@ -1459,7 +933,7 @@ export default class ZenithAI extends Plugin {
       // Special handling for 429 (token limit exceeded)
       if (response.status === 429) {
         let errorMessage =
-          "Token limit exceeded. Please upgrade your plan for more tokens.";
+          "Token limit exceeded for the current cycle. Please review your provider usage.";
         try {
           const errorData = await response.json();
           if (errorData?.error) {
@@ -1679,15 +1153,6 @@ export default class ZenithAI extends Plugin {
       },
     });
     this.addCommand({
-      id: "open-meetings-tab",
-      name: "Open Meetings Tab",
-      callback: async () => {
-        const view = await this.ensureAssistantView();
-        view?.activateTab("meetings");
-      },
-    });
-
-    this.addCommand({
       id: "restore-default-templates",
       name: "Restore default templates",
       callback: async () => {
@@ -1740,21 +1205,6 @@ export default class ZenithAI extends Plugin {
     });
 
     this.addCommand({
-      id: "view-meetings-metadata",
-      name: "View Meetings Metadata (Debug)",
-      callback: async () => {
-        const { MeetingMetadataManager } = await import(
-          "./views/assistant/meetings/meeting-metadata"
-        );
-        const manager = new MeetingMetadataManager(this);
-        const metadata = await manager.loadMetadata();
-        console.log("Meetings Metadata:", JSON.stringify(metadata, null, 2));
-        new Notice(
-          "Meetings metadata logged to console. Check Developer Tools (Ctrl+Shift+I)"
-        );
-      },
-    });
-    this.addCommand({
       id: "add-selection-to-chat",
       name: "Add Selection to Chat",
       editorCallback: async editor => {
@@ -1777,103 +1227,8 @@ export default class ZenithAI extends Plugin {
       },
     });
 
-    this.addCommand({
-      id: "test-screenpipe",
-      name: "Test ScreenPipe Connection",
-      callback: async () => {
-        const { ScreenpipeClient } = await import("./services/screenpipe-client");
-        const client = new ScreenpipeClient(this.settings.screenpipeApiUrl);
-
-        const isAvailable = await client.isAvailable();
-        if (!isAvailable) {
-          new Notice(
-            "❌ ScreenPipe not available on " + this.settings.screenpipeApiUrl,
-            5000
-          );
-          return;
-        }
-
-        new Notice("✅ ScreenPipe connected!", 2000);
-
-        try {
-          const results = await client.search({ limit: 5 });
-          new Notice(`✅ Found ${results.length} results`, 3000);
-          console.log("ScreenPipe test results:", results);
-        } catch (error) {
-          new Notice(
-            "❌ Search failed: " + (error instanceof Error ? error.message : "Unknown error"),
-            5000
-          );
-        }
-      },
-    });
-
-    // Add command to test ScreenPipe search
-    this.addCommand({
-      id: "test-screenpipe-search",
-      name: "Test ScreenPipe Search (Recent Activity)",
-      callback: async () => {
-        if (!this.settings.enableScreenpipe) {
-          new Notice("❌ ScreenPipe is disabled. Enable it in Settings > Experiments > Integrations", 5000);
-          return;
-        }
-
-        const { ScreenpipeClient } = await import("./services/screenpipe-client");
-        const client = new ScreenpipeClient(this.settings.screenpipeApiUrl);
-
-        const isAvailable = await client.isAvailable();
-        if (!isAvailable) {
-          new Notice(
-            "❌ ScreenPipe not available on " + this.settings.screenpipeApiUrl,
-            5000
-          );
-          return;
-        }
-
-        new Notice("🔍 Searching recent activity...", 2000);
-
-        try {
-          // Search for last 30 minutes of activity
-          const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
-          const results = await client.search({
-            limit: 10,
-            start_time: thirtyMinutesAgo,
-            content_type: "all",
-          });
-          
-          if (results.length === 0) {
-            new Notice("ℹ️ No recent activity found in last 30 minutes", 3000);
-          } else {
-            const apps = [...new Set(results.map((r: any) => r.content?.app_name || "Unknown"))];
-            new Notice(
-              `✅ Found ${results.length} result${results.length > 1 ? 's' : ''} from ${apps.length} app${apps.length > 1 ? 's' : ''}: ${apps.join(", ")}`,
-              5000
-            );
-            console.log("ScreenPipe search results:", results);
-          }
-        } catch (error) {
-          new Notice(
-            "❌ Search failed: " + (error instanceof Error ? error.message : "Unknown error"),
-            5000
-          );
-        }
-      },
-    });
-
-    // Register the dashboard view
-    this.registerView(
-      DASHBOARD_VIEW_TYPE,
-      leaf => new DashboardView(leaf, this)
-    );
-
-    // Add command to open dashboard
-    this.addCommand({
-      id: "open-fo2k-dashboard",
-      name: "Open Dashboard",
-      callback: () => {
-        this.activateDashboard();
-      },
-    });
+    // Dashboard infrastructure is preserved for a future planning workspace,
+    // but it is intentionally not exposed in the current product surface.
 
     // Add processing status bar item
     this.statusBarItem = this.addStatusBarItem();
@@ -1891,98 +1246,6 @@ export default class ZenithAI extends Plugin {
     await this.checkAndCreateFolders();
     await this.checkAndCreateTemplates();
     this.addSettingTab(new ZenithAISettingTab(this.app, this));
-  }
-
-  /**
-   * Checks if a transcript already exists in the note for the given audio file.
-   * Looks for the heading pattern: ## Transcript for [filename]
-   *
-   * @param fileContent - The content of the note file
-   * @param audioFileName - The name of the audio file (with or without extension)
-   * @returns true if transcript exists, false otherwise
-   */
-  hasExistingTranscript(fileContent: string, audioFileName: string): boolean {
-    // Normalize the filename - remove extension if present for matching
-    const nameWithoutExt = audioFileName.replace(
-      /\.(mp3|wav|m4a|ogg|webm)$/i,
-      ""
-    );
-    const nameWithExt = audioFileName;
-
-    // Escape special regex characters in filenames
-    const escapeRegex = (str: string) =>
-      str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-    // Check for both patterns: with and without extension
-    // Use regex to match the full header line, not just a substring
-    // The 'm' flag makes ^ and $ match line boundaries
-    const pattern1 = new RegExp(
-      `^## Transcript for ${escapeRegex(nameWithExt)}$`,
-      "m"
-    );
-    const pattern2 = new RegExp(
-      `^## Transcript for ${escapeRegex(nameWithoutExt)}$`,
-      "m"
-    );
-
-    return pattern1.test(fileContent) || pattern2.test(fileContent);
-  }
-
-  async appendTranscriptToActiveFile(
-    parentFile: TFile,
-    audioFileName: string,
-    transcriptIterator: AsyncIterableIterator<string>
-  ) {
-    // Check if transcript already exists before appending
-    const fileContent = await this.app.vault.read(parentFile);
-    if (this.hasExistingTranscript(fileContent, audioFileName)) {
-      new Notice(
-        `Transcript already exists for ${audioFileName}. Skipping transcription.`,
-        5000
-      );
-      return;
-    }
-
-    const transcriptHeader = `\n\n## Transcript for ${audioFileName}\n\n`;
-    await this.app.vault.append(parentFile, transcriptHeader);
-
-    let totalAppended = 0;
-    let chunkCount = 0;
-
-    for await (const chunk of transcriptIterator) {
-      const chunkLength = chunk.length;
-      console.log(
-        `[Plugin] Appending transcript chunk ${++chunkCount}: ${chunkLength} characters`
-      );
-      await this.app.vault.append(parentFile, chunk);
-      totalAppended += chunkLength;
-    }
-
-    console.log(
-      `[Plugin] Total transcript appended: ${totalAppended} characters in ${chunkCount} chunk(s)`
-    );
-
-    // Verify by reading back the file
-    const updatedFileContent = await this.app.vault.read(parentFile);
-    const transcriptStart = updatedFileContent.indexOf(transcriptHeader);
-    if (transcriptStart !== -1) {
-      const appendedTranscript = updatedFileContent.substring(
-        transcriptStart + transcriptHeader.length
-      );
-      console.log(
-        `[Plugin] Verified: File contains ${appendedTranscript.length} characters of transcript`
-      );
-      if (appendedTranscript.length !== totalAppended) {
-        console.warn(
-          `[Plugin] WARNING: Mismatch! Appended ${totalAppended} but file contains ${appendedTranscript.length}`
-        );
-      }
-    }
-
-    new Notice(
-      `Transcription completed for ${audioFileName} (${totalAppended} characters)`,
-      5000
-    );
   }
 
   async generateUniqueBackupFileName(originalFile: TFile): Promise<string> {
@@ -2248,10 +1511,6 @@ export default class ZenithAI extends Plugin {
             return {
               tokenUsage: 100000, // Some large number
               maxTokenUsage: 100000,
-              audioTranscriptionMinutes: 0,
-              maxAudioTranscriptionMinutes: 0,
-              subscriptionStatus: "active",
-              currentPlan: "Subscription",
               isActive: true,
             };
           }
@@ -2269,7 +1528,7 @@ export default class ZenithAI extends Plugin {
     }
   }
 
-  openUpgradePlanModal() {
+  openAccountPortal() {
     // Get the server domain from settings
     const serverUrl = this.getServerUrl();
 
@@ -2277,13 +1536,13 @@ export default class ZenithAI extends Plugin {
     // This pattern transforms "https://app.notecompanion.ai/api" into "https://app.notecompanion.ai"
     const serverDomain = serverUrl.replace(/\/api\/?$/, "");
 
-    // Use the server domain for the upgrade URL
-    const upgradeUrl = `${serverDomain}/onboarding`;
+    // Use the server domain for the account portal URL
+    const accountUrl = `${serverDomain}/sign-in`;
 
     // Log the URL being opened (helpful for debugging)
-    logger.debug(`Opening upgrade plan URL: ${upgradeUrl}`);
+    logger.debug(`Opening account portal URL: ${accountUrl}`);
 
     // Open the URL in a browser
-    window.open(upgradeUrl, "_blank");
+    window.open(accountUrl, "_blank");
   }
 }

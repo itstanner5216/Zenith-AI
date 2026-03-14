@@ -100,7 +100,7 @@ export function SyncTab({
 
   async function fetchFiles() {
     if (!plugin.settings.API_KEY) {
-      setError("API key not found. Please set your API key in settings.");
+      setError("API key not found. Add one in settings to use sync.");
       setLoading(false);
       return;
     }
@@ -118,15 +118,15 @@ export function SyncTab({
         },
       });
 
-      // Check for 429 status (token limit exceeded)
+      // Check for 429 status (usage limit exceeded)
       if (urlResponse.status === 429) {
         const errorData = urlResponse.json as { error?: string };
         const errorMessage =
           errorData?.error ||
-          "Token limit exceeded. Please upgrade your plan for more tokens.";
+          "Usage limit exceeded for this cycle. Try again later.";
         setError(errorMessage);
         setLoading(false);
-        // Notify parent component to show upgrade button
+        // Notify parent component for generic handling.
         onTokenLimitError?.(errorMessage);
         return;
       }
@@ -152,7 +152,7 @@ export function SyncTab({
       const errorData = urlResponse.json as { error?: string };
       throw new Error(errorData?.error || `Request failed with status ${urlResponse.status}`);
     } catch (err) {
-      // Check if error message contains token limit information
+      // Check if error message contains usage limit information.
       const errorMessage =
         err instanceof Error ? err.message : String(err);
 
@@ -161,8 +161,8 @@ export function SyncTab({
         errorMessage.includes("token limit") ||
         errorMessage.includes("429")
       ) {
-        setError("Token limit exceeded. Please upgrade your plan for more tokens.");
-        onTokenLimitError?.("Token limit exceeded");
+        setError("Usage limit exceeded for this cycle. Try again later.");
+        onTokenLimitError?.("Usage limit exceeded");
       } else {
         setError("Failed to fetch files: " + errorMessage);
       }

@@ -29,31 +29,17 @@ export async function GET(request: NextRequest) {
     if (!userUsage.length) {
       return NextResponse.json({
         tokenUsage: 0,
-        maxTokenUsage: 100000, // Default legacy plan tokens
-        audioTranscriptionMinutes: 0,
-        maxAudioTranscriptionMinutes: 0, // Default to 0 for legacy/free tier
-        subscriptionStatus: 'active',
-        currentPlan: 'Free Plan',
+        maxTokenUsage: 100000, // Default token budget
         nextReset,
         isActive: true,
       });
     }
 
-    // Lifetime licenses are always active
-    const isActive =
-      userUsage[0].billingCycle === 'lifetime' ||
-      userUsage[0].subscriptionStatus === 'active';
-
     return NextResponse.json({
       tokenUsage: userUsage[0].tokenUsage || 0,
       maxTokenUsage: userUsage[0].maxTokenUsage || 100000,
-      audioTranscriptionMinutes: userUsage[0].audioTranscriptionMinutes || 0,
-      maxAudioTranscriptionMinutes:
-        userUsage[0].maxAudioTranscriptionMinutes || 0,
-      subscriptionStatus: userUsage[0].subscriptionStatus || 'inactive',
-      currentPlan: userUsage[0].currentPlan || 'Free Plan',
       nextReset,
-      isActive,
+      isActive: true,
     });
   } catch (error: unknown) {
     // Handle AuthorizationError with proper status code
@@ -86,8 +72,7 @@ export async function GET(request: NextRequest) {
     ) {
       return NextResponse.json(
         {
-          error:
-            'Token limit exceeded. Please upgrade your plan for more tokens.',
+          error: 'Token limit exceeded for this API key.',
         },
         { status: 429 }
       );

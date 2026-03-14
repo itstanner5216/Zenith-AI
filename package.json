@@ -36,9 +36,6 @@
       "zod": "^3.25.76"
     },
     "onlyBuiltDependencies": [
-      "@ffprobe-installer/darwin-arm64",
-      "@ffprobe-installer/linux-x64",
-      "ffmpeg-static"
     ]
   }
 }

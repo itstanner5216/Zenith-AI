@@ -7,7 +7,6 @@ import {
   UserUsageTable,
   db,
   initializeTierConfig,
-  isSubscriptionActive,
 } from '../drizzle/schema';
 import PostHogClient from './posthog';
 import { eq } from 'drizzle-orm';
@@ -391,21 +390,6 @@ async function handleClerkAuth(logger: ReturnType<typeof createLogger>) {
 }
 
 // Helper functions for user validation
-async function validateSubscription(
-  userId: string,
-  logger: ReturnType<typeof createLogger>
-) {
-  logger.info('Validating user subscription', { userId });
-  const isActive = await isSubscriptionActive(userId);
-
-  if (!isActive) {
-    logger.info('Subscription inactive', { userId });
-    throw new AuthorizationError('Subscription inactive', 403);
-  }
-
-  return true;
-}
-
 async function validateTokenUsage(
   userId: string,
   logger: ReturnType<typeof createLogger>
@@ -431,7 +415,7 @@ async function validateTokenUsage(
 
     logger.info('Token limit exceeded', { userId, remaining, usage, limit });
     throw new AuthorizationError(
-      `Token limit exceeded. Used ${usage}/${limit} tokens. Please upgrade your plan for more tokens.`,
+      `Token limit exceeded for this API key. Used ${usage}/${limit} tokens.`,
       429
     );
   }
@@ -491,14 +475,8 @@ export async function handleAuthorizationV2(req: NextRequest) {
       }
       logger.info('API key auth result', { userId: userId || 'null' });
       if (userId) {
-        // Validate user access - separated subscription and token checks
         try {
           await ensureUserExists(userId);
-
-          // First check subscription
-          await validateSubscription(userId, logger);
-
-          // Then check token usage
           const { remaining } = await validateTokenUsage(userId, logger);
 
           logger.info('Authorization successful via API key', {
@@ -517,14 +495,8 @@ export async function handleAuthorizationV2(req: NextRequest) {
     // Fall back to Clerk auth
     const userId = await handleClerkAuth(logger);
     if (userId) {
-      // Validate user access with separated concerns
       try {
         await ensureUserExists(userId);
-
-        // First check subscription
-        await validateSubscription(userId, logger);
-
-        // Then check token usage
         const { remaining } = await validateTokenUsage(userId, logger);
 
         logger.info('Authorization successful via Clerk', {
@@ -574,10 +546,10 @@ async function ensureUserExists(userId: string): Promise<void> {
       .where(eq(UserUsageTable.userId, userId))
       .limit(1);
 
-    // If no user record exists, create one with legacy plan
+    // If no user record exists, create one with the default token budget
     if (!userUsage.length) {
       console.log(
-        `User ${userId} not found in database, initializing with legacy plan`
+        `User ${userId} not found in database, initializing with the default token budget`
       );
       await createEmptyUserUsage(userId);
     }

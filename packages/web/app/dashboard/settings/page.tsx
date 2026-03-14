@@ -9,13 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 import {
-  CreditCard,
   Settings as SettingsIcon,
   Bell,
   Shield,
-  Key,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -28,72 +25,6 @@ export default function SettingsPage() {
         </div>
 
         <div className={tw("grid grid-cols-1 md:grid-cols-2 gap-6")}>
-          <Card
-            className={tw(
-              "w-full border-violet-100 border bg-white rounded-xl hover:border-violet-200 transition-all"
-            )}
-          >
-            <CardHeader className={tw("pb-2")}>
-              <div className={tw("flex items-center")}>
-                <div className={tw("bg-violet-100 p-2 rounded-lg mr-3")}>
-                  <CreditCard className={tw("h-5 w-5 text-violet-600")} />
-                </div>
-                <CardTitle className={tw("text-xl font-semibold")}>
-                  Billing & Subscription
-                </CardTitle>
-              </div>
-              <CardDescription className={tw("pt-1")}>
-                Manage your plan and payment details
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className={tw("pt-4")}>
-              <Button
-                className={tw(
-                  "bg-violet-50 text-violet-700 hover:bg-violet-100 border-none"
-                )}
-                variant="outline"
-                asChild
-              >
-                <a href={process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL}>
-                  Manage Subscription
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card
-            className={tw(
-              "w-full border-violet-100 border bg-white rounded-xl hover:border-violet-200 transition-all"
-            )}
-          >
-            <CardHeader className={tw("pb-2")}>
-              <div className={tw("flex items-center")}>
-                <div className={tw("bg-violet-100 p-2 rounded-lg mr-3")}>
-                  <Key className={tw("h-5 w-5 text-violet-600")} />
-                </div>
-                <CardTitle className={tw("text-xl font-semibold")}>
-                  License key
-                </CardTitle>
-              </div>
-              <CardDescription className={tw("pt-1")}>
-                View or create your license key for the Obsidian plugin
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className={tw("pt-4")}>
-              <Button
-                className={tw(
-                  "bg-violet-50 text-violet-700 hover:bg-violet-100 border-none"
-                )}
-                variant="outline"
-                asChild
-              >
-                <Link href="/dashboard/subscribers">API Keys & license</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
           <Card
             className={tw(
               "w-full border-violet-100 border bg-white rounded-xl hover:border-violet-200 transition-all"

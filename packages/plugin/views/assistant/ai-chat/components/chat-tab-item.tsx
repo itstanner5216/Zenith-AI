@@ -2,7 +2,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { ChatSession } from "../services/chat-history-manager";
 import { tw } from "../../../../lib/utils";
-import { moment } from "obsidian";
+import moment from "moment";
 
 interface ChatTabItemProps {
   session: ChatSession;

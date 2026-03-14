@@ -4,8 +4,6 @@ import { PHProvider } from './providers';
 import AuthLayoutWrapper from '@/components/auth-layout-wrapper';
 
 import './globals.css';
-import Link from 'next/link';
-import ExtraUserSettings from '@/components/user-management';
 
 export const metadata: Metadata = {
   title: 'Zenith-AI - Dashboard',

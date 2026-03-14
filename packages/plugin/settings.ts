@@ -1,7 +1,6 @@
 export class ZenithAISettings {
 
   API_KEY = "";
-  isLicenseValid = false;
   useLogs = true;
   defaultDestinationPath = "_ZenithAI/Processed";
   referencePath = "_ZenithAI/References";
@@ -13,7 +12,6 @@ export class ZenithAISettings {
   bypassedFilePath = "_ZenithAI/Bypassed";
   errorFilePath = "_ZenithAI/Errors";
   syncFolderPath = "_ZenithAI/Sync";
-  recordingsFolderPath = "Recordings";
 
   // inbox settings
   useSimilarTags = true;
@@ -35,15 +33,12 @@ export class ZenithAISettings {
   useVaultTitles = true;
   enableSearchGrounding = false;
   enableDeepSearch = false;
-  showLocalLLMInChat = false;
   customFolderInstructions = "";
   selectedModel: "gpt-4o-mini" | "llama3.2" = "gpt-4o-mini";
   customModelName = "llama3.2";
   tagScoreThreshold = 70;
   formatBehavior: "override" | "newFile" | "append" = "override";
   useInbox = false;
-  imageInstructions =
-    "Analyze the image and provide a clear, detailed description focusing on the main elements, context, and any text visible in the image. Include relevant details that would be useful for searching and organizing the image later.";
   debugMode = false;
   enableTitleSuggestions = false;
   // use for sampling of the recommend fucntions
@@ -54,14 +49,9 @@ export class ZenithAISettings {
   maxChatTokens = 100 * 1000;
   customTagInstructions =
     "Generate tags that capture the main topics, themes, and type of content in the document. Focus on specific, meaningful tags that will help with organization and retrieval.";
-  hasCatalystAccess = null;
   hasRunOnboarding = false;
   pdfPageLimit = 10; // default to 10 pages
   enableProcessingNotifications = true; // Show toast notifications during file processing
-  showSyncTab = false; // Show Sync tab in assistant (experimental mobile sync feature)
-  enableScreenpipe = false; // Enable ScreenPipe integration for screen activity search
-  screenpipeApiUrl = "http://localhost:3030"; // ScreenPipe API URL
-  screenpipeTimeRange = 4; // Default time range in hours for ScreenPipe searches (1-24)
   // Vault Intelligence (Vertex Brain integration)
   vertexBrainUrl = "http://localhost:8085";
   enableVectorAutoSort = true;
@@ -74,7 +64,6 @@ export class ZenithAISettings {
   autoDetectProjectContext = true;
   backgroundScribeEnabled = false;
   backgroundScribeOutputFile = "TODO.md";
-  queryScreenpipeLimit = 10; // Default query limit for ScreenPipe searches (1-100)
 }
 
 export const DEFAULT_SETTINGS = new ZenithAISettings();

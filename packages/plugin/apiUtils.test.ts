@@ -1,13 +1,3 @@
-// Mock logger FIRST before any imports that use it
-jest.mock('./services/logger', () => ({
-  logger: {
-    debug: jest.fn(),
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-  },
-}));
-
 // Mock someUtils to avoid logger import issues
 jest.mock('./someUtils', () => ({
   logMessage: jest.fn(),
@@ -20,13 +10,11 @@ jest.mock('./someUtils', () => ({
 
 // Mock Obsidian
 jest.mock('obsidian', () => ({
-  requestUrl: jest.fn(),
   Notice: jest.fn(),
 }));
 
-import { makeApiRequest, checkLicenseKey } from './apiUtils';
-import { requestUrl, Notice } from 'obsidian';
-import { logger } from './services/logger';
+import { makeApiRequest } from './apiUtils';
+import { Notice } from 'obsidian';
 
 describe('apiUtils', () => {
   beforeEach(() => {
@@ -120,72 +108,4 @@ describe('apiUtils', () => {
       expect(Notice).not.toHaveBeenCalled();
     });
   });
-
-  describe('checkLicenseKey', () => {
-    it('should return true for valid license key (200 status)', async () => {
-      (requestUrl as jest.Mock).mockResolvedValue({
-        status: 200,
-        json: { valid: true },
-      });
-
-      const result = await checkLicenseKey('https://api.example.com', 'test-key');
-
-      expect(result).toBe(true);
-      expect(requestUrl).toHaveBeenCalledWith({
-        url: 'https://api.example.com/api/check-key',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer test-key',
-        },
-      });
-    });
-
-    it('should return false for invalid license key (non-200 status)', async () => {
-      (requestUrl as jest.Mock).mockResolvedValue({
-        status: 401,
-        json: { error: 'Invalid key' },
-      });
-
-      const result = await checkLicenseKey('https://api.example.com', 'invalid-key');
-
-      expect(result).toBe(false);
-    });
-
-    it('should return false and log error on network failure', async () => {
-      const networkError = new Error('Network request failed');
-      (requestUrl as jest.Mock).mockRejectedValue(networkError);
-
-      const result = await checkLicenseKey('https://api.example.com', 'test-key');
-
-      expect(result).toBe(false);
-      expect(logger.error).toHaveBeenCalledWith('Error checking API key:', networkError);
-    });
-
-    it('should return false on timeout', async () => {
-      const timeoutError = new Error('Request timeout');
-      (requestUrl as jest.Mock).mockRejectedValue(timeoutError);
-
-      const result = await checkLicenseKey('https://api.example.com', 'test-key');
-
-      expect(result).toBe(false);
-      expect(logger.error).toHaveBeenCalledWith('Error checking API key:', timeoutError);
-    });
-
-    it('should handle different server URLs correctly', async () => {
-      (requestUrl as jest.Mock).mockResolvedValue({
-        status: 200,
-        json: { valid: true },
-      });
-
-      await checkLicenseKey('https://custom-server.com', 'key-123');
-
-      expect(requestUrl).toHaveBeenCalledWith(
-        expect.objectContaining({
-          url: 'https://custom-server.com/api/check-key',
-        })
-      );
-    });
-  });
 });
-

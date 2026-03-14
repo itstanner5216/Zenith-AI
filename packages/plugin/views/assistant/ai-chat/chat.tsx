@@ -28,7 +28,6 @@ import { SourcesSection } from "./components/SourcesSection";
 import { ContextLimitIndicator } from "./context-limit-indicator";
 import { ModelSelector } from "./model-selector";
 import { ModelType } from "./types";
-import { AudioRecorder } from "./audio-recorder";
 import { logger } from "../../../services/logger";
 import { SubmitButton } from "./submit-button";
 import {
@@ -490,11 +489,14 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       return headers;
     })(),
     fetch: async (url, options) => {
-      logMessage(plugin.settings.showLocalLLMInChat, "showLocalLLMInChat");
       logMessage(selectedModel, "selectedModel");
 
-      // Handle different model types
-      if (!plugin.settings.showLocalLLMInChat || selectedModel === "gpt-4o") {
+      const normalizedModel = selectedModel.toLowerCase();
+      const useServerModel =
+        normalizedModel.startsWith("gpt-") ||
+        normalizedModel.includes("search-preview");
+
+      if (useServerModel) {
         // Use server fetch for non-local models
         return fetch(url, options);
       }
@@ -596,7 +598,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       ) {
         // Show the full error message for token limit - it includes usage details
         userFriendlyMessage = error.message;
-        // Notify parent component to show upgrade button
+        // Notify parent component that the current token budget is exhausted
         onTokenLimitError?.(error.message);
       } else if (
         error.message?.toLowerCase().includes("rate limit") ||
@@ -1244,7 +1246,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           foldersCount: Object.keys(folders).length,
           tagsCount: Object.keys(tags).length,
           hasCurrentFile: !!currentFile,
-          currentFile: currentFile?.basename || null,
+          currentFile: currentFile?.title || null,
           timestamp: Date.now(),
         };
 
@@ -1534,12 +1536,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     // Update selectedModel when plugin settings change
     setSelectedModel(plugin.settings.selectedModel);
   }, [plugin.settings.selectedModel]);
-
-  const handleTranscriptionComplete = (text: string) => {
-    handleInputChange({
-      target: { value: text },
-    } as React.ChangeEvent<HTMLInputElement>);
-  };
 
   const handleExampleClick = (prompt: string) => {
     handleInputChange({
@@ -2116,9 +2112,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             />
             {/* Embedded controls - bottom right corner of input */}
             <div className="absolute bottom-2 right-2 flex items-center gap-1">
-              <AudioRecorder
-                onTranscriptionComplete={handleTranscriptionComplete}
-              />
               <button
                 type="submit"
                 disabled={isGenerating || !input.trim()}

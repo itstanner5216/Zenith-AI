@@ -3,8 +3,6 @@ import React from "react";
 interface UsageData {
   tokenUsage: number;
   maxTokenUsage: number;
-  subscriptionStatus: string;
-  currentPlan: string;
 }
 
 interface UsageStatsProps {
@@ -39,9 +37,6 @@ export const UsageStats: React.FC<UsageStatsProps> = ({ usageData }) => {
           </div>
           <div className="usage-numbers">
             {formatNumber(usageData.tokenUsage)} / {formatNumber(usageData.maxTokenUsage)} tokens
-          </div>
-          <div className="usage-plan">
-            Current Plan: {usageData.currentPlan || 'Free'}
           </div>
         </div>
       </div>
