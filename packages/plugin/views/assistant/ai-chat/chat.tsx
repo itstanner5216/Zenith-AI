@@ -489,14 +489,11 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       return headers;
     })(),
     fetch: async (url, options) => {
+      logMessage(plugin.settings.showLocalLLMInChat, "showLocalLLMInChat");
       logMessage(selectedModel, "selectedModel");
 
-      const normalizedModel = selectedModel.toLowerCase();
-      const useServerModel =
-        normalizedModel.startsWith("gpt-") ||
-        normalizedModel.includes("search-preview");
-
-      if (useServerModel) {
+      // Handle different model types
+      if (!plugin.settings.showLocalLLMInChat || selectedModel === "gpt-4o") {
         // Use server fetch for non-local models
         return fetch(url, options);
       }
@@ -598,7 +595,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       ) {
         // Show the full error message for token limit - it includes usage details
         userFriendlyMessage = error.message;
-        // Notify parent component that the current token budget is exhausted
+        // Notify parent component to show upgrade button
         onTokenLimitError?.(error.message);
       } else if (
         error.message?.toLowerCase().includes("rate limit") ||
@@ -1537,6 +1534,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     setSelectedModel(plugin.settings.selectedModel);
   }, [plugin.settings.selectedModel]);
 
+
   const handleExampleClick = (prompt: string) => {
     handleInputChange({
       target: { value: prompt },
@@ -1862,7 +1860,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     role="menu"
                     className={tw(
                       "min-w-[200px] py-1 rounded-md border border-[var(--border-accent)]",
-                      "bg-[var(--bg-depth-3)] shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.12)]"
+                      "bg-[var(--bg-depth-3)] shadow-[var(--elevation-lg),var(--glow-cyan-sm)]"
                     )}
                     style={{
                       position: "fixed",
@@ -2041,12 +2039,15 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
               <div className="h-8 flex items-center gap-1.5">
                 <span
                   className="w-1.5 h-1.5 bg-[var(--text-accent)] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:0ms]"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 />
                 <span
                   className="w-1.5 h-1.5 bg-[var(--text-accent)] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:200ms]"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 />
                 <span
                   className="w-1.5 h-1.5 bg-[var(--text-accent)] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:400ms]"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 />
               </div>
             </div>

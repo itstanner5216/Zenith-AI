@@ -109,9 +109,10 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
       } catch (error) {
         logger.error("Error in fetchClassificationAndTemplates:", error);
 
-        // Check if this is a usage limit error.
+        // Check if this is a token limit error
         if (error && typeof error === 'object' && 'status' in error && (error as any).status === 429) {
-          const errorMessage = (error as any).message || "Usage limit exceeded for this cycle. Try again later.";
+          const errorMessage = (error as any).message || "Token limit exceeded. Please upgrade your plan for more tokens.";
+          // Notify parent component to show upgrade button
           onTokenLimitError?.(errorMessage);
         }
 
@@ -177,7 +178,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
       <div className="flex flex-col space-y-2">
         <div className="relative" ref={dropdownRef}>
           <button
-            className="w-full flex items-center justify-between px-3 py-2 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] rounded hover:bg-[rgba(14,210,247,0.08)] transition-colors duration-200"
+            className="w-full flex items-center justify-between px-3 py-2 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] rounded hover:bg-[rgba(14,210,247,0.08)] hover:border-[var(--border-accent)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] focus-visible:shadow-[var(--glow-cyan-sm)] transition-all duration-200"
             onClick={() => setShowDropdown(!showDropdown)}
           >
             <span>{getDisplayText()}</span>
@@ -197,12 +198,12 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
             </svg>
           </button>
           {showDropdown && (
-            <div className="absolute z-10 w-full mt-1 bg-[var(--bg-depth-3)] border border-[var(--border-accent)] rounded shadow-[0_4px_16px_rgba(0,0,0,0.6),0_0_8px_rgba(14,210,247,0.1)]">
+            <div className="absolute z-10 w-full mt-1 bg-[var(--bg-depth-3)] border border-[var(--border-accent)] rounded shadow-[var(--elevation-lg),var(--glow-cyan-sm)]">
               {dropdownTemplates.length > 0 ? (
                 dropdownTemplates.map((templateName, index) => (
                   <div
                     key={index}
-                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] text-[var(--text-normal)] transition-colors duration-150"
+                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)] text-[var(--text-normal)] transition-all duration-150"
                     onClick={() => {
                       setSelectedTemplateName(templateName);
                       setShowDropdown(false);
@@ -225,10 +226,10 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
           </div>
         )}
         <button
-          className={`px-4 py-2 transition-colors duration-200 flex items-center justify-center rounded ${
+          className={`px-4 py-2 transition-all duration-200 flex items-center justify-center rounded active:scale-[0.97] ${
             !selectedTemplateName || formatting
               ? "bg-[rgba(14,210,247,0.05)] text-[var(--text-dim)] cursor-not-allowed border border-[var(--border-subtle)]"
-              : "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[var(--border-active)]"
+              : "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[var(--border-active)] hover:shadow-[var(--glow-cyan-sm)]"
           }`}
           disabled={!selectedTemplateName || formatting || isFileTooLarge}
           onClick={handleFormatClick}

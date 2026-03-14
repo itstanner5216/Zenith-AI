@@ -24,9 +24,11 @@ export function SearchToggle({ selectedModel }: SearchToggleProps) {
     setIsDeepSearch(!isDeepSearch);
   };
 
-  const modelName = selectedModel.toLowerCase();
-  const supportsSearch =
-    modelName.includes('gpt') || modelName.includes('search-preview');
+  // Only show search controls for models that support search
+  const supportsSearch = selectedModel === 'gpt-4o' || 
+                         selectedModel === 'gpt-4o-mini' || 
+                         selectedModel === 'gpt-4o-search-preview' || 
+                         selectedModel === 'gpt-4o-mini-search-preview';
   
   if (!supportsSearch) {
     return null;
@@ -43,10 +45,10 @@ export function SearchToggle({ selectedModel }: SearchToggleProps) {
       <button
         onClick={handleToggle}
         disabled={isSearchModel}
-        className={`text-xs px-1.5 py-0.5 border rounded transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] ${
+        className={`text-xs px-1.5 py-0.5 border rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] active:scale-[0.97] transition-all duration-150 ${
           isEnabled || searchAutoEnabled
-            ? "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border-[var(--border-active)]" 
-            : "bg-transparent text-[var(--text-dim)] border-[var(--border-defined)] hover:text-[var(--text-accent)] hover:border-[var(--border-active)]"
+            ? "bg-[rgba(14,210,247,0.12)] text-[var(--text-accent)] border-[var(--border-active)] shadow-[var(--glow-cyan-sm)]" 
+            : "bg-[var(--bg-depth-1)] text-[var(--text-normal)] border-[var(--border-subtle)] hover:border-[var(--border-accent)] hover:text-[var(--text-accent)]"
         }`}
         title={isEnabled ? "Disable internet search" : "Enable internet search"}
       >
@@ -56,10 +58,10 @@ export function SearchToggle({ selectedModel }: SearchToggleProps) {
       {(isEnabled || searchAutoEnabled) && (
         <button
           onClick={handleDeepSearchToggle}
-          className={`text-xs px-1.5 py-0.5 border rounded transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] ${
+          className={`text-xs px-1.5 py-0.5 border rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] active:scale-[0.97] transition-all duration-150 ${
             isDeepSearch 
-              ? "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border-[var(--border-active)]" 
-              : "bg-transparent text-[var(--text-dim)] border-[var(--border-defined)] hover:text-[var(--text-accent)] hover:border-[var(--border-active)]"
+              ? "bg-[rgba(14,210,247,0.12)] text-[var(--text-accent)] border-[var(--border-active)] shadow-[var(--glow-cyan-sm)]" 
+              : "bg-[var(--bg-depth-1)] text-[var(--text-normal)] border-[var(--border-subtle)] hover:border-[var(--border-accent)] hover:text-[var(--text-accent)]"
           }`}
           title={isDeepSearch ? "Use standard search context" : "Use deep search with more context"}
         >

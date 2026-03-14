@@ -112,7 +112,7 @@ export function CreateTemplateHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-elevation-md">
       <div className="flex items-start gap-2">
         <span className="text-[var(--text-accent)] text-lg">📋</span>
         <div className="flex-1">
