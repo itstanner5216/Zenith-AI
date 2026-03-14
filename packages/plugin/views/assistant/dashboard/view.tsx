@@ -1,8 +1,8 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { MainDashboard } from "./main-dashboard"; 
+import { MainDashboard } from "./main-dashboard";
 import { AppContext } from "../provider";
-import ZenithAI from "../../../index";  // Your main plugin class
+import ZenithAI from "../../../index";
 
 export const DASHBOARD_VIEW_TYPE = "fo2k.dashboard";
 
@@ -20,7 +20,7 @@ export class DashboardView extends ItemView {
   }
 
   getDisplayText(): string {
-    return "File Organizer Dashboard";
+    return "Zenith AI Workspace";
   }
 
   getIcon(): string {

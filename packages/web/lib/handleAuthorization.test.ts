@@ -40,11 +40,15 @@ jest.mock('@clerk/nextjs/server', () => {
 
 // Mock database and other dependencies - create mocks inside factory to avoid hoisting issues
 jest.mock('../drizzle/schema', () => {
+  const mockCheckTokenUsage = jest
+    .fn()
+    .mockResolvedValue({ remaining: 1000, usageError: null });
   const mockDbSelect = jest.fn().mockReturnThis();
   const mockDbFrom = jest.fn().mockReturnThis();
   const mockDbWhere = jest.fn().mockReturnThis();
   const mockDbLimit = jest.fn();
 
+  (global as any).__mockCheckTokenUsage = mockCheckTokenUsage;
   // Store references so we can access them in tests
   (global as any).__mockDbSelect = mockDbSelect;
   (global as any).__mockDbFrom = mockDbFrom;
@@ -52,10 +56,7 @@ jest.mock('../drizzle/schema', () => {
   (global as any).__mockDbLimit = mockDbLimit;
 
   return {
-    checkTokenUsage: jest
-      .fn()
-      .mockResolvedValue({ remaining: 1000, usageError: null }),
-    checkUserSubscriptionStatus: jest.fn().mockResolvedValue(true),
+    checkTokenUsage: mockCheckTokenUsage,
     createEmptyUserUsage: jest.fn().mockResolvedValue(undefined),
     UserUsageTable: {},
     db: {
@@ -65,7 +66,6 @@ jest.mock('../drizzle/schema', () => {
       limit: mockDbLimit,
     },
     initializeTierConfig: jest.fn().mockResolvedValue(undefined),
-    isSubscriptionActive: jest.fn().mockResolvedValue(true),
     eq: jest.fn(),
   };
 });
@@ -81,6 +81,8 @@ jest.mock('./posthog', () => ({
 // Get references to mocks after they're created
 const getMockAuth = () => (global as any).__mockAuth as jest.Mock;
 const getMockClerkClient = () => (global as any).__mockClerkClient as jest.Mock;
+const getMockCheckTokenUsage = () =>
+  (global as any).__mockCheckTokenUsage as jest.Mock;
 const getMockDbSelect = () => (global as any).__mockDbSelect as jest.Mock;
 const getMockDbFrom = () => (global as any).__mockDbFrom as jest.Mock;
 const getMockDbWhere = () => (global as any).__mockDbWhere as jest.Mock;
@@ -116,6 +118,10 @@ describe('handleAuthorization - Unkey API v2 Migration', () => {
           emailAddresses: [{ emailAddress: 'test@example.com' }],
         }),
       },
+    });
+    getMockCheckTokenUsage().mockReset().mockResolvedValue({
+      remaining: 1000,
+      usageError: null,
     });
 
     // Reset database mocks - ensure chain works correctly
@@ -164,7 +170,6 @@ describe('handleAuthorization - Unkey API v2 Migration', () => {
         userId: expectedUserId,
         tokenUsage: 100,
         maxTokenUsage: 10000,
-        subscriptionStatus: 'active',
       };
       getMockDbLimit()
         .mockResolvedValueOnce([userRecord]) // For ensureUserExists
@@ -212,7 +217,6 @@ describe('handleAuthorization - Unkey API v2 Migration', () => {
         userId: expectedUserId,
         tokenUsage: 100,
         maxTokenUsage: 10000,
-        subscriptionStatus: 'active',
       };
       getMockDbLimit()
         .mockResolvedValueOnce([userRecord]) // For ensureUserExists
@@ -267,6 +271,48 @@ describe('handleAuthorization - Unkey API v2 Migration', () => {
       await expect(handleAuthorizationV2(req)).rejects.toThrow('Unauthorized');
       // verifyKey may be called with apiId if UNKEY_API_ID is set, so just check it was called
       expect(getMockVerifyKey()).toHaveBeenCalled();
+    });
+
+    it('should return API-key scoped token limit messaging', async () => {
+      const expectedUserId = 'token-limited-user';
+
+      getMockVerifyKey().mockReset();
+      getMockDbLimit().mockReset();
+      getMockCheckTokenUsage().mockReset();
+
+      getMockVerifyKey().mockResolvedValue({
+        data: {
+          valid: true,
+          identity: {
+            externalId: expectedUserId,
+          },
+        },
+        error: null,
+      });
+
+      const userRecord = {
+        userId: expectedUserId,
+        tokenUsage: 10000,
+        maxTokenUsage: 10000,
+      };
+      getMockDbLimit()
+        .mockResolvedValueOnce([userRecord])
+        .mockResolvedValueOnce([userRecord]);
+      getMockCheckTokenUsage().mockResolvedValue({
+        remaining: 0,
+        usageError: false,
+      });
+
+      const req = new NextRequest('http://localhost:3000/api/test', {
+        method: 'GET',
+        headers: {
+          authorization: 'Bearer token-limit-key',
+        },
+      });
+
+      await expect(handleAuthorizationV2(req)).rejects.toThrow(
+        'Token limit exceeded for this API key.'
+      );
     });
   });
 });

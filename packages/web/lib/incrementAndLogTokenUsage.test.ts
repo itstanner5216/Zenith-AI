@@ -1,11 +1,9 @@
 import { incrementAndLogTokenUsage } from './incrementAndLogTokenUsage';
-import { checkTokenUsage, checkIfUserNeedsUpgrade, incrementTokenUsage } from '../drizzle/schema';
-import PostHogClient from './posthog';
+import { checkTokenUsage, incrementTokenUsage } from '../drizzle/schema';
 
 // Mock dependencies
 jest.mock('../drizzle/schema', () => ({
   checkTokenUsage: jest.fn(),
-  checkIfUserNeedsUpgrade: jest.fn(),
   incrementTokenUsage: jest.fn(),
 }));
 
@@ -42,7 +40,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 850,
         usageError: false,
@@ -77,7 +74,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 900,
         usageError: false,
@@ -138,25 +134,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 0,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
-
-      const result = await incrementAndLogTokenUsage('test-user-id', 150);
-
-      expect(result).toEqual({
-        remaining: 0,
-        usageError: false,
-        needsUpgrade: true,
-      });
-      expect(incrementTokenUsage).not.toHaveBeenCalled();
-    });
-
-    it('should return early when user needs upgrade', async () => {
-      (checkTokenUsage as jest.Mock).mockResolvedValueOnce({
-        remaining: 100,
-        usageError: false,
-      });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(true);
-
       const result = await incrementAndLogTokenUsage('test-user-id', 150);
 
       expect(result).toEqual({
@@ -172,7 +149,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: -10,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
 
       const result = await incrementAndLogTokenUsage('test-user-id', 150);
 
@@ -191,7 +167,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 1000,
         usageError: false,
@@ -208,7 +183,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 1000,
         usageError: false,
@@ -225,7 +199,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 900,
         usageError: false,
@@ -245,7 +218,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 850,
         usageError: false,
@@ -261,7 +233,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 850,
         usageError: true,
@@ -277,7 +248,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 750,
         usageError: false,
@@ -296,13 +266,12 @@ describe('incrementAndLogTokenUsage', () => {
     });
   });
 
-  describe('Needs Upgrade Detection', () => {
+  describe('Quota Exhaustion Detection', () => {
     it('should set needsUpgrade to true when remaining is 0', async () => {
       (checkTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 0,
         usageError: false,
@@ -318,7 +287,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 500,
         usageError: false,
@@ -336,7 +304,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 1000,
         usageError: false,
@@ -353,7 +320,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 500000,
         usageError: false,
@@ -371,7 +337,6 @@ describe('incrementAndLogTokenUsage', () => {
         remaining: 1000,
         usageError: false,
       });
-      (checkIfUserNeedsUpgrade as jest.Mock).mockResolvedValueOnce(false);
       (incrementTokenUsage as jest.Mock).mockResolvedValueOnce({
         remaining: 1000,
         usageError: false,
@@ -385,4 +350,3 @@ describe('incrementAndLogTokenUsage', () => {
     });
   });
 });
-

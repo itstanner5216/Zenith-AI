@@ -27,8 +27,8 @@ export const TierConfigTable = pgTable('tier_config', {
 export type TierConfig = typeof TierConfigTable.$inferSelect;
 export type NewTierConfig = typeof TierConfigTable.$inferInsert;
 
-// Default legacy plan token limit
-export const DEFAULT_LEGACY_PLAN_TOKENS = 100000;
+// Default token budget for API-key-backed usage records.
+export const DEFAULT_API_KEY_TOKENS = 100000;
 
 // Create a pgTable that maps to a table in your DB to track user usage
 export const UserUsageTable = pgTable(
@@ -37,25 +37,9 @@ export const UserUsageTable = pgTable(
     id: serial('id').primaryKey(),
     userId: text('userId').notNull().unique(),
     createdAt: timestamp('createdAt').defaultNow().notNull(),
-    billingCycle: text('billingCycle').notNull(),
     tokenUsage: integer('tokenUsage').notNull().default(0),
     maxTokenUsage: integer('maxTokenUsage').notNull().default(0),
-    audioTranscriptionMinutes: integer('audioTranscriptionMinutes')
-      .notNull()
-      .default(0),
-    maxAudioTranscriptionMinutes: integer('maxAudioTranscriptionMinutes')
-      .notNull()
-      .default(0),
-    subscriptionStatus: text('subscriptionStatus')
-      .notNull()
-      .default('inactive'),
-    paymentStatus: text('paymentStatus').notNull().default('unpaid'),
-    lastPayment: timestamp('lastPayment'),
-    // get rid of this
-    currentProduct: text('currentProduct'),
-    currentPlan: text('currentPlan'),
-    hasCatalystAccess: boolean('hasCatalystAccess').notNull().default(false),
-    tier: text('tier').notNull().default('free'), // Add tier field with default value of "free"
+    tier: text('tier').notNull().default('free'),
   },
   (userUsage) => {
     return {
@@ -123,15 +107,9 @@ export const createEmptyUserUsage = async (userId: string) => {
     .insert(UserUsageTable)
     .values({
       userId,
-      billingCycle: 'free',
       tokenUsage: 0,
-      maxTokenUsage: DEFAULT_LEGACY_PLAN_TOKENS,
-      audioTranscriptionMinutes: 0,
-      maxAudioTranscriptionMinutes: 0, // Free/legacy tier gets 0 minutes
-      subscriptionStatus: 'active', // Legacy plan is considered active
-      paymentStatus: 'free', // Legacy plan doesn't require payment
+      maxTokenUsage: DEFAULT_API_KEY_TOKENS,
       tier: 'free',
-      currentPlan: 'Free Plan',
     })
     .onConflictDoNothing({
       target: [UserUsageTable.userId],
@@ -148,7 +126,7 @@ export const initializeTierConfig = async () => {
       await db.insert(TierConfigTable).values([
         {
           tierName: 'free',
-          maxTokens: DEFAULT_LEGACY_PLAN_TOKENS,
+          maxTokens: DEFAULT_API_KEY_TOKENS,
           isActive: true,
         },
         {
@@ -161,39 +139,6 @@ export const initializeTierConfig = async () => {
     }
   } catch (error) {
     console.error('Error initializing tier configurations:', error);
-  }
-};
-
-// delete me
-export async function incrementApiUsage(userId: string): Promise<void> {
-  console.log('Incrementing API Usage for User ID:', userId);
-
-  try {
-    console.log('Incremented API Usage for User ID:', userId);
-  } catch (error) {
-    console.error('Error incrementing API Usage for User ID:', userId);
-    console.error(error);
-  }
-
-  // Increment successful, exit the retry loop
-}
-
-// delete me
-export const checkApiUsage = async (userId: string) => {
-  console.log('Checking API Usage for User ID:', userId);
-  try {
-    return {
-      remaining: 1000 - 0,
-
-      usageError: false,
-    };
-  } catch (error) {
-    console.error('Error checking API Usage for User ID:', userId);
-    console.error(error);
-    return {
-      remaining: 0,
-      usageError: true,
-    };
   }
 };
 
@@ -225,12 +170,8 @@ export async function incrementTokenUsage(
       await db.insert(UserUsageTable).values({
         userId,
         tokenUsage: 0,
-        maxTokenUsage: 0, // Set default max tokens to 0 or another appropriate default
-        audioTranscriptionMinutes: 0,
-        maxAudioTranscriptionMinutes: 0, // Default to 0 for free tier
-        billingCycle: 'default', // Required field in the schema
-        subscriptionStatus: 'inactive',
-        paymentStatus: 'unpaid',
+        maxTokenUsage: DEFAULT_API_KEY_TOKENS,
+        tier: 'free',
       });
     }
 
@@ -272,13 +213,13 @@ export const checkTokenUsage = async (userId: string) => {
       .where(eq(UserUsageTable.userId, userId))
       .limit(1);
 
-    // If user doesn't exist yet, return default legacy plan tokens
+    // If user doesn't exist yet, return the default token budget
     if (!userUsage.length) {
       console.log(
-        `No user record found for ${userId} in checkTokenUsage, returning default legacy plan tokens`
+        `No user record found for ${userId} in checkTokenUsage, returning default token budget`
       );
       return {
-        remaining: DEFAULT_LEGACY_PLAN_TOKENS,
+        remaining: DEFAULT_API_KEY_TOKENS,
         usageError: false,
       };
     }
@@ -303,321 +244,6 @@ export const checkTokenUsage = async (userId: string) => {
   }
 };
 
-export const checkAudioTranscriptionQuota = async (userId: string) => {
-  try {
-    const userUsage = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1);
-
-    // If user doesn't exist yet, return 0 remaining (no quota for new users)
-    if (!userUsage.length) {
-      return {
-        remaining: 0,
-        usageError: false,
-      };
-    }
-
-    const currentUsage = userUsage[0]?.audioTranscriptionMinutes || 0;
-    const maxUsage = userUsage[0]?.maxAudioTranscriptionMinutes || 0;
-
-    if (currentUsage >= maxUsage) {
-      return {
-        remaining: 0,
-        usageError: false,
-      };
-    }
-
-    return {
-      remaining: maxUsage - currentUsage,
-      usageError: false,
-    };
-  } catch (error) {
-    console.error('Error checking audio transcription quota:', error);
-    return {
-      remaining: 0,
-      usageError: true,
-    };
-  }
-};
-
-export async function incrementAudioTranscriptionUsage(
-  userId: string,
-  minutes: number
-): Promise<{ remaining: number; usageError: boolean }> {
-  try {
-    // Validate minutes is a valid number
-    if (Number.isNaN(minutes) || !Number.isFinite(minutes)) {
-      console.warn(
-        `Invalid minutes value received for user ${userId}: ${minutes}, using 0 instead`
-      );
-      minutes = 0;
-    }
-
-    // Ensure minutes is a non-negative number (can be decimal)
-    minutes = Math.max(0, minutes);
-
-    // First check if the user has a usage row
-    const existingUsage = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1);
-
-    // If no usage row exists, create one with initial values
-    if (existingUsage.length === 0) {
-      await db.insert(UserUsageTable).values({
-        userId,
-        tokenUsage: 0,
-        maxTokenUsage: 0,
-        audioTranscriptionMinutes: 0,
-        maxAudioTranscriptionMinutes: 0,
-        billingCycle: 'default',
-        subscriptionStatus: 'inactive',
-        paymentStatus: 'unpaid',
-      });
-    }
-
-    // Now update the audio transcription usage
-    const userUsage = await db
-      .update(UserUsageTable)
-      .set({
-        audioTranscriptionMinutes: sql`${UserUsageTable.audioTranscriptionMinutes} + ${minutes}`,
-      })
-      .where(eq(UserUsageTable.userId, userId))
-      .returning({
-        remaining: sql<number>`${UserUsageTable.maxAudioTranscriptionMinutes} - COALESCE(${UserUsageTable.audioTranscriptionMinutes}, 0)`,
-      });
-
-    console.log(
-      'Incremented audio transcription usage for user:',
-      userId,
-      `+${minutes} minutes`,
-      `remaining: ${userUsage[0]?.remaining ?? 0}`
-    );
-    return {
-      remaining: userUsage[0]?.remaining ?? 0,
-      usageError: false,
-    };
-  } catch (error) {
-    console.error('Error incrementing audio transcription usage:', error);
-    return {
-      remaining: 0,
-      usageError: true,
-    };
-  }
-}
-
-// Separate subscription check from token check
-export const isSubscriptionActive = async (
-  userId: string
-): Promise<boolean> => {
-  console.log('Checking subscription status for User ID:', userId);
-  try {
-    const userUsage = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1)
-      .execute();
-
-    if (!userUsage[0]) {
-      console.log(
-        `No user record found for ${userId}, will be initialized with legacy plan`
-      );
-      return true; // Return true to allow initialization in ensureUserExists
-    }
-
-    // Legacy plan is considered active by default
-    if (userUsage[0].tier === 'free') {
-      return true;
-    }
-
-    // Lifetime licenses are always active
-    if (userUsage[0].billingCycle === 'lifetime') {
-      return true;
-    }
-
-    // Check for paid tiers - only check payment status
-    return (
-      userUsage[0].paymentStatus === 'paid' ||
-      userUsage[0].paymentStatus === 'succeeded' ||
-      userUsage[0].paymentStatus === 'free'
-    );
-  } catch (error) {
-    console.error('Error checking subscription status for User ID:', userId);
-    console.error(error);
-    return false;
-  }
-};
-
-// Update checkUserSubscriptionStatus to use the new function and handle token limit separately
-export const checkUserSubscriptionStatus = async (
-  userId: string
-): Promise<boolean> => {
-  const isActive = await isSubscriptionActive(userId);
-
-  // For legacy plan, also check if they have remaining tokens
-  if (isActive) {
-    const userUsage = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1);
-
-    if (userUsage.length > 0 && userUsage[0].tier === 'free') {
-      // For legacy plan, check remaining tokens
-      const tokenCheck = await checkTokenUsage(userId);
-      return tokenCheck.remaining > 0;
-    }
-  }
-
-  return isActive;
-};
-
-export async function createOrUpdateUserSubscriptionStatus(
-  userId: string,
-  subscriptionStatus: string,
-  paymentStatus: string,
-  billingCycle: string,
-  tier: string = 'free' // Default to legacy plan
-): Promise<void> {
-  try {
-    // Get max tokens for tier from config
-    const tierConfig = await db
-      .select()
-      .from(TierConfigTable)
-      .where(eq(TierConfigTable.tierName, tier))
-      .limit(1);
-
-    // Default to legacy plan tokens if no config found
-    const maxTokens =
-      tierConfig.length > 0
-        ? tierConfig[0].maxTokens
-        : DEFAULT_LEGACY_PLAN_TOKENS;
-
-    // Check if this is a tier upgrade from free to paid
-    const existingUser = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1);
-
-    const isUpgradeFromFree =
-      existingUser.length > 0 &&
-      existingUser[0].tier === 'free' &&
-      tier !== 'free';
-
-    // For upgrades, reset token usage to 0
-    const tokenUsage = isUpgradeFromFree
-      ? 0
-      : existingUser.length > 0
-      ? existingUser[0].tokenUsage
-      : 0;
-
-    await db
-      .insert(UserUsageTable)
-      .values({
-        userId,
-        subscriptionStatus,
-        paymentStatus,
-        billingCycle,
-        tokenUsage: tokenUsage, // Use the adjusted token usage
-        maxTokenUsage: maxTokens,
-        tier,
-        createdAt: new Date(),
-      })
-      .onConflictDoUpdate({
-        target: [UserUsageTable.userId],
-        set: {
-          subscriptionStatus,
-          paymentStatus,
-          billingCycle,
-          tier,
-          tokenUsage: tokenUsage, // Reset token usage for upgrades
-          maxTokenUsage: maxTokens,
-        },
-      });
-
-    console.log(
-      `Updated or created subscription status for User ID: ${userId}`
-    );
-  } catch (error) {
-    console.error(
-      'Error updating or creating subscription status for User ID:',
-      userId
-    );
-    console.error(error);
-  }
-}
-
-export async function handleFailedPayment(
-  userId: string,
-  subscriptionStatus: string,
-  paymentStatus: string
-): Promise<void> {
-  try {
-    // Get the user's current tier
-    const userUsage = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1);
-
-    // Determine if we need to drop down to legacy plan
-    const shouldRevertToLegacyPlan =
-      userUsage.length > 0 &&
-      userUsage[0].tier !== 'free' &&
-      (paymentStatus === 'failed' || subscriptionStatus === 'inactive');
-
-    // Set max tokens based on tier
-    const maxTokens = shouldRevertToLegacyPlan
-      ? DEFAULT_LEGACY_PLAN_TOKENS
-      : userUsage.length > 0
-      ? userUsage[0].maxTokenUsage
-      : DEFAULT_LEGACY_PLAN_TOKENS;
-
-    // Determine tier
-    const tier = shouldRevertToLegacyPlan
-      ? 'free'
-      : userUsage.length > 0
-      ? userUsage[0].tier
-      : 'free';
-
-    await db
-      .insert(UserUsageTable)
-      .values({
-        userId,
-        subscriptionStatus,
-        paymentStatus,
-        billingCycle: '',
-        tokenUsage: userUsage.length > 0 ? userUsage[0].tokenUsage : 0,
-        maxTokenUsage: maxTokens,
-        tier,
-        createdAt: new Date(),
-      })
-      .onConflictDoUpdate({
-        target: [UserUsageTable.userId],
-        set: {
-          subscriptionStatus,
-          paymentStatus,
-          tier,
-          maxTokenUsage: maxTokens,
-        },
-      });
-
-    console.log(
-      `Updated or created failed payment status for User ID: ${userId}`
-    );
-  } catch (error) {
-    console.error(
-      'Error updating or creating failed payment status for User ID:',
-      userId
-    );
-    console.error(error);
-  }
-}
 
 export const uploadedFiles = pgTable('uploaded_files', {
   id: serial('id').primaryKey(),
@@ -638,33 +264,3 @@ export const uploadedFiles = pgTable('uploaded_files', {
 
 export type UploadedFile = typeof uploadedFiles.$inferSelect;
 export type NewUploadedFile = typeof uploadedFiles.$inferInsert;
-
-// Check if user needs to upgrade from legacy plan
-export const checkIfUserNeedsUpgrade = async (
-  userId: string
-): Promise<boolean> => {
-  try {
-    const userUsage = await db
-      .select()
-      .from(UserUsageTable)
-      .where(eq(UserUsageTable.userId, userId))
-      .limit(1);
-
-    if (!userUsage.length) {
-      return false;
-    }
-
-    // Check if they're on legacy plan and have used all their tokens
-    if (
-      userUsage[0].tier === 'free' &&
-      userUsage[0].tokenUsage >= userUsage[0].maxTokenUsage
-    ) {
-      return true;
-    }
-
-    return false;
-  } catch (error) {
-    console.error('Error checking if user needs upgrade:', error);
-    return false;
-  }
-};

@@ -240,15 +240,14 @@ describe('Chat API Route', () => {
     expect(foundMetadata).toBe(true);
   });
 
-  it('should extract YouTube transcript from tool message and add to context', async () => {
+  it('should log tool-result preview content for tool messages', async () => {
     const mockRequest = new NextRequest('http://localhost:3000/api/chat', {
       method: 'POST',
       body: JSON.stringify({
         messages: [
           {
             role: 'user',
-            content:
-              'Summarize this video: https://www.youtube.com/watch?v=test123',
+            content: 'Open the architecture note and summarize it.',
           },
           {
             role: 'assistant',
@@ -256,11 +255,10 @@ describe('Chat API Route', () => {
             toolInvocations: [
               {
                 toolCallId: 'call_test123',
-                toolName: 'getYoutubeVideoId',
+                toolName: 'openFile',
                 state: 'result',
-                args: { videoId: 'test123' },
-                result:
-                  'YouTube Video Transcript Retrieved\n\nTitle: Test Video\n\nFULL TRANSCRIPT:\nThis is a test transcript with content.',
+                args: { filePath: 'Architecture.md' },
+                result: 'Opened Architecture.md and loaded 2,300 characters.',
               },
             ],
           },
@@ -273,7 +271,7 @@ describe('Chat API Route', () => {
       },
     });
 
-    // Mock console.log to capture the transcript extraction
+    // Mock console.log to capture tool result extraction
     const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
     const response = await POST(mockRequest);
@@ -282,17 +280,11 @@ describe('Chat API Route', () => {
     // Wait a bit for async operations
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    // Check that transcript extraction was logged
-    const extractionLog = consoleLogSpy.mock.calls.find((call) =>
-      call[0]?.includes('Extracting YouTube transcript') && call[0]?.includes('from tool result')
+    // Check that tool result preview logging happened
+    const previewLog = consoleLogSpy.mock.calls.find((call) =>
+      call[0]?.includes('content that model will see')
     );
-    expect(extractionLog).toBeDefined();
-
-    // Check that transcript was added to context
-    const contextLog = consoleLogSpy.mock.calls.find((call) =>
-      call[0]?.includes('YouTube transcript(s) to context string')
-    );
-    expect(contextLog).toBeDefined();
+    expect(previewLog).toBeDefined();
 
     consoleLogSpy.mockRestore();
   });
@@ -309,11 +301,10 @@ describe('Chat API Route', () => {
             toolInvocations: [
               {
                 toolCallId: 'call_test456',
-                toolName: 'getYoutubeVideoId',
+                toolName: 'openFile',
                 state: 'result',
-                args: { videoId: 'test456' },
-                result:
-                  'YouTube Video Transcript Retrieved\n\nFULL TRANSCRIPT:\nTest content',
+                args: { filePath: 'Notes/Test.md' },
+                result: 'Loaded note content for Notes/Test.md',
               },
             ],
           },

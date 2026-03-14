@@ -10,10 +10,8 @@ import { RenameSuggestion } from "./titles/box";
 import { SimilarFolderBox } from "./folders/box";
 import { RefreshButton } from "./components/refresh-button";
 import { ClassificationContainer } from "./ai-format/templates";
-import { TranscriptionButton } from "./transcript";
 import { EmptyState } from "./components/empty-state";
 import { logMessage } from "../../../someUtils";
-import { LicenseValidator } from "./components/license-validator";
 import { VALID_MEDIA_EXTENSIONS } from "../../../constants";
 import { logger } from "../../../services/logger";
 import { tw } from "../../../lib/utils";
@@ -38,8 +36,6 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
   const [noteContent, setNoteContent] = React.useState<string>("");
   const [refreshKey, setRefreshKey] = React.useState<number>(0);
   const [error, setError] = React.useState<string | null>(null);
-  const [isLicenseValid, setIsLicenseValid] = React.useState(false);
-  const [isConnected, setIsConnected] = React.useState(true);
 
   // Use refs to track the active file and path for rename detection
   const activeFilePathRef = React.useRef<string | null>(null);
@@ -217,28 +213,6 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
     }
   }, [activeFile, plugin.app.vault]);
 
-  // Then check license
-  if (!isLicenseValid) {
-    return (
-      <div className={tw("flex flex-col h-full")}>
-        <div
-          className={tw(
-            "flex gap-2 items-center px-3 py-2 border-b border-[var(--border-defined)] bg-[var(--bg-depth-1)]"
-          )}
-        >
-          <RefreshButton onRefresh={refreshContext} />
-        </div>
-        <div className={tw("px-3")}>
-          <LicenseValidator
-            apiKey={plugin.settings.API_KEY}
-            onValidationComplete={() => setIsLicenseValid(true)}
-            plugin={plugin}
-          />
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className={tw("flex flex-col h-full")}>
@@ -305,7 +279,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
           <RefreshButton onRefresh={refreshContext} />
         </div>
         <div className={tw("px-3")}>
-          <EmptyState message="To process an image or audio file, move it to the Zenith-AI Inbox Folder (e.g. for image text extraction or audio transcription)." />
+          <EmptyState message="This file type is not part of the current Organizer workflow. Open a markdown or PDF note to work with planning and organization features." />
         </div>
       </div>
     );
@@ -454,25 +428,7 @@ export const AssistantView: React.FC<AssistantViewProps> = ({
           </>
         )}
 
-        {hasAudioEmbed(noteContent) && (
-          <>
-            <SectionHeader text="Audio Transcription" icon="🎙️ " />
-            {renderSection(
-              <TranscriptionButton
-                plugin={plugin}
-                file={activeFile}
-                content={noteContent}
-              />,
-              "Error loading transcription button"
-            )}
-          </>
-        )}
       </div>
     </div>
   );
-};
-
-const hasAudioEmbed = (content: string): boolean => {
-  const audioRegex = /!\[\[(.*\.(mp3|wav|m4a|ogg|webm))]]/i;
-  return audioRegex.test(content);
 };

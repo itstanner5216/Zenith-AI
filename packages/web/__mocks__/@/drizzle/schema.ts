@@ -1,35 +1,24 @@
 // In-memory database for testing
 const mockDatabase: Record<string, any[]> = {};
 
-// Helper to evaluate SQL expressions for top-up token preservation
+// Helper to evaluate SQL expressions used in token usage updates.
 function evaluateSqlExpression(sqlObj: any, record: any): number {
   // Check if this is a SQL object (has queryChunks)
   if (!sqlObj || !sqlObj.queryChunks || !Array.isArray(sqlObj.queryChunks)) {
     return sqlObj; // Not a SQL object, return as-is
   }
 
-  // The SQL expression is: monthlyLimit + GREATEST(GREATEST(maxTokenUsage - monthlyLimit, 0) - GREATEST(tokenUsage - monthlyLimit, 0), 0)
-  // Extract monthlyTokenLimit from queryChunks (look for the numeric value 5000000)
-  const monthlyTokenLimit = 5000 * 1000; // 5M tokens (standard monthly limit)
-
   // Get current record values
   const currentMaxTokenUsage = record.maxTokenUsage || 0;
   const currentTokenUsage = record.tokenUsage || 0;
-
-  // Evaluate: monthlyLimit + GREATEST(GREATEST(maxTokenUsage - monthlyLimit, 0) - GREATEST(tokenUsage - monthlyLimit, 0), 0)
-  const originalTopUp = Math.max(currentMaxTokenUsage - monthlyTokenLimit, 0);
-  const consumedTopUp = Math.max(currentTokenUsage - monthlyTokenLimit, 0);
-  const remainingTopUp = Math.max(originalTopUp - consumedTopUp, 0);
-  const result = monthlyTokenLimit + remainingTopUp;
-
-  return result;
+  return currentMaxTokenUsage - currentTokenUsage;
 }
 
 // Mock database object with stateful operations
 export const db = {
   select: jest.fn(() => ({
     from: jest.fn((table: any) => ({
-      where: jest.fn((condition: any) => {
+      where: jest.fn((_condition: any) => {
         // Simple mock: return all records for the table
         // Handle both table object and string
         const tableName =
@@ -37,7 +26,7 @@ export const db = {
         const records = mockDatabase[tableName] || [];
 
         // If condition exists, try to filter (simple userId matching)
-        if (condition && records.length > 0) {
+        if (_condition && records.length > 0) {
           // For simple eq() conditions on userId, filter records
           // This is a simplified filter - real drizzle conditions are more complex
           return Promise.resolve(records); // Return all for now, tests can override
@@ -66,57 +55,28 @@ export const db = {
         const records = mockDatabase[tableName] || [];
         let updatedCount = 0;
 
-        // Check if condition is an AND/OR condition (drizzle-orm structure)
-        // For simplicity, check if records match common conditions
         records.forEach((record: any) => {
-          let shouldUpdate = true;
-
-          // If condition exists, try to match it
-          // For active subscribers test: subscriptionStatus='active', paymentStatus='paid', billingCycle='subscription'
-          if (condition) {
-            // Simple heuristic: if record has active subscription and paid status, update it
-            // This handles the resetTokenUsage function's where clause
-            if (record.subscriptionStatus === 'inactive') {
-              shouldUpdate = false;
-            }
-            // If updates include tokenUsage reset, only update active/paid records
-            if (updates.tokenUsage === 0) {
-              shouldUpdate =
-                (record.subscriptionStatus === 'active' ||
-                  record.subscriptionStatus === 'succeeded' ||
-                  record.subscriptionStatus === 'paid') &&
-                (record.paymentStatus === 'paid' ||
-                  record.paymentStatus === 'succeeded') &&
-                (record.billingCycle === 'monthly' ||
-                  record.billingCycle === 'yearly' ||
-                  record.billingCycle === 'subscription' ||
-                  record.billingCycle === 'default');
+          // Handle SQL expressions in updates.
+          const processedUpdates: any = {};
+          for (const [key, value] of Object.entries(updates)) {
+            // Check if value is a SQL object and needs evaluation
+            // Use type assertion to check for SQL object structure
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const sqlValue = value as any;
+            if (
+              sqlValue &&
+              typeof sqlValue === 'object' &&
+              'queryChunks' in sqlValue &&
+              Array.isArray(sqlValue.queryChunks)
+            ) {
+              // This is a SQL expression, evaluate it using current record values
+              processedUpdates[key] = evaluateSqlExpression(sqlValue, record);
+            } else {
+              processedUpdates[key] = value;
             }
           }
-
-          if (shouldUpdate) {
-            // Handle SQL expressions in updates (for top-up token preservation)
-            const processedUpdates: any = {};
-            for (const [key, value] of Object.entries(updates)) {
-              // Check if value is a SQL object and needs evaluation
-              // Use type assertion to check for SQL object structure
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const sqlValue = value as any;
-              if (
-                sqlValue &&
-                typeof sqlValue === 'object' &&
-                'queryChunks' in sqlValue &&
-                Array.isArray(sqlValue.queryChunks)
-              ) {
-                // This is a SQL expression, evaluate it using current record values
-                processedUpdates[key] = evaluateSqlExpression(sqlValue, record);
-              } else {
-                processedUpdates[key] = value;
-              }
-            }
-            Object.assign(record, processedUpdates);
-            updatedCount++;
-          }
+          Object.assign(record, processedUpdates);
+          updatedCount++;
         });
 
         return Promise.resolve({ rowCount: updatedCount });
@@ -124,7 +84,7 @@ export const db = {
     })),
   })),
   delete: jest.fn((table: any) => ({
-    where: jest.fn((condition: any) => {
+    where: jest.fn((_condition: any) => {
       const tableName = table?.name || 'user_usage';
       const records = mockDatabase[tableName] || [];
       // Simple: clear all records (tests can override this)
@@ -148,10 +108,7 @@ export const UserUsageTable = {
   userId: 'userId',
   tokenUsage: 'tokenUsage',
   maxTokenUsage: 'maxTokenUsage',
-  subscriptionStatus: 'subscriptionStatus',
-  paymentStatus: 'paymentStatus',
-  billingCycle: 'billingCycle',
-  currentPlan: 'currentPlan',
+  tier: 'tier',
 };
 
 // Mock other exports that might be needed
@@ -165,15 +122,6 @@ export const checkTokenUsage = jest.fn().mockResolvedValue({
   usageError: false,
 });
 
-export const checkIfUserNeedsUpgrade = jest.fn().mockResolvedValue(false);
-
-export const checkUserSubscriptionStatus = jest.fn().mockResolvedValue({
-  isActive: true,
-  status: 'active',
-});
-
 export const createEmptyUserUsage = jest.fn().mockResolvedValue({});
 
 export const initializeTierConfig = jest.fn().mockResolvedValue({});
-
-export const isSubscriptionActive = jest.fn().mockResolvedValue(true);

@@ -15,23 +15,23 @@ export async function POST(req: NextRequest) {
     if (process.env.NODE_ENV === 'development' && userId) {
       console.log('📝 Development mode - using existing session', { userId });
 
-      // Add more detailed logging for license key creation
-      console.log('Attempting to create license key for user:', userId);
+      console.log('Attempting to create API key for user:', userId);
       const licenseKeyResult = await createLicenseKeyFromUserId(userId);
-      console.log('License key creation result:', licenseKeyResult);
+      console.log('API key creation result:', licenseKeyResult);
 
       if ('error' in licenseKeyResult) {
-        console.error('❌ License key creation failed:', licenseKeyResult.error);
+        console.error('❌ API key creation failed:', licenseKeyResult.error);
         return NextResponse.json({
           success: false,
           error: licenseKeyResult.error,
         }, { status: 500 });
       }
 
-      console.log('🔑 License key created successfully in dev mode');
+      console.log('🔑 API key created successfully in dev mode');
 
       return NextResponse.json({
         success: true,
+        apiKey: licenseKeyResult.key.key,
         licenseKey: licenseKeyResult.key.key,
         userId,
         message: "Development mode: Using current session",
@@ -67,13 +67,12 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    console.log('🔐 User found, generating license key...');
-    // Add more detailed logging for production license key creation
+    console.log('🔐 User found, generating API key...');
     const licenseKeyResult = await createLicenseKeyFromUserId(users[0].id);
-    console.log('License key creation result:', licenseKeyResult);
+    console.log('API key creation result:', licenseKeyResult);
 
     if ('error' in licenseKeyResult) {
-      console.error('❌ License key creation failed:', licenseKeyResult.error);
+      console.error('❌ API key creation failed:', licenseKeyResult.error);
       return NextResponse.json({
         success: false,
         error: licenseKeyResult.error,
@@ -83,10 +82,11 @@ export async function POST(req: NextRequest) {
     // Ensure user usage record exists (creates if doesn't exist, no-op if exists)
     await createEmptyUserUsage(users[0].id);
 
-    console.log('✅ License key generated successfully');
+    console.log('✅ API key generated successfully');
 
     return NextResponse.json({
       success: true,
+      apiKey: licenseKeyResult.key.key,
       licenseKey: licenseKeyResult.key.key,
       userId: users[0].id,
     });

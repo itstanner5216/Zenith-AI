@@ -15,11 +15,7 @@
     "db:generate": "pnpm drizzle-kit generate",
     "db:migrate": "pnpm dotenv -c -- drizzle-kit migrate",
     "db:studio": "pnpm dotenv -c -- drizzle-kit studio",
-    "db:studio:prod": "pnpm dotenv -e .env.production.local -- drizzle-kit studio",
-    "sync-subscriptions": "pnpm dotenv -c -- tsx scripts/sync-subscriptions.ts",
-    "find-active-subs": "pnpm dotenv -c -- tsx scripts/find-active-subscriptions.ts",
-    "report": "pnpm dotenv -c -- tsx scripts/get-detailed-report.ts",
-    "fix-lifetime-users": "pnpm dotenv -c -- tsx scripts/fix-lifetime-user.ts"
+    "db:studio:prod": "pnpm dotenv -e .env.production.local -- drizzle-kit studio"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "catalog:",
@@ -32,7 +28,6 @@
     "@aws-sdk/client-s3": "^3.787.0",
     "@aws-sdk/s3-request-presigner": "^3.787.0",
     "@clerk/nextjs": "^6.23.3",
-    "@ffprobe-installer/ffprobe": "^2.1.2",
     "@hookform/resolvers": "^3.9.1",
     "@mistralai/mistralai": "^1.5.2",
     "@radix-ui/react-dialog": "^1.1.6",
@@ -43,7 +38,6 @@
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-switch": "^1.1.3",
     "@radix-ui/react-tabs": "^1.1.3",
-    "@stripe/stripe-js": "^3.5.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@tiptap/core": "^2.10.3",
     "@tiptap/starter-kit": "^2.10.3",
@@ -59,7 +53,6 @@
     "dotenv-cli": "^7.4.4",
     "drizzle-kit": "^0.22.8",
     "drizzle-orm": "^0.31.4",
-    "ffmpeg-static": "^5.2.0",
     "lucide-react": "^0.479.0",
     "next": "15.5.10",
     "ollama-ai-provider": "^0.15.2",
@@ -73,15 +66,12 @@
     "react-hook-form": "^7.54.0",
     "react-hot-toast": "^2.4.1",
     "remark-gfm": "^4.0.1",
-    "stripe": "^16.12.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "4.0.12",
     "tailwindcss-animate": "^1.0.7",
     "wink-bm25-text-search": "^3.1.2",
     "wink-eng-lite-web-model": "^1.8.1",
     "wink-nlp": "^2.3.2",
-    "youtube-transcript-plus": "^1.1.1",
-    "youtubei.js": "^16.0.1",
     "zod": "catalog:"
   },
   "devDependencies": {

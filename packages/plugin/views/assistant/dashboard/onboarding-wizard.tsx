@@ -46,18 +46,20 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
 
       const data = await response.json();
       
-      if (!data.success || !data.licenseKey) {
+      const apiKey = data.apiKey ?? data.licenseKey;
+
+      if (!data.success || !apiKey) {
         setError(data.error || "Authentication failed");
         setIsLoading(false);
         return;
       }
 
-      // Set the license key
-      plugin.settings.API_KEY = data.licenseKey;
+      // Save the API key returned by the account endpoint
+      plugin.settings.API_KEY = apiKey;
       await plugin.saveSettings();
       
       // Show success message
-      new Notice(`Successfully ${isSignup ? "signed up" : "signed in"}! Your account is now connected.`, 5000);
+      new Notice(`Successfully ${isSignup ? "signed up" : "signed in"}! Your workspace is now connected.`, 5000);
       
       // Move to next step
       nextStep();
@@ -75,7 +77,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
     // Create necessary folders
     await plugin.checkAndCreateRequiredFolders();
     
-    // Mark onboarding as complete
+    // Mark setup as complete
     plugin.settings.hasRunOnboarding = true;
     await plugin.saveSettings();
     
@@ -97,21 +99,21 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
           {step === 0
             ? "Welcome to Zenith-AI!"
             : step === 1
-            ? "Create Your Account"
+            ? "Connect Your Workspace"
             : "Set Up Your Workspace"}
         </h2>
 
         {step === 0 && (
           <div className={tw("mb-6 space-y-4")}>
             <p className={tw("text-[var(--text-normal)]")}>
-              Zenith-AI helps you organize your Obsidian vault with AI-powered features:
+              Zenith-AI helps you work with your Obsidian vault using focused AI tooling:
             </p>
             <ul className={tw("space-y-2")}>
               {[
-                "Automatically organize and format notes",
-                "Extract key concepts and suggest tags",
-                "Get AI assistance with your content",
-                "Sync across devices"
+                "Discuss projects, ideas, and implementation plans",
+                "Keep vault organization aligned with your preferences",
+                "Capture planning context while you work",
+                "Reuse vault knowledge across sessions"
               ].map((item, i) => (
                 <li key={i} className={tw("flex items-start gap-2 text-[var(--text-normal)]")}>  
                   <span className={tw("w-1.5 h-1.5 rounded-full bg-[var(--text-accent)] shadow-[0_0_4px_rgba(14,210,247,0.5)] mt-1.5 flex-shrink-0")} />
@@ -120,7 +122,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               ))}
             </ul>
             <p className={tw("text-sm text-[var(--text-dim)] mt-4")}>
-              Let's get you set up in just a few steps!
+              Let's connect your workspace in just a few steps.
             </p>
             <Button
               onClick={nextStep}
@@ -142,7 +144,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               }`)}
               onClick={() => setIsSignup(true)}
             >
-              Sign Up
+              Create Account
             </div>
             <div
               className={tw(`cursor-pointer px-4 py-2 text-sm font-semibold transition-all duration-150 ${
@@ -152,7 +154,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
               }`)}
               onClick={() => setIsSignup(false)}
             >
-              Sign In
+              Connect Existing Account
             </div>
             </div>
             
@@ -248,7 +250,7 @@ export function OnboardingWizard({ plugin, onComplete }: OnboardingWizardProps) 
             <h4 className={tw("text-lg font-semibold text-center bg-gradient-to-r from-[var(--gradient-blue)] to-[var(--gradient-lavender)] bg-clip-text text-transparent")}>You're ready to go!</h4>
             
             <p className={tw("text-center text-[var(--text-normal)]")}>
-              Zenith-AI is now set up and ready to help you organize your vault.
+              Zenith-AI is now connected and ready to work with your vault.
             </p>
             
             <div className={tw("bg-[var(--bg-depth-1)] p-4 rounded-md border border-[var(--border-defined)] shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]")}>

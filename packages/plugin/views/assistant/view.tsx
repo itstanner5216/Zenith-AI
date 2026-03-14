@@ -8,31 +8,25 @@ import { SectionHeader } from "./section-header";
 import { AppContext } from "./provider";
 import AIChatSidebar from "./ai-chat/container";
 import ReactMarkdown from "react-markdown";
-import { SyncTab } from "./synchronizer/sync-tab";
 import { ProjectContextTab } from "./context";
 import { StyledContainer } from "../../components/ui/utils";
 import { tw } from "../../lib/utils";
-import { Sparkles, Inbox, MessageSquare, Cloud, Compass } from "lucide-react";
-import { UpgradeButton } from "../../components/upgrade-button";
-import { UsageData } from "../..";
+import { Sparkles, Inbox, MessageSquare, Compass } from "lucide-react";
 import { Inbox as InboxService } from "../../inbox";
-import { FREE_TIER_TOKEN_LIMIT } from "../../constants";
 
 export const ORGANIZER_VIEW_TYPE = "fo2k.assistant.sidebar2";
 
-type Tab = "organizer" | "inbox" | "chat" | "sync" | "context";
+type Tab = "organizer" | "inbox" | "chat" | "context";
 
 function TabContent({
   activeTab,
   plugin,
   leaf,
-  showSyncTab,
   onTokenLimitError,
 }: {
   activeTab: Tab;
   plugin: ZenithAI;
   leaf: WorkspaceLeaf;
-  showSyncTab: boolean;
   onTokenLimitError?: (error: string) => void;
 }) {
   const [activeFile, setActiveFile] = React.useState<TFile | null>(null);
@@ -110,17 +104,6 @@ function TabContent({
         />
       </div>
 
-      {showSyncTab && (
-        <div
-          className={tw(
-            "flex-1 min-h-0 w-full",
-            activeTab === "sync" ? "block" : "hidden"
-          )}
-        >
-          <SyncTab plugin={plugin} onTokenLimitError={onTokenLimitError} />
-        </div>
-      )}
-
       <div
         className={tw(
           "flex-1 min-h-0 w-full",
@@ -195,31 +178,11 @@ function AssistantContent({
   onTabChange: (setTab: (tab: Tab) => void) => void;
 }) {
   const [activeTab, setActiveTab] = React.useState<Tab>(initialTab);
-  const [usageData, setUsageData] = React.useState<UsageData | null>(null);
-  const [forceShowUpgrade, setForceShowUpgrade] = React.useState(false);
   const [processingCount, setProcessingCount] = React.useState(0);
 
   React.useEffect(() => {
     onTabChange(setActiveTab);
   }, [onTabChange]);
-
-  // Fetch usage data on mount
-  React.useEffect(() => {
-    const fetchUsage = async () => {
-      try {
-        const data = await plugin.fetchUsageStats();
-        if (data) {
-          setUsageData(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch usage data:", error);
-      }
-    };
-
-    if (plugin.settings.API_KEY) {
-      fetchUsage();
-    }
-  }, [plugin]);
 
   // Track processing count for Inbox badge
   React.useEffect(() => {
@@ -241,51 +204,18 @@ function AssistantContent({
 
     // Listen to workspace events
     const handler = () => updateProcessingCount();
-    plugin.app.workspace.on("file-organizer:processing-step", handler);
+    const workspaceWithProcessingEvent =
+      plugin.app.workspace as typeof plugin.app.workspace & {
+        on: (name: string, callback: () => void) => unknown;
+        off: (name: string, callback: () => void) => void;
+      };
+    workspaceWithProcessingEvent.on("file-organizer:processing-step", handler);
 
     return () => {
       clearInterval(interval);
-      plugin.app.workspace.off("file-organizer:processing-step", handler);
+      workspaceWithProcessingEvent.off("file-organizer:processing-step", handler);
     };
   }, [plugin]);
-
-  // Helper function to check if upgrade button should be shown
-  const shouldShowUpgradeButton = () => {
-    // Force show if token limit error occurred
-    if (forceShowUpgrade) return true;
-
-    if (!usageData) return false;
-
-    const isFreeTier =
-      usageData.currentPlan === "Free Plan" ||
-      usageData.currentPlan === "Free" ||
-      usageData.maxTokenUsage === FREE_TIER_TOKEN_LIMIT;
-
-    if (!isFreeTier) return false;
-
-    const usagePercent = usageData.tokenUsage / usageData.maxTokenUsage;
-    return usagePercent >= 0.8; // 80% threshold
-  };
-
-  // Handle token limit errors from child components; only show Upgrade for free tier (100K)
-  const handleTokenLimitError = React.useCallback(
-    (_error: string) => {
-      plugin
-        .fetchUsageStats()
-        .then(data => {
-          if (data) {
-            setUsageData(data);
-            if (data.maxTokenUsage === FREE_TIER_TOKEN_LIMIT) {
-              setForceShowUpgrade(true);
-            }
-          }
-        })
-        .catch(console.error);
-    },
-    [plugin]
-  );
-
-  const showSyncTab = plugin.settings.showSyncTab;
 
   return (
     <div className={tw("flex flex-col h-full w-full bg-[var(--bg-depth-1)]")}>
@@ -325,29 +255,7 @@ function AssistantContent({
           >
             Context
           </TabButton>
-          {showSyncTab && (
-            <TabButton
-              isActive={activeTab === "sync"}
-              onClick={() => setActiveTab("sync")}
-              icon={<Cloud className="w-4 h-4" />}
-            >
-              Sync
-            </TabButton>
-          )}
         </div>
-
-        {/* Upgrade button - visible when free tier user is at 80%+ usage or token limit error occurred */}
-        {shouldShowUpgradeButton() && (
-          <div className={tw("ml-auto")}>
-            <UpgradeButton
-              plugin={plugin}
-              variant="compact"
-              showMessage={true}
-              usageData={usageData}
-              isForced={forceShowUpgrade}
-            />
-          </div>
-        )}
       </div>
 
       {/* Content area - Layer 2 */}
@@ -356,8 +264,7 @@ function AssistantContent({
           activeTab={activeTab}
           plugin={plugin}
           leaf={leaf}
-          showSyncTab={showSyncTab}
-          onTokenLimitError={handleTokenLimitError}
+          onTokenLimitError={undefined}
         />
       </div>
     </div>
@@ -399,14 +306,6 @@ export class AssistantViewWrapper extends ItemView {
       callback: () => this.activateTab("context"),
     });
 
-    // Only register sync tab command if enabled in settings
-    if (this.plugin.settings.showSyncTab) {
-      this.plugin.addCommand({
-        id: "open-sync-tab",
-        name: "Open Sync Tab",
-        callback: () => this.activateTab("sync"),
-      });
-    }
   }
 
   activateTab(tab: Tab) {

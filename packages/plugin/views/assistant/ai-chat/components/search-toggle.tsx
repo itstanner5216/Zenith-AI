@@ -24,11 +24,9 @@ export function SearchToggle({ selectedModel }: SearchToggleProps) {
     setIsDeepSearch(!isDeepSearch);
   };
 
-  // Only show search controls for models that support search
-  const supportsSearch = selectedModel === 'gpt-4o' || 
-                         selectedModel === 'gpt-4o-mini' || 
-                         selectedModel === 'gpt-4o-search-preview' || 
-                         selectedModel === 'gpt-4o-mini-search-preview';
+  const modelName = selectedModel.toLowerCase();
+  const supportsSearch =
+    modelName.includes('gpt') || modelName.includes('search-preview');
   
   if (!supportsSearch) {
     return null;

@@ -34,10 +34,6 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
   const [errorFilePath, setErrorFilePath] = useState(
     plugin.settings.errorFilePath
   );
-  const [recordingsFolderPath, setRecordingsFolderPath] = useState(
-    plugin.settings.recordingsFolderPath
-  );
-
   const [warnings, setWarnings] = useState<Record<string, string>>({});
   const [pathExistence, setPathExistence] = useState<Record<string, boolean>>(
     {}
@@ -545,18 +541,6 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
               "errorFilePath"
             ),
           "errorFilePath"
-        )}
-        {renderSettingItem(
-          "Recordings folder",
-          "Choose a folder for meeting recordings.",
-          recordingsFolderPath,
-          e =>
-            handleSettingChange(
-              e.target.value,
-              setRecordingsFolderPath,
-              "recordingsFolderPath"
-            ),
-          "recordingsFolderPath"
         )}
       </div>
     </div>

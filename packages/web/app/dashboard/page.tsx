@@ -3,7 +3,6 @@
 import * as React from 'react';
 import Link from 'next/link';
 import {
-  CreditCard,
   FileText,
   Smartphone,
   Upload,
@@ -14,7 +13,6 @@ import {
   Calendar,
   FileSymlink,
   RefreshCw,
-  Key,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,10 +30,6 @@ export default function DashboardPage() {
   const [apiUsage, setApiUsage] = React.useState({
     tokenUsage: 0,
     maxTokenUsage: 0,
-    audioTranscriptionMinutes: 0,
-    maxAudioTranscriptionMinutes: 0,
-    subscriptionStatus: '',
-    currentPlan: '',
     nextReset: '',
     isActive: false,
   });
@@ -179,11 +173,7 @@ export default function DashboardPage() {
       <Card className="w-full">
         <CardHeader className="pb-4">
           <CardTitle>API Usage</CardTitle>
-          <CardDescription>
-            {!isLoading && apiUsage.maxAudioTranscriptionMinutes > 0
-              ? 'Your current token and transcription minutes usage'
-              : 'Your current token usage'}
-          </CardDescription>
+          <CardDescription>Your current token usage</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -213,39 +203,17 @@ export default function DashboardPage() {
                 />
               </div>
 
-              {/* Audio Transcription Minutes Usage */}
-              {apiUsage.maxAudioTranscriptionMinutes > 0 && (
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">
-                      Audio Transcription Minutes
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {apiUsage.audioTranscriptionMinutes.toFixed(1)} /{' '}
-                      {apiUsage.maxAudioTranscriptionMinutes} min
-                    </span>
-                  </div>
-                  <Progress
-                    value={calculatePercentage(
-                      apiUsage.audioTranscriptionMinutes,
-                      apiUsage.maxAudioTranscriptionMinutes
-                    )}
-                    className="h-2"
-                  />
-                </div>
-              )}
-
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="bg-slate-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
-                    <CreditCard className="h-4 w-4 text-blue-500" />
-                    <span className="text-sm font-medium">Current Plan</span>
+                    <FileText className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm font-medium">Access</span>
                   </div>
                   <p className="text-xl font-bold">
-                    {apiUsage.currentPlan || 'Free'}
+                    {apiUsage.isActive ? 'Enabled' : 'Inactive'}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {apiUsage.subscriptionStatus || 'Active'}
+                    API usage is available for your current key
                   </p>
                 </div>
 
@@ -278,23 +246,6 @@ export default function DashboardPage() {
                     Usage resets on this date
                   </p>
                 </div>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                {apiUsage.isActive && (
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href="/dashboard/subscribers">
-                      <Key className="mr-2 h-4 w-4" />
-                      Get license key
-                    </Link>
-                  </Button>
-                )}
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/dashboard/pricing">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Upgrade Plan
-                  </Link>
-                </Button>
               </div>
             </div>
           )}
@@ -338,10 +289,14 @@ export default function DashboardPage() {
             </CardContent>
             <CardFooter className="pt-0">
               <Button className="w-full" size="sm" asChild>
-                <Link href="https://discord.gg/udQnCRFyus" target="_blank">
+                <a
+                  href="https://discord.gg/udQnCRFyus"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Join early access through discord
-                </Link>
+                </a>
               </Button>
             </CardFooter>
           </Card>

@@ -84,7 +84,7 @@ describe('createLicenseKeyFromUserId - Unkey API v2 Migration', () => {
 
     // Implementation expects 'data' property, so v1 format will return an error
     expect(result).toEqual({
-      error: 'Failed to create license key: No data in response',
+      error: 'Failed to create API key: No data in response',
     });
   });
 
@@ -108,7 +108,7 @@ describe('createLicenseKeyFromUserId - Unkey API v2 Migration', () => {
     const result = await createLicenseKeyFromUserId('test-user-id');
 
     expect(result).toEqual({
-      error: expect.stringContaining('Failed to create license key'),
+      error: expect.stringContaining('Failed to create API key'),
     });
     expect(consoleSpy).toHaveBeenCalledWith(
       'Unkey API returned an error:',
