@@ -31,7 +31,13 @@ export function MoveFilesHandler({
 
     // Check file name pattern
     if (namePattern) {
-      const regex = new RegExp(namePattern.replace("*", ".*"));
+      const globToRegex = (pattern: string): RegExp => {
+        // Escape regex metacharacters, then turn '*' into '.*' (match any sequence of chars)
+        const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regexSource = escaped.replace(/\*/g, ".*");
+        return new RegExp(regexSource);
+      };
+      const regex = globToRegex(namePattern);
       if (!regex.test(file.basename)) {
         return false;
       }
