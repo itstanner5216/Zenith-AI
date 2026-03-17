@@ -195,28 +195,8 @@ export interface BatchEditDocumentRequest {
 // Diagnostics
 // ---------------------------------------------------------------------------
 
-/** Diagnostic codes emitted by the patch engine. */
-export type DiagnosticCode =
-  | "NEVER_READ"
-  | "FILE_CHANGED"
-  | "EDITOR_DIRTY"
-  | "HASH_NOT_FOUND"
-  | "AMBIGUOUS_TARGET"
-  | "SYMBOL_TARGET_UNAVAILABLE"
-  | "BUDGET_EXCEEDED"
-  | "BOUNDARY_VIOLATION"
-  | "STRUCTURE_BROKEN"
-  | "PATH_UNSAFE"
-  | "PATH_MISMATCH"
-  | "OVERLAPPING_EDITS"
-  | "WRITE_VERIFY_FAILED"
-  | "RESTORE_FAILED"
-  | "LOCK_LOST";
-
-/** A machine-readable diagnostic returned on edit failure. */
-export interface EditDiagnostic {
-  /** Diagnostic code identifying the failure class. */
-  code: DiagnosticCode;
+/** Common fields shared by every diagnostic variant. */
+interface EditDiagnosticBase {
   /** Short human-readable message. */
   shortMessage: string;
   /** Actionable hints for the model to recover. */
@@ -226,62 +206,63 @@ export interface EditDiagnostic {
   /** Fresh outline attached when the file has changed. */
   currentOutline?: StructuralOutlineResult;
   /** Candidate nodes when target resolution is ambiguous. */
-  candidates?: Array<{
-    hash: string;
-    type: string;
-    label: string;
-    excerpt: string;
-  }>;
-  /** Type-discriminated detail payload for code-specific context. */
-  details?: DiagnosticDetails;
+  candidates?: Array<{ hash: string; type: string; label: string; excerpt: string }>;
 }
 
-// ---------------------------------------------------------------------------
-// Diagnostic Detail Payloads
-// ---------------------------------------------------------------------------
+/**
+ * A machine-readable diagnostic returned on edit failure.
+ *
+ * Modelled as a discriminated union on `code` so that code-specific
+ * fields (e.g. `editorHash` on EDITOR_DIRTY) are only present on
+ * the variant where they are meaningful.
+ */
+export type EditDiagnostic =
+  | (EditDiagnosticBase & { /** File was never read before editing. */ code: "NEVER_READ" })
+  | (EditDiagnosticBase & { /** File content changed since last read. */ code: "FILE_CHANGED" })
+  | (EditDiagnosticBase & {
+      /** Editor buffer is out of sync with the vault file. */
+      code: "EDITOR_DIRTY";
+      /** Hash of the current editor buffer content. */
+      editorHash: string;
+      /** Hash of the current vault file content. */
+      vaultHash: string;
+    })
+  | (EditDiagnosticBase & { /** Target hash was not found in the structural tree. */ code: "HASH_NOT_FOUND" })
+  | (EditDiagnosticBase & { /** Multiple nodes matched the target descriptor. */ code: "AMBIGUOUS_TARGET" })
+  | (EditDiagnosticBase & {
+      /** Symbol-level targeting is not available for this code block. */
+      code: "SYMBOL_TARGET_UNAVAILABLE";
+      /** Why symbol extraction was skipped. */
+      reason: "language_unsupported" | "block_oversized" | "parse_incomplete";
+      /** Hash of the parent code_block node, usable as an immediate retry target. */
+      blockHash: string;
+    })
+  | (EditDiagnosticBase & { /** Edit exceeds the budget threshold. */ code: "BUDGET_EXCEEDED" })
+  | (EditDiagnosticBase & { /** Edit crosses a structural boundary. */ code: "BOUNDARY_VIOLATION" })
+  | (EditDiagnosticBase & { /** Edit would break the document structure. */ code: "STRUCTURE_BROKEN" })
+  | (EditDiagnosticBase & { /** File path is unsafe (traversal, symlink, etc.). */ code: "PATH_UNSAFE" })
+  | (EditDiagnosticBase & { /** Resolved path does not match the requested path. */ code: "PATH_MISMATCH" })
+  | (EditDiagnosticBase & { /** Two or more edits in a batch overlap. */ code: "OVERLAPPING_EDITS" })
+  | (EditDiagnosticBase & {
+      /** Post-write verification detected a content mismatch. */
+      code: "WRITE_VERIFY_FAILED";
+      /** Hash of the content that was intended to be written. */
+      intendedHash: string;
+      /** Hash of the content actually read back after write. */
+      actualHash: string;
+    })
+  | (EditDiagnosticBase & {
+      /** Undo/restore could not reinstate the original content. */
+      code: "RESTORE_FAILED";
+      /** Hash of the content that was intended to be restored. */
+      intendedHash: string;
+      /** Hash of the content actually read back after restore attempt. */
+      actualHash: string;
+    })
+  | (EditDiagnosticBase & { /** File lock was lost during the edit transaction. */ code: "LOCK_LOST" });
 
-/** Detail payload for SYMBOL_TARGET_UNAVAILABLE diagnostics. */
-export interface SymbolUnavailableDetails {
-  kind: "symbol_unavailable";
-  /** Why symbol extraction was skipped. */
-  reason: "language_unsupported" | "block_oversized" | "parse_incomplete";
-  /** Hash of the parent code_block node, usable as an immediate retry target. */
-  blockHash: string;
-}
-
-/** Detail payload for WRITE_VERIFY_FAILED diagnostics. */
-export interface WriteVerifyFailedDetails {
-  kind: "write_verify_failed";
-  /** Hash of the content that was intended to be written. */
-  intendedHash: string;
-  /** Hash of the content actually read back after write. */
-  actualHash: string;
-}
-
-/** Detail payload for RESTORE_FAILED diagnostics. */
-export interface RestoreFailedDetails {
-  kind: "restore_failed";
-  /** Hash of the content that was intended to be restored. */
-  intendedHash: string;
-  /** Hash of the content actually read back after restore attempt. */
-  actualHash: string;
-}
-
-/** Detail payload for EDITOR_DIRTY diagnostics. */
-export interface EditorDirtyDetails {
-  kind: "editor_dirty";
-  /** Hash of the current editor buffer content. */
-  editorHash: string;
-  /** Hash of the current vault file content. */
-  vaultHash: string;
-}
-
-/** Discriminated union of all diagnostic detail payloads. */
-export type DiagnosticDetails =
-  | SymbolUnavailableDetails
-  | WriteVerifyFailedDetails
-  | RestoreFailedDetails
-  | EditorDirtyDetails;
+/** All valid diagnostic codes, derived from the EditDiagnostic union. */
+export type DiagnosticCode = EditDiagnostic["code"];
 
 // ---------------------------------------------------------------------------
 // Structural Outline Result
