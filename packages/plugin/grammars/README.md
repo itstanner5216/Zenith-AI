@@ -14,7 +14,9 @@ pnpm run grammars:download
 
 **Some grammars** (notably `tree-sitter-sql`) do not publish pre-built WASMs.
 For those, you must build the WASM locally using the `tree-sitter` CLI and
-Emscripten, then place the file here manually:
+Emscripten, then place the file here manually. For the exact toolchain and
+commands used to build the current `tree-sitter-sql.wasm`, see
+[BUILD-PROVENANCE.md](BUILD-PROVENANCE.md).
 
 ```bash
 # Install tree-sitter CLI (requires Emscripten for --wasm builds)
