@@ -1,19 +1,21 @@
 /**
  * Obsidian markdown compatibility regression tests.
  *
- * These tests load Obsidian-specific fixtures, parse them with the
- * tree-sitter markdown grammar, and verify byte-correct behavior:
+ * These tests load Obsidian-specific fixtures, parse them with the Rust
+ * tree-sitter bridge (which guarantees UTF-8 byte offsets), and verify
+ * byte-correct behavior:
  *
  *   - Multi-byte wiki-link targets remain byte-stable after parsing
  *   - Inline and block MathJax delimiters remain intact
  *   - Embeds, callouts, and dataview markers are preserved
  *   - Templater regions are recognized for fail-closed treatment
  *   - ByteText round-trips through parsing preserve content
+ *   - tree-sitter node byte offsets match UTF-8 encoding
  *
  * Uses node:test (patch engine convention).
  */
 
-import { describe, it, before } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -22,78 +24,19 @@ import {
   getObsidianSyntaxPolicy,
   getObsidianSyntaxPolicyOrDefault,
 } from "../parsers/obsidian-syntax-policy";
-
-// ---------------------------------------------------------------------------
-// web-tree-sitter CJS import
-// ---------------------------------------------------------------------------
-
-const treeSitterModule = require("web-tree-sitter") as {
-  Parser: {
-    new (): TreeSitterParser;
-    init(moduleOptions?: {
-      locateFile: (scriptName: string) => string;
-    }): Promise<void>;
-  };
-  Language: {
-    load(input: string | Uint8Array): Promise<TreeSitterLanguage>;
-  };
-};
-
-interface TreeSitterParser {
-  setLanguage(lang: TreeSitterLanguage): void;
-  parse(input: string): TreeSitterTree;
-}
-interface TreeSitterLanguage {
-  readonly nodeTypeCount: number;
-}
-interface TreeSitterTree {
-  readonly rootNode: TreeSitterNode;
-}
-interface TreeSitterNode {
-  readonly type: string;
-  readonly startIndex: number;
-  readonly endIndex: number;
-  readonly isNamed: boolean;
-  readonly childCount: number;
-  readonly children: TreeSitterNode[];
-  readonly text: string;
-}
+import {
+  type CstNode,
+  parseCst,
+  collectNodesByType,
+} from "../rust-tree-sitter-runtime";
 
 // ---------------------------------------------------------------------------
 // Constants and helpers
 // ---------------------------------------------------------------------------
 
-const PLUGIN_DIR = path.resolve(__dirname, "../../..");
-const GRAMMAR_WASM = path.join(PLUGIN_DIR, "grammars", "tree-sitter-markdown.wasm");
 const FIXTURES_DIR = path.join(__dirname, "fixtures", "obsidian");
 
-/** Walk up the directory tree to find the hoisted tree-sitter.wasm. */
-function findTreeSitterWasm(): string {
-  let dir = PLUGIN_DIR;
-  while (dir !== path.dirname(dir)) {
-    const candidate = path.join(dir, "node_modules", "web-tree-sitter", "tree-sitter.wasm");
-    if (fs.existsSync(candidate)) return candidate;
-    dir = path.dirname(dir);
-  }
-  throw new Error("Could not find tree-sitter.wasm in any ancestor node_modules");
-}
-
-/** Collect all named nodes of a given type from the tree. */
-function collectNodes(root: TreeSitterNode, nodeType: string): TreeSitterNode[] {
-  const results: TreeSitterNode[] = [];
-  function walk(node: TreeSitterNode): void {
-    if (node.isNamed && node.type === nodeType) {
-      results.push(node);
-    }
-    for (const child of node.children) {
-      walk(child);
-    }
-  }
-  walk(root);
-  return results;
-}
-
-/** Find all byte offsets of a substring pattern in raw bytes. */
+/** Find all character offsets of a substring pattern in source text. */
 function findAllOccurrences(text: string, pattern: string): number[] {
   const offsets: number[] = [];
   let idx = 0;
@@ -106,14 +49,18 @@ function findAllOccurrences(text: string, pattern: string): number[] {
   return offsets;
 }
 
-// ---------------------------------------------------------------------------
-// Parser state (initialized once)
-// ---------------------------------------------------------------------------
-
-let parser: TreeSitterParser;
-
 function readFixture(name: string): string {
   return fs.readFileSync(path.join(FIXTURES_DIR, name), "utf-8");
+}
+
+const encoder = new TextEncoder();
+
+/**
+ * Get the UTF-8 byte offset corresponding to a character offset in source.
+ * Encodes the prefix up to `charOffset` and returns its byte length.
+ */
+function charOffsetToByteOffset(source: string, charOffset: number): number {
+  return encoder.encode(source.slice(0, charOffset)).byteLength;
 }
 
 // ---------------------------------------------------------------------------
@@ -121,57 +68,39 @@ function readFixture(name: string): string {
 // ---------------------------------------------------------------------------
 
 describe("Obsidian Markdown Compatibility", () => {
-  before(async () => {
-    const Parser = treeSitterModule.Parser;
-    const Language = treeSitterModule.Language;
-    await Parser.init({ locateFile: () => findTreeSitterWasm() });
-    parser = new Parser();
-    const lang = await Language.load(GRAMMAR_WASM);
-    parser.setLanguage(lang);
-  });
 
   // -------------------------------------------------------------------------
   // Multi-byte wiki-link byte stability
   // -------------------------------------------------------------------------
 
   describe("multi-byte wiki-links remain byte-stable", () => {
-    it("preserves Japanese wiki-link target bytes through parsing", () => {
+    it("preserves Japanese wiki-link target bytes through parsing", async () => {
       const source = readFixture("wiki-links.md");
       const bt = ByteText.fromString(source);
-      const tree = parser.parse(source);
+      const root = await parseCst("markdown", source);
 
-      // "[[日本語ノート]]" — each char is 3 bytes, total target is 15 bytes
       const target = "日本語ノート";
-      const encoder = new TextEncoder();
-      const targetBytes = encoder.encode(target);
-
-      // Find the pattern in source text
       const pattern = `[[${target}]]`;
       const occurrences = findAllOccurrences(source, pattern);
       assert.ok(occurrences.length > 0, "Should find [[日本語ノート]] in fixture");
 
-      // Verify byte-level round-trip: encoding the target and decoding
-      // the same byte range from ByteText produces identical content
       for (const charOffset of occurrences) {
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
-        // Slice the exact bytes of the wiki-link and verify content
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         const decoded = new TextDecoder().decode(sliced);
         assert.equal(decoded, pattern, "Byte-sliced wiki-link must match original");
       }
 
-      // Verify the tree parsed without losing content
-      // Note: web-tree-sitter startIndex/endIndex are character indices (UTF-16),
-      // NOT byte indices. The engine will convert to byte offsets in ParserManager (Task 2.1).
-      assert.equal(tree.rootNode.startIndex, 0);
-      assert.equal(tree.rootNode.endIndex, source.length);
+      // Root node byte offsets span the whole document
+      const utf8Len = Buffer.byteLength(source, "utf8");
+      assert.equal(root.startByte, 0);
+      assert.equal(root.endByte, utf8Len);
     });
 
-    it("preserves French accented wiki-link target bytes", () => {
+    it("preserves French accented wiki-link target bytes", async () => {
       const source = readFixture("wiki-links.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
       const target = "Résumé";
       const pattern = `[[${target}]]`;
@@ -179,42 +108,39 @@ describe("Obsidian Markdown Compatibility", () => {
       assert.ok(occurrences.length > 0, "Should find [[Résumé]] in fixture");
 
       for (const charOffset of occurrences) {
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
-        const patternByteLen = encoder.encode(pattern).byteLength;
-        const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
-        const decoded = new TextDecoder().decode(sliced);
-        assert.equal(decoded, pattern);
-      }
-    });
-
-    it("preserves Chinese wiki-link with heading anchor", () => {
-      const source = readFixture("wiki-links.md");
-      const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
-
-      const pattern = "[[中文笔记#标题]]";
-      const occurrences = findAllOccurrences(source, pattern);
-      assert.ok(occurrences.length > 0, "Should find [[中文笔记#标题]] in fixture");
-
-      for (const charOffset of occurrences) {
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         assert.equal(new TextDecoder().decode(sliced), pattern);
       }
     });
 
-    it("preserves wiki-link with alias containing multi-byte chars", () => {
+    it("preserves Chinese wiki-link with heading anchor", async () => {
       const source = readFixture("wiki-links.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
+
+      const pattern = "[[中文笔记#标题]]";
+      const occurrences = findAllOccurrences(source, pattern);
+      assert.ok(occurrences.length > 0, "Should find [[中文笔记#标题]] in fixture");
+
+      for (const charOffset of occurrences) {
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
+        const patternByteLen = encoder.encode(pattern).byteLength;
+        const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
+        assert.equal(new TextDecoder().decode(sliced), pattern);
+      }
+    });
+
+    it("preserves wiki-link with alias containing multi-byte chars", async () => {
+      const source = readFixture("wiki-links.md");
+      const bt = ByteText.fromString(source);
 
       const pattern = "[[Über Thème|Display Naïve]]";
       const occurrences = findAllOccurrences(source, pattern);
       assert.ok(occurrences.length > 0);
 
       for (const charOffset of occurrences) {
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         assert.equal(new TextDecoder().decode(sliced), pattern);
@@ -227,34 +153,29 @@ describe("Obsidian Markdown Compatibility", () => {
   // -------------------------------------------------------------------------
 
   describe("MathJax delimiters remain intact", () => {
-    it("preserves inline math delimiters", () => {
+    it("preserves inline math delimiters", async () => {
       const source = readFixture("mathjax.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
-      // Find $E = mc^2$ and verify delimiters survive byte round-trip
       const pattern = "$E = mc^2$";
       const occurrences = findAllOccurrences(source, pattern);
       assert.ok(occurrences.length > 0, "Should find $E = mc^2$ in fixture");
 
       for (const charOffset of occurrences) {
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         const decoded = new TextDecoder().decode(sliced);
         assert.equal(decoded, pattern);
-        // Verify $ delimiters are at exact positions
         assert.equal(decoded[0], "$");
         assert.equal(decoded[decoded.length - 1], "$");
       }
     });
 
-    it("preserves block math $$ delimiters", () => {
+    it("preserves block math $$ delimiters", async () => {
       const source = readFixture("mathjax.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
-      // Find standalone $$ lines
       const lines = source.split("\n");
       const dollarDollarLines = lines
         .map((line, idx) => ({ line: line.trimEnd(), idx }))
@@ -262,7 +183,6 @@ describe("Obsidian Markdown Compatibility", () => {
 
       assert.ok(dollarDollarLines.length >= 2, "Should have at least one $$ open/close pair");
 
-      // Verify each $$ line byte offset maps correctly
       for (const { idx } of dollarDollarLines) {
         const prefix = lines.slice(0, idx).join("\n") + (idx > 0 ? "\n" : "");
         const byteOffset = encoder.encode(prefix).byteLength;
@@ -271,19 +191,17 @@ describe("Obsidian Markdown Compatibility", () => {
       }
     });
 
-    it("preserves math with multi-byte text content", () => {
+    it("preserves math with multi-byte text content", async () => {
       const source = readFixture("mathjax.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
-      // The fixture has $\text{résumé}$ and $\text{日本語}$
       const patterns = ["$\\text{résumé}$", "$\\text{日本語}$"];
       for (const pattern of patterns) {
         const occurrences = findAllOccurrences(source, pattern);
         assert.ok(occurrences.length > 0, `Should find ${pattern} in fixture`);
 
         const charOffset = occurrences[0];
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         assert.equal(new TextDecoder().decode(sliced), pattern);
@@ -296,10 +214,9 @@ describe("Obsidian Markdown Compatibility", () => {
   // -------------------------------------------------------------------------
 
   describe("embeds are preserved as inline content", () => {
-    it("preserves multi-byte embed targets", () => {
+    it("preserves multi-byte embed targets", async () => {
       const source = readFixture("embeds.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
       const patterns = [
         "![[Résumé du projet]]",
@@ -313,7 +230,7 @@ describe("Obsidian Markdown Compatibility", () => {
         assert.ok(occurrences.length > 0, `Should find ${pattern} in fixture`);
 
         const charOffset = occurrences[0];
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         assert.equal(new TextDecoder().decode(sliced), pattern);
@@ -328,27 +245,24 @@ describe("Obsidian Markdown Compatibility", () => {
   });
 
   describe("callouts are treated as opaque blocks", () => {
-    it("tree-sitter parses callouts as block_quote nodes", () => {
+    it("tree-sitter parses callouts as block_quote nodes", async () => {
       const source = readFixture("callouts.md");
-      const tree = parser.parse(source);
+      const root = await parseCst("markdown", source);
 
-      // Callouts in tree-sitter appear as block_quote nodes
-      const blockQuotes = collectNodes(tree.rootNode, "block_quote");
+      const blockQuotes = collectNodesByType(root, "block_quote");
       assert.ok(blockQuotes.length > 0, "Should find block_quote nodes for callouts");
     });
 
-    it("callout content with multi-byte wiki-links is byte-preserved", () => {
+    it("callout content with multi-byte wiki-links is byte-preserved", async () => {
       const source = readFixture("callouts.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
-      // The callout fixture has wiki-links like [[日本語ノート]] inside callouts
       const pattern = "[[日本語ノート]]";
       const occurrences = findAllOccurrences(source, pattern);
       assert.ok(occurrences.length > 0);
 
       for (const charOffset of occurrences) {
-        const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+        const byteOffset = charOffsetToByteOffset(source, charOffset);
         const patternByteLen = encoder.encode(pattern).byteLength;
         const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
         assert.equal(new TextDecoder().decode(sliced), pattern);
@@ -364,21 +278,16 @@ describe("Obsidian Markdown Compatibility", () => {
   });
 
   describe("dataview blocks are treated as opaque code blocks", () => {
-    it("tree-sitter parses dataview as fenced_code_block", () => {
+    it("tree-sitter parses dataview as fenced_code_block", async () => {
       const source = readFixture("dataview.md");
-      const tree = parser.parse(source);
+      const root = await parseCst("markdown", source);
 
-      const codeBlocks = collectNodes(tree.rootNode, "fenced_code_block");
+      const codeBlocks = collectNodesByType(root, "fenced_code_block");
       assert.ok(codeBlocks.length > 0, "Should find fenced_code_block nodes for dataview");
 
-      // At least some should have 'dataview' or 'dataviewjs' in their info string
-      const bt = ByteText.fromString(source);
       let foundDataview = false;
       for (const block of codeBlocks) {
-        const text = new TextDecoder().decode(
-          bt.sliceBytes(block.startIndex, Math.min(block.startIndex + 30, block.endIndex))
-        );
-        if (text.includes("dataview")) {
+        if (block.text.includes("dataview")) {
           foundDataview = true;
           break;
         }
@@ -386,18 +295,16 @@ describe("Obsidian Markdown Compatibility", () => {
       assert.ok(foundDataview, "Should find at least one dataview code block");
     });
 
-    it("inline dataview expressions are preserved in parent paragraph", () => {
+    it("inline dataview expressions are preserved in parent paragraph", async () => {
       const source = readFixture("dataview.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
-      // Inline dataview: `= this.file.name`
       const pattern = "`= this.file.name`";
       const occurrences = findAllOccurrences(source, pattern);
       assert.ok(occurrences.length > 0, "Should find inline dataview in fixture");
 
       const charOffset = occurrences[0];
-      const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+      const byteOffset = charOffsetToByteOffset(source, charOffset);
       const patternByteLen = encoder.encode(pattern).byteLength;
       const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
       assert.equal(new TextDecoder().decode(sliced), pattern);
@@ -422,25 +329,22 @@ describe("Obsidian Markdown Compatibility", () => {
     it("fixture contains Templater syntax markers", () => {
       const source = readFixture("templater.md");
 
-      // Verify the fixture has the expected Templater markers
       assert.ok(source.includes("<%"), "Should contain <% marker");
       assert.ok(source.includes("%>"), "Should contain %> marker");
       assert.ok(source.includes("<%*"), "Should contain <%* execution block marker");
       assert.ok(source.includes("tp.file.title"), "Should contain Templater API calls");
     });
 
-    it("Templater regions with multi-byte content are detectable", () => {
+    it("Templater regions with multi-byte content are detectable", async () => {
       const source = readFixture("templater.md");
       const bt = ByteText.fromString(source);
-      const encoder = new TextEncoder();
 
-      // Find a Templater block with multi-byte content
       const pattern = '<% `Résumé: ${tp.file.title}` %>';
       const occurrences = findAllOccurrences(source, pattern);
       assert.ok(occurrences.length > 0, "Should find Templater block with Résumé");
 
       const charOffset = occurrences[0];
-      const byteOffset = encoder.encode(source.slice(0, charOffset)).byteLength;
+      const byteOffset = charOffsetToByteOffset(source, charOffset);
       const patternByteLen = encoder.encode(pattern).byteLength;
       const sliced = bt.sliceBytes(byteOffset, byteOffset + patternByteLen);
       assert.equal(new TextDecoder().decode(sliced), pattern);
@@ -471,17 +375,16 @@ describe("Obsidian Markdown Compatibility", () => {
     ];
 
     for (const name of fixtureNames) {
-      it(`${name}: tree-sitter root node spans entire document`, () => {
+      it(`${name}: tree-sitter root node spans entire document (byte offsets)`, async () => {
         const source = readFixture(name);
-        const tree = parser.parse(source);
+        const root = await parseCst("markdown", source);
+        const utf8Len = Buffer.byteLength(source, "utf8");
 
-        // web-tree-sitter uses character indices (UTF-16), not byte offsets.
-        // The engine converts to byte offsets in ParserManager (Task 2.1).
-        assert.equal(tree.rootNode.startIndex, 0, `${name}: root startIndex should be 0`);
+        assert.equal(root.startByte, 0, `${name}: root startByte should be 0`);
         assert.equal(
-          tree.rootNode.endIndex,
-          source.length,
-          `${name}: root endIndex should equal character length`
+          root.endByte,
+          utf8Len,
+          `${name}: root endByte should equal UTF-8 byte length`,
         );
       });
 
@@ -489,10 +392,8 @@ describe("Obsidian Markdown Compatibility", () => {
         const source = readFixture(name);
         const bt = ByteText.fromString(source);
 
-        // Full round-trip: string → bytes → string
         assert.equal(bt.toString(), source);
 
-        // Byte-level round-trip
         const bt2 = ByteText.fromBytes(bt.toBytes());
         assert.equal(bt2.toString(), source);
       });

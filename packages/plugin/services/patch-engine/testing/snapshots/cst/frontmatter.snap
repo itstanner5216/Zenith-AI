@@ -1,15 +1,15 @@
-document  0..517
-  minus_metadata  0..364
-  section  364..365
-  section  365..517
-    atx_heading  365..394
-      atx_h1_marker  365..366
-      inline  367..393
-    paragraph  395..458
-      inline  395..457
-    section  459..517
-      atx_heading  459..474
-        atx_h2_marker  459..461
-        inline  462..473
-      paragraph  475..517
-        inline  475..516
+document  0..523
+  minus_metadata  0..368
+  section  368..369
+  section  369..523
+    atx_heading  369..398
+      atx_h1_marker  369..370
+      inline  371..397
+    paragraph  399..464
+      inline  399..463
+    section  465..523
+      atx_heading  465..480
+        atx_h2_marker  465..467
+        inline  468..479
+      paragraph  481..523
+        inline  481..522

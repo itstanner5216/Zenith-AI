@@ -1,0 +1,23 @@
+[package]
+name = "rust-tree-sitter-bridge"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tree-sitter = "0.25"
+tree-sitter-bash = "0.25.1"
+tree-sitter-css = "0.25.0"
+tree-sitter-go = "0.25.0"
+tree-sitter-javascript = "0.25.0"
+tree-sitter-json = "0.24"
+tree-sitter-md = "0.5.3"
+tree-sitter-python = "0.25.0"
+tree-sitter-sequel = { git = "https://github.com/DerekStride/tree-sitter-sql", tag = "v0.3.11" }
+tree-sitter-typescript = "0.23"
+tree-sitter-yaml = "0.7.2"
+wasm-bindgen = "0.2.114"

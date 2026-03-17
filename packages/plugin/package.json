@@ -9,9 +9,8 @@
     "new-version": "node version-bump.mjs && git add manifest.json versions.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:patch-engine": "node --import tsx --test services/patch-engine/testing/*.test.ts",
-    "grammars:download": "node scripts/download-grammars.mjs",
-    "grammars:verify": "node scripts/verify-grammar-assets.mjs",
+    "test:patch-engine": "node --import tsx --test services/patch-engine/testing/byte-text.test.ts services/patch-engine/testing/diagnostic-types.test.ts services/patch-engine/testing/source-resolver.test.ts services/patch-engine/testing/rust-tree-sitter-viability.test.ts",
+    "build:rust-tree-sitter-bridge": "node scripts/build-rust-tree-sitter-bridge.mjs",
     "release": "node release.js"
   },
   "author": "",
@@ -70,7 +69,6 @@
     "tippy.js": "^6.3.7",
     "tiptap-markdown": "^0.8.10",
     "use-debounce": "^10.0.4",
-    "web-tree-sitter": "^0.25.3",
     "zod": "catalog:",
     "zustand": "^5.0.1"
   }

@@ -1,5 +1,5 @@
-document  0..730
-  section  0..730
+document  0..755
+  section  0..755
     atx_heading  0..18
       atx_h1_marker  0..1
       inline  2..17
@@ -47,27 +47,27 @@ document  0..730
         inline  313..373
       paragraph  375..394
         inline  375..393
-    section  395..623
-      atx_heading  395..433
+    section  395..644
+      atx_heading  395..440
         atx_h2_marker  395..397
-        inline  398..432
-      paragraph  434..470
-        inline  434..469
-      setext_heading  471..518
-        paragraph  471..494
-          inline  471..493
-        setext_h1_underline  494..517
-      paragraph  519..546
-        inline  519..545
-      setext_heading  547..594
-        paragraph  547..570
-          inline  547..569
-        setext_h2_underline  570..593
-      paragraph  595..622
-        inline  595..621
-    section  623..730
-      atx_heading  623..675
-        atx_h2_marker  623..625
-        inline  626..674
-      paragraph  676..730
-        inline  676..729
+        inline  398..439
+      paragraph  441..491
+        inline  441..490
+      setext_heading  492..539
+        paragraph  492..515
+          inline  492..514
+        setext_h1_underline  515..538
+      paragraph  540..567
+        inline  540..566
+      setext_heading  568..615
+        paragraph  568..591
+          inline  568..590
+        setext_h2_underline  591..614
+      paragraph  616..643
+        inline  616..642
+    section  644..755
+      atx_heading  644..696
+        atx_h2_marker  644..646
+        inline  647..695
+      paragraph  697..755
+        inline  697..754

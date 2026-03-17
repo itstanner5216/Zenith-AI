@@ -2,12 +2,9 @@ import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
 import postcss from 'esbuild-postcss';
-import { copyFileSync, mkdirSync, existsSync, readFileSync, readdirSync, unlinkSync } from "fs";
-import { join, resolve, dirname } from "path";
-import { createRequire } from "module";
+import { execFileSync } from "node:child_process";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
-
-const require = createRequire(import.meta.url);
 const __pluginDir = dirname(fileURLToPath(import.meta.url));
 
 const banner = `/*
@@ -22,104 +19,15 @@ const isGithubAction = process.env.GITHUB_ACTIONS === "true";
 // Determine output directory based on environment
 const outdir = isGithubAction ? "dist" : "../..";
 
-// ---------------------------------------------------------------------------
-// tree-sitter WASM asset pipeline
-// ---------------------------------------------------------------------------
-// Reads the grammar manifest JSON (single source of truth shared with runtime
-// TypeScript code), copies the tree-sitter runtime WASM and all pinned grammar
-// WASM files into the plugin output directory, verifies every asset landed,
-// and removes stale WASM files from previous builds.
-
-const GRAMMARS_DIR = "grammars";
-const MANIFEST_PATH = join(
-	__pluginDir,
-	"services/patch-engine/runtime/grammar-manifest.json",
-);
-
-/** Read grammar manifest — the same JSON that grammar-manifest.ts imports. */
-function readGrammarManifest() {
-	const raw = readFileSync(MANIFEST_PATH, "utf-8");
-	const entries = JSON.parse(raw);
-	if (!Array.isArray(entries)) {
-		throw new Error(`[tree-sitter-wasm] grammar-manifest.json must be an array`);
-	}
-	for (const entry of entries) {
-		if (typeof entry.id !== "string" || typeof entry.wasmPath !== "string") {
-			throw new Error(
-				`[tree-sitter-wasm] invalid manifest entry: ${JSON.stringify(entry)}`,
-			);
-		}
-	}
-	return entries;
-}
-
-/**
- * esbuild plugin: copy tree-sitter WASM assets to output, verify completeness,
- * and remove stale files from previous builds.
- */
-const treeSitterWasmPlugin = {
-	name: "tree-sitter-wasm-copy",
+const rustTreeSitterBridgePlugin = {
+	name: "rust-tree-sitter-bridge-build",
 	setup(build) {
-		build.onEnd((result) => {
-			// Skip asset work if the JS build itself failed
-			if (result.errors.length > 0) return;
-
-			const manifest = readGrammarManifest();
-			const absOut = resolve(outdir);
-			const grammarsOut = join(absOut, GRAMMARS_DIR);
-			mkdirSync(grammarsOut, { recursive: true });
-
-			// -- Clean stale .wasm files from previous builds --------------------
-			const expectedWasmFiles = new Set(manifest.map((e) => e.wasmPath));
-			if (existsSync(grammarsOut)) {
-				for (const file of readdirSync(grammarsOut)) {
-					if (file.endsWith(".wasm") && !expectedWasmFiles.has(file)) {
-						unlinkSync(join(grammarsOut, file));
-					}
-				}
-			}
-
-			// -- 1. Copy the tree-sitter runtime WASM ----------------------------
-			const runtimeWasm = require.resolve("web-tree-sitter/tree-sitter.wasm");
-			const runtimeDest = join(absOut, "tree-sitter.wasm");
-			copyFileSync(runtimeWasm, runtimeDest);
-			if (!existsSync(runtimeDest)) {
-				throw new Error(
-					`[tree-sitter-wasm] runtime WASM missing after copy: ${runtimeDest}`,
-				);
-			}
-
-			// -- 2. Copy each grammar WASM from source grammars/ directory -------
-			const grammarsSource = join(__pluginDir, GRAMMARS_DIR);
-			const missing = [];
-
-			for (const entry of manifest) {
-				const src = join(grammarsSource, entry.wasmPath);
-				const dest = join(grammarsOut, entry.wasmPath);
-
-				if (!existsSync(src)) {
-					missing.push(`  ${entry.id}: ${src}  (sourceRef: ${entry.sourceRef})`);
-					continue;
-				}
-
-				copyFileSync(src, dest);
-
-				// Verify the output file exists after copy
-				if (!existsSync(dest)) {
-					throw new Error(
-						`[tree-sitter-wasm] grammar WASM missing after copy: ${dest}`,
-					);
-				}
-			}
-
-			if (missing.length > 0) {
-				throw new Error(
-					`[tree-sitter-wasm] Build failed — missing grammar WASM source files.\n` +
-					`The plan requires bundled grammars only; all manifest entries must be present.\n` +
-					`Missing:\n${missing.join("\n")}\n\n` +
-					`Run \`pnpm run grammars:download\` to fetch them, or see grammars/README.md.`,
-				);
-			}
+		build.onStart(() => {
+			execFileSync("node", ["scripts/build-rust-tree-sitter-bridge.mjs"], {
+				cwd: __pluginDir,
+				env: process.env,
+				stdio: "inherit",
+			});
 		});
 	},
 };
@@ -166,7 +74,7 @@ const context = await esbuild.context({
 			inject: false,
 			extract: true,
 		}),
-		treeSitterWasmPlugin,
+		rustTreeSitterBridgePlugin,
 	],
 	define: {
 		'process.env.NODE_ENV': prod ? '"production"' : '"development"',
