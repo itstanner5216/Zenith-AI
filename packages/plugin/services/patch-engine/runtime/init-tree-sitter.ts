@@ -16,7 +16,7 @@ import { GRAMMAR_MANIFEST } from "./grammar-manifest";
 const TreeSitter = require("web-tree-sitter") as {
   Parser: {
     new (): Parser;
-    init(): Promise<void>;
+    init(moduleOptions?: { locateFile: (scriptName: string) => string }): Promise<void>;
   };
   Language: {
     load(input: string | Uint8Array): Promise<Language>;
@@ -62,18 +62,32 @@ let markdownLanguage: Language | null = null;
 // Wasm resolution
 // ---------------------------------------------------------------------------
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- Node path module
+const nodePath = require("path") as typeof import("path");
+
+/** Subdirectory under the plugin bundle where grammar wasm files are placed. */
+const GRAMMARS_SUBDIR = "grammars";
+
 /**
- * Resolve the absolute filesystem path for a `.wasm` grammar asset.
+ * Resolve the absolute filesystem path for the tree-sitter runtime WASM.
  *
- * In Obsidian's Electron environment the plugin directory is available via
- * `app.vault.adapter.basePath` + `.obsidian/plugins/<id>/`.  We fall back to
- * `__dirname` (the esbuild CJS output directory) which works for both
- * development and production builds.
+ * The runtime WASM (`tree-sitter.wasm`) is copied to the same directory as
+ * `main.js` by the esbuild copy plugin. `__dirname` points to the esbuild
+ * CJS output directory, which in Obsidian is the plugin's install folder
+ * (e.g., `.obsidian/plugins/zenith-ai/`).
  */
-function resolveWasmPath(wasmFilename: string): string {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires -- Node path module
-  const path = require("path") as typeof import("path");
-  return path.join(__dirname, wasmFilename);
+function resolveRuntimeWasmDir(): string {
+  return __dirname;
+}
+
+/**
+ * Resolve the absolute filesystem path for a grammar `.wasm` asset.
+ *
+ * Grammar WASMs are placed in a `grammars/` subdirectory next to `main.js`
+ * by the esbuild copy plugin.
+ */
+function resolveGrammarWasmPath(wasmFilename: string): string {
+  return nodePath.join(__dirname, GRAMMARS_SUBDIR, wasmFilename);
 }
 
 // ---------------------------------------------------------------------------
@@ -136,10 +150,18 @@ export function getMarkdownLanguage(): Language {
 async function doInit(): Promise<void> {
   emitDiagnostic("info", "tree-sitter init starting");
 
-  // 1. Initialise the wasm runtime ------------------------------------------
+  // 1. Initialise the wasm runtime with explicit path -------------------------
+  //    Pass locateFile so Parser.init() loads tree-sitter.wasm from the plugin
+  //    directory rather than relying on Emscripten's default resolution, which
+  //    would fail in Obsidian's Electron sandbox.
+  const runtimeDir = resolveRuntimeWasmDir();
   try {
-    await TreeSitter.Parser.init();
-    emitDiagnostic("info", "tree-sitter wasm runtime initialised");
+    await TreeSitter.Parser.init({
+      locateFile(scriptName: string): string {
+        return nodePath.join(runtimeDir, scriptName);
+      },
+    });
+    emitDiagnostic("info", `tree-sitter wasm runtime initialised from ${runtimeDir}`);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     emitDiagnostic("error", `tree-sitter wasm init failed: ${msg}`);
@@ -158,7 +180,7 @@ async function doInit(): Promise<void> {
   }
 
   try {
-    const wasmPath = resolveWasmPath(mdEntry.wasmPath);
+    const wasmPath = resolveGrammarWasmPath(mdEntry.wasmPath);
     emitDiagnostic("info", `loading markdown grammar from ${wasmPath}`);
     markdownLanguage = await TreeSitter.Language.load(wasmPath);
     parserInstance.setLanguage(markdownLanguage);

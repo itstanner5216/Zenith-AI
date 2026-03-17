@@ -221,6 +221,8 @@ export interface EditDiagnostic {
   shortMessage: string;
   /** Actionable hints for the model to recover. */
   hints: string[];
+  /** Single-line recovery suggestion for the model (e.g., "Re-read the file and retry"). */
+  retryHint?: string;
   /** Fresh outline attached when the file has changed. */
   currentOutline?: StructuralOutlineResult;
   /** Candidate nodes when target resolution is ambiguous. */
@@ -230,7 +232,56 @@ export interface EditDiagnostic {
     label: string;
     excerpt: string;
   }>;
+  /** Type-discriminated detail payload for code-specific context. */
+  details?: DiagnosticDetails;
 }
+
+// ---------------------------------------------------------------------------
+// Diagnostic Detail Payloads
+// ---------------------------------------------------------------------------
+
+/** Detail payload for SYMBOL_TARGET_UNAVAILABLE diagnostics. */
+export interface SymbolUnavailableDetails {
+  kind: "symbol_unavailable";
+  /** Why symbol extraction was skipped. */
+  reason: "language_unsupported" | "block_oversized" | "parse_incomplete";
+  /** Hash of the parent code_block node, usable as an immediate retry target. */
+  blockHash: string;
+}
+
+/** Detail payload for WRITE_VERIFY_FAILED diagnostics. */
+export interface WriteVerifyFailedDetails {
+  kind: "write_verify_failed";
+  /** Hash of the content that was intended to be written. */
+  intendedHash: string;
+  /** Hash of the content actually read back after write. */
+  actualHash: string;
+}
+
+/** Detail payload for RESTORE_FAILED diagnostics. */
+export interface RestoreFailedDetails {
+  kind: "restore_failed";
+  /** Hash of the content that was intended to be restored. */
+  intendedHash: string;
+  /** Hash of the content actually read back after restore attempt. */
+  actualHash: string;
+}
+
+/** Detail payload for EDITOR_DIRTY diagnostics. */
+export interface EditorDirtyDetails {
+  kind: "editor_dirty";
+  /** Hash of the current editor buffer content. */
+  editorHash: string;
+  /** Hash of the current vault file content. */
+  vaultHash: string;
+}
+
+/** Discriminated union of all diagnostic detail payloads. */
+export type DiagnosticDetails =
+  | SymbolUnavailableDetails
+  | WriteVerifyFailedDetails
+  | RestoreFailedDetails
+  | EditorDirtyDetails;
 
 // ---------------------------------------------------------------------------
 // Structural Outline Result
