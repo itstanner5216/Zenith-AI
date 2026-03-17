@@ -65,3 +65,4 @@ tsconfig.tsbuildinfo
 
 # Local agent startup instructions
 CLAUDE.md
+.worktrees/
