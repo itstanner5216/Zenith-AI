@@ -90,3 +90,24 @@ export const OBSIDIAN_SYNTAX_POLICIES: Record<string, ObsidianSyntaxPolicy> = {
 export function getObsidianSyntaxPolicy(key: string): ObsidianSyntaxPolicy | undefined {
   return OBSIDIAN_SYNTAX_POLICIES[key];
 }
+
+/**
+ * Default policy for unrecognized Obsidian-specific constructs.
+ *
+ * Unknown syntax is fail-closed: the engine does not attempt to parse
+ * or edit regions containing unrecognized constructs.
+ */
+export const UNKNOWN_SYNTAX_POLICY: ObsidianSyntaxPolicy = {
+  name: "Unknown Obsidian Syntax",
+  classification: "unsupported_fail_closed",
+  outlineBehavior: "excluded",
+  notes: "Unrecognized Obsidian-specific construct. Fail-closed by default — engine does not attempt to parse or edit.",
+};
+
+/**
+ * Look up the v1 policy for an Obsidian construct by key,
+ * falling back to fail-closed for unknown constructs.
+ */
+export function getObsidianSyntaxPolicyOrDefault(key: string): ObsidianSyntaxPolicy {
+  return OBSIDIAN_SYNTAX_POLICIES[key] ?? UNKNOWN_SYNTAX_POLICY;
+}

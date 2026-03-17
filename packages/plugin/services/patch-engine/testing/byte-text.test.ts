@@ -162,11 +162,18 @@ describe("ByteText", () => {
     });
 
     it("handles mid-character truncation gracefully", () => {
-      // "日" is 3 bytes. Requesting only 2 bytes should produce a replacement char
+      // "日" is 3 bytes in UTF-8. Requesting only 2 bytes truncates mid-character.
+      // TextDecoder with fatal:false replaces the incomplete sequence with U+FFFD.
       const bt = ByteText.fromString("日");
       const result = bt.decodeExcerpt(0, 2);
-      // TextDecoder with fatal:false replaces partial sequences
-      assert.ok(result.length >= 0);
+      assert.equal(result, "\uFFFD");
+    });
+
+    it("preserves complete characters before truncation point", () => {
+      // "ab日" = 5 bytes (a=1, b=1, 日=3). Requesting 4 bytes gets "ab" + partial "日"
+      const bt = ByteText.fromString("ab日");
+      const result = bt.decodeExcerpt(0, 4);
+      assert.equal(result, "ab\uFFFD");
     });
   });
 
