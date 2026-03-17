@@ -9,11 +9,19 @@
  * @module
  */
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- CJS bundle, untyped external
-const TreeSitterModule = require("web-tree-sitter") as typeof import("web-tree-sitter");
-
-import type { default as ParserType } from "web-tree-sitter";
+import type { Parser, Language } from "web-tree-sitter";
 import { GRAMMAR_MANIFEST } from "./grammar-manifest";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- CJS bundle; web-tree-sitter has no ESM entry
+const TreeSitter = require("web-tree-sitter") as {
+  Parser: {
+    new (): Parser;
+    init(): Promise<void>;
+  };
+  Language: {
+    load(input: string | Uint8Array): Promise<Language>;
+  };
+};
 
 // ---------------------------------------------------------------------------
 // Diagnostics (no console.log)
@@ -45,10 +53,10 @@ let initPromise: Promise<void> | null = null;
 let initSucceeded = false;
 
 /** The shared parser instance, available after successful init. */
-let parserInstance: ParserType | null = null;
+let parserInstance: Parser | null = null;
 
 /** The eagerly-loaded markdown language, available after successful init. */
-let markdownLanguage: ParserType.Language | null = null;
+let markdownLanguage: Language | null = null;
 
 // ---------------------------------------------------------------------------
 // Wasm resolution
@@ -102,7 +110,7 @@ export function isTreeSitterReady(): boolean {
  *
  * @throws If called before successful initialisation.
  */
-export function getParser(): ParserType {
+export function getParser(): Parser {
   if (parserInstance === null) {
     throw new Error("tree-sitter has not been initialised — call initTreeSitterOnce() first");
   }
@@ -114,7 +122,7 @@ export function getParser(): ParserType {
  *
  * @throws If called before successful initialisation.
  */
-export function getMarkdownLanguage(): ParserType.Language {
+export function getMarkdownLanguage(): Language {
   if (markdownLanguage === null) {
     throw new Error("markdown language not available — call initTreeSitterOnce() first");
   }
@@ -130,7 +138,7 @@ async function doInit(): Promise<void> {
 
   // 1. Initialise the wasm runtime ------------------------------------------
   try {
-    await TreeSitterModule.init();
+    await TreeSitter.Parser.init();
     emitDiagnostic("info", "tree-sitter wasm runtime initialised");
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -139,7 +147,7 @@ async function doInit(): Promise<void> {
   }
 
   // 2. Create the parser instance -------------------------------------------
-  parserInstance = new TreeSitterModule();
+  parserInstance = new TreeSitter.Parser();
 
   // 3. Eagerly load the markdown grammar ------------------------------------
   const mdEntry = GRAMMAR_MANIFEST.find((g) => g.id === "markdown");
@@ -152,7 +160,7 @@ async function doInit(): Promise<void> {
   try {
     const wasmPath = resolveWasmPath(mdEntry.wasmPath);
     emitDiagnostic("info", `loading markdown grammar from ${wasmPath}`);
-    markdownLanguage = await TreeSitterModule.Language.load(wasmPath);
+    markdownLanguage = await TreeSitter.Language.load(wasmPath);
     parserInstance.setLanguage(markdownLanguage);
     emitDiagnostic("info", "markdown grammar loaded and set on parser");
   } catch (err: unknown) {
