@@ -67,6 +67,7 @@
     "tippy.js": "^6.3.7",
     "tiptap-markdown": "^0.8.10",
     "use-debounce": "^10.0.4",
+    "web-tree-sitter": "^0.25.3",
     "zod": "catalog:",
     "zustand": "^5.0.1"
   }
