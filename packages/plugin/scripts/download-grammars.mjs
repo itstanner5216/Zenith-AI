@@ -7,14 +7,20 @@
  *   node scripts/download-grammars.mjs
  *   pnpm run grammars:download
  *
- * For each manifest entry the script attempts, in order:
- *   1. Fetch a pre-built .wasm from the grammar repo's GitHub releases
- *      matching the pinned sourceRef tag.
- *   2. If no pre-built release exists, log a clear error with instructions
- *      for building from source using the tree-sitter CLI.
+ * For each manifest entry the script:
+ *   1. Skips grammars whose .wasm already exists in grammars/.
+ *   2. Attempts to fetch a pre-built .wasm from the grammar repo's GitHub
+ *      releases matching the pinned sourceRef tag.
+ *   3. If no pre-built release asset exists, logs clear instructions for
+ *      building the grammar from source using the tree-sitter CLI.
  *
- * The downloaded files are placed in packages/plugin/grammars/ and should
- * be committed to the repo (bundled grammars only — no runtime downloads).
+ * This script does NOT build from source — that requires the tree-sitter CLI
+ * and Emscripten, which may not be installed. See grammars/README.md for
+ * manual build instructions.
+ *
+ * The downloaded/built files are placed in packages/plugin/grammars/ and
+ * should be committed to the repo (bundled grammars only — no runtime
+ * downloads).
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
