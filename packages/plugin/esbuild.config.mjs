@@ -3,7 +3,8 @@ import process from "process";
 import builtins from "builtin-modules";
 import postcss from 'esbuild-postcss';
 import { execFileSync } from "node:child_process";
-import { dirname } from "path";
+import { copyFileSync, existsSync } from "node:fs";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 const __pluginDir = dirname(fileURLToPath(import.meta.url));
 
@@ -19,6 +20,16 @@ const isGithubAction = process.env.GITHUB_ACTIONS === "true";
 // Determine output directory based on environment
 const outdir = isGithubAction ? "dist" : "../..";
 
+const WASM_SRC = join(
+	__pluginDir,
+	"services",
+	"patch-engine",
+	"runtime",
+	"rust-tree-sitter-bridge",
+	"pkg",
+	"rust_tree_sitter_bridge_bg.wasm",
+);
+
 const rustTreeSitterBridgePlugin = {
 	name: "rust-tree-sitter-bridge-build",
 	setup(build) {
@@ -28,6 +39,16 @@ const rustTreeSitterBridgePlugin = {
 				env: process.env,
 				stdio: "inherit",
 			});
+		});
+
+		// Copy the WASM binary alongside main.js so the bridge can
+		// find it via __dirname at runtime inside Obsidian/Electron.
+		build.onEnd((result) => {
+			if (result.errors.length > 0) return;
+			const resolvedOutDir = join(__pluginDir, build.initialOptions.outdir ?? "dist");
+			if (existsSync(WASM_SRC)) {
+				copyFileSync(WASM_SRC, join(resolvedOutDir, "rust_tree_sitter_bridge_bg.wasm"));
+			}
 		});
 	},
 };

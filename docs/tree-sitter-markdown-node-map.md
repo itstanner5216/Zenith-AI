@@ -1,7 +1,7 @@
 # tree-sitter Markdown → StructuralNode Mapping
 
 > Reference for mapping CST node types produced by `tree-sitter-markdown`
-> (v0.4.1, tree-sitter-grammars/tree-sitter-markdown) to the Zenith Patch
+> (v0.5.3, tree-sitter-md crate via Rust bridge) to the Zenith Patch
 > Engine `StructuralNode` types defined in `packages/plugin/services/patch-engine/types.ts`.
 
 ## Mapping Table
@@ -153,8 +153,9 @@ Indented code blocks have **no** language information. They should default to
 ### Multi-byte / Unicode Considerations
 
 tree-sitter uses **byte offsets** (not character offsets). For documents with
-multi-byte characters (UTF-8), `startIndex` and `endIndex` on nodes represent
-byte positions. The patch engine must use byte offsets consistently when:
+multi-byte characters (UTF-8), `startByte` and `endByte` on the Rust bridge's
+`CstNode` interface represent byte positions. The patch engine must use byte
+offsets consistently when:
 
 - Computing hashes (`NodeMetadata.hash`)
 - Slicing source text for excerpts (`NodeMetadata.excerptBytes`)
@@ -178,6 +179,6 @@ columns** (codepoint-based), which differ from byte offsets for multi-byte text.
 
 ## Grammar Version
 
-- **Grammar**: `tree-sitter-grammars/tree-sitter-markdown` v0.4.1
-- **Runtime**: `web-tree-sitter` v0.25.3
-- **Manifest**: `packages/plugin/services/patch-engine/runtime/grammar-manifest.json`
+- **Grammar crate**: `tree-sitter-md` v0.5.3 (crates.io)
+- **Runtime**: Rust tree-sitter bridge compiled to WASM via `wasm-bindgen`
+- **Crate config**: `packages/plugin/services/patch-engine/runtime/rust-tree-sitter-bridge/Cargo.toml`

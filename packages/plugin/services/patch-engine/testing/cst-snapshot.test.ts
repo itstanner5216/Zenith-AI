@@ -40,6 +40,9 @@ const FIXTURE_NAMES: readonly string[] = [
   "mixed-document.md",
   "code-blocks-in-lists.md",
   "malformed.md",
+  "code-blocks-in-blockquotes.md",
+  "obsidian-specific.md",
+  "paragraphs.md",
 ] as const;
 
 /** Whether to overwrite golden files instead of comparing. */
