@@ -5,11 +5,12 @@
     "outDir": "./dist",
     "rootDir": ".",
     "composite": true,
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["*"],
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["*.ts", "services/**/*", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*"],
+  "include": ["*.ts", "services/**/*", "services/**/*.json", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*"],
   "exclude": ["node_modules", "dist"]
 }

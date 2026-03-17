@@ -9,6 +9,9 @@
     "new-version": "node version-bump.mjs && git add manifest.json versions.json",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:patch-engine": "node --import tsx --test services/patch-engine/testing/*.test.ts",
+    "grammars:download": "node scripts/download-grammars.mjs",
+    "grammars:verify": "node scripts/verify-grammar-assets.mjs",
     "release": "node release.js"
   },
   "author": "",
