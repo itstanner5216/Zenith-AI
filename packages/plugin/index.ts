@@ -1244,6 +1244,21 @@ export default class ZenithAI extends Plugin {
     await this.saveData(this.settings);
   }
 
+  toggleBackgroundScribe(enabled: boolean): void {
+    if (enabled) {
+      if (!this.vertexBrainClient) {
+        console.warn("[ZenithAI] Background Scribe requires Vertex Brain — enable Vertex Brain first");
+        return;
+      }
+      if (!this.backgroundScribe) {
+        this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
+      }
+    } else {
+      this.backgroundScribe?.deactivate();
+      this.backgroundScribe = null;
+    }
+  }
+
   async initializePlugin() {
     await this.loadSettings();
     await this.checkAndCreateFolders();

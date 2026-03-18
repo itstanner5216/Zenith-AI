@@ -65,11 +65,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Zenith-AI File Logs"
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
-        onChange={value => {
+        onChange={async (value) => {
           setUseLogs(value);
           logger.configure(value || plugin.settings.debugMode);
           plugin.settings.useLogs = value;
-          plugin.saveSettings();
+          await plugin.saveSettings();
         }}
       />
 
@@ -77,11 +77,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Debug Mode"
         description="Enable detailed logging for troubleshooting. This may impact performance."
         value={debugMode}
-        onChange={value => {
+        onChange={async (value) => {
           setDebugMode(value);
           logger.configure(plugin.settings.useLogs || value);
           plugin.settings.debugMode = value;
-          plugin.saveSettings();
+          await plugin.saveSettings();
         }}
       />
 
@@ -89,10 +89,10 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Processing Notifications"
         description="Show toast notifications while files are being processed through the inbox."
         value={enableProcessingNotifications}
-        onChange={value => {
+        onChange={async (value) => {
           setEnableProcessingNotifications(value);
           plugin.settings.enableProcessingNotifications = value;
-          plugin.saveSettings();
+          await plugin.saveSettings();
         }}
       />
       </div>

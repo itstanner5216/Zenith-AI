@@ -19,6 +19,9 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
   const [enableDeepSearch, setEnableDeepSearch] = useState(
     plugin.settings.enableDeepSearch
   );
+  const [backgroundScribeEnabled, setBackgroundScribeEnabled] = useState(
+    plugin.settings.backgroundScribeEnabled
+  );
 
   const handleToggleChange = async (
     value: boolean,
@@ -130,6 +133,20 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
                   "enableTitleSuggestions"
                 )
               }
+            />
+
+            <ToggleSetting
+              name="Background Scribe"
+              description="Automatically buffer chat turns and synthesize actionable TODO items into a configured output file. Requires Vertex Brain to be available."
+              value={backgroundScribeEnabled}
+              onChange={async value => {
+                await handleToggleChange(
+                  value,
+                  setBackgroundScribeEnabled,
+                  "backgroundScribeEnabled"
+                );
+                plugin.toggleBackgroundScribe(value);
+              }}
             />
           </div>
         </div>
