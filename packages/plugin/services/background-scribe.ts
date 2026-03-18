@@ -1,4 +1,4 @@
-import { TFile } from "obsidian";
+import { TFile, TFolder } from "obsidian";
 import type ZenithAI from "../index";
 import type { VertexBrainClient, VaultSearchResult } from "./vertex-brain-client";
 
@@ -15,14 +15,16 @@ export class BackgroundScribe {
     this.client = client;
   }
 
-  activate(): void {
-    if (this.isActive) return;
+  activate(): boolean {
+    if (this.isActive) return true;
+    if (!this.plugin.settings.backgroundScribeEnabled) return false;
     this.isActive = true;
     this.plugin.app.workspace.on(
       "vault-intelligence:chat-turn" as any,
       this.handleChatTurn
     );
     console.log("[BackgroundScribe] Activated - will buffer chat turns");
+    return true;
   }
 
   deactivate(): void {
@@ -81,12 +83,14 @@ export class BackgroundScribe {
 
     // Write to configured output file
     const outputPath = this.plugin.settings.backgroundScribeOutputFile;
-    await this.writeOrUpdateTODO(outputPath, todoContent);
+    await this.writeOutputFile(outputPath, todoContent);
   }
 
   private detectProject(filePath: string): string | null {
     const projectsPath = this.plugin.settings.projectsPath;
-    const match = filePath.match(new RegExp(`${projectsPath}/([^/]+)`));
+    if (!projectsPath) return null;
+    const escapedPath = projectsPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const match = filePath.match(new RegExp(`(?:^|/)${escapedPath}/([^/]+)`));
     return match ? match[1] : null;
   }
 
@@ -100,15 +104,44 @@ export class BackgroundScribe {
     return response.answer;
   }
 
-  private async writeOrUpdateTODO(
-    path: string,
-    content: string
-  ): Promise<void> {
-    const file = this.plugin.app.vault.getAbstractFileByPath(path);
+  private async writeOutputFile(path: string, content: string): Promise<void> {
+    let normalizedPath = path.trim();
+    if (!normalizedPath) {
+      normalizedPath = "TODO.md";
+    }
+
+    const lastSlashIndex = normalizedPath.lastIndexOf("/");
+    const parentDir = lastSlashIndex > 0 ? normalizedPath.substring(0, lastSlashIndex) : "";
+
+    if (parentDir) {
+      const existingFolder = this.plugin.app.vault.getAbstractFileByPath(parentDir);
+      if (existingFolder && !(existingFolder instanceof TFolder)) {
+        throw new Error(`Background Scribe output parent path is not a folder: ${parentDir}`);
+      }
+      if (!existingFolder) {
+        const parts = parentDir
+          .split("/")
+          .map((segment) => segment.trim())
+          .filter((segment) => segment.length > 0);
+        let currentPath = "";
+        for (const part of parts) {
+          currentPath = currentPath ? `${currentPath}/${part}` : part;
+          const existing = this.plugin.app.vault.getAbstractFileByPath(currentPath);
+          if (existing && !(existing instanceof TFolder)) {
+            throw new Error(`Background Scribe output parent path is not a folder: ${currentPath}`);
+          }
+          if (!existing) {
+            await this.plugin.app.vault.createFolder(currentPath);
+          }
+        }
+      }
+    }
+
+    const file = this.plugin.app.vault.getAbstractFileByPath(normalizedPath);
     if (file instanceof TFile) {
       await this.plugin.app.vault.modify(file, content);
     } else {
-      await this.plugin.app.vault.create(path, content);
+      await this.plugin.app.vault.create(normalizedPath, content);
     }
   }
 

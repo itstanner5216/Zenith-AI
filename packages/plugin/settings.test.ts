@@ -9,6 +9,11 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS).toMatchSnapshot();
   });
 
+  it('has new setting defaults', () => {
+    expect(DEFAULT_SETTINGS.showLocalLLMInChat).toBe(false);
+    expect(DEFAULT_SETTINGS.formatBehavior).toBe('override');
+  });
+
   it('has critical default values', () => {
     expect(DEFAULT_SETTINGS.vertexBrainUrl).toBe('http://localhost:8085');
     expect(DEFAULT_SETTINGS.enableVectorAutoSort).toBe(true);

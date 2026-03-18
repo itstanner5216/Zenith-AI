@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import type ZenithAI from '../../index';
+import { DEFAULT_SETTINGS } from '../../settings';
+import {
+  ToggleSetting,
+  TextInputSetting,
+  TextAreaSetting,
+  DropdownSetting,
+  handleSettingChange,
+} from './components';
 
 interface CustomizationTabProps {
   plugin: InstanceType<typeof ZenithAI>;
@@ -17,16 +25,28 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
   const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
   const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath ?? "");
+  const [formatBehavior, setFormatBehavior] = useState(plugin.settings.formatBehavior || DEFAULT_SETTINGS.formatBehavior);
+  const [enableProcessingNotifications, setEnableProcessingNotifications] = useState(plugin.settings.enableProcessingNotifications ?? true);
+  const [generalMergeThreshold, setGeneralMergeThreshold] = useState(plugin.settings.generalMergeThreshold ?? 0.50);
+  const [globalMergeThreshold, setGlobalMergeThreshold] = useState(plugin.settings.globalMergeThreshold ?? 0.70);
+  const [pinnedTag, setPinnedTag] = useState(plugin.settings.pinnedTag ?? "pinned");
+  const [projectsPath, setProjectsPath] = useState(plugin.settings.projectsPath ?? "Projects");
+  const [backgroundScribeOutputFile, setBackgroundScribeOutputFile] = useState(plugin.settings.backgroundScribeOutputFile ?? "TODO.md");
 
-  const handleToggleChange = async (value: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, settingKey: keyof typeof plugin.settings) => {
-    setter(value);
-    (plugin.settings[settingKey] as boolean) = value;
-    await plugin.saveSettings();
-  };
-
-  const handleTextChange = async (value: string, setter: React.Dispatch<React.SetStateAction<string>>, settingKey: keyof typeof plugin.settings) => {
-    setter(value);
-    (plugin.settings[settingKey] as string) = value;
+  const handleNumberChange = async (
+    value: number,
+    setter: React.Dispatch<React.SetStateAction<number>>,
+    settingKey: keyof typeof plugin.settings,
+    options?: { min?: number; max?: number }
+  ) => {
+    if (!Number.isFinite(value)) return;
+    const nextValue = Math.min(
+      options?.max ?? Infinity,
+      Math.max(options?.min ?? -Infinity, value)
+    );
+    setter(nextValue);
+    // nosemgrep: detect-object-injection
+    (plugin.settings[settingKey] as number) = nextValue;
     await plugin.saveSettings();
   };
 
@@ -46,13 +66,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Inbox Auto-Renaming"
             description="Automatically rename new files when they are processed through the inbox."
             value={enableFileRenaming}
-            onChange={(value) => handleToggleChange(value, setEnableFileRenaming, 'enableFileRenaming')}
+            onChange={(value) => handleSettingChange(plugin, value, setEnableFileRenaming, 'enableFileRenaming')}
           />
           <ToggleSetting
             name="Inbox Auto-Formatting"
             description="Automatically format new documents when they match a template category during inbox processing."
             value={enableDocumentClassification}
-            onChange={(value) => handleToggleChange(value, setEnableDocumentClassification, 'enableDocumentClassification')}
+            onChange={(value) => handleSettingChange(plugin, value, setEnableDocumentClassification, 'enableDocumentClassification')}
           />
           <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-elevation-md">
             <div className="font-medium text-[var(--text-normal)] mb-2">Document Type Templates</div>
@@ -67,7 +87,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Inbox Similar Tags"
             description="Automatically append similar tags to new files during inbox processing."
             value={useSimilarTags}
-            onChange={(value) => handleToggleChange(value, setUseSimilarTags, 'useSimilarTags')}
+            onChange={(value) => handleSettingChange(plugin, value, setUseSimilarTags, 'useSimilarTags')}
+          />
+          <ToggleSetting
+            name="Processing Notifications"
+            description="Show toast notifications during inbox file processing (bypass, error, and progress notices)."
+            value={enableProcessingNotifications}
+            onChange={(value) => handleSettingChange(plugin, value, setEnableProcessingNotifications, 'enableProcessingNotifications')}
           />
         </div>
       </section>
@@ -91,7 +117,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Rename Instructions"
               description="Instructions for how files should be renamed based on their content."
               value={renameInstructions}
-              onChange={(value) => handleTextChange(value, setRenameInstructions, 'renameInstructions')}
+              onChange={(value) => handleSettingChange(plugin, value, setRenameInstructions, 'renameInstructions')}
             />
           </div>
         </div>
@@ -104,13 +130,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Use Frontmatter"
               description="Add similar tags in frontmatter instead of inline."
               value={useSimilarTagsInFrontmatter}
-              onChange={(value) => handleToggleChange(value, setUseSimilarTagsInFrontmatter, 'useSimilarTagsInFrontmatter')}
+              onChange={(value) => handleSettingChange(plugin, value, setUseSimilarTagsInFrontmatter, 'useSimilarTagsInFrontmatter')}
             />
             <TextAreaSetting
               name="Tag Generation Instructions"
               description="Custom instructions for generating tags for your notes."
               value={customTagInstructions}
-              onChange={(value) => handleTextChange(value, setCustomTagInstructions, 'customTagInstructions')}
+              onChange={(value) => handleSettingChange(plugin, value, setCustomTagInstructions, 'customTagInstructions')}
             />
           </div>
         </div>
@@ -123,7 +149,32 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Custom Folder Determination Instructions"
               description="Provide custom instructions for determining which folders to place your notes in."
               value={customFolderInstructions}
-              onChange={(value) => handleTextChange(value, setCustomFolderInstructions, 'customFolderInstructions')}
+              onChange={(value) => handleSettingChange(plugin, value, setCustomFolderInstructions, 'customFolderInstructions')}
+            />
+            <TextInputSetting
+              name="Pinned Tag"
+              description="Files with this tag will be excluded from auto-sort. Leave empty to disable."
+              value={pinnedTag}
+              placeholder="pinned"
+              onChange={(value) => handleSettingChange(plugin, value, setPinnedTag, 'pinnedTag')}
+            />
+          </div>
+        </div>
+
+        {/* Formatting subsection */}
+        <div className="mb-6">
+          <h4 className="font-medium text-[var(--text-normal)] mb-2">Formatting</h4>
+          <div className="space-y-4">
+            <DropdownSetting
+              name="Format Behavior"
+              description="How formatted content is applied to your documents."
+              value={formatBehavior}
+              options={[
+                { value: "override", label: "Replace" },
+                { value: "newFile", label: "New File" },
+                { value: "append", label: "Append" },
+              ]}
+              onChange={(value) => handleSettingChange(plugin, value as "override" | "newFile" | "append", setFormatBehavior, 'formatBehavior')}
             />
           </div>
         </div>
@@ -154,7 +205,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Enable Vector Auto-Sort"
             description="Automatically route General files using semantic embeddings"
             value={enableVectorAutoSort}
-            onChange={(value) => handleToggleChange(value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
+            onChange={(value) => handleSettingChange(plugin, value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
           />
           <NumberInputSetting
             name="Auto-Sort Confidence Threshold"
@@ -163,10 +214,34 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={async (value) => {
-              setAutoSortConfidenceThreshold(value);
-              (plugin.settings.autoSortConfidenceThreshold as number) = value;
-              await plugin.saveSettings();
+            onChange={(value) => handleNumberChange(value, setAutoSortConfidenceThreshold, 'autoSortConfidenceThreshold', { min: 0, max: 1 })}
+          />
+          <NumberInputSetting
+            name="General Merge Threshold"
+            description="Confidence threshold (0–1) for auto-sorting files from the General directory into Projects. Default: 0.50"
+            value={generalMergeThreshold}
+            min={0}
+            max={1}
+            step={0.05}
+            onChange={(value) => handleNumberChange(value, setGeneralMergeThreshold, 'generalMergeThreshold', { min: 0, max: 1 })}
+          />
+          <NumberInputSetting
+            name="Global Merge Threshold"
+            description="Confidence threshold (0–1) for auto-sorting files from non-General, non-Project locations. Default: 0.70"
+            value={globalMergeThreshold}
+            min={0}
+            max={1}
+            step={0.05}
+            onChange={(value) => handleNumberChange(value, setGlobalMergeThreshold, 'globalMergeThreshold', { min: 0, max: 1 })}
+          />
+          <TextInputSetting
+            name="Projects Path"
+            description="Root folder used for project detection during auto-sort and Background Scribe. Default: Projects"
+            value={projectsPath}
+            placeholder="Projects"
+            onChange={(value) => {
+              const sanitized = value.trim().replace(/^\/+|\/+$/g, '') || 'Projects';
+              handleSettingChange(plugin, sanitized, setProjectsPath, 'projectsPath');
             }}
           />
           <TextInputSetting
@@ -182,78 +257,31 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
           />
         </div>
       </section>
+
+      {/* Background Scribe Section */}
+      <section>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--text-accent)" }}>Background Scribe</h3>
+        <div className="rounded-lg mb-4 p-4" style={{ background: "var(--bg-depth-3)", border: "1px solid var(--border-defined)" }}>
+          <div className="text-xs opacity-70" style={{ color: "var(--text-dim)" }}>
+            Background Scribe buffers chat conversations and synthesizes actionable TODO items into a file. Toggle it on/off from the AI chat panel.
+          </div>
+        </div>
+        <div className="space-y-4">
+          <TextInputSetting
+            name="Scribe Output File"
+            description="File path where Background Scribe writes synthesized TODO items. Default: TODO.md"
+            value={backgroundScribeOutputFile}
+            placeholder="TODO.md"
+            onChange={(value) => {
+              const sanitized = value.trim().replace(/^\/+|\/+$/g, '') || 'TODO.md';
+              handleSettingChange(plugin, sanitized, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile');
+            }}
+          />
+        </div>
+      </section>
     </div>
   );
 };
-
-interface ToggleSettingProps {
-  name: string;
-  description: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-}
-
-const ToggleSetting: React.FC<ToggleSettingProps> = ({ name, description, value, onChange }) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-[var(--border-subtle)] last:border-b-0 group hover:bg-[rgba(14,210,247,0.02)] rounded-md px-1 -mx-1 transition-colors duration-150">
-    <div className="flex-1 mr-4">
-      <div className="font-medium text-[var(--text-normal)] text-sm leading-snug">{name}</div>
-      <div className="text-xs text-[var(--text-dim)] mt-0.5 leading-relaxed opacity-60">{description}</div>
-    </div>
-    <div className="flex-shrink-0">
-      <label className="relative inline-flex items-center cursor-pointer" title={value ? 'Enabled' : 'Disabled'}>
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(e) => onChange(e.target.checked)}
-          className="sr-only peer"
-        />
-        {/* Track */}
-        <div className={`relative w-9 h-5 rounded-full border transition-all duration-250 ${
-          value
-            ? 'bg-[rgba(14,210,247,0.2)] border-[var(--text-accent)] shadow-[0_0_8px_rgba(14,210,247,0.35),inset_0_0_4px_rgba(14,210,247,0.1)]'
-            : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)] group-hover:border-[var(--border-active)]'
-        }`}>
-          {/* Thumb */}
-          <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full transition-all duration-250 shadow-sm ${
-            value
-              ? 'translate-x-[18px] bg-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.6)]'
-              : 'translate-x-0.5 bg-[var(--text-dim)] opacity-50'
-          }`} />
-        </div>
-      </label>
-    </div>
-  </div>
-);
-
-interface TextAreaSettingProps {
-  name: string;
-  description: string;
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}
-
-interface TextInputSettingProps {
-  name: string;
-  description: string;
-  value: string;
-  placeholder?: string;
-  onChange: (value: string) => void;
-}
-
-const TextInputSetting: React.FC<TextInputSettingProps> = ({ name, description, value, placeholder, onChange }) => (
-  <div className="py-2">
-    <div className="font-medium" style={{ color: "var(--text-normal)" }}>{name}</div>
-    <div className="text-xs mb-1 opacity-75" style={{ color: "var(--text-dim)" }}>{description}</div>
-    <input
-      type="text"
-      value={value}
-      placeholder={placeholder}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60"
-    />
-  </div>
-);
 
 interface NumberInputSettingProps {
   name: string;
@@ -277,20 +305,6 @@ const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, descripti
       step={step}
       onChange={(e) => onChange(parseFloat(e.target.value))}
       className="w-24 px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
-    />
-  </div>
-);
-
-const TextAreaSetting: React.FC<TextAreaSettingProps> = ({ name, description, value, onChange, disabled }) => (
-  <div className="py-2">
-    <div className="font-medium text-[var(--text-normal)]">{name}</div>
-    <div className="text-xs text-[var(--text-dim)] mb-1 opacity-60">{description}</div>
-    <textarea
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      disabled={disabled}
-      className="w-full px-3 py-2 text-[var(--text-normal)] bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded-md focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] disabled:bg-[var(--bg-depth-3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 resize-none text-xs leading-relaxed placeholder:text-[var(--text-dim)] placeholder:opacity-60"
-      rows={4}
     />
   </div>
 );

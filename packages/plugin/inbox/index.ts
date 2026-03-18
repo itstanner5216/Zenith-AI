@@ -498,6 +498,7 @@ async function recommendNameStep(
 async function recommendFolderWithEmbeddingsStep(
   context: ProcessingContext
 ): Promise<ProcessingContext> {
+  if (!context.plugin.settings.enableVectorAutoSort) return context;
   const client = context.plugin.vertexBrainClient;
   if (!client) return context; // Brain not configured, let model handle it
 

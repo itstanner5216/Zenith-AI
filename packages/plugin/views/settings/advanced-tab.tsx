@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
 import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
+import { ToggleSetting, handleSettingChange } from "./components";
 
 interface AdvancedTabProps {
   plugin: ZenithAI;
@@ -26,6 +27,8 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   const [pdfPageLimit, setPdfPageLimit] = useState(
     plugin.settings.pdfPageLimit
   );
+  const [showLocalLLMInChat, setShowLocalLLMInChat] = useState(plugin.settings.showLocalLLMInChat);
+  const [backgroundScribeEnabled, setBackgroundScribeEnabled] = useState(plugin.settings.backgroundScribeEnabled);
 
   // Sync state with plugin settings when they change
   useEffect(() => {
@@ -33,11 +36,15 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     setDebugMode(plugin.settings.debugMode);
     setEnableSelfHosting(plugin.settings.enableSelfHosting);
     setSelfHostingURL(plugin.settings.selfHostingURL);
+    setShowLocalLLMInChat(plugin.settings.showLocalLLMInChat);
+    setBackgroundScribeEnabled(plugin.settings.backgroundScribeEnabled);
   }, [
     plugin.settings.useLogs,
     plugin.settings.debugMode,
     plugin.settings.enableSelfHosting,
     plugin.settings.selfHostingURL,
+    plugin.settings.showLocalLLMInChat,
+    plugin.settings.backgroundScribeEnabled,
   ]);
 
   const handleToggleChange = async (value: boolean) => {
@@ -60,22 +67,16 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Zenith-AI File Logs"
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
-        onChange={value => {
-          setUseLogs(value);
-          plugin.settings.useLogs = value;
-          plugin.saveSettings();
-        }}
+        onChange={value => handleSettingChange(plugin, value, setUseLogs, 'useLogs')}
       />
 
       <ToggleSetting
         name="Debug Mode"
         description="Enable detailed logging for troubleshooting. This may impact performance."
         value={debugMode}
-        onChange={value => {
-          setDebugMode(value);
+        onChange={async value => {
+          await handleSettingChange(plugin, value, setDebugMode, 'debugMode');
           logger.configure(value);
-          plugin.settings.debugMode = value;
-          plugin.saveSettings();
         }}
       />
       </div>
@@ -283,10 +284,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             max="10000"
             value={contentCutoffChars}
             onChange={e => {
-              const value = parseInt(e.target.value);
-              setContentCutoffChars(value);
-              plugin.settings.contentCutoffChars = value;
-              plugin.saveSettings();
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                setContentCutoffChars(value);
+                plugin.settings.contentCutoffChars = value;
+                plugin.saveSettings();
+              }
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -310,10 +313,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             step="1000"
             value={maxFormattingTokens}
             onChange={e => {
-              const value = parseInt(e.target.value);
-              setMaxFormattingTokens(value);
-              plugin.settings.maxFormattingTokens = value;
-              plugin.saveSettings();
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                setMaxFormattingTokens(value);
+                plugin.settings.maxFormattingTokens = value;
+                plugin.saveSettings();
+              }
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -335,57 +340,40 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             value={pdfPageLimit}
             onChange={e => {
               const value = parseInt(e.target.value, 10);
-              setPdfPageLimit(value);
-              plugin.settings.pdfPageLimit = value;
-              plugin.saveSettings();
+              if (!isNaN(value)) {
+                setPdfPageLimit(value);
+                plugin.settings.pdfPageLimit = value;
+                plugin.saveSettings();
+              }
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
         </div>
       </div>
       </div>
+
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Chat Features</h3>
+        <ToggleSetting
+          name="Enable Local LLM in Chat"
+          description="Show local Ollama model option in the chat model selector."
+          value={showLocalLLMInChat}
+          onChange={value => handleSettingChange(plugin, value, setShowLocalLLMInChat, 'showLocalLLMInChat')}
+        />
+        <ToggleSetting
+          name="Background Scribe"
+          description="Enable Background Scribe to buffer chat conversations and synthesize actionable TODO items."
+          value={backgroundScribeEnabled}
+          onChange={async value => {
+            await handleSettingChange(plugin, value, setBackgroundScribeEnabled, 'backgroundScribeEnabled');
+            if (!value) {
+              plugin.backgroundScribe?.deactivate();
+            } else {
+              plugin.backgroundScribe?.activate();
+            }
+          }}
+        />
+      </div>
     </div>
   );
 };
-
-interface ToggleSettingProps {
-  name: string;
-  description: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-}
-
-const ToggleSetting: React.FC<ToggleSettingProps> = ({
-  name,
-  description,
-  value,
-  onChange,
-}) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-[var(--border-subtle)] last:border-b-0">
-    <div>
-      <div className="font-medium text-[var(--text-normal)]">{name}</div>
-      <div className="text-xs text-[var(--text-dim)] opacity-70">{description}</div>
-    </div>
-    <div>
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={e => onChange(e.target.checked)}
-          className="sr-only peer"
-        />
-        <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
-          value
-            ? 'bg-[rgba(14,210,247,0.25)] border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
-            : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)]'
-        }`}>
-          <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
-            value
-              ? 'right-0.5 bg-[var(--text-accent)]'
-              : 'left-0.5 bg-[var(--text-dim)] opacity-60'
-          }`} />
-        </div>
-      </label>
-    </div>
-  </div>
-);
