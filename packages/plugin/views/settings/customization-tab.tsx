@@ -262,13 +262,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
       {/* Background Scribe Section */}
       <section>
-        <h3 className="fo-text-lg fo-font-semibold fo-mb-4 fo-text-[var(--text-accent)]">Background Scribe</h3>
-        <div className="fo-bg-[var(--bg-depth-3)] fo-p-4 fo-rounded-lg fo-mb-4 fo-border fo-border-[var(--border-defined)] fo-shadow-elevation-md">
-          <div className="fo-text-xs fo-text-[var(--text-dim)] fo-opacity-70">
+        <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--text-accent)" }}>Background Scribe</h3>
+        <div className="rounded-lg mb-4 p-4" style={{ background: "var(--bg-depth-3)", border: "1px solid var(--border-defined)" }}>
+          <div className="text-xs opacity-70" style={{ color: "var(--text-dim)" }}>
             Background Scribe buffers chat conversations and synthesizes actionable TODO items into a file. Toggle it on/off from the AI chat panel.
           </div>
         </div>
-        <div className="fo-space-y-4">
+        <div className="space-y-4">
           <TextInputSetting
             name="Scribe Output File"
             description="File path where Background Scribe writes synthesized TODO items. Default: TODO.md"
