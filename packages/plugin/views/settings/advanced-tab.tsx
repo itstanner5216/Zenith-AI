@@ -14,7 +14,6 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   const [selfHostingURL, setSelfHostingURL] = useState(
     plugin.settings.selfHostingURL
   );
-  const [useLogs, setUseLogs] = useState(plugin.settings.useLogs);
   const [debugMode, setDebugMode] = useState(plugin.settings.debugMode);
   const [showLogs, setShowLogs] = useState(false);
   const [contentCutoffChars, setContentCutoffChars] = useState(
@@ -29,12 +28,10 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
 
   // Sync state with plugin settings when they change
   useEffect(() => {
-    setUseLogs(plugin.settings.useLogs);
     setDebugMode(plugin.settings.debugMode);
     setEnableSelfHosting(plugin.settings.enableSelfHosting);
     setSelfHostingURL(plugin.settings.selfHostingURL);
   }, [
-    plugin.settings.useLogs,
     plugin.settings.debugMode,
     plugin.settings.enableSelfHosting,
     plugin.settings.selfHostingURL,
@@ -57,17 +54,6 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
       <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
         <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Logging & Debug</h3>
         <ToggleSetting
-        name="Zenith-AI File Logs"
-        description="Allows you to keep track of the changes made by file Organizer."
-        value={useLogs}
-        onChange={value => {
-          setUseLogs(value);
-          plugin.settings.useLogs = value;
-          plugin.saveSettings();
-        }}
-      />
-
-      <ToggleSetting
         name="Debug Mode"
         description="Enable detailed logging for troubleshooting. This may impact performance."
         value={debugMode}
@@ -132,8 +118,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
       )}
       </div>
 
-      {useLogs && (
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-2">
+      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-2">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-[var(--text-normal)]">View Logs</div>
@@ -263,7 +248,6 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             </div>
           )}
         </div>
-      )}
 
       <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
         <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Performance Limits</h3>

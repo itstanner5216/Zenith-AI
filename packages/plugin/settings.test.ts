@@ -16,7 +16,6 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS.API_KEY).toBe('');
     expect(DEFAULT_SETTINGS.pathToWatch).toBe('_ZenithAI/Inbox');
     expect(DEFAULT_SETTINGS.defaultDestinationPath).toBe('_ZenithAI/Processed');
-    expect(DEFAULT_SETTINGS.backgroundScribeEnabled).toBe(false);
     expect(DEFAULT_SETTINGS.pinnedTag).toBe('pinned');
     expect(DEFAULT_SETTINGS.selectedModel).toBe('gpt-4o-mini');
     expect(DEFAULT_SETTINGS.debugMode).toBe(false);

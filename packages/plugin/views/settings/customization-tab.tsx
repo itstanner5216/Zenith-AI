@@ -10,7 +10,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [renameInstructions, setRenameInstructions] = useState(plugin.settings.renameInstructions);
   const [useSimilarTags, setUseSimilarTags] = useState(plugin.settings.useSimilarTags);
   const [useSimilarTagsInFrontmatter, setUseSimilarTagsInFrontmatter] = useState(plugin.settings.useSimilarTagsInFrontmatter);
-  const [useVaultTitles, setUseVaultTitles] = useState(plugin.settings.useVaultTitles);
   const [customFolderInstructions, setCustomFolderInstructions] = useState(plugin.settings.customFolderInstructions);
   const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
   const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
@@ -101,12 +100,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               description="Instructions for how files should be renamed based on their content."
               value={renameInstructions}
               onChange={(value) => handleTextChange(value, setRenameInstructions, 'renameInstructions')}
-            />
-            <ToggleSetting
-              name="Use Vault Context"
-              description="Improve AI-generated titles by providing examples from your vault (uses 20 random titles)."
-              value={useVaultTitles}
-              onChange={(value) => handleToggleChange(value, setUseVaultTitles, 'useVaultTitles')}
             />
           </div>
         </div>
