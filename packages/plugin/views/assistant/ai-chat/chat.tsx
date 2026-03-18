@@ -89,7 +89,18 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const plugin = usePlugin();
   const app = plugin.app;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [scribeActive, setScribeActive] = useState(false);
+  const [hasScribe, setHasScribe] = useState(!!plugin.backgroundScribe);
+  const [scribeActive, setScribeActive] = useState(plugin.backgroundScribe?.isActiveState ?? false);
+
+  // Keep scribe UI state in sync with plugin events
+  useEffect(() => {
+    const handler = () => {
+      setHasScribe(!!plugin.backgroundScribe);
+      setScribeActive(plugin.backgroundScribe?.isActiveState ?? false);
+    };
+    const ref = app.workspace.on("zenith-ai:background-scribe-changed" as any, handler);
+    return () => app.workspace.offref(ref);
+  }, [app.workspace, plugin]);
 
   // Chat history manager instance
   const chatHistoryManager = useMemo(
@@ -1350,8 +1361,12 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       plugin.backgroundScribe.deactivate();
       setScribeActive(false);
     } else {
-      plugin.backgroundScribe.activate();
-      setScribeActive(true);
+      const activated = plugin.backgroundScribe.activate();
+      if (!activated) {
+        new Notice("Background Scribe is disabled in settings. Enable it in Settings → Advanced → Chat Features.");
+      } else {
+        setScribeActive(true);
+      }
     }
   }, [plugin.backgroundScribe, scribeActive]);
 
@@ -2141,7 +2156,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 maxContextSize={maxContextSize}
               />
               {/* Removed SearchToggle - search grounding now auto-triggered by tools */}
-              {plugin.backgroundScribe && (
+              {hasScribe && (
                 <button
                   onClick={toggleScribe}
                   className={tw(
