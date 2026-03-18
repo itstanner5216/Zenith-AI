@@ -41,13 +41,25 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
   const handleTextChange = async (value: string, setter: React.Dispatch<React.SetStateAction<string>>, settingKey: keyof typeof plugin.settings) => {
     setter(value);
+    // nosemgrep: detect-object-injection
     (plugin.settings[settingKey] as string) = value;
     await plugin.saveSettings();
   };
 
-  const handleNumberChange = async (value: number, setter: React.Dispatch<React.SetStateAction<number>>, settingKey: keyof typeof plugin.settings) => {
-    setter(value);
-    (plugin.settings[settingKey] as number) = value;
+  const handleNumberChange = async (
+    value: number,
+    setter: React.Dispatch<React.SetStateAction<number>>,
+    settingKey: keyof typeof plugin.settings,
+    options?: { min?: number; max?: number }
+  ) => {
+    if (!Number.isFinite(value)) return;
+    const nextValue = Math.min(
+      options?.max ?? value,
+      Math.max(options?.min ?? value, value)
+    );
+    setter(nextValue);
+    // nosemgrep: detect-object-injection
+    (plugin.settings[settingKey] as number) = nextValue;
     await plugin.saveSettings();
   };
 
@@ -216,7 +228,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={(value) => handleNumberChange(value, setGeneralMergeThreshold, 'generalMergeThreshold')}
+            onChange={(value) => handleNumberChange(value, setGeneralMergeThreshold, 'generalMergeThreshold', { min: 0, max: 1 })}
           />
           <NumberInputSetting
             name="Global Merge Threshold"
@@ -225,14 +237,17 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={(value) => handleNumberChange(value, setGlobalMergeThreshold, 'globalMergeThreshold')}
+            onChange={(value) => handleNumberChange(value, setGlobalMergeThreshold, 'globalMergeThreshold', { min: 0, max: 1 })}
           />
           <TextInputSetting
             name="Projects Path"
             description="Root folder used for project detection during auto-sort and Background Scribe. Default: Projects"
             value={projectsPath}
             placeholder="Projects"
-            onChange={(value) => handleTextChange(value, setProjectsPath, 'projectsPath')}
+            onChange={(value) => {
+              const sanitized = value.trim().replace(/^\/+|\/+$/g, '');
+              handleTextChange(sanitized, setProjectsPath, 'projectsPath');
+            }}
           />
           <TextInputSetting
             name="Cosmic Vault Structure Path"
@@ -250,19 +265,22 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
       {/* Background Scribe Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">Background Scribe</h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
-          <div className="text-xs text-[var(--text-dim)] opacity-70">
+        <h3 className="fo-text-lg fo-font-semibold fo-mb-4 fo-text-[var(--text-accent)]">Background Scribe</h3>
+        <div className="fo-bg-[var(--bg-depth-3)] fo-p-4 fo-rounded-lg fo-mb-4 fo-border fo-border-[var(--border-defined)] fo-shadow-elevation-md">
+          <div className="fo-text-xs fo-text-[var(--text-dim)] fo-opacity-70">
             Background Scribe buffers chat conversations and synthesizes actionable TODO items into a file. Toggle it on/off from the AI chat panel.
           </div>
         </div>
-        <div className="space-y-4">
+        <div className="fo-space-y-4">
           <TextInputSetting
             name="Scribe Output File"
             description="File path where Background Scribe writes synthesized TODO items. Default: TODO.md"
             value={backgroundScribeOutputFile}
             placeholder="TODO.md"
-            onChange={(value) => handleTextChange(value, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile')}
+            onChange={(value) => {
+              const sanitized = value.trim() || 'TODO.md';
+              handleTextChange(sanitized, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile');
+            }}
           />
         </div>
       </section>

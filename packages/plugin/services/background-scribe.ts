@@ -104,6 +104,13 @@ export class BackgroundScribe {
     path: string,
     content: string
   ): Promise<void> {
+    const parentDir = path.substring(0, path.lastIndexOf('/'));
+    if (parentDir) {
+      const existingFolder = this.plugin.app.vault.getAbstractFileByPath(parentDir);
+      if (!existingFolder) {
+        await this.plugin.app.vault.createFolder(parentDir);
+      }
+    }
     const file = this.plugin.app.vault.getAbstractFileByPath(path);
     if (file instanceof TFile) {
       await this.plugin.app.vault.modify(file, content);
