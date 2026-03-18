@@ -89,7 +89,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const plugin = usePlugin();
   const app = plugin.app;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [scribeActive, setScribeActive] = useState(false);
+const [scribeActive, setScribeActive] = useState(plugin.backgroundScribe?.isActiveState ?? false);
   const [hasScribe, setHasScribe] = useState(!!plugin.backgroundScribe);
   useEffect(() => {
     const handler = () => {
