@@ -305,7 +305,7 @@ R2 Upload → Backend Notification → Processing → Polling → Display
 - `packages/web/app/api/create-upload-url/route.ts` - Generate pre-signed URLs
 - `packages/web/app/api/record-upload/route.ts` - Record upload metadata
 - `packages/web/app/api/process-file/route.ts` - Trigger processing
-- `packages/web/app/api/get-upload-status/[fileId]/route.ts` - Status polling
+- `packages/web/app/api/get-upload-status/[id]/route.ts` - Status polling
 - `packages/web/app/api/(newai)/transcribe/route.ts` - Audio transcription
 
 #### Detailed Flow
@@ -518,7 +518,7 @@ const allToolCalls = steps.flatMap(step => step.toolCalls);
 
 **Architecture:** Hybrid approach with **server-defined, client-executed tools**
 
-- **Frontend:** Inside Obsidian plugin (`packages/plugin/views/ai-chat/`)
+- **Frontend:** Inside Obsidian plugin (`packages/plugin/views/assistant/ai-chat/`)
 - **Backend:** Web application APIs
 - **Communication:** Streaming via Vercel AI SDK
 - **Tool Execution:** **Local** (client-side) with Obsidian API access
@@ -1267,7 +1267,7 @@ const agent = {
 
 ### Plugin
 - `packages/plugin/index.ts` - Main plugin file
-- `packages/plugin/views/ai-chat/` - Chat interface
+- `packages/plugin/views/assistant/ai-chat/` - Chat interface
 - `packages/plugin/components/ui/` - UI components
 - `packages/plugin/handlers/` - Event handlers
 
@@ -1365,4 +1365,4 @@ export async function POST(req: NextRequest) {
 
 **Maintained by:** Note Companion Development Team
 
-**For bugs and issues:** See tutorials/bugs.md
+**For bugs and issues:** See [README.md](README.md) or open a GitHub issue.
