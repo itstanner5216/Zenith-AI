@@ -2,7 +2,7 @@
 
 ## Repository Overview
 This is a TypeScript monorepo (`pnpm` workspaces) for **Zenith-AI**, an AI-powered Obsidian plugin with a companion web platform. The stack includes:
-- `packages/plugin` — Obsidian plugin (TypeScript, React, Vite)
+- `packages/plugin` — Obsidian plugin (TypeScript, React, esbuild)
 - `packages/web` — Next.js web app with Stripe billing, Clerk auth, and Vercel deployment
 - `packages/landing` — Next.js landing page
 - `packages/mobile` — React Native / Expo mobile app (iOS + Android)

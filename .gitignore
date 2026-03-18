@@ -63,6 +63,5 @@ tsconfig.tsbuildinfo
 .github/hooks/obsidianite-ui.json
 .github/hooks/logs/
 
-# Local agent startup instructions
-CLAUDE.md
+# Local worktrees
 .worktrees/
