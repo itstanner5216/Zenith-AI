@@ -24,6 +24,9 @@ export class BackgroundScribe {
       this.handleChatTurn
     );
     console.log("[BackgroundScribe] Activated - will buffer chat turns");
+    this.plugin.app.workspace.trigger(
+      "zenith-ai:background-scribe-changed" as any
+    );
     return true;
   }
 
@@ -40,6 +43,9 @@ export class BackgroundScribe {
       this.debounceTimer = null;
     }
     console.log("[BackgroundScribe] Deactivated - buffer cleared");
+    this.plugin.app.workspace.trigger(
+      "zenith-ai:background-scribe-changed" as any
+    );
   }
 
   private handleChatTurn = async (data: any) => {

@@ -304,7 +304,7 @@ const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, descripti
       max={max}
       step={step}
       onChange={(e) => onChange(parseFloat(e.target.value))}
-      className="w-24 px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
+      className="w-24 px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
     />
   </div>
 );

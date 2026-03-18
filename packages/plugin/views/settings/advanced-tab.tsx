@@ -48,9 +48,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   ]);
 
   const handleToggleChange = async (value: boolean) => {
-    setEnableSelfHosting(value);
-    plugin.settings.enableSelfHosting = value;
-    await plugin.saveSettings();
+    await handleSettingChange(plugin, value, setEnableSelfHosting, "enableSelfHosting");
   };
 
   const handleURLChange = async (value: string) => {
@@ -83,37 +81,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
 
       <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
         <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">Self-Hosting</h3>
-      <div className="setting-item">
-        <div className="setting-item-info">
-          <div className="setting-item-name">Enable Self-Hosting</div>
-          <div className="setting-item-description">
-            Enable Self-Hosting to host the server on your own machine. Requires
-            technical skills and an external OpenAI API Key + credits. ⛔️ Keep
-            disabled if you have a cloud subscription.
-          </div>
-        </div>
-        <div className="setting-item-control">
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={enableSelfHosting}
-              onChange={e => handleToggleChange(e.target.checked)}
-              className="sr-only peer"
-            />
-            <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
-              enableSelfHosting
-                ? 'bg-[rgba(14,210,247,0.25)] border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
-                : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)]'
-            }`}>
-              <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
-                enableSelfHosting
-                  ? 'right-0.5 bg-[var(--text-accent)]'
-                  : 'left-0.5 bg-[var(--text-dim)] opacity-60'
-              }`} />
-            </div>
-          </label>
-        </div>
-      </div>
+      <ToggleSetting
+        name="Enable Self-Hosting"
+        description="Run Zenith AI on your own infrastructure with your OpenAI API key. Keep disabled if you use the cloud subscription."
+        value={enableSelfHosting}
+        onChange={value => handleToggleChange(value)}
+      />
 
       {enableSelfHosting && (
         <div className="setting-item">
@@ -126,7 +99,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
               placeholder="Enter your Server URL"
               value={selfHostingURL}
               onChange={e => handleURLChange(e.target.value)}
-              className="w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60"
+              className="w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60"
             />
           </div>
         </div>
@@ -244,7 +217,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                         ? "text-[var(--text-warning)]"
                         : "text-[var(--text-normal)]"
                     }`}
-                    style={{ userSelect: "text", WebkitUserSelect: "text", ...(log.level === "warn" ? { textShadow: '0 0 8px rgba(255,183,77,0.3)' } : {}) }}
+                    style={{ userSelect: "text", WebkitUserSelect: "text" }}
                   >
                     <span className="text-[var(--text-dim)] text-xs">
                       {new Date(log.timestamp).toLocaleString()}
@@ -291,7 +264,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                 plugin.saveSettings();
               }
             }}
-            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
+            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
           />
         </div>
       </div>
@@ -320,7 +293,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                 plugin.saveSettings();
               }
             }}
-            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
+            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
           />
         </div>
       </div>
@@ -346,7 +319,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                 plugin.saveSettings();
               }
             }}
-            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
+            className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
           />
         </div>
       </div>
