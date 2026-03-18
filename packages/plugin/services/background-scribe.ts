@@ -106,16 +106,28 @@ export class BackgroundScribe {
     path: string,
     content: string
   ): Promise<void> {
-    const parentDir = path.substring(0, path.lastIndexOf('/'));
+    // Normalize and validate the target path to avoid invalid vault operations.
+    let normalizedPath = path.trim();
+    if (!normalizedPath) {
+      // Fallback to a sane default if settings provided an empty or whitespace-only path.
+      normalizedPath = "TODO.md";
+    }
+
+    const lastSlashIndex = normalizedPath.lastIndexOf("/");
+    const parentDir = lastSlashIndex > 0 ? normalizedPath.substring(0, lastSlashIndex) : "";
+
     if (parentDir) {
       const existingFolder = this.plugin.app.vault.getAbstractFileByPath(parentDir);
       if (existingFolder && !(existingFolder instanceof TFolder)) {
         throw new Error(`Background Scribe output parent path is not a folder: ${parentDir}`);
       }
       if (!existingFolder) {
-        // Create parent folders recursively
-        const parts = parentDir.split('/');
-        let currentPath = '';
+        // Create parent folders recursively, skipping any empty or whitespace-only segments
+        const parts = parentDir
+          .split("/")
+          .map((segment) => segment.trim())
+          .filter((segment) => segment.length > 0);
+        let currentPath = "";
         for (const part of parts) {
           currentPath = currentPath ? `${currentPath}/${part}` : part;
           const existing = this.plugin.app.vault.getAbstractFileByPath(currentPath);
@@ -128,11 +140,11 @@ export class BackgroundScribe {
         }
       }
     }
-    const file = this.plugin.app.vault.getAbstractFileByPath(path);
+    const file = this.plugin.app.vault.getAbstractFileByPath(normalizedPath);
     if (file instanceof TFile) {
       await this.plugin.app.vault.modify(file, content);
     } else {
-      await this.plugin.app.vault.create(path, content);
+      await this.plugin.app.vault.create(normalizedPath, content);
     }
   }
 
