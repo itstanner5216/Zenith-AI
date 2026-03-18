@@ -1401,7 +1401,6 @@ export default class ZenithAI extends Plugin {
       const folderPaths = [
         this.settings.pathToWatch,
         this.settings.defaultDestinationPath,
-        this.settings.referencePath,
         this.settings.attachmentsPath,
         this.settings.logFolderPath,
         this.settings.backupFolderPath,

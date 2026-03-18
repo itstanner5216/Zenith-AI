@@ -3,7 +3,6 @@ export class ZenithAISettings {
   API_KEY = "";
   useLogs = true;
   defaultDestinationPath = "_ZenithAI/Processed";
-  referencePath = "_ZenithAI/References";
   attachmentsPath = "_ZenithAI/Processed/Attachments";
   pathToWatch = "_ZenithAI/Inbox";
   logFolderPath = "_ZenithAI/Logs";
@@ -21,16 +20,12 @@ export class ZenithAISettings {
 
   renameInstructions =
     "If document has a human readable name, use it. Otherwise, create a concise, descriptive name for the document based on its key content. Prioritize clarity and searchability, using specific terms that will make the document easy to find later. Avoid generic words and focus on unique, identifying elements.";
-  usePro = true;
   useSimilarTagsInFrontmatter = false;
   enableAtomicNotes = false;
   ignoreFolders = [""];
-  stagingFolder = ".notecompanion/staging";
   enableSelfHosting = false;
   selfHostingURL = "http://localhost:3010";
 
-  useFolderEmbeddings = false;
-  useVaultTitles = true;
   enableSearchGrounding = false;
   enableDeepSearch = false;
   customFolderInstructions = "";
@@ -38,7 +33,6 @@ export class ZenithAISettings {
   customModelName = "llama3.2";
   tagScoreThreshold = 70;
   formatBehavior: "override" | "newFile" | "append" = "override";
-  useInbox = false;
   debugMode = false;
   enableTitleSuggestions = false;
   // use for sampling of the recommend fucntions
@@ -62,7 +56,6 @@ export class ZenithAISettings {
   pinnedTag = "pinned"; // Tag that locks files from auto-sort
   projectsPath = "Projects"; // Root signal directory
   autoDetectProjectContext = true;
-  backgroundScribeEnabled = false;
   backgroundScribeOutputFile = "TODO.md";
 }
 
