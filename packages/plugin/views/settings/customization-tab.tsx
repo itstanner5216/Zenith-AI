@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type ZenithAI from '../../index';
+import { DEFAULT_SETTINGS } from '../../settings';
 
 interface CustomizationTabProps {
   plugin: InstanceType<typeof ZenithAI>;
@@ -18,14 +19,9 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
   const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
   const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath ?? "");
-
-  // force set user embeddings to false
-  useEffect(() => {
-    if (plugin.settings.useFolderEmbeddings !== false) {
-      plugin.settings.useFolderEmbeddings = false;
-      plugin.saveSettings();
-    }
-  }, []); // Empty array = run only once on mount
+  const [formatBehavior, setFormatBehavior] = useState<"override" | "newFile" | "append">(
+    plugin.settings.formatBehavior || DEFAULT_SETTINGS.formatBehavior
+  );
 
   const handleToggleChange = async (value: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, settingKey: keyof typeof plugin.settings) => {
     setter(value);
@@ -139,6 +135,29 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               description="Provide custom instructions for determining which folders to place your notes in."
               value={customFolderInstructions}
               onChange={(value) => handleTextChange(value, setCustomFolderInstructions, 'customFolderInstructions')}
+            />
+          </div>
+        </div>
+
+        {/* Formatting Section */}
+        <div className="mb-6">
+          <h4 className="font-medium text-[var(--text-normal)] mb-2">Formatting</h4>
+          <div className="space-y-4">
+            <DropdownSetting
+              name="Format Behavior"
+              description="Controls how AI formatting is applied to notes. Replace overwrites the current content, New File creates a separate formatted copy, and Append adds formatted content to the end."
+              value={formatBehavior}
+              options={[
+                { value: "override", label: "Replace" },
+                { value: "newFile", label: "New File" },
+                { value: "append", label: "Append" },
+              ]}
+              onChange={async (value) => {
+                const newBehavior = value as "override" | "newFile" | "append";
+                setFormatBehavior(newBehavior);
+                plugin.settings.formatBehavior = newBehavior;
+                await plugin.saveSettings();
+              }}
             />
           </div>
         </div>
@@ -307,5 +326,33 @@ const TextAreaSetting: React.FC<TextAreaSettingProps> = ({ name, description, va
       className="w-full px-3 py-2 text-[var(--text-normal)] bg-[var(--bg-depth-1)] border border-[var(--border-defined)] rounded-md focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] disabled:bg-[var(--bg-depth-3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 resize-none text-xs leading-relaxed placeholder:text-[var(--text-dim)] placeholder:opacity-60"
       rows={4}
     />
+  </div>
+);
+
+interface DropdownSettingProps {
+  name: string;
+  description: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+}
+
+const DropdownSetting: React.FC<DropdownSettingProps> = ({ name, description, value, options, onChange }) => (
+  <div className="flex items-center justify-between py-2.5 border-b border-[var(--border-subtle)] last:border-b-0 group hover:bg-[rgba(14,210,247,0.02)] rounded-md px-1 -mx-1 transition-colors duration-150">
+    <div className="flex-1 mr-4">
+      <div className="font-medium text-[var(--text-normal)] text-sm leading-snug">{name}</div>
+      <div className="text-xs text-[var(--text-dim)] mt-0.5 leading-relaxed opacity-60">{description}</div>
+    </div>
+    <div className="flex-shrink-0">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="px-3 py-1.5 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 appearance-none cursor-pointer"
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
+    </div>
   </div>
 );

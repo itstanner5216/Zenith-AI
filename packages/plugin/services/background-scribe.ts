@@ -17,6 +17,7 @@ export class BackgroundScribe {
 
   activate(): void {
     if (this.isActive) return;
+    if (!this.plugin.settings.backgroundScribeEnabled) return;
     this.isActive = true;
     this.plugin.app.workspace.on(
       "vault-intelligence:chat-turn" as any,

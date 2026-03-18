@@ -36,6 +36,7 @@ export class ZenithAISettings {
   customFolderInstructions = "";
   selectedModel: "gpt-4o-mini" | "llama3.2" = "gpt-4o-mini";
   customModelName = "llama3.2";
+  showLocalLLMInChat = false;
   tagScoreThreshold = 70;
   formatBehavior: "override" | "newFile" | "append" = "override";
   useInbox = false;

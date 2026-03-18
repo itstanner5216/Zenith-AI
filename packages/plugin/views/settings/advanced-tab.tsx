@@ -16,6 +16,9 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   );
   const [useLogs, setUseLogs] = useState(plugin.settings.useLogs);
   const [debugMode, setDebugMode] = useState(plugin.settings.debugMode);
+  const [showLocalLLMInChat, setShowLocalLLMInChat] = useState(
+    plugin.settings.showLocalLLMInChat
+  );
   const [showLogs, setShowLogs] = useState(false);
   const [contentCutoffChars, setContentCutoffChars] = useState(
     plugin.settings.contentCutoffChars
@@ -33,11 +36,13 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     setDebugMode(plugin.settings.debugMode);
     setEnableSelfHosting(plugin.settings.enableSelfHosting);
     setSelfHostingURL(plugin.settings.selfHostingURL);
+    setShowLocalLLMInChat(plugin.settings.showLocalLLMInChat);
   }, [
     plugin.settings.useLogs,
     plugin.settings.debugMode,
     plugin.settings.enableSelfHosting,
     plugin.settings.selfHostingURL,
+    plugin.settings.showLocalLLMInChat,
   ]);
 
   const handleToggleChange = async (value: boolean) => {
@@ -130,6 +135,17 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           </div>
         </div>
       )}
+
+      <ToggleSetting
+        name="Enable Local LLM in Chat"
+        description="Show the model selector in chat and allow routing to a local Ollama model instead of the cloud API."
+        value={showLocalLLMInChat}
+        onChange={value => {
+          setShowLocalLLMInChat(value);
+          plugin.settings.showLocalLLMInChat = value;
+          plugin.saveSettings();
+        }}
+      />
       </div>
 
       {useLogs && (

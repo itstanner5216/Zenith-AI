@@ -45,6 +45,7 @@ ZenithAISettings {
   "renameInstructions": "If document has a human readable name, use it. Otherwise, create a concise, descriptive name for the document based on its key content. Prioritize clarity and searchability, using specific terms that will make the document easy to find later. Avoid generic words and focus on unique, identifying elements.",
   "selectedModel": "gpt-4o-mini",
   "selfHostingURL": "http://localhost:3010",
+  "showLocalLLMInChat": false,
   "stagingFolder": ".notecompanion/staging",
   "syncFolderPath": "_ZenithAI/Sync",
   "tagScoreThreshold": 70,

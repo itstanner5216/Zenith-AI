@@ -20,5 +20,7 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS.pinnedTag).toBe('pinned');
     expect(DEFAULT_SETTINGS.selectedModel).toBe('gpt-4o-mini');
     expect(DEFAULT_SETTINGS.debugMode).toBe(false);
+    expect(DEFAULT_SETTINGS.showLocalLLMInChat).toBe(false);
+    expect(DEFAULT_SETTINGS.formatBehavior).toBe('override');
   });
 });
