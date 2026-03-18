@@ -1,9 +1,36 @@
 import React from "react";
+import type ZenithAI from "../../index";
+import type { ZenithAISettings } from "../../settings";
 
 // ---------------------------------------------------------------------------
 // Shared primitive setting components used across all settings tabs.
 // Single canonical implementation — import from here, do not re-define locally.
 // ---------------------------------------------------------------------------
+
+/**
+ * Union of all keys in ZenithAISettings whose value type is boolean.
+ * Use this to constrain boolean-specific callers to only pass valid boolean keys.
+ */
+export type BooleanSettingKeys = {
+  [K in keyof ZenithAISettings]: ZenithAISettings[K] extends boolean ? K : never;
+}[keyof ZenithAISettings];
+
+/**
+ * Generic helper: update local state, persist to plugin settings, and save.
+ * The `as any` cast is required because TypeScript cannot narrow the
+ * relationship between T and the settings key at the type level.
+ * Call-site type safety comes from `keyof ZenithAISettings` constraining the key.
+ */
+export async function handleSettingChange<T>(
+  plugin: ZenithAI,
+  value: T,
+  setter: React.Dispatch<React.SetStateAction<T>>,
+  settingKey: keyof ZenithAISettings
+): Promise<void> {
+  setter(value);
+  (plugin.settings as any)[settingKey] = value; // nosemgrep: detect-object-injection
+  await plugin.saveSettings();
+}
 
 export interface ToggleSettingProps {
   name: string;
@@ -40,7 +67,7 @@ export const ToggleSetting: React.FC<ToggleSettingProps> = ({
         />
         {/* Track */}
         <div
-          className={`relative w-9 h-5 rounded-full border transition-all duration-250 ${
+          className={`relative w-9 h-5 rounded-full border transition-all duration-200 ${
             value
               ? "bg-[rgba(14,210,247,0.2)] border-[var(--text-accent)] shadow-[0_0_8px_rgba(14,210,247,0.35),inset_0_0_4px_rgba(14,210,247,0.1)]"
               : "bg-[var(--bg-depth-1)] border-[var(--border-accent)] group-hover:border-[var(--border-active)]"
@@ -48,7 +75,7 @@ export const ToggleSetting: React.FC<ToggleSettingProps> = ({
         >
           {/* Thumb */}
           <div
-            className={`absolute top-0.5 w-3.5 h-3.5 rounded-full transition-all duration-250 shadow-sm ${
+            className={`absolute top-0.5 w-3.5 h-3.5 rounded-full transition-all duration-200 shadow-sm ${
               value
                 ? "translate-x-[18px] bg-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.6)]"
                 : "translate-x-0.5 bg-[var(--text-dim)] opacity-50"

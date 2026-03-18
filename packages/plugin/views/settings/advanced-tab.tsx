@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
 import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
-import { ZenithAISettings } from "../../settings";
-import { ToggleSetting } from "./components";
+import { ToggleSetting, handleSettingChange } from "./components";
 
 interface AdvancedTabProps {
   plugin: ZenithAI;
@@ -52,19 +51,8 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     plugin.settings.backgroundScribeEnabled,
   ]);
 
-  // Generic helper: update local state, persist to settings, save — no side effects.
-  const handleBooleanSettingChange = async (
-    value: boolean,
-    setter: React.Dispatch<React.SetStateAction<boolean>>,
-    settingKey: keyof ZenithAISettings
-  ) => {
-    setter(value);
-    (plugin.settings as any)[settingKey] = value;
-    await plugin.saveSettings();
-  };
-
   const handleToggleChange = async (value: boolean) => {
-    await handleBooleanSettingChange(value, setEnableSelfHosting, "enableSelfHosting");
+    await handleSettingChange(plugin, value, setEnableSelfHosting, "enableSelfHosting");
   };
 
   const handleURLChange = async (value: string) => {
@@ -82,7 +70,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
         onChange={async (value) => {
-          await handleBooleanSettingChange(value, setUseLogs, "useLogs");
+          await handleSettingChange(plugin, value, setUseLogs, "useLogs");
         }}
       />
 
@@ -92,7 +80,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         value={debugMode}
         onChange={async (value) => {
           logger.configure(value);
-          await handleBooleanSettingChange(value, setDebugMode, "debugMode");
+          await handleSettingChange(plugin, value, setDebugMode, "debugMode");
         }}
       />
       </div>
@@ -153,7 +141,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         description="Show the model selector in chat and allow routing to a local Ollama model instead of the cloud API."
         value={showLocalLLMInChat}
         onChange={async (value) => {
-          await handleBooleanSettingChange(value, setShowLocalLLMInChat, "showLocalLLMInChat");
+          await handleSettingChange(plugin, value, setShowLocalLLMInChat, "showLocalLLMInChat");
         }}
       />
 
@@ -162,7 +150,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         description="Automatically buffer chat turns and synthesize a TODO file from your conversation. Enable to allow the ▶ Scribe button in the chat panel to start recording."
         value={backgroundScribeEnabled}
         onChange={async (value) => {
-          await handleBooleanSettingChange(value, setBackgroundScribeEnabled, "backgroundScribeEnabled");
+          await handleSettingChange(plugin, value, setBackgroundScribeEnabled, "backgroundScribeEnabled");
+          if (!value) {
+            plugin.backgroundScribe?.deactivate();
+          } else {
+            plugin.backgroundScribe?.activate();
+          }
         }}
       />
       </div>
@@ -318,10 +311,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             max="10000"
             value={contentCutoffChars}
             onChange={async e => {
-              const value = parseInt(e.target.value);
-              setContentCutoffChars(value);
-              plugin.settings.contentCutoffChars = value;
-              await plugin.saveSettings();
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                setContentCutoffChars(value);
+                plugin.settings.contentCutoffChars = value;
+                await plugin.saveSettings();
+              }
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -345,10 +340,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             step="1000"
             value={maxFormattingTokens}
             onChange={async e => {
-              const value = parseInt(e.target.value);
-              setMaxFormattingTokens(value);
-              plugin.settings.maxFormattingTokens = value;
-              await plugin.saveSettings();
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                setMaxFormattingTokens(value);
+                plugin.settings.maxFormattingTokens = value;
+                await plugin.saveSettings();
+              }
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -370,9 +367,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             value={pdfPageLimit}
             onChange={async e => {
               const value = parseInt(e.target.value, 10);
-              setPdfPageLimit(value);
-              plugin.settings.pdfPageLimit = value;
-              await plugin.saveSettings();
+              if (!isNaN(value)) {
+                setPdfPageLimit(value);
+                plugin.settings.pdfPageLimit = value;
+                await plugin.saveSettings();
+              }
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />

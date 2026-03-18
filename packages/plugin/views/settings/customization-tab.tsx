@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import type ZenithAI from '../../index';
-import { DEFAULT_SETTINGS, ZenithAISettings } from '../../settings';
+import { DEFAULT_SETTINGS } from '../../settings';
 import {
   ToggleSetting,
   TextInputSetting,
   TextAreaSetting,
   DropdownSetting,
+  handleSettingChange,
 } from './components';
 
 interface CustomizationTabProps {
@@ -29,29 +30,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
     plugin.settings.formatBehavior || DEFAULT_SETTINGS.formatBehavior
   );
 
-  const handleToggleChange = async (value: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, settingKey: keyof typeof plugin.settings) => {
-    setter(value);
-    (plugin.settings[settingKey] as boolean) = value;
-    await plugin.saveSettings();
-  };
-
-  const handleTextChange = async (value: string, setter: React.Dispatch<React.SetStateAction<string>>, settingKey: keyof typeof plugin.settings) => {
-    setter(value);
-    (plugin.settings[settingKey] as string) = value;
-    await plugin.saveSettings();
-  };
-
-  // Generic handler for any setting type (boolean, string, number, enum, etc.)
-  const handleSettingChange = async <T,>(
-    value: T,
-    setter: React.Dispatch<React.SetStateAction<T>>,
-    settingKey: keyof ZenithAISettings
-  ) => {
-    setter(value);
-    (plugin.settings as any)[settingKey] = value;
-    await plugin.saveSettings();
-  };
-
   return (
     <div className="p-4 space-y-8">
       {/* Inbox Processing Section */}
@@ -68,13 +46,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Inbox Auto-Renaming"
             description="Automatically rename new files when they are processed through the inbox."
             value={enableFileRenaming}
-            onChange={(value) => handleToggleChange(value, setEnableFileRenaming, 'enableFileRenaming')}
+            onChange={async (value) => handleSettingChange(plugin, value, setEnableFileRenaming, 'enableFileRenaming')}
           />
           <ToggleSetting
             name="Inbox Auto-Formatting"
             description="Automatically format new documents when they match a template category during inbox processing."
             value={enableDocumentClassification}
-            onChange={(value) => handleToggleChange(value, setEnableDocumentClassification, 'enableDocumentClassification')}
+            onChange={async (value) => handleSettingChange(plugin, value, setEnableDocumentClassification, 'enableDocumentClassification')}
           />
           <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-elevation-md">
             <div className="font-medium text-[var(--text-normal)] mb-2">Document Type Templates</div>
@@ -89,7 +67,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Inbox Similar Tags"
             description="Automatically append similar tags to new files during inbox processing."
             value={useSimilarTags}
-            onChange={(value) => handleToggleChange(value, setUseSimilarTags, 'useSimilarTags')}
+            onChange={async (value) => handleSettingChange(plugin, value, setUseSimilarTags, 'useSimilarTags')}
           />
         </div>
       </section>
@@ -113,13 +91,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Rename Instructions"
               description="Instructions for how files should be renamed based on their content."
               value={renameInstructions}
-              onChange={(value) => handleTextChange(value, setRenameInstructions, 'renameInstructions')}
+              onChange={async (value) => handleSettingChange(plugin, value, setRenameInstructions, 'renameInstructions')}
             />
             <ToggleSetting
               name="Use Vault Context"
               description="Improve AI-generated titles by providing examples from your vault (uses 20 random titles)."
               value={useVaultTitles}
-              onChange={(value) => handleToggleChange(value, setUseVaultTitles, 'useVaultTitles')}
+              onChange={async (value) => handleSettingChange(plugin, value, setUseVaultTitles, 'useVaultTitles')}
             />
           </div>
         </div>
@@ -132,13 +110,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Use Frontmatter"
               description="Add similar tags in frontmatter instead of inline."
               value={useSimilarTagsInFrontmatter}
-              onChange={(value) => handleToggleChange(value, setUseSimilarTagsInFrontmatter, 'useSimilarTagsInFrontmatter')}
+              onChange={async (value) => handleSettingChange(plugin, value, setUseSimilarTagsInFrontmatter, 'useSimilarTagsInFrontmatter')}
             />
             <TextAreaSetting
               name="Tag Generation Instructions"
               description="Custom instructions for generating tags for your notes."
               value={customTagInstructions}
-              onChange={(value) => handleTextChange(value, setCustomTagInstructions, 'customTagInstructions')}
+              onChange={async (value) => handleSettingChange(plugin, value, setCustomTagInstructions, 'customTagInstructions')}
             />
           </div>
         </div>
@@ -151,7 +129,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Custom Folder Determination Instructions"
               description="Provide custom instructions for determining which folders to place your notes in."
               value={customFolderInstructions}
-              onChange={(value) => handleTextChange(value, setCustomFolderInstructions, 'customFolderInstructions')}
+              onChange={async (value) => handleSettingChange(plugin, value, setCustomFolderInstructions, 'customFolderInstructions')}
             />
           </div>
         </div>
@@ -171,6 +149,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               ]}
               onChange={async (value) => {
                 await handleSettingChange(
+                  plugin,
                   value as "override" | "newFile" | "append",
                   setFormatBehavior,
                   "formatBehavior"
@@ -206,7 +185,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Enable Vector Auto-Sort"
             description="Automatically route General files using semantic embeddings"
             value={enableVectorAutoSort}
-            onChange={(value) => handleToggleChange(value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
+            onChange={async (value) => handleSettingChange(plugin, value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
           />
           <NumberInputSetting
             name="Auto-Sort Confidence Threshold"

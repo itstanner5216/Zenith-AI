@@ -1353,6 +1353,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       const activated = plugin.backgroundScribe.activate();
       if (activated) {
         setScribeActive(true);
+      } else {
+        new Notice("Background Scribe is disabled. Enable it in Settings → Advanced.");
       }
     }
   }, [plugin.backgroundScribe, scribeActive]);
