@@ -242,7 +242,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             value={projectsPath}
             placeholder="Projects"
             onChange={(value) => {
-              const sanitized = value.trim().replace(/^\/+/, '') || 'Projects';
+              const sanitized = value.trim().replace(/^\/+|\/+$/g, '') || 'Projects';
               handleTextChange(sanitized, setProjectsPath, 'projectsPath');
             }}
           />
