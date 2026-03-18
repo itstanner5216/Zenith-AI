@@ -11,6 +11,11 @@ import { tmpdir } from "os";
 import { join } from "path";
 import OpenAI from "openai";
 
+/** Safely extract modelId from a LanguageModel, which may be a string or an object in AI SDK v4. */
+function getModelId(model: LanguageModel): string {
+  return typeof model === "string" ? model : (model as { modelId: string }).modelId;
+}
+
 // Function to generate tags
 export async function generateTags(
   content: string,
@@ -151,7 +156,7 @@ export async function generateRelationships(
   files: { name: string }[],
   model: LanguageModel
 ) {
-  const modelName = model.modelId;
+  const modelName = getModelId(model);
 
   const response = await generateObject({
     model: model as any, // Type cast for AI SDK v2 compatibility
@@ -208,7 +213,7 @@ export async function extractTextFromImage(
   image: ArrayBuffer,
   model: LanguageModel
 ): Promise<string> {
-  const modelName = model.modelId;
+  const modelName = getModelId(model);
 
   const messages = [
     {

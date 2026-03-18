@@ -1,8 +1,10 @@
 import {
   convertToCoreMessages,
   streamText,
-  createDataStreamResponse,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
   generateId,
+  stepCountIs,
 } from 'ai';
 import { NextResponse, NextRequest } from 'next/server';
 import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
@@ -13,6 +15,48 @@ import { getChatSystemPrompt } from '@/lib/prompts/chat-prompt';
 import { chatTools } from './tools';
 
 export const maxDuration = 300; // Allow for complex multi-step tool calls and long conversations
+
+// ---------------------------------------------------------------------------
+// Compatibility adapter: provides the pre-v4 DataStreamResponse interface
+// using the AI SDK v4 UIMessageStream APIs.
+// ---------------------------------------------------------------------------
+
+type DataStreamWriter = {
+  writeData: (data: unknown) => void;
+  writeMessageAnnotation: (annotation: unknown) => void;
+  merge: (stream: ReadableStream) => void;
+};
+
+type DataStreamResponseOptions = {
+  execute: (dataStream: DataStreamWriter) => Promise<void>;
+  onError?: (error: unknown) => string;
+};
+
+function createDataStreamResponse(options: DataStreamResponseOptions): Response {
+  const stream = createUIMessageStream({
+    execute: async ({ writer }) => {
+      const dataStream: DataStreamWriter = {
+        writeData: (_data: unknown) => {
+          // data events used only for status signaling; not forwarded in v4 API
+        },
+        writeMessageAnnotation: (annotation: unknown) => {
+          writer.write({
+            type: 'message-metadata',
+            messageMetadata: annotation,
+          } as Parameters<typeof writer.write>[0]);
+        },
+        merge: (readableStream: ReadableStream) => {
+          writer.merge(readableStream as Parameters<typeof writer.merge>[0]);
+        },
+      };
+      await options.execute(dataStream);
+    },
+    onError: options.onError,
+  });
+  return createUIMessageStreamResponse({ stream } as Parameters<typeof createUIMessageStreamResponse>[0]);
+}
+
+// ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
   return createDataStreamResponse({
@@ -540,23 +584,23 @@ export async function POST(req: NextRequest) {
           const result = await streamText({
             model: getResponsesModel() as any,
             system: getChatSystemPrompt(contextString, currentDatetime),
-            maxSteps: adaptiveMaxSteps,
+            stopWhen: stepCountIs(adaptiveMaxSteps),
             messages: coreMessages, // Use converted messages
             tools: {
               ...chatTools,
               web_search_preview: openai.tools.webSearchPreview({
                 searchContextSize: deepSearch ? 'high' : 'medium',
               }) as any, // Type cast for AI SDK v2 compatibility
-            },
+            } as any,
             onFinish: async ({ usage, sources }) => {
               console.log('Token usage:', usage);
               console.log('Search sources:', sources);
 
               if (sources && sources.length > 0) {
                 // Map the sources to our expected citation format
-                const citations = sources.map((source) => ({
-                  url: source.url,
-                  title: source.title || source.url,
+                const citations = (sources as any[]).map((source: any) => ({
+                  url: source.url ?? '',
+                  title: (source.title || source.url) ?? '',
                   // Default to 0 for indices if not provided
                   startIndex: 0,
                   endIndex: 0,
@@ -575,9 +619,8 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          result.mergeIntoDataStream(dataStream);
+          dataStream.merge((result as any).toUIMessageStream());
         } else {
-          console.log('Chat using default model (no search)');
 
           // Log context for debugging
           console.log(
@@ -766,15 +809,15 @@ export async function POST(req: NextRequest) {
           const result = await streamText({
             model: getModel() as any,
             system: getChatSystemPrompt(contextString, currentDatetime),
-            maxSteps: adaptiveMaxSteps,
+            stopWhen: stepCountIs(adaptiveMaxSteps),
             messages: finalCoreMessages, // Use messages with extracted toolCallId/toolName
-            tools: chatTools, // Regular tools, no web search
+            tools: chatTools as any, // Regular tools, no web search
             onFinish: async ({ usage, sources }) => {
               console.log('Token usage:', usage);
               console.log('Sources:', sources);
-              const citations = sources?.map((source) => ({
-                url: source.url,
-                title: source.title || source.url,
+              const citations = (sources as any[])?.map((source: any) => ({
+                url: source.url ?? '',
+                title: (source.title || source.url) ?? '',
                 // Default to 0 for indices if not provided
                 startIndex: 0,
                 endIndex: 0,
@@ -793,7 +836,7 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          result.mergeIntoDataStream(dataStream);
+          dataStream.merge((result as any).toUIMessageStream());
         }
       } catch (error) {
         console.error('[Chat API] Error in POST request:', {
