@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type ZenithAI from '../../index';
 
 interface CustomizationTabProps {
@@ -10,7 +10,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [renameInstructions, setRenameInstructions] = useState(plugin.settings.renameInstructions);
   const [useSimilarTags, setUseSimilarTags] = useState(plugin.settings.useSimilarTags);
   const [useSimilarTagsInFrontmatter, setUseSimilarTagsInFrontmatter] = useState(plugin.settings.useSimilarTagsInFrontmatter);
-  const [useVaultTitles, setUseVaultTitles] = useState(plugin.settings.useVaultTitles);
   const [customFolderInstructions, setCustomFolderInstructions] = useState(plugin.settings.customFolderInstructions);
   const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
   const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
@@ -18,14 +17,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
   const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
   const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath ?? "");
-
-  // force set user embeddings to false
-  useEffect(() => {
-    if (plugin.settings.useFolderEmbeddings !== false) {
-      plugin.settings.useFolderEmbeddings = false;
-      plugin.saveSettings();
-    }
-  }, []); // Empty array = run only once on mount
 
   const handleToggleChange = async (value: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, settingKey: keyof typeof plugin.settings) => {
     setter(value);
@@ -101,12 +92,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               description="Instructions for how files should be renamed based on their content."
               value={renameInstructions}
               onChange={(value) => handleTextChange(value, setRenameInstructions, 'renameInstructions')}
-            />
-            <ToggleSetting
-              name="Use Vault Context"
-              description="Improve AI-generated titles by providing examples from your vault (uses 20 random titles)."
-              value={useVaultTitles}
-              onChange={(value) => handleToggleChange(value, setUseVaultTitles, 'useVaultTitles')}
             />
           </div>
         </div>
