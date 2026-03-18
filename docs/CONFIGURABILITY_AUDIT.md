@@ -10,7 +10,7 @@
 
 This audit traces all user-configurable settings in the Zenith-AI Obsidian plugin to determine which settings actually affect runtime behavior. The audit reveals several categories of settings:
 
-- **Fully Configurable:** 27 settings with complete end-to-end functionality
+- **Fully Configurable:** 37 settings with complete end-to-end functionality
 - **Partially Configurable:** 3 settings with incomplete or weak effects
 - **UI-Only / Fake:** 2 settings that appear in UI but have no meaningful runtime effect
 - **Hardcoded Override:** 1 setting that is forcibly overridden in code
