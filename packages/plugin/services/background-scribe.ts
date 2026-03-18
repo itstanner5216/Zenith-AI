@@ -1,4 +1,4 @@
-import { TFile } from "obsidian";
+import { TFile, TFolder } from "obsidian";
 import type ZenithAI from "../index";
 import type { VertexBrainClient, VaultSearchResult } from "./vertex-brain-client";
 
@@ -107,6 +107,9 @@ export class BackgroundScribe {
     const parentDir = path.substring(0, path.lastIndexOf('/'));
     if (parentDir) {
       const existingFolder = this.plugin.app.vault.getAbstractFileByPath(parentDir);
+      if (existingFolder && !(existingFolder instanceof TFolder)) {
+        throw new Error(`Background Scribe output parent path is not a folder: ${parentDir}`);
+      }
       if (!existingFolder) {
         await this.plugin.app.vault.createFolder(parentDir);
       }
