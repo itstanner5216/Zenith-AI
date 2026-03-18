@@ -1,6 +1,9 @@
 import { TFile, TFolder } from "obsidian";
 import type ZenithAI from "../index";
-import type { VertexBrainClient, VaultSearchResult } from "./vertex-brain-client";
+import type {
+  VertexBrainClient,
+  VaultSearchResult,
+} from "./vertex-brain-client";
 
 export class BackgroundScribe {
   private plugin: ZenithAI;
@@ -21,11 +24,11 @@ export class BackgroundScribe {
     this.isActive = true;
     this.plugin.app.workspace.on(
       "vault-intelligence:chat-turn" as any,
-      this.handleChatTurn
+      this.handleChatTurn,
     );
     console.log("[BackgroundScribe] Activated - will buffer chat turns");
     this.plugin.app.workspace.trigger(
-      "zenith-ai:background-scribe-changed" as any
+      "zenith-ai:background-scribe-changed" as any,
     );
     return true;
   }
@@ -35,7 +38,7 @@ export class BackgroundScribe {
     this.isActive = false;
     this.plugin.app.workspace.off(
       "vault-intelligence:chat-turn" as any,
-      this.handleChatTurn
+      this.handleChatTurn,
     );
     this.buffer = [];
     if (this.debounceTimer) {
@@ -44,7 +47,7 @@ export class BackgroundScribe {
     }
     console.log("[BackgroundScribe] Deactivated - buffer cleared");
     this.plugin.app.workspace.trigger(
-      "zenith-ai:background-scribe-changed" as any
+      "zenith-ai:background-scribe-changed" as any,
     );
   }
 
@@ -60,15 +63,16 @@ export class BackgroundScribe {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
     this.debounceTimer = setTimeout(
       () => this.synthesizeTODO(),
-      this.DEBOUNCE_MS
+      this.DEBOUNCE_MS,
     );
   };
 
   private async synthesizeTODO(): Promise<void> {
     if (this.buffer.length === 0) return;
 
-    const combinedContent = this.buffer.map((b) => b.content).join("\n\n");
-    this.buffer = [];
+    const combinedContent = this.buffer.map(b => b.content).join("\n\n");
+    // Backup buffer before clearing in case write fails
+    const backupBuffer = [...this.buffer];
 
     // Detect project context
     const activeFile = this.plugin.app.workspace.getActiveFile();
@@ -76,20 +80,29 @@ export class BackgroundScribe {
 
     // Use embeddings to find project scope
     const similarNotes = await this.client.vectorSearch(combinedContent, 10);
-    const projectFiles = similarNotes.filter((n) =>
-      project ? n.folder_path.includes(project) : true
+    const projectFiles = similarNotes.filter(n =>
+      project ? n.folder_path.includes(project) : true,
     );
 
     // Generate TODO content
     const todoContent = await this.generateTODO(
       combinedContent,
       projectFiles,
-      project
+      project,
     );
 
     // Write to configured output file
-    const outputPath = this.plugin.settings.backgroundScribeOutputFile;
-    await this.writeOutputFile(outputPath, todoContent);
+    try {
+      const outputPath = this.plugin.settings.backgroundScribeOutputFile;
+      await this.writeOutputFile(outputPath, todoContent);
+      // Only clear buffer after successful write
+      this.buffer = [];
+    } catch (error) {
+      // Restore buffer if write fails
+      this.buffer = backupBuffer;
+      console.error("[BackgroundScribe] Failed to write output file:", error);
+      throw error;
+    }
   }
 
   private detectProject(filePath: string): string | null {
@@ -103,7 +116,7 @@ export class BackgroundScribe {
   private async generateTODO(
     conversation: string,
     contextFiles: VaultSearchResult[],
-    project: string | null
+    project: string | null,
   ): Promise<string> {
     const context = `Based on this conversation and related files, generate actionable TODO items:\n\n${conversation}`;
     const response = await this.client.answer(context);
@@ -117,24 +130,31 @@ export class BackgroundScribe {
     }
 
     const lastSlashIndex = normalizedPath.lastIndexOf("/");
-    const parentDir = lastSlashIndex > 0 ? normalizedPath.substring(0, lastSlashIndex) : "";
+    const parentDir =
+      lastSlashIndex > 0 ? normalizedPath.substring(0, lastSlashIndex) : "";
 
     if (parentDir) {
-      const existingFolder = this.plugin.app.vault.getAbstractFileByPath(parentDir);
+      const existingFolder =
+        this.plugin.app.vault.getAbstractFileByPath(parentDir);
       if (existingFolder && !(existingFolder instanceof TFolder)) {
-        throw new Error(`Background Scribe output parent path is not a folder: ${parentDir}`);
+        throw new Error(
+          `Background Scribe output parent path is not a folder: ${parentDir}`,
+        );
       }
       if (!existingFolder) {
         const parts = parentDir
           .split("/")
-          .map((segment) => segment.trim())
-          .filter((segment) => segment.length > 0);
+          .map(segment => segment.trim())
+          .filter(segment => segment.length > 0);
         let currentPath = "";
         for (const part of parts) {
           currentPath = currentPath ? `${currentPath}/${part}` : part;
-          const existing = this.plugin.app.vault.getAbstractFileByPath(currentPath);
+          const existing =
+            this.plugin.app.vault.getAbstractFileByPath(currentPath);
           if (existing && !(existing instanceof TFolder)) {
-            throw new Error(`Background Scribe output parent path is not a folder: ${currentPath}`);
+            throw new Error(
+              `Background Scribe output parent path is not a folder: ${currentPath}`,
+            );
           }
           if (!existing) {
             await this.plugin.app.vault.createFolder(currentPath);

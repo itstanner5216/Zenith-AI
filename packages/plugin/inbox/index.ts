@@ -16,10 +16,7 @@ import {
   getTokenCount,
   cleanup,
 } from "../utils/token-counter";
-import {
-  isValidExtension,
-  VALID_MEDIA_EXTENSIONS,
-} from "../constants";
+import { isValidExtension, VALID_MEDIA_EXTENSIONS } from "../constants";
 import {
   safeCreate,
   safeRename,
@@ -28,9 +25,7 @@ import {
   safeModifyContent as safeModify,
 } from "../fileUtils";
 import { sanitizeContent } from "../fileUtils";
-import {
-  getOriginalContent,
-} from "../fileUtils";
+import { getOriginalContent } from "../fileUtils";
 
 // Move constants to the top level and ensure they're used consistently
 const MAX_CONCURRENT_TASKS = 5;
@@ -98,7 +93,7 @@ interface StepValidation {
 
 function validateContext(
   context: ProcessingContext,
-  requiredFields: (keyof ProcessingContext)[]
+  requiredFields: (keyof ProcessingContext)[],
 ): StepValidation {
   for (const field of requiredFields) {
     if (!context[field]) {
@@ -175,7 +170,7 @@ export class Inbox {
         }
         return acc;
       },
-      [[], []]
+      [[], []],
     );
 
     // First enqueue regular files
@@ -193,7 +188,7 @@ export class Inbox {
     }
 
     logMessage(
-      `Enqueued ${regularFiles.length} regular files and ${mediaFiles.length} media files`
+      `Enqueued ${regularFiles.length} regular files and ${mediaFiles.length} media files`,
     );
   }
 
@@ -236,7 +231,7 @@ export class Inbox {
         logger.error("Queue processing error:", error);
         new Notice(
           `Zenith-AI: Processing failed for ${file.basename}. ${error.message}`,
-          6000
+          6000,
         );
       },
     });
@@ -292,10 +287,13 @@ export class Inbox {
     queueStats: QueueStatus;
   } {
     const records = this.getAllFiles();
-    const byStatus = records.reduce((acc, record) => {
-      acc[record.status] = (acc[record.status] || 0) + 1;
-      return acc;
-    }, {} as Record<FileStatus, number>);
+    const byStatus = records.reduce(
+      (acc, record) => {
+        acc[record.status] = (acc[record.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<FileStatus, number>,
+    );
 
     return {
       byStatus,
@@ -308,7 +306,7 @@ export class Inbox {
   // Refactored method using parallel processing where possible
   private async processInboxFile(
     inboxFile: TFile,
-    hash?: string
+    hash?: string,
   ): Promise<void> {
     if (!hash) {
       throw new Error("Hash is required for processing");
@@ -330,55 +328,76 @@ export class Inbox {
         context,
         startProcessing,
         Action.CLEANUP,
-        Action.ERROR_CLEANUP
+        Action.ERROR_CLEANUP,
       );
       await executeStep(
         context,
         hasValidFileStep,
         Action.VALIDATE,
-        Action.ERROR_VALIDATE
+        Action.ERROR_VALIDATE,
       );
       await executeStep(
         context,
         getContainerFileStep,
         Action.CONTAINER,
-        Action.ERROR_CONTAINER
+        Action.ERROR_CONTAINER,
       );
       await executeStep(
         context,
         moveAttachmentFile,
         Action.MOVING_ATTACHMENT,
-        Action.ERROR_MOVING_ATTACHMENT
+        Action.ERROR_MOVING_ATTACHMENT,
       );
       await executeStep(
         context,
         getContentStep,
         Action.EXTRACT,
-        Action.ERROR_EXTRACT
+        Action.ERROR_EXTRACT,
       );
       await executeStep(
         context,
         cleanupStep,
         Action.CLEANUP,
-        Action.ERROR_CLEANUP
+        Action.ERROR_CLEANUP,
       );
 
       // Try embeddings first — falls through to model if unavailable or low confidence
-      const contextWithEmbeddings = await safeExecuteStep(
-        context,
-        recommendFolderWithEmbeddingsStep,
-        Action.MOVING,
-        Action.ERROR_MOVING
-      );
+      // Only invoke embeddings step if vector auto-sort is enabled
+      let contextWithEmbeddings = context;
+      if (context.plugin.settings.enableVectorAutoSort) {
+        contextWithEmbeddings = await safeExecuteStep(
+          context,
+          recommendFolderWithEmbeddingsStep,
+          Action.MOVING,
+          Action.ERROR_MOVING,
+        );
+      }
 
       // Run remaining independent API calls concurrently
       // Only call model folder routing if embeddings didn't resolve the folder
       await Promise.all([
-        safeExecuteStep(contextWithEmbeddings, recommendClassificationStep, Action.CLASSIFY, Action.ERROR_CLASSIFY),
+        safeExecuteStep(
+          contextWithEmbeddings,
+          recommendClassificationStep,
+          Action.CLASSIFY,
+          Action.ERROR_CLASSIFY,
+        ),
         ...(!contextWithEmbeddings.newPath
-          ? [safeExecuteStep(contextWithEmbeddings, recommendFolderStep, Action.MOVING, Action.ERROR_MOVING)]
+          ? [
+              safeExecuteStep(
+                contextWithEmbeddings,
+                recommendFolderStep,
+                Action.MOVING,
+                Action.ERROR_MOVING,
+              ),
+            ]
           : []),
-        safeExecuteStep(contextWithEmbeddings, recommendNameStep, Action.RENAME, Action.ERROR_RENAME),
+        safeExecuteStep(
+          contextWithEmbeddings,
+          recommendNameStep,
+          Action.RENAME,
+          Action.ERROR_RENAME,
+        ),
       ]);
 
       // These depend on results above or are local operations
@@ -386,25 +405,25 @@ export class Inbox {
         contextWithEmbeddings,
         formatContentStep,
         Action.FORMATTING,
-        Action.ERROR_FORMATTING
+        Action.ERROR_FORMATTING,
       );
       await executeStep(
         contextWithEmbeddings,
         appendAttachmentStep,
         Action.APPEND,
-        Action.ERROR_APPEND
+        Action.ERROR_APPEND,
       );
       await safeExecuteStep(
         contextWithEmbeddings,
         recommendTagsStep,
         Action.TAGGING,
-        Action.ERROR_TAGGING
+        Action.ERROR_TAGGING,
       );
       await executeStep(
         contextWithEmbeddings,
         completeProcessing,
         Action.COMPLETED,
-        Action.ERROR_COMPLETE
+        Action.ERROR_COMPLETE,
       );
     } catch (error) {
       await handleError(error, context);
@@ -413,14 +432,14 @@ export class Inbox {
   }
 }
 async function moveAttachmentFile(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   if (VALID_MEDIA_EXTENSIONS.includes(context.inboxFile.extension)) {
     context.attachmentFile = context.inboxFile;
     const newPath = await safeMove(
       context.plugin.app,
       context.inboxFile,
-      context.plugin.settings.attachmentsPath
+      context.plugin.settings.attachmentsPath,
     );
     const movedFile = context.plugin.app.vault.getAbstractFileByPath(newPath);
     if (movedFile instanceof TFile) {
@@ -432,14 +451,14 @@ async function moveAttachmentFile(
 }
 
 async function getContainerFileStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   logger.info("Get container file step");
   if (VALID_MEDIA_EXTENSIONS.includes(context.inboxFile?.extension)) {
     const containerFile = await safeCreate(
       context.plugin.app,
       context.inboxFile.basename + ".md",
-      ""
+      "",
     );
     context.containerFile = containerFile;
   } else {
@@ -451,7 +470,7 @@ async function getContainerFileStep(
 }
 
 async function hasValidFileStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   // check if file is valid
   logger.info("Has valid file step");
@@ -464,18 +483,18 @@ async function hasValidFileStep(
 }
 
 async function recommendNameStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   if (!context.content || !context.containerFile) {
     logger.info(
-      "Skipping name recommendation: missing content or container file"
+      "Skipping name recommendation: missing content or container file",
     );
     return context;
   }
 
   const newName = await context.plugin.recommendName(
     getOriginalContent(context.content),
-    context.containerFile.basename
+    context.containerFile.basename,
   );
   context.newName = newName[0]?.title;
 
@@ -496,7 +515,7 @@ async function recommendNameStep(
 }
 
 async function recommendFolderWithEmbeddingsStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   if (!context.plugin.settings.enableVectorAutoSort) return context;
   const client = context.plugin.vertexBrainClient;
@@ -516,7 +535,7 @@ async function recommendFolderWithEmbeddingsStep(
       if (note.folder_path && note.similarity > 0.5) {
         folderCounts.set(
           note.folder_path,
-          (folderCounts.get(note.folder_path) ?? 0) + note.similarity
+          (folderCounts.get(note.folder_path) ?? 0) + note.similarity,
         );
       }
     }
@@ -537,10 +556,7 @@ async function recommendFolderWithEmbeddingsStep(
       }));
 
     // 5. Rank candidates
-    const ranked = await client.rank(
-      contentSample.slice(0, 1500),
-      candidates
-    );
+    const ranked = await client.rank(contentSample.slice(0, 1500), candidates);
     if (!ranked.length) return context;
 
     const best = ranked[0];
@@ -548,7 +564,7 @@ async function recommendFolderWithEmbeddingsStep(
     // 6. Context-aware threshold selection
     const isInGeneral = context.inboxFile.path.includes("/General/");
     const isInProjects = context.inboxFile.path.includes(
-      `/${context.plugin.settings.projectsPath}/`
+      `/${context.plugin.settings.projectsPath}/`,
     );
 
     let threshold = context.plugin.settings.autoSortConfidenceThreshold;
@@ -564,11 +580,11 @@ async function recommendFolderWithEmbeddingsStep(
     context.newPath = best.title;
     context.recordManager.setFolder(context.hash, best.title);
     logger.info(
-      `[Embeddings] Auto-sorted to ${best.title} (score: ${best.score.toFixed(2)})`
+      `[Embeddings] Auto-sorted to ${best.title} (score: ${best.score.toFixed(2)})`,
     );
   } catch (e) {
     logger.warn(
-      `[Embeddings] Folder routing failed, falling back to model: ${e}`
+      `[Embeddings] Folder routing failed, falling back to model: ${e}`,
     );
   }
 
@@ -576,29 +592,34 @@ async function recommendFolderWithEmbeddingsStep(
 }
 
 async function recommendFolderStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   assertInvariant(
     !!context.content,
-    "Content must be available before folder recommendation"
+    "Content must be available before folder recommendation",
   );
   assertInvariant(
     !!context.containerFile,
-    "Container file must exist before moving"
+    "Container file must exist before moving",
   );
 
   if (!context.content || !context.containerFile) {
     logger.info(
-      "Skipping folder recommendation: missing content or container file"
+      "Skipping folder recommendation: missing content or container file",
     );
     return context;
   }
 
   // Skip auto-sort if file is #pinned
-  const cache = context.plugin.app.metadataCache.getFileCache(context.containerFile);
-  const inlineTags = cache?.tags?.map(t => t.tag.replace('#', '')) || [];
+  const cache = context.plugin.app.metadataCache.getFileCache(
+    context.containerFile,
+  );
+  const inlineTags = cache?.tags?.map(t => t.tag.replace("#", "")) || [];
   const frontmatterTags = cache?.frontmatter?.tags || [];
-  const allTags = [...inlineTags, ...(Array.isArray(frontmatterTags) ? frontmatterTags : [frontmatterTags])];
+  const allTags = [
+    ...inlineTags,
+    ...(Array.isArray(frontmatterTags) ? frontmatterTags : [frontmatterTags]),
+  ];
   if (allTags.includes(context.plugin.settings.pinnedTag)) {
     logger.info("Skipping folder recommendation: file has #pinned tag");
     return context;
@@ -609,12 +630,12 @@ async function recommendFolderStep(
 
   const newPath = await context.plugin.recommendFolders(
     originalContent,
-    context.inboxFile.basename
+    context.inboxFile.basename,
   );
 
   assertInvariant(
     !!newPath?.[0]?.folder,
-    "Folder recommendation must return a valid path"
+    "Folder recommendation must return a valid path",
   );
 
   context.newPath = newPath[0]?.folder;
@@ -627,13 +648,13 @@ async function recommendFolderStep(
 }
 
 async function recommendClassificationStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   // Validate required context
   const validation = validateContext(context, ["content", "containerFile"]);
   if (!validation.isValid) {
     throw new Error(
-      `Classification step validation failed: ${validation.reason}`
+      `Classification step validation failed: ${validation.reason}`,
     );
   }
 
@@ -645,7 +666,7 @@ async function recommendClassificationStep(
 
   const result = await context.plugin.classifyContentV2(
     `${getOriginalContent(context.content)}, ${context.containerFile.name}`,
-    templateNames
+    templateNames,
   );
   logger.info("Classification result", result);
   if (!result) return context;
@@ -667,13 +688,13 @@ async function recommendClassificationStep(
 // Pipeline processing steps
 
 async function startProcessing(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   return context;
 }
 
 async function getContentStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   const fileToRead = context.inboxFile;
   const content = await context.plugin.getTextFromFile(fileToRead);
@@ -690,7 +711,7 @@ async function getContentStep(
 }
 
 async function cleanupStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   try {
     // Early return if no content
@@ -725,7 +746,7 @@ async function cleanupStep(
 // New helper function to handle bypassing
 async function handleBypass(
   context: ProcessingContext,
-  reason: string
+  reason: string,
 ): Promise<void> {
   try {
     logger.info("Bypassing file", context.inboxFile);
@@ -737,7 +758,7 @@ async function handleBypass(
     if (context.plugin.settings.enableProcessingNotifications) {
       new Notice(
         `⚠️ Bypassed: ${fileName}\nReason: ${reason}\nLocation: ${bypassedFolderPath}`,
-        5000
+        5000,
       );
     }
 
@@ -754,7 +775,7 @@ async function handleBypass(
 }
 
 async function formatContentStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   if (!context.classification) {
     logger.info("Skipping formatting: no classification available");
@@ -797,7 +818,7 @@ async function formatContentStep(
 
   try {
     const instructions = await context.plugin.getTemplateInstructions(
-      context.classification.documentType
+      context.classification.documentType,
     );
 
     if (!instructions) {
@@ -828,7 +849,7 @@ async function formatContentStep(
   }
 }
 async function findSimilarTagsFromEmbeddings(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<string[]> {
   const client = context.plugin.vertexBrainClient;
   if (!client) return [];
@@ -836,7 +857,7 @@ async function findSimilarTagsFromEmbeddings(
   try {
     const similar = await client.vectorSearch(
       context.content?.slice(0, 2000) ?? "",
-      15
+      15,
     );
     const tagCounts = new Map<string, number>();
     for (const note of similar) {
@@ -856,12 +877,12 @@ async function findSimilarTagsFromEmbeddings(
 }
 
 async function recommendTagsStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   const existingTags = await context.plugin.getAllVaultTags();
   if (!context.content || !context.containerFile) {
     logger.info(
-      "Skipping tag recommendation: missing content or container file"
+      "Skipping tag recommendation: missing content or container file",
     );
     return context;
   }
@@ -875,7 +896,7 @@ async function recommendTagsStep(
   const tags = await context.plugin.recommendTags(
     context.content,
     context.containerFile.path,
-    existingTags
+    existingTags,
   );
   const modelTags = tags?.map(t => t.tag) ?? [];
   context.tags = [...new Set([...(context.tags ?? []), ...modelTags])];
@@ -887,13 +908,13 @@ async function recommendTagsStep(
   return context;
 }
 async function appendAttachmentStep(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   if (context.attachmentFile && context.containerFile) {
     // Preserve a reference to the source attachment for container-based flows
     const link = context.plugin.app.fileManager.generateMarkdownLink(
       context.attachmentFile,
-      context.containerFile.parent?.path ?? ""
+      context.containerFile.parent?.path ?? "",
     );
     await context.plugin.app.vault.append(context.containerFile, `\n\n${link}`);
   }
@@ -901,7 +922,7 @@ async function appendAttachmentStep(
 }
 
 async function completeProcessing(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<ProcessingContext> {
   context.recordManager.setStatus(context.hash, "completed");
   return context;
@@ -911,7 +932,7 @@ async function completeProcessing(
 
 async function handleError(
   error: any,
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<void> {
   const lastError = context.recordManager.getLastError(context.hash);
 
@@ -924,7 +945,8 @@ async function handleError(
   context.recordManager.setStatus(context.hash, "error");
 
   const fileName = context.inboxFile.basename;
-  const errorMessage = lastError?.error?.message || error.message || "Unknown error";
+  const errorMessage =
+    lastError?.error?.message || error.message || "Unknown error";
   const errorAction = lastError?.action;
 
   // Determine destination folder and error type
@@ -956,7 +978,7 @@ async function handleError(
     const formattedMessage = formatErrorMessage(errorAction, errorMessage);
     new Notice(
       `❌ Error: ${fileName}\n${errorType}: ${formattedMessage}\nLocation: ${destinationFolder}`,
-      6000
+      6000,
     );
   }
 }
@@ -966,18 +988,18 @@ async function moveToBackupFolder(context: ProcessingContext): Promise<void> {
   await safeMove(
     context.plugin.app,
     context.inboxFile,
-    context.plugin.settings.backupFolderPath
+    context.plugin.settings.backupFolderPath,
   );
 }
 
 // Helper functions for file operations
 async function moveFileToErrorFolder(
-  context: ProcessingContext
+  context: ProcessingContext,
 ): Promise<void> {
   await safeMove(
     context.plugin.app,
     context.inboxFile,
-    context.plugin.settings.errorFilePath
+    context.plugin.settings.errorFilePath,
   );
 }
 
@@ -1022,10 +1044,7 @@ export function getActionDisplayName(action: Action): string {
   return actionMap[action] || action.toString();
 }
 
-function formatErrorMessage(
-  action: Action,
-  errorMessage: string
-): string {
+function formatErrorMessage(action: Action, errorMessage: string): string {
   // Map technical error actions to user-friendly descriptions
   const actionMap: Record<string, string> = {
     [Action.ERROR_MOVING]: "Failed to move file",
@@ -1046,9 +1065,10 @@ function formatErrorMessage(
 
   // Truncate long error messages
   const maxLength = 100;
-  const truncatedMessage = errorMessage.length > maxLength
-    ? errorMessage.substring(0, maxLength) + "..."
-    : errorMessage;
+  const truncatedMessage =
+    errorMessage.length > maxLength
+      ? errorMessage.substring(0, maxLength) + "..."
+      : errorMessage;
 
   return `${userFriendlyAction}: ${truncatedMessage}`;
 }
@@ -1072,7 +1092,7 @@ function calculateProgress(record: FileRecord): number {
 
   // Count completed steps (excluding skipped)
   const completedSteps = Object.values(record.logs).filter(
-    (log) => log.completed && !log.skipped
+    log => log.completed && !log.skipped,
   ).length;
 
   return Math.round((completedSteps / totalSteps) * 100);
@@ -1082,7 +1102,7 @@ async function executeStep(
   context: ProcessingContext,
   step: (context: ProcessingContext) => Promise<ProcessingContext>,
   action: Action,
-  errorAction: Action
+  errorAction: Action,
 ): Promise<ProcessingContext> {
   try {
     if (shouldSkipAction(context, action)) {
@@ -1112,12 +1132,12 @@ async function executeStep(
 
       // Calculate queue position and progress
       const allRecords = context.recordManager.getAllRecords();
-      const processingFiles = allRecords.filter((r) => r.status === "processing");
-      const queuedFiles = allRecords.filter((r) => r.status === "queued");
+      const processingFiles = allRecords.filter(r => r.status === "processing");
+      const queuedFiles = allRecords.filter(r => r.status === "queued");
 
       // Calculate queue position for current file
       const currentFileIndex = processingFiles.findIndex(
-        (r) => r.id === context.hash
+        r => r.id === context.hash,
       );
       const queuePosition =
         currentFileIndex >= 0
@@ -1135,7 +1155,7 @@ async function executeStep(
       const progressInfo = progress > 0 ? ` - ${progress}%` : "";
       new Notice(
         `📄 ${fileName}: ${actionName}${queueInfo}${progressInfo}`,
-        3000
+        3000,
       );
 
       context.plugin.app.workspace.trigger("zenith-ai:processing-step", {
@@ -1158,7 +1178,7 @@ async function executeStep(
       // Find the corresponding "DONE" action if it exists
       const doneActionKey = `${action.toString()}_DONE`;
       const doneAction = Object.values(Action).find(
-        a => a.toString() === doneActionKey
+        a => a.toString() === doneActionKey,
       );
 
       if (doneAction) {
@@ -1189,12 +1209,14 @@ async function safeExecuteStep(
   context: ProcessingContext,
   step: (context: ProcessingContext) => Promise<ProcessingContext>,
   action: Action,
-  errorAction: Action
+  errorAction: Action,
 ): Promise<ProcessingContext> {
   try {
     return await executeStep(context, step, action, errorAction);
   } catch (error) {
-    logger.warn(`Optional step ${action} failed, continuing pipeline: ${error.message}`);
+    logger.warn(
+      `Optional step ${action} failed, continuing pipeline: ${error.message}`,
+    );
     return context;
   }
 }

@@ -1,48 +1,82 @@
-import React, { useState } from 'react';
-import type ZenithAI from '../../index';
-import { DEFAULT_SETTINGS } from '../../settings';
+import React, { useState } from "react";
+import type ZenithAI from "../../index";
+import { DEFAULT_SETTINGS } from "../../settings";
 import {
   ToggleSetting,
   TextInputSetting,
   TextAreaSetting,
   DropdownSetting,
   handleSettingChange,
-} from './components';
+} from "./components";
 
 interface CustomizationTabProps {
   plugin: InstanceType<typeof ZenithAI>;
 }
 
-export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) => {
-  const [enableFileRenaming, setEnableFileRenaming] = useState(plugin.settings.enableFileRenaming);
-  const [renameInstructions, setRenameInstructions] = useState(plugin.settings.renameInstructions);
-  const [useSimilarTags, setUseSimilarTags] = useState(plugin.settings.useSimilarTags);
-  const [useSimilarTagsInFrontmatter, setUseSimilarTagsInFrontmatter] = useState(plugin.settings.useSimilarTagsInFrontmatter);
-  const [customFolderInstructions, setCustomFolderInstructions] = useState(plugin.settings.customFolderInstructions);
-  const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
-  const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
-  const [vertexBrainUrl, setVertexBrainUrl] = useState(plugin.settings.vertexBrainUrl ?? "");
-  const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
-  const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
-  const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath ?? "");
-  const [formatBehavior, setFormatBehavior] = useState(plugin.settings.formatBehavior || DEFAULT_SETTINGS.formatBehavior);
-  const [enableProcessingNotifications, setEnableProcessingNotifications] = useState(plugin.settings.enableProcessingNotifications ?? true);
-  const [generalMergeThreshold, setGeneralMergeThreshold] = useState(plugin.settings.generalMergeThreshold ?? 0.50);
-  const [globalMergeThreshold, setGlobalMergeThreshold] = useState(plugin.settings.globalMergeThreshold ?? 0.70);
-  const [pinnedTag, setPinnedTag] = useState(plugin.settings.pinnedTag ?? "pinned");
-  const [projectsPath, setProjectsPath] = useState(plugin.settings.projectsPath ?? "Projects");
-  const [backgroundScribeOutputFile, setBackgroundScribeOutputFile] = useState(plugin.settings.backgroundScribeOutputFile ?? "TODO.md");
+export const CustomizationTab: React.FC<CustomizationTabProps> = ({
+  plugin,
+}) => {
+  const [enableFileRenaming, setEnableFileRenaming] = useState(
+    plugin.settings.enableFileRenaming,
+  );
+  const [renameInstructions, setRenameInstructions] = useState(
+    plugin.settings.renameInstructions,
+  );
+  const [useSimilarTags, setUseSimilarTags] = useState(
+    plugin.settings.useSimilarTags,
+  );
+  const [useSimilarTagsInFrontmatter, setUseSimilarTagsInFrontmatter] =
+    useState(plugin.settings.useSimilarTagsInFrontmatter);
+  const [customFolderInstructions, setCustomFolderInstructions] = useState(
+    plugin.settings.customFolderInstructions,
+  );
+  const [enableDocumentClassification, setEnableDocumentClassification] =
+    useState(plugin.settings.enableDocumentClassification);
+  const [customTagInstructions, setCustomTagInstructions] = useState(
+    plugin.settings.customTagInstructions,
+  );
+  const [vertexBrainUrl, setVertexBrainUrl] = useState(
+    plugin.settings.vertexBrainUrl ?? "",
+  );
+  const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(
+    plugin.settings.enableVectorAutoSort ?? false,
+  );
+  const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] =
+    useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
+  const [organizationRulesPath, setOrganizationRulesPath] = useState(
+    plugin.settings.organizationRulesPath ?? "",
+  );
+  const [formatBehavior, setFormatBehavior] = useState(
+    plugin.settings.formatBehavior || DEFAULT_SETTINGS.formatBehavior,
+  );
+  const [enableProcessingNotifications, setEnableProcessingNotifications] =
+    useState(plugin.settings.enableProcessingNotifications ?? true);
+  const [generalMergeThreshold, setGeneralMergeThreshold] = useState(
+    plugin.settings.generalMergeThreshold ?? 0.5,
+  );
+  const [globalMergeThreshold, setGlobalMergeThreshold] = useState(
+    plugin.settings.globalMergeThreshold ?? 0.7,
+  );
+  const [pinnedTag, setPinnedTag] = useState(
+    plugin.settings.pinnedTag ?? "pinned",
+  );
+  const [projectsPath, setProjectsPath] = useState(
+    plugin.settings.projectsPath ?? "Projects",
+  );
+  const [backgroundScribeOutputFile, setBackgroundScribeOutputFile] = useState(
+    plugin.settings.backgroundScribeOutputFile ?? "TODO.md",
+  );
 
   const handleNumberChange = async (
     value: number,
     setter: React.Dispatch<React.SetStateAction<number>>,
     settingKey: keyof typeof plugin.settings,
-    options?: { min?: number; max?: number }
+    options?: { min?: number; max?: number },
   ) => {
     if (!Number.isFinite(value)) return;
     const nextValue = Math.min(
       options?.max ?? Infinity,
-      Math.max(options?.min ?? -Infinity, value)
+      Math.max(options?.min ?? -Infinity, value),
     );
     setter(nextValue);
     // nosemgrep: detect-object-injection
@@ -54,11 +88,15 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
     <div className="p-4 space-y-8">
       {/* Inbox Processing Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">Inbox Processing</h3>
+        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">
+          Inbox Processing
+        </h3>
         <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
           <div className="text-xs text-[var(--text-dim)] opacity-70">
-            These settings control how new files are automatically handled when they enter your vault through the inbox.
-            Enable or disable automatic processing features and configure how the AI should handle your incoming documents.
+            These settings control how new files are automatically handled when
+            they enter your vault through the inbox. Enable or disable automatic
+            processing features and configure how the AI should handle your
+            incoming documents.
           </div>
         </div>
         <div className="space-y-4">
@@ -66,58 +104,101 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Inbox Auto-Renaming"
             description="Automatically rename new files when they are processed through the inbox."
             value={enableFileRenaming}
-            onChange={(value) => handleSettingChange(plugin, value, setEnableFileRenaming, 'enableFileRenaming')}
+            onChange={value =>
+              handleSettingChange(
+                plugin,
+                value,
+                setEnableFileRenaming,
+                "enableFileRenaming",
+              )
+            }
           />
           <ToggleSetting
             name="Inbox Auto-Formatting"
             description="Automatically format new documents when they match a template category during inbox processing."
             value={enableDocumentClassification}
-            onChange={(value) => handleSettingChange(plugin, value, setEnableDocumentClassification, 'enableDocumentClassification')}
+            onChange={value =>
+              handleSettingChange(
+                plugin,
+                value,
+                setEnableDocumentClassification,
+                "enableDocumentClassification",
+              )
+            }
           />
           <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-elevation-md">
-            <div className="font-medium text-[var(--text-normal)] mb-2">Document Type Templates</div>
+            <div className="font-medium text-[var(--text-normal)] mb-2">
+              Document Type Templates
+            </div>
             <div className="text-xs text-[var(--text-dim)] opacity-70">
-              To enable auto-formatting, create template files in the Zenith-AI template folder.
-              Name each file according to its document type (e.g., 'workout.md', 'meeting-notes.md').
-              The content of each file should contain the formatting instructions.
-              You can manage these templates through the AI sidebar.
+              To enable auto-formatting, create template files in the Zenith-AI
+              template folder. Name each file according to its document type
+              (e.g., 'workout.md', 'meeting-notes.md'). The content of each file
+              should contain the formatting instructions. You can manage these
+              templates through the AI sidebar.
             </div>
           </div>
           <ToggleSetting
             name="Inbox Similar Tags"
             description="Automatically append similar tags to new files during inbox processing."
             value={useSimilarTags}
-            onChange={(value) => handleSettingChange(plugin, value, setUseSimilarTags, 'useSimilarTags')}
+            onChange={value =>
+              handleSettingChange(
+                plugin,
+                value,
+                setUseSimilarTags,
+                "useSimilarTags",
+              )
+            }
           />
           <ToggleSetting
             name="Processing Notifications"
             description="Show toast notifications during inbox file processing (bypass, error, and progress notices)."
             value={enableProcessingNotifications}
-            onChange={(value) => handleSettingChange(plugin, value, setEnableProcessingNotifications, 'enableProcessingNotifications')}
+            onChange={value =>
+              handleSettingChange(
+                plugin,
+                value,
+                setEnableProcessingNotifications,
+                "enableProcessingNotifications",
+              )
+            }
           />
         </div>
       </section>
 
       {/* General Settings Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">General Settings</h3>
+        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">
+          General Settings
+        </h3>
         <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
           <div className="text-xs text-[var(--text-dim)] opacity-70">
-            Configure how Zenith-AI behaves across your vault. These settings affect both manual operations
-            and provide the base configuration for inbox processing. Customize naming conventions, tagging behavior,
+            Configure how Zenith-AI behaves across your vault. These settings
+            affect both manual operations and provide the base configuration for
+            inbox processing. Customize naming conventions, tagging behavior,
             and folder organization to match your workflow.
           </div>
         </div>
 
         {/* File Naming subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">File Naming</h4>
+          <h4 className="font-medium text-[var(--text-normal)] mb-2">
+            File Naming
+          </h4>
           <div className="space-y-4">
             <TextAreaSetting
               name="Rename Instructions"
               description="Instructions for how files should be renamed based on their content."
               value={renameInstructions}
-              onChange={(value) => handleSettingChange(plugin, value, setRenameInstructions, 'renameInstructions')}
+              onChange={value =>
+                handleSettingChange(
+                  plugin,
+                  value,
+                  setRenameInstructions,
+                  "renameInstructions",
+                )
+              }
             />
           </div>
         </div>
@@ -130,40 +211,67 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               name="Use Frontmatter"
               description="Add similar tags in frontmatter instead of inline."
               value={useSimilarTagsInFrontmatter}
-              onChange={(value) => handleSettingChange(plugin, value, setUseSimilarTagsInFrontmatter, 'useSimilarTagsInFrontmatter')}
+              onChange={value =>
+                handleSettingChange(
+                  plugin,
+                  value,
+                  setUseSimilarTagsInFrontmatter,
+                  "useSimilarTagsInFrontmatter",
+                )
+              }
             />
             <TextAreaSetting
               name="Tag Generation Instructions"
               description="Custom instructions for generating tags for your notes."
               value={customTagInstructions}
-              onChange={(value) => handleSettingChange(plugin, value, setCustomTagInstructions, 'customTagInstructions')}
+              onChange={value =>
+                handleSettingChange(
+                  plugin,
+                  value,
+                  setCustomTagInstructions,
+                  "customTagInstructions",
+                )
+              }
             />
           </div>
         </div>
 
         {/* Folder Section */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">Folder Organization</h4>
+          <h4 className="font-medium text-[var(--text-normal)] mb-2">
+            Folder Organization
+          </h4>
           <div className="space-y-4">
             <TextAreaSetting
               name="Custom Folder Determination Instructions"
               description="Provide custom instructions for determining which folders to place your notes in."
               value={customFolderInstructions}
-              onChange={(value) => handleSettingChange(plugin, value, setCustomFolderInstructions, 'customFolderInstructions')}
+              onChange={value =>
+                handleSettingChange(
+                  plugin,
+                  value,
+                  setCustomFolderInstructions,
+                  "customFolderInstructions",
+                )
+              }
             />
             <TextInputSetting
               name="Pinned Tag"
               description="Files with this tag will be excluded from auto-sort. Leave empty to disable."
               value={pinnedTag}
               placeholder="pinned"
-              onChange={(value) => handleSettingChange(plugin, value, setPinnedTag, 'pinnedTag')}
+              onChange={value =>
+                handleSettingChange(plugin, value, setPinnedTag, "pinnedTag")
+              }
             />
           </div>
         </div>
 
         {/* Formatting subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">Formatting</h4>
+          <h4 className="font-medium text-[var(--text-normal)] mb-2">
+            Formatting
+          </h4>
           <div className="space-y-4">
             <DropdownSetting
               name="Format Behavior"
@@ -174,18 +282,38 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
                 { value: "newFile", label: "New File" },
                 { value: "append", label: "Append" },
               ]}
-              onChange={(value) => handleSettingChange(plugin, value as "override" | "newFile" | "append", setFormatBehavior, 'formatBehavior')}
+              onChange={value =>
+                handleSettingChange(
+                  plugin,
+                  value as "override" | "newFile" | "append",
+                  setFormatBehavior,
+                  "formatBehavior",
+                )
+              }
             />
           </div>
         </div>
-
       </section>
 
       {/* Vault Intelligence Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--text-accent)" }}>Vault Intelligence</h3>
-        <div className="rounded-lg mb-4 p-4" style={{ background: "var(--bg-depth-3)", border: "1px solid var(--border-defined)" }}>
-          <div className="text-xs opacity-70" style={{ color: "var(--text-dim)" }}>
+        <h3
+          className="text-lg font-semibold mb-4"
+          style={{ color: "var(--text-accent)" }}
+        >
+          Vault Intelligence
+        </h3>
+        <div
+          className="rounded-lg mb-4 p-4"
+          style={{
+            background: "var(--bg-depth-3)",
+            border: "1px solid var(--border-defined)",
+          }}
+        >
+          <div
+            className="text-xs opacity-70"
+            style={{ color: "var(--text-dim)" }}
+          >
             Semantic auto-sorting powered by your Vertex AI Brain
           </div>
         </div>
@@ -195,7 +323,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             description="URL of your Vertex AI Brain gateway (leave empty to disable)"
             value={vertexBrainUrl}
             placeholder="http://localhost:8085"
-            onChange={async (value) => {
+            onChange={async value => {
               setVertexBrainUrl(value);
               (plugin.settings.vertexBrainUrl as string) = value;
               await plugin.saveSettings();
@@ -205,7 +333,14 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             name="Enable Vector Auto-Sort"
             description="Automatically route General files using semantic embeddings"
             value={enableVectorAutoSort}
-            onChange={(value) => handleSettingChange(plugin, value, setEnableVectorAutoSort, 'enableVectorAutoSort')}
+            onChange={value =>
+              handleSettingChange(
+                plugin,
+                value,
+                setEnableVectorAutoSort,
+                "enableVectorAutoSort",
+              )
+            }
           />
           <NumberInputSetting
             name="Auto-Sort Confidence Threshold"
@@ -214,7 +349,14 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={(value) => handleNumberChange(value, setAutoSortConfidenceThreshold, 'autoSortConfidenceThreshold', { min: 0, max: 1 })}
+            onChange={value =>
+              handleNumberChange(
+                value,
+                setAutoSortConfidenceThreshold,
+                "autoSortConfidenceThreshold",
+                { min: 0, max: 1 },
+              )
+            }
           />
           <NumberInputSetting
             name="General Merge Threshold"
@@ -223,7 +365,14 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={(value) => handleNumberChange(value, setGeneralMergeThreshold, 'generalMergeThreshold', { min: 0, max: 1 })}
+            onChange={value =>
+              handleNumberChange(
+                value,
+                setGeneralMergeThreshold,
+                "generalMergeThreshold",
+                { min: 0, max: 1 },
+              )
+            }
           />
           <NumberInputSetting
             name="Global Merge Threshold"
@@ -232,16 +381,35 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={(value) => handleNumberChange(value, setGlobalMergeThreshold, 'globalMergeThreshold', { min: 0, max: 1 })}
+            onChange={value =>
+              handleNumberChange(
+                value,
+                setGlobalMergeThreshold,
+                "globalMergeThreshold",
+                { min: 0, max: 1 },
+              )
+            }
           />
           <TextInputSetting
             name="Projects Path"
             description="Root folder used for project detection during auto-sort and Background Scribe. Default: Projects"
             value={projectsPath}
             placeholder="Projects"
-            onChange={(value) => {
-              const sanitized = value.trim().replace(/^\/+|\/+$/g, '') || 'Projects';
-              handleSettingChange(plugin, sanitized, setProjectsPath, 'projectsPath');
+            onChange={value => {
+              // Don't sanitize during typing - just update state
+              setProjectsPath(value);
+            }}
+            onBlur={async () => {
+              // Sanitize on blur/save
+              const sanitized =
+                projectsPath.trim().replace(/^\/+|\/+$/g, "") || "Projects";
+              setProjectsPath(sanitized);
+              await handleSettingChange(
+                plugin,
+                sanitized,
+                setProjectsPath,
+                "projectsPath",
+              );
             }}
           />
           <TextInputSetting
@@ -249,7 +417,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             description="Path to the note that defines your Cosmic Vault Structure"
             value={organizationRulesPath}
             placeholder="System/Cosmic Vault Structure.md"
-            onChange={async (value) => {
+            onChange={async value => {
               setOrganizationRulesPath(value);
               (plugin.settings.organizationRulesPath as string) = value;
               await plugin.saveSettings();
@@ -260,10 +428,26 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
 
       {/* Background Scribe Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--text-accent)" }}>Background Scribe</h3>
-        <div className="rounded-lg mb-4 p-4" style={{ background: "var(--bg-depth-3)", border: "1px solid var(--border-defined)" }}>
-          <div className="text-xs opacity-70" style={{ color: "var(--text-dim)" }}>
-            Background Scribe buffers chat conversations and synthesizes actionable TODO items into a file. Toggle it on/off from the AI chat panel.
+        <h3
+          className="text-lg font-semibold mb-4"
+          style={{ color: "var(--text-accent)" }}
+        >
+          Background Scribe
+        </h3>
+        <div
+          className="rounded-lg mb-4 p-4"
+          style={{
+            background: "var(--bg-depth-3)",
+            border: "1px solid var(--border-defined)",
+          }}
+        >
+          <div
+            className="text-xs opacity-70"
+            style={{ color: "var(--text-dim)" }}
+          >
+            Background Scribe buffers chat conversations and synthesizes
+            actionable TODO items into a file. Toggle it on/off from the AI chat
+            panel.
           </div>
         </div>
         <div className="space-y-4">
@@ -272,9 +456,22 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             description="File path where Background Scribe writes synthesized TODO items. Default: TODO.md"
             value={backgroundScribeOutputFile}
             placeholder="TODO.md"
-            onChange={(value) => {
-              const sanitized = value.trim().replace(/^\/+|\/+$/g, '') || 'TODO.md';
-              handleSettingChange(plugin, sanitized, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile');
+            onChange={value => {
+              // Don't sanitize during typing - just update state
+              setBackgroundScribeOutputFile(value);
+            }}
+            onBlur={async () => {
+              // Sanitize on blur/save
+              const sanitized =
+                backgroundScribeOutputFile.trim().replace(/^\/+|\/+$/g, "") ||
+                "TODO.md";
+              setBackgroundScribeOutputFile(sanitized);
+              await handleSettingChange(
+                plugin,
+                sanitized,
+                setBackgroundScribeOutputFile,
+                "backgroundScribeOutputFile",
+              );
             }}
           />
         </div>
@@ -293,17 +490,32 @@ interface NumberInputSettingProps {
   onChange: (value: number) => void;
 }
 
-const NumberInputSetting: React.FC<NumberInputSettingProps> = ({ name, description, value, min, max, step, onChange }) => (
+const NumberInputSetting: React.FC<NumberInputSettingProps> = ({
+  name,
+  description,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+}) => (
   <div className="py-2">
-    <div className="font-medium" style={{ color: "var(--text-normal)" }}>{name}</div>
-    <div className="text-xs mb-1 opacity-75" style={{ color: "var(--text-dim)" }}>{description}</div>
+    <div className="font-medium" style={{ color: "var(--text-normal)" }}>
+      {name}
+    </div>
+    <div
+      className="text-xs mb-1 opacity-75"
+      style={{ color: "var(--text-dim)" }}
+    >
+      {description}
+    </div>
     <input
       type="number"
       value={value}
       min={min}
       max={max}
       step={step}
-      onChange={(e) => onChange(parseFloat(e.target.value))}
+      onChange={e => onChange(parseFloat(e.target.value))}
       className="w-24 px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
     />
   </div>
