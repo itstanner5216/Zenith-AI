@@ -1252,6 +1252,7 @@ export default class ZenithAI extends Plugin {
       }
       if (!this.backgroundScribe) {
         this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
+        this.backgroundScribe.activate();
       }
     } else {
       this.backgroundScribe?.deactivate();
