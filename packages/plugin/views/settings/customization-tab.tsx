@@ -88,11 +88,11 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     <div className="p-4 space-y-8">
       {/* Inbox Processing Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">
+        <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">
           Inbox Processing
         </h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
-          <div className="text-xs text-[var(--text-dim)] opacity-70">
+        <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="text-xs text-[#45aaff] opacity-70">
             These settings control how new files are automatically handled when
             they enter your vault through the inbox. Enable or disable automatic
             processing features and configure how the AI should handle your
@@ -126,11 +126,11 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
               )
             }
           />
-          <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mt-2 border border-[var(--border-defined)] shadow-elevation-md">
-            <div className="font-medium text-[var(--text-normal)] mb-2">
+          <div className="bg-[#191621] p-4 rounded-lg mt-2 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <div className="font-medium text-[#bebebe] mb-2">
               Document Type Templates
             </div>
-            <div className="text-xs text-[var(--text-dim)] opacity-70">
+            <div className="text-xs text-[#45aaff] opacity-70">
               To enable auto-formatting, create template files in the Zenith-AI
               template folder. Name each file according to its document type
               (e.g., 'workout.md', 'meeting-notes.md'). The content of each file
@@ -169,11 +169,11 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
       {/* General Settings Section */}
       <section>
-        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">
+        <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">
           General Settings
         </h3>
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
-          <div className="text-xs text-[var(--text-dim)] opacity-70">
+        <div className="bg-[#191621] p-4 rounded-lg mb-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="text-xs text-[#45aaff] opacity-70">
             Configure how Zenith-AI behaves across your vault. These settings
             affect both manual operations and provide the base configuration for
             inbox processing. Customize naming conventions, tagging behavior,
@@ -183,7 +183,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
         {/* File Naming subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">
+          <h4 className="font-medium text-[#bebebe] mb-2">
             File Naming
           </h4>
           <div className="space-y-4">
@@ -205,7 +205,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
         {/* Tags subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">Tags</h4>
+          <h4 className="font-medium text-[#bebebe] mb-2">Tags</h4>
           <div className="space-y-4">
             <ToggleSetting
               name="Use Frontmatter"
@@ -238,7 +238,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
         {/* Folder Section */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">
+          <h4 className="font-medium text-[#bebebe] mb-2">
             Folder Organization
           </h4>
           <div className="space-y-4">
@@ -269,7 +269,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
         {/* Formatting subsection */}
         <div className="mb-6">
-          <h4 className="font-medium text-[var(--text-normal)] mb-2">
+          <h4 className="font-medium text-[#bebebe] mb-2">
             Formatting
           </h4>
           <div className="space-y-4">
@@ -297,23 +297,11 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
       {/* Vault Intelligence Section */}
       <section>
-        <h3
-          className="text-lg font-semibold mb-4"
-          style={{ color: "var(--text-accent)" }}
-        >
+        <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">
           Vault Intelligence
         </h3>
-        <div
-          className="rounded-lg mb-4 p-4"
-          style={{
-            background: "var(--bg-depth-3)",
-            border: "1px solid var(--border-defined)",
-          }}
-        >
-          <div
-            className="text-xs opacity-70"
-            style={{ color: "var(--text-dim)" }}
-          >
+        <div className="bg-[#191621] rounded-lg mb-4 p-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="text-xs text-[#45aaff] opacity-70">
             Semantic auto-sorting powered by your Vertex AI Brain
           </div>
         </div>
@@ -428,23 +416,11 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
       {/* Background Scribe Section */}
       <section>
-        <h3
-          className="text-lg font-semibold mb-4"
-          style={{ color: "var(--text-accent)" }}
-        >
+        <h3 className="text-lg font-semibold mb-4 text-[#0fb6d6]">
           Background Scribe
         </h3>
-        <div
-          className="rounded-lg mb-4 p-4"
-          style={{
-            background: "var(--bg-depth-3)",
-            border: "1px solid var(--border-defined)",
-          }}
-        >
-          <div
-            className="text-xs opacity-70"
-            style={{ color: "var(--text-dim)" }}
-          >
+        <div className="bg-[#191621] rounded-lg mb-4 p-4 border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          <div className="text-xs text-[#45aaff] opacity-70">
             Background Scribe buffers chat conversations and synthesizes
             actionable TODO items into a file. Toggle it on/off from the AI chat
             panel.
@@ -500,13 +476,10 @@ const NumberInputSetting: React.FC<NumberInputSettingProps> = ({
   onChange,
 }) => (
   <div className="py-2">
-    <div className="font-medium" style={{ color: "var(--text-normal)" }}>
+    <div className="font-medium text-[#bebebe]">
       {name}
     </div>
-    <div
-      className="text-xs mb-1 opacity-75"
-      style={{ color: "var(--text-dim)" }}
-    >
+    <div className="text-xs text-[#45aaff] mb-1 opacity-75">
       {description}
     </div>
     <input
@@ -516,7 +489,7 @@ const NumberInputSetting: React.FC<NumberInputSettingProps> = ({
       max={max}
       step={step}
       onChange={e => onChange(parseFloat(e.target.value))}
-      className="w-24 px-3 py-2 text-xs rounded-md bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
+      className="w-24 px-3 py-2 text-xs rounded-md bg-[#0d0b12] text-[#bebebe] border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
     />
   </div>
 );

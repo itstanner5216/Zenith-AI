@@ -3,6 +3,8 @@ import { Notice } from "obsidian";
 import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
 import { UsageStats } from "../../components/usage-stats";
+import { TopUpCredits } from "../../views/settings/top-up-credits";
+import { AccountData } from "./account-data";
 import { validateApiKey } from "../../apiUtils";
 import { FREE_TIER_TOKEN_LIMIT } from "../../constants";
 
@@ -121,7 +123,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
     switch (keyStatus) {
       case "valid":
         return (
-          <div className="flex items-center text-[var(--text-accent)] text-sm" style={{ textShadow: '0 0 8px rgba(14,210,247,0.4)' }}>
+          <div className="flex items-center text-[#0fb6d6] text-sm" style={{ textShadow: '0 0 8px rgba(14,210,247,0.4)' }}>
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -140,7 +142,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "invalid":
         return (
-          <div className="flex items-center text-[var(--text-sub-accent)] text-sm">
+          <div className="flex items-center text-[#f4569d] text-sm">
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -159,9 +161,9 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "checking":
         return (
-          <div className="flex items-center text-[var(--text-dim)] text-sm">
+          <div className="flex items-center text-[#45aaff] text-sm">
             <svg
-              className="w-4 h-4 mr-1.5 animate-spin zenith-spinner-glow"
+              className="w-4 h-4 mr-1.5 animate-spin"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -189,13 +191,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">
+            <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">
               Zenith-AI License Key
             </h3>
-            <p className="text-xs text-[var(--text-dim)] opacity-70 mb-4">
+            <p className="text-xs text-[#45aaff] opacity-70 mb-4">
               Enter your license key to activate Zenith-AI.
             </p>
           </div>
@@ -204,12 +206,12 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                className={`flex-1 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-40 ${
+                className={`flex-1 bg-[#0d0b12] text-[#bebebe] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40 ${
                   keyStatus === "valid"
-                    ? "border-[var(--text-accent)] shadow-glow-cyan-sm"
+                    ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
                     : keyStatus === "invalid" || validationError
-                    ? "border-[var(--text-sub-accent)] shadow-glow-pink-sm"
-                    : "border-[var(--border-defined)] focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[var(--glow-cyan-sm)]"
+                    ? "border-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
+                    : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
                 }`}
                 placeholder="Enter your license key"
                 value={licenseKey}
@@ -218,13 +220,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               <button
                 onClick={handleActivate}
                 disabled={!licenseKey || !!validationError}
-                className="bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)]"
+                className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)]"
               >
                 Activate
               </button>
             </div>
             {validationError && (
-              <div className="text-sm text-[var(--text-sub-accent)] mt-1">
+              <div className="text-sm text-[#f4569d] mt-1">
                 {validationError}
               </div>
             )}
@@ -234,44 +236,41 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
       </div>
 
       {/* Usage Stats Section - Always visible */}
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
-        <h3 className="text-lg font-semibold mb-2 mt-0 text-[var(--text-accent)]">Usage Statistics</h3>
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">Usage Statistics</h3>
         {isLoadingUsage ? (
           <div className="flex items-center justify-center p-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--border-accent)] border-t-[var(--text-accent)]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[rgba(14,210,247,0.2)] border-t-[#0fb6d6]" style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}></div>
           </div>
         ) : usageData ? (
           <div className="space-y-3">
             <div className="relative pt-1">
               <div className="flex mb-2 items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold inline-block text-[var(--text-normal)]">
+                  <span className="text-xs font-semibold inline-block text-[#bebebe]">
                     Token Usage
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-semibold inline-block text-[var(--text-normal)]">
+                  <span className="text-xs font-semibold inline-block text-[#bebebe]">
                     {usageData.tokenUsage.toLocaleString()} /{" "}
                     {usageData.maxTokenUsage.toLocaleString()}
                   </span>
                 </div>
               </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
+              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)' }}>
                 <div
                   style={{
                     width: `${Math.min(
                       100,
                       (usageData.tokenUsage / usageData.maxTokenUsage) * 100
                     )}%`,
-                    background: usageData.tokenUsage > usageData.maxTokenUsage * 0.9
-                      ? 'linear-gradient(90deg, var(--text-sub-accent), rgba(244,86,157,0.7))'
-                      : 'linear-gradient(90deg, var(--text-accent), var(--interactive-accent-rgb))',
-                    boxShadow: usageData.tokenUsage > usageData.maxTokenUsage * 0.9
-                      ? '0 0 8px rgba(244,86,157,0.4)'
-                      : '0 0 8px rgba(14,210,247,0.4)',
-                    transition: 'width 0.5s ease-out',
                   }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap justify-center rounded-full"
+                  className={`shadow-none flex flex-col text-center whitespace-nowrap text-[#0d0b12] justify-center ${
+                    usageData.tokenUsage > usageData.maxTokenUsage * 0.9
+                      ? "bg-[#f4569d]"
+                      : "bg-[#0fb6d6]"
+                  }`}
                 ></div>
               </div>
             </div>
@@ -280,43 +279,41 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               <div className="relative pt-1">
                 <div className="flex mb-2 items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold inline-block text-[var(--text-normal)]">
+                    <span className="text-xs font-semibold inline-block text-[#bebebe]">
                       Audio Transcription
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs font-semibold inline-block text-[var(--text-normal)]">
+                    <span className="text-xs font-semibold inline-block text-[#bebebe]">
                       {(usageData.audioTranscriptionMinutes || 0).toFixed(1)} /{" "}
                       {usageData.maxAudioTranscriptionMinutes} min
                     </span>
                   </div>
                 </div>
-              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[var(--bg-depth-1)] border border-[var(--border-defined)]" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)' }}>
-                <div
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      ((usageData.audioTranscriptionMinutes || 0) /
-                        usageData.maxAudioTranscriptionMinutes) *
-                        100
-                    )}%`,
-                    background: (usageData.audioTranscriptionMinutes || 0) > usageData.maxAudioTranscriptionMinutes * 0.9
-                      ? 'linear-gradient(90deg, var(--text-sub-accent), rgba(244,86,157,0.7))'
-                      : 'linear-gradient(90deg, var(--text-accent), var(--interactive-accent-rgb))',
-                    boxShadow: (usageData.audioTranscriptionMinutes || 0) > usageData.maxAudioTranscriptionMinutes * 0.9
-                      ? '0 0 8px rgba(244,86,157,0.4)'
-                      : '0 0 8px rgba(14,210,247,0.4)',
-                    transition: 'width 0.5s ease-out',
-                  }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap justify-center rounded-full"
-                ></div>
-              </div>
+                <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-[rgba(14,210,247,0.08)]">
+                  <div
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        ((usageData.audioTranscriptionMinutes || 0) /
+                          usageData.maxAudioTranscriptionMinutes) *
+                          100
+                      )}%`,
+                    }}
+                    className={`shadow-none flex flex-col text-center whitespace-nowrap text-[#0d0b12] justify-center ${
+                      (usageData.audioTranscriptionMinutes || 0) >
+                      usageData.maxAudioTranscriptionMinutes * 0.9
+                        ? "bg-[#f4569d]"
+                        : "bg-[#0fb6d6]"
+                    }`}
+                  ></div>
+                </div>
               </div>
             )}
-            <div className="text-sm text-[var(--text-dim)]">
+            <div className="text-sm text-[#45aaff]">
               <p>
                 Plan:{" "}
-                <span className="font-medium text-[var(--text-accent)]">
+                <span className="font-medium text-[#0fb6d6]">
                   {usageData.currentPlan || "Free"}
                 </span>
               </p>
@@ -325,8 +322,8 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 <span
                   className={`font-medium ${
                     usageData.subscriptionStatus === "active"
-                      ? "text-[var(--text-accent)]"
-                      : "text-[var(--text-warning)]"
+                      ? "text-[#0fb6d6]"
+                      : "text-[#ffb74d]"
                   }`}
                   style={usageData.subscriptionStatus !== "active" ? { textShadow: '0 0 8px rgba(255,183,77,0.3)' } : undefined}
                 >
@@ -340,13 +337,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               usageData.maxAudioTranscriptionMinutes > 0 &&
               usageData.audioTranscriptionMinutes >=
                 usageData.maxAudioTranscriptionMinutes && (
-                <div className="mt-2 p-3 bg-[rgba(244,86,157,0.1)] rounded text-[var(--text-sub-accent)] text-sm border border-[rgba(244,86,157,0.2)]">
+                <div className="mt-2 p-3 bg-[rgba(244,86,157,0.1)] rounded text-[#f4569d] text-sm border border-[rgba(244,86,157,0.2)]">
                   Audio transcription quota reached. Please upgrade your plan or
                   wait for the next billing cycle.
                 </div>
               )}
             {usageData && usageData.tokenUsage >= usageData.maxTokenUsage && (
-              <div className="mt-2 p-3 bg-[rgba(244,86,157,0.1)] rounded text-[var(--text-sub-accent)] text-sm border border-[rgba(244,86,157,0.2)]">
+              <div className="mt-2 p-3 bg-[rgba(244,86,157,0.1)] rounded text-[#f4569d] text-sm border border-[rgba(244,86,157,0.2)]">
                 {usageData.maxTokenUsage === FREE_TIER_TOKEN_LIMIT ? (
                   <>
                     <strong>Token limit reached!</strong> You've used all your
@@ -369,7 +366,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             )}
           </div>
         ) : (
-          <p className="text-sm text-[var(--text-dim)] opacity-70">
+          <p className="text-sm text-[#45aaff] opacity-70">
             {!plugin.settings.API_KEY
               ? "Please enter a license key to see usage statistics."
               : keyStatus === "invalid"
@@ -384,7 +381,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="mt-4">
               <button
                 onClick={() => plugin.openUpgradePlanModal()}
-                className="w-full bg-[var(--text-accent)] text-[var(--bg-depth-1)] px-4 py-2 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 shadow-[0_0_12px_rgba(14,210,247,0.25)] hover:shadow-[0_0_18px_rgba(14,210,247,0.4)]"
+                className="w-full bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 shadow-[0_0_12px_rgba(14,210,247,0.25)] hover:shadow-[0_0_18px_rgba(14,210,247,0.4)]"
               >
                 Upgrade Plan
               </button>
@@ -392,12 +389,26 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
           )}
       </div>
 
+      <AccountData
+        plugin={plugin}
+        onLicenseKeyChange={handleLicenseKeyChange}
+      />
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
-        <h3 className="text-lg font-semibold mb-4 mt-0 text-[var(--text-accent)]">Quick Tutorial</h3>
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <h3 className="text-lg font-semibold mb-4 mt-0 text-[#0fb6d6]">Quick Tutorial</h3>
+        <div className="youtube-embed">
+          <iframe
+            width="100%"
+            height="315"
+            src="https://www.youtube.com/embed/X4yN4ykTJIo?si=QoMN-wNZSo1woQcB"
+            style={{ border: "none" }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       </div>
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <p className="zenith-ai-support-text mb-4">
           Zenith-AI is an open-source initiative. If you find it valuable,
           please{" "}
@@ -405,18 +416,18 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             href="https://notecompanion.ai/?utm_source=obsidian&utm_medium=in-app&utm_campaign=support-us"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)] transition-colors duration-150"
+            className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]"
           >
             consider supporting us
           </a>{" "}
           to help improve and maintain the project. 🙏
         </p>
-        <p className="text-[var(--text-dim)]">
+        <p className="text-[#45aaff]">
           <a
             href="https://discord.gg/UWH53WqFuE"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--text-accent)] hover:text-[rgba(14,210,247,0.7)] transition-colors duration-150"
+            className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)]"
           >
             Need help? Ask me on Discord.
           </a>

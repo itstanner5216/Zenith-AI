@@ -68,10 +68,8 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
 
   return (
     <div className="p-4 space-y-6">
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
-        <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">
-          Logging & Debug
-        </h3>
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">Logging & Debug</h3>
         <ToggleSetting
           name="Zenith-AI File Logs"
           description="Allows you to keep track of the changes made by file Organizer."
@@ -80,7 +78,6 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             handleSettingChange(plugin, value, setUseLogs, "useLogs")
           }
         />
-
         <ToggleSetting
           name="Debug Mode"
           description="Enable detailed logging for troubleshooting. This may impact performance."
@@ -92,17 +89,14 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         />
       </div>
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
-        <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">
-          Self-Hosting
-        </h3>
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">Self-Hosting</h3>
         <ToggleSetting
           name="Enable Self-Hosting"
           description="Run Zenith AI on your own infrastructure with your OpenAI API key. Keep disabled if you use the cloud subscription."
           value={enableSelfHosting}
           onChange={value => handleToggleChange(value)}
         />
-
         {enableSelfHosting && (
           <div className="setting-item">
             <div className="setting-item-info">
@@ -114,7 +108,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                 placeholder="Enter your Server URL"
                 value={selfHostingURL}
                 onChange={e => handleURLChange(e.target.value)}
-                className="w-full bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150 placeholder:text-[var(--text-dim)] placeholder:opacity-60"
+                className="w-full bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-3 py-1.5 focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40"
               />
             </div>
           </div>
@@ -122,13 +116,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
       </div>
 
       {useLogs && (
-        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-2">
+        <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-2">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-[var(--text-normal)]">
-                View Logs
-              </div>
-              <div className="text-sm text-[var(--text-dim)]">
+              <div className="font-medium text-[#bebebe]">View Logs</div>
+              <div className="text-sm text-[#45aaff]">
                 {logger.getLogs().length} log entries available
               </div>
             </div>
@@ -167,7 +159,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                       className="w-[--icon-size] h-[--icon-size]"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="var(--text-dim)"
+                      stroke="#45aaff"
                       strokeWidth="2"
                     >
                       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -187,7 +179,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                       className="w-[--icon-size] h-[--icon-size]"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="var(--text-dim)"
+                      stroke="#45aaff"
                       strokeWidth="2"
                     >
                       <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -205,7 +197,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                   className="w-[--icon-size] h-[--icon-size]"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="var(--text-dim)"
+                  stroke="#45aaff"
                   strokeWidth="2"
                 >
                   {showLogs ? (
@@ -219,27 +211,27 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
           </div>
           {showLogs && (
             <div
-              className="max-h-96 overflow-y-auto border border-[var(--border-defined)] rounded p-2 bg-[var(--bg-depth-1)] select-text"
+              className="max-h-96 overflow-y-auto border border-[rgba(14,210,247,0.08)] rounded p-2 bg-[#0d0b12] select-text"
               style={{ userSelect: "text", WebkitUserSelect: "text" }}
             >
               {logger.getLogs().length === 0 ? (
-                <div className="text-sm text-[var(--text-dim)] py-4 text-center">
+                <div className="text-sm text-[#45aaff] py-4 text-center">
                   No logs available. Enable Debug Mode to start logging.
                 </div>
               ) : (
                 logger.getLogs().map((log, index) => (
                   <div
                     key={index}
-                    className={`py-1 border-b border-[var(--border-defined)] last:border-0 select-text ${
+                    className={`py-1 border-b border-[rgba(14,210,247,0.08)] last:border-0 select-text ${
                       log.level === "error"
-                        ? "text-[var(--text-sub-accent)]"
+                        ? "text-[#f4569d]"
                         : log.level === "warn"
-                          ? "text-[var(--text-warning)]"
-                          : "text-[var(--text-normal)]"
+                          ? "text-[#ffb74d]"
+                          : "text-[#bebebe]"
                     }`}
                     style={{ userSelect: "text", WebkitUserSelect: "text" }}
                   >
-                    <span className="text-[var(--text-dim)] text-xs">
+                    <span className="text-[#45aaff] text-xs">
                       {new Date(log.timestamp).toLocaleString()}
                     </span>{" "}
                     <span className="font-medium">
@@ -247,7 +239,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                     </span>{" "}
                     {log.message}
                     {log.details && (
-                      <pre className="text-xs mt-1 text-[var(--text-dim)] whitespace-pre-wrap break-words select-text">
+                      <pre className="text-xs mt-1 text-[#45aaff] whitespace-pre-wrap break-words select-text">
                         {log.details}
                       </pre>
                     )}
@@ -259,8 +251,8 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         </div>
       )}
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
-        <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">
           Performance Limits
         </h3>
         <div className="setting-item">
@@ -286,7 +278,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                   plugin.saveSettings();
                 }
               }}
-              className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
+              className="w-24 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
             />
           </div>
         </div>
@@ -315,12 +307,12 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                   plugin.saveSettings();
                 }
               }}
-              className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
+              className="w-24 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
             />
           </div>
         </div>
 
-        <div className="flex items-center justify-between py-2.5 border-b border-[var(--border-subtle)] last:border-b-0">
+        <div className="flex items-center justify-between py-2.5 border-b border-[rgba(14,210,247,0.06)] last:border-b-0">
           <div className="setting-item-info">
             <div className="setting-item-name">PDF Page Cutoff</div>
             <div className="setting-item-description">
@@ -341,14 +333,14 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
                   plugin.saveSettings();
                 }
               }}
-              className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--interactive-accent)] focus:ring-1 focus:ring-[var(--interactive-accent)] transition-all duration-150"
+              className="w-24 bg-[#0d0b12] text-[#bebebe] text-xs border border-[rgba(14,210,247,0.12)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] transition-all duration-150"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg border border-[var(--border-defined)] shadow-elevation-md space-y-3">
-        <h3 className="text-lg font-semibold mb-3 mt-0 text-[var(--text-accent)]">
+      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
+        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">
           Chat Features
         </h3>
         <ToggleSetting
