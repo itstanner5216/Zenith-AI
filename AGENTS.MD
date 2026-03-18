@@ -1,15 +1,15 @@
-# Note Companion - AI Agents Development Guide
+# Zenith-AI — AI Agents Development Guide
 
 ## Overview
 
-This document provides comprehensive guidance for AI agents (like Claude, GPT-4, etc.) working on the Note Companion codebase. It contains critical architectural decisions, code patterns, and development workflows that must be understood before making changes.
+This document provides comprehensive guidance for AI agents (like Claude, GPT-4, etc.) working on the Zenith-AI codebase. It contains critical architectural decisions, code patterns, and development workflows that must be understood before making changes.
 
 ---
 
 ## Project Architecture
 
 ### Core Philosophy
-Note Companion is a **document transcription and organization system** that bridges analog and digital content. The primary goal is to help users effortlessly convert physical/analog materials (handwritten notes, PDFs, voice memos) into searchable, organized digital text within their Obsidian vault.
+Zenith-AI is a **document transcription and organization system** that bridges analog and digital content. The primary goal is to help users effortlessly convert physical/analog materials (handwritten notes, PDFs, voice memos) into searchable, organized digital text within their Obsidian vault.
 
 ### Package Structure
 
@@ -518,7 +518,7 @@ const allToolCalls = steps.flatMap(step => step.toolCalls);
 
 **Architecture:** Hybrid approach with **server-defined, client-executed tools**
 
-- **Frontend:** Inside Obsidian plugin (`packages/plugin/views/ai-chat/`)
+- **Frontend:** Inside Obsidian plugin (`packages/plugin/views/assistant/ai-chat/`)
 - **Backend:** Web application APIs
 - **Communication:** Streaming via Vercel AI SDK
 - **Tool Execution:** **Local** (client-side) with Obsidian API access
@@ -1267,7 +1267,7 @@ const agent = {
 
 ### Plugin
 - `packages/plugin/index.ts` - Main plugin file
-- `packages/plugin/views/ai-chat/` - Chat interface
+- `packages/plugin/views/assistant/ai-chat/` - Chat interface
 - `packages/plugin/components/ui/` - UI components
 - `packages/plugin/handlers/` - Event handlers
 
@@ -1363,6 +1363,6 @@ export async function POST(req: NextRequest) {
 
 **Last Updated:** 2025-01-22
 
-**Maintained by:** Note Companion Development Team
+**Maintained by:** Zenith-AI Development Team
 
 **For bugs and issues:** See tutorials/bugs.md
