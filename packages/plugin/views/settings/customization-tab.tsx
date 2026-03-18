@@ -275,7 +275,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             value={backgroundScribeOutputFile}
             placeholder="TODO.md"
             onChange={(value) => {
-              const sanitized = value.trim().replace(/^\/+/, '') || 'TODO.md';
+              const sanitized = value.trim().replace(/^\/+|\/+$/g, '') || 'TODO.md';
               handleTextChange(sanitized, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile');
             }}
           />
