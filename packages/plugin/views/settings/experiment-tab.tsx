@@ -140,12 +140,14 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
               description="Automatically buffer chat turns and synthesize actionable TODO items into a configured output file. Requires Vertex Brain to be available."
               value={backgroundScribeEnabled}
               onChange={async value => {
-                await handleToggleChange(
-                  value,
-                  setBackgroundScribeEnabled,
-                  "backgroundScribeEnabled"
-                );
-                plugin.toggleBackgroundScribe(value);
+                const succeeded = plugin.toggleBackgroundScribe(value);
+                if (succeeded) {
+                  await handleToggleChange(
+                    value,
+                    setBackgroundScribeEnabled,
+                    "backgroundScribeEnabled"
+                  );
+                }
               }}
             />
           </div>

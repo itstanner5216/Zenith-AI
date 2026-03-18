@@ -1098,6 +1098,7 @@ export default class ZenithAI extends Plugin {
         // Initialize BackgroundScribe only when user has enabled it
         if (this.settings.backgroundScribeEnabled) {
           this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
+          this.backgroundScribe.activate();
         }
       } else {
         console.warn("[ZenithAI] Vertex Brain unavailable, vector auto-sort disabled");
@@ -1244,19 +1245,21 @@ export default class ZenithAI extends Plugin {
     await this.saveData(this.settings);
   }
 
-  toggleBackgroundScribe(enabled: boolean): void {
+  toggleBackgroundScribe(enabled: boolean): boolean {
     if (enabled) {
       if (!this.vertexBrainClient) {
         console.warn("[ZenithAI] Background Scribe requires Vertex Brain — enable Vertex Brain first");
-        return;
+        return false;
       }
       if (!this.backgroundScribe) {
         this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
         this.backgroundScribe.activate();
       }
+      return true;
     } else {
       this.backgroundScribe?.deactivate();
       this.backgroundScribe = null;
+      return true;
     }
   }
 

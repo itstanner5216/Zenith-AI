@@ -299,11 +299,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             min="100"
             max="10000"
             value={contentCutoffChars}
-            onChange={e => {
+            onChange={async e => {
               const value = parseInt(e.target.value);
               setContentCutoffChars(value);
               plugin.settings.contentCutoffChars = value;
-              plugin.saveSettings();
+              await plugin.saveSettings();
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -326,11 +326,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             max="500000"
             step="1000"
             value={maxFormattingTokens}
-            onChange={e => {
+            onChange={async e => {
               const value = parseInt(e.target.value);
               setMaxFormattingTokens(value);
               plugin.settings.maxFormattingTokens = value;
-              plugin.saveSettings();
+              await plugin.saveSettings();
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -350,11 +350,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             min="1"
             max="500"
             value={pdfPageLimit}
-            onChange={e => {
+            onChange={async e => {
               const value = parseInt(e.target.value, 10);
               setPdfPageLimit(value);
               plugin.settings.pdfPageLimit = value;
-              plugin.saveSettings();
+              await plugin.saveSettings();
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
