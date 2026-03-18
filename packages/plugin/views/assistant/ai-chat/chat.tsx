@@ -90,6 +90,13 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const app = plugin.app;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [scribeActive, setScribeActive] = useState(false);
+  const [hasScribe, setHasScribe] = useState(() => !!plugin.backgroundScribe);
+
+  useEffect(() => {
+    const handler = () => setHasScribe(!!plugin.backgroundScribe);
+    const ref = app.workspace.on("zenith-ai:background-scribe-changed" as any, handler);
+    return () => app.workspace.offref(ref);
+  }, [app.workspace, plugin]);
 
   // Chat history manager instance
   const chatHistoryManager = useMemo(
@@ -2141,7 +2148,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 maxContextSize={maxContextSize}
               />
               {/* Removed SearchToggle - search grounding now auto-triggered by tools */}
-              {plugin.backgroundScribe && (
+              {hasScribe && (
                 <button
                   onClick={toggleScribe}
                   className={tw(

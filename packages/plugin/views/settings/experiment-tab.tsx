@@ -141,7 +141,7 @@ export const ExperimentTab: React.FC<ExperimentTabProps> = ({ plugin }) => {
               value={backgroundScribeEnabled}
               onChange={async value => {
                 const succeeded = plugin.toggleBackgroundScribe(value);
-                if (succeeded) {
+                if (succeeded || !value) {
                   await handleToggleChange(
                     value,
                     setBackgroundScribeEnabled,

@@ -1255,10 +1255,12 @@ export default class ZenithAI extends Plugin {
         this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
         this.backgroundScribe.activate();
       }
+      this.app.workspace.trigger("zenith-ai:background-scribe-changed" as any);
       return true;
     } else {
       this.backgroundScribe?.deactivate();
       this.backgroundScribe = null;
+      this.app.workspace.trigger("zenith-ai:background-scribe-changed" as any);
       return true;
     }
   }
