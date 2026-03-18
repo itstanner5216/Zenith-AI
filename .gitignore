@@ -64,3 +64,6 @@ tsconfig.tsbuildinfo
 .github/hooks/logs/
 
 .worktrees/
+AGENTS.md
+.gitignore
+public/_piny/piny.phone.js
