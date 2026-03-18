@@ -13,12 +13,13 @@ export function ProjectContextTab() {
   const [lastQuery, setLastQuery] = useState<string>("");
 
   const detectProjectFromPath = useCallback((filePath: string): string | null => {
+    if (!plugin.settings.autoDetectProjectContext) return null;
     const projectsPath = plugin.settings.projectsPath;
     if (!projectsPath) return null;
     const escapedPath = projectsPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const match = filePath.match(new RegExp(`${escapedPath}/([^/]+)`));
     return match ? match[1] : null;
-  }, [plugin.settings.projectsPath]);
+  }, [plugin.settings.projectsPath, plugin.settings.autoDetectProjectContext]);
 
   const updateContext = useCallback(async (conversationSummary: string, activeFile: TFile | null) => {
     if (!plugin.vertexBrainClient) return;

@@ -876,7 +876,9 @@ async function recommendTagsStep(
     context.containerFile.path,
     existingTags
   );
-  const modelTags = tags?.map(t => t.tag) ?? [];
+  const modelTags = tags
+    ?.filter(t => t.score >= context.plugin.settings.tagScoreThreshold)
+    .map(t => t.tag) ?? [];
   context.tags = [...new Set([...(context.tags ?? []), ...modelTags])];
   // for each tag, append it to the file
   if (context.tags && context.containerFile) {

@@ -21,7 +21,6 @@ export class ZenithAISettings {
 
   renameInstructions =
     "If document has a human readable name, use it. Otherwise, create a concise, descriptive name for the document based on its key content. Prioritize clarity and searchability, using specific terms that will make the document easy to find later. Avoid generic words and focus on unique, identifying elements.";
-  usePro = true;
   useSimilarTagsInFrontmatter = false;
   enableAtomicNotes = false;
   ignoreFolders = [""];
@@ -45,8 +44,6 @@ export class ZenithAISettings {
   contentCutoffChars = 1000;
   // use to prevent formatting of big file
   maxFormattingTokens = 100 * 1000;
-
-  maxChatTokens = 100 * 1000;
   customTagInstructions =
     "Generate tags that capture the main topics, themes, and type of content in the document. Focus on specific, meaningful tags that will help with organization and retrieval.";
   hasRunOnboarding = false;

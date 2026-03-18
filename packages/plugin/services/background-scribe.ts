@@ -85,6 +85,7 @@ export class BackgroundScribe {
   }
 
   private detectProject(filePath: string): string | null {
+    if (!this.plugin.settings.autoDetectProjectContext) return null;
     const projectsPath = this.plugin.settings.projectsPath;
     const match = filePath.match(new RegExp(`${projectsPath}/([^/]+)`));
     return match ? match[1] : null;

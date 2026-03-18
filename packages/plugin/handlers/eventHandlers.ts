@@ -13,6 +13,7 @@ function isInInboxFolder(filePath: string, pathToWatch: string): boolean {
 export function registerEventHandlers(plugin: ZenithAI) {
   plugin.registerEvent(
     plugin.app.vault.on("create", async file => {
+      if (!plugin.settings.useInbox) return;
       await new Promise(resolve => setTimeout(resolve, 100));
       if (!isInInboxFolder(file.path, plugin.settings.pathToWatch)) return;
       if (file instanceof TFile) {
@@ -24,6 +25,7 @@ export function registerEventHandlers(plugin: ZenithAI) {
 
   plugin.registerEvent(
     plugin.app.vault.on("rename", async (file, _oldPath) => {
+      if (!plugin.settings.useInbox) return;
       await new Promise(resolve => setTimeout(resolve, 100));
       if (!isInInboxFolder(file.path, plugin.settings.pathToWatch)) return;
       if (file instanceof TFile) {
@@ -36,6 +38,7 @@ export function registerEventHandlers(plugin: ZenithAI) {
   plugin.registerEvent(
     plugin.app.vault.on("modify", (file) => {
       if (!(file instanceof TFile)) return;
+      if (!plugin.settings.useInbox) return;
       if (!isInInboxFolder(file.path, plugin.settings.pathToWatch)) return;
       if (!VALID_MEDIA_EXTENSIONS.includes(file.extension)) return;
       Inbox.getInstance().enqueueFiles([file]);

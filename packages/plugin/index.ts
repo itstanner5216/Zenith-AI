@@ -807,6 +807,7 @@ export default class ZenithAI extends Plugin {
     return pendingFiles;
   }
   async processBacklog() {
+    if (!this.settings.useInbox) return;
     const pendingFiles = await this.getBacklog();
     logMessage("Enqueuing files from backlog V3");
     Inbox.getInstance().enqueueFiles(pendingFiles);
@@ -1074,7 +1075,7 @@ export default class ZenithAI extends Plugin {
   async onload() {
     this.inbox = Inbox.initialize(this);
     await this.initializePlugin();
-    logger.configure(this.settings.debugMode);
+    logger.configure(this.settings.useLogs || this.settings.debugMode);
 
     await this.saveSettings();
     await ensureFolderExists(this.app, this.settings.logFolderPath);
@@ -1094,8 +1095,10 @@ export default class ZenithAI extends Plugin {
         this.vaultIndexer.indexAll().catch((e) =>
           console.debug("[VaultIndexer] Initial index failed:", e)
         );
-        // Initialize BackgroundScribe (activated only via explicit UI toggle)
-        this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
+        // Initialize BackgroundScribe only when user has enabled it
+        if (this.settings.backgroundScribeEnabled) {
+          this.backgroundScribe = new BackgroundScribe(this, this.vertexBrainClient);
+        }
       } else {
         console.warn("[ZenithAI] Vertex Brain unavailable, vector auto-sort disabled");
         this.vertexBrainClient = null;
@@ -1341,17 +1344,31 @@ export default class ZenithAI extends Plugin {
     const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
 
     const customInstructions = this.settings.renameInstructions;
+
+    const requestBody: Record<string, unknown> = {
+      content: trimmedContent,
+      fileName: fileName,
+      customInstructions,
+    };
+
+    if (this.settings.useVaultTitles) {
+      const MAX_VAULT_TITLE_SAMPLES = 20;
+      const allFiles = this.app.vault.getMarkdownFiles();
+      const sampleTitles = allFiles
+        .slice(0, MAX_VAULT_TITLE_SAMPLES)
+        .map(f => f.basename);
+      if (sampleTitles.length > 0) {
+        requestBody.vaultTitles = sampleTitles;
+      }
+    }
+
     const response = await fetch(`${this.getServerUrl()}/api/title/v2`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.settings.API_KEY}`,
       },
-      body: JSON.stringify({
-        content: trimmedContent,
-        fileName: fileName,
-        customInstructions,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {

@@ -16,6 +16,9 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   );
   const [useLogs, setUseLogs] = useState(plugin.settings.useLogs);
   const [debugMode, setDebugMode] = useState(plugin.settings.debugMode);
+  const [enableProcessingNotifications, setEnableProcessingNotifications] = useState(
+    plugin.settings.enableProcessingNotifications
+  );
   const [showLogs, setShowLogs] = useState(false);
   const [contentCutoffChars, setContentCutoffChars] = useState(
     plugin.settings.contentCutoffChars
@@ -33,11 +36,13 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     setDebugMode(plugin.settings.debugMode);
     setEnableSelfHosting(plugin.settings.enableSelfHosting);
     setSelfHostingURL(plugin.settings.selfHostingURL);
+    setEnableProcessingNotifications(plugin.settings.enableProcessingNotifications);
   }, [
     plugin.settings.useLogs,
     plugin.settings.debugMode,
     plugin.settings.enableSelfHosting,
     plugin.settings.selfHostingURL,
+    plugin.settings.enableProcessingNotifications,
   ]);
 
   const handleToggleChange = async (value: boolean) => {
@@ -62,6 +67,7 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         value={useLogs}
         onChange={value => {
           setUseLogs(value);
+          logger.configure(value || plugin.settings.debugMode);
           plugin.settings.useLogs = value;
           plugin.saveSettings();
         }}
@@ -73,8 +79,19 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         value={debugMode}
         onChange={value => {
           setDebugMode(value);
-          logger.configure(value);
+          logger.configure(plugin.settings.useLogs || value);
           plugin.settings.debugMode = value;
+          plugin.saveSettings();
+        }}
+      />
+
+      <ToggleSetting
+        name="Processing Notifications"
+        description="Show toast notifications while files are being processed through the inbox."
+        value={enableProcessingNotifications}
+        onChange={value => {
+          setEnableProcessingNotifications(value);
+          plugin.settings.enableProcessingNotifications = value;
           plugin.saveSettings();
         }}
       />
