@@ -45,6 +45,12 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
     await plugin.saveSettings();
   };
 
+  const handleNumberChange = async (value: number, setter: React.Dispatch<React.SetStateAction<number>>, settingKey: keyof typeof plugin.settings) => {
+    setter(value);
+    (plugin.settings[settingKey] as number) = value;
+    await plugin.saveSettings();
+  };
+
   return (
     <div className="p-4 space-y-8">
       {/* Inbox Processing Section */}
@@ -157,11 +163,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               description="Files with this tag will be excluded from auto-sort. Leave empty to disable."
               value={pinnedTag}
               placeholder="pinned"
-              onChange={async (value) => {
-                setPinnedTag(value);
-                (plugin.settings.pinnedTag as string) = value;
-                await plugin.saveSettings();
-              }}
+              onChange={(value) => handleTextChange(value, setPinnedTag, 'pinnedTag')}
             />
           </div>
         </div>
@@ -214,11 +216,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={async (value) => {
-              setGeneralMergeThreshold(value);
-              (plugin.settings.generalMergeThreshold as number) = value;
-              await plugin.saveSettings();
-            }}
+            onChange={(value) => handleNumberChange(value, setGeneralMergeThreshold, 'generalMergeThreshold')}
           />
           <NumberInputSetting
             name="Global Merge Threshold"
@@ -227,22 +225,14 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             min={0}
             max={1}
             step={0.05}
-            onChange={async (value) => {
-              setGlobalMergeThreshold(value);
-              (plugin.settings.globalMergeThreshold as number) = value;
-              await plugin.saveSettings();
-            }}
+            onChange={(value) => handleNumberChange(value, setGlobalMergeThreshold, 'globalMergeThreshold')}
           />
           <TextInputSetting
             name="Projects Path"
             description="Root folder used for project detection during auto-sort and Background Scribe. Default: Projects"
             value={projectsPath}
             placeholder="Projects"
-            onChange={async (value) => {
-              setProjectsPath(value);
-              (plugin.settings.projectsPath as string) = value;
-              await plugin.saveSettings();
-            }}
+            onChange={(value) => handleTextChange(value, setProjectsPath, 'projectsPath')}
           />
           <TextInputSetting
             name="Cosmic Vault Structure Path"
@@ -272,11 +262,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             description="File path where Background Scribe writes synthesized TODO items. Default: TODO.md"
             value={backgroundScribeOutputFile}
             placeholder="TODO.md"
-            onChange={async (value) => {
-              setBackgroundScribeOutputFile(value);
-              (plugin.settings.backgroundScribeOutputFile as string) = value;
-              await plugin.saveSettings();
-            }}
+            onChange={(value) => handleTextChange(value, setBackgroundScribeOutputFile, 'backgroundScribeOutputFile')}
           />
         </div>
       </section>
