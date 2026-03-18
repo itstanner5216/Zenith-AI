@@ -151,7 +151,7 @@ export async function generateRelationships(
   files: { name: string }[],
   model: LanguageModel
 ) {
-  const modelName = model.modelId;
+  const modelName = typeof model === 'string' ? model : (model as { modelId: string }).modelId;
 
   const response = await generateObject({
     model: model as any, // Type cast for AI SDK v2 compatibility
@@ -208,7 +208,7 @@ export async function extractTextFromImage(
   image: ArrayBuffer,
   model: LanguageModel
 ): Promise<string> {
-  const modelName = model.modelId;
+  const modelName = typeof model === 'string' ? model : (model as { modelId: string }).modelId;
 
   const messages = [
     {

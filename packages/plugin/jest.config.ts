@@ -34,7 +34,11 @@ const config: Config.InitialOptions = {
   testTimeout: 30000, // 30 seconds
 
   // Ignore patterns
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/services/patch-engine/testing/',
+  ],
 };
 
 export default config;

@@ -6,13 +6,6 @@ jest.mock('obsidian', () => ({
   ...jest.requireActual('../../__mocks__/obsidian'),
 }));
 
-jest.mock('../services/youtube-service', () => ({
-  extractYouTubeVideoId: jest.fn(),
-  getYouTubeContent: jest.fn(),
-  getOriginalContent: jest.fn(),
-  YouTubeError: class YouTubeError extends Error {},
-}));
-
 import { Inbox } from '../index';
 import { DEFAULT_SETTINGS } from '../../settings';
 

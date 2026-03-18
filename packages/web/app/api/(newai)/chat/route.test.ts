@@ -6,33 +6,28 @@ import { POST } from './route';
 jest.mock('ai', () => {
   return {
     streamText: jest.fn().mockImplementation(async (options: any) => {
-      const mockResult = {
-        mergeIntoDataStream: jest.fn(async (dataStream: any) => {
-          // Simulate streaming some data
-          dataStream.writeData('test response');
-
-          // If onFinish callback exists, call it synchronously (it will be awaited)
-          if (options?.onFinish) {
-            // Simulate sources for search mode
-            if (options?.tools?.web_search_preview) {
-              // Call onFinish with sources for search mode
-              await options.onFinish({
-                usage: { totalTokens: 100 },
-                sources: [
-                  { url: 'https://example.com', title: 'Example Website' },
-                ],
-              });
-            } else {
-              // For non-search mode, still call onFinish but without sources
-              await options.onFinish({
-                usage: { totalTokens: 100 },
-              });
-            }
-          }
-        }),
+      // Call onFinish immediately to simulate stream completion
+      if (options?.onFinish) {
+        // Simulate sources for search mode (when web_search_preview tool is present)
+        if (options?.tools?.web_search_preview) {
+          await options.onFinish({
+            usage: { totalTokens: 100 },
+            sources: [
+              { url: 'https://example.com', title: 'Example Website' },
+            ],
+          });
+        } else {
+          // For non-search mode, call onFinish without sources
+          await options.onFinish({
+            usage: { totalTokens: 100 },
+            sources: [],
+          });
+        }
+      }
+      return {
+        toUIMessageStream: jest.fn(() => new ReadableStream()),
         toDataStreamResponse: jest.fn(() => new Response()),
       };
-      return mockResult;
     }),
     convertToCoreMessages: jest.fn(
       (
@@ -86,39 +81,39 @@ jest.mock('ai', () => {
       }
     ),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createDataStreamResponse: jest.fn((options: any) => {
-      const annotations: any[] = [];
+    createUIMessageStream: jest.fn((options: any) => {
       let controllerRef: ReadableStreamDefaultController<any> | null = null;
-      const mockStream = new ReadableStream({
+      return new ReadableStream({
         start(controller) {
           controllerRef = controller;
           // Execute the handler asynchronously
           Promise.resolve().then(async () => {
             try {
+              const encoder = new TextEncoder();
               await options.execute({
-                writeData: (data: any) => {
-                  // Write data to stream if controller is still open
-                  if (controllerRef && controllerRef.desiredSize !== null) {
-                    const encoder = new TextEncoder();
-                    controllerRef.enqueue(
-                      encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
-                    );
-                  }
-                },
-                writeMessageAnnotation: (annotation: any) => {
-                  // Store annotation and write to stream if controller is still open
-                  if (controllerRef && controllerRef.desiredSize !== null) {
-                    annotations.push(annotation);
-                    const encoder = new TextEncoder();
-                    controllerRef.enqueue(
-                      encoder.encode(
-                        `data: ${JSON.stringify({
-                          type: 'metadata',
-                          data: annotation,
-                        })}\n\n`
-                      )
-                    );
-                  }
+                writer: {
+                  write: (part: any) => {
+                    // When message metadata is written, emit it as SSE for the test to read
+                    if (
+                      part?.type === 'message-metadata' &&
+                      controllerRef &&
+                      controllerRef.desiredSize !== null
+                    ) {
+                      const annotation = part.messageMetadata;
+                      controllerRef.enqueue(
+                        encoder.encode(
+                          `data: ${JSON.stringify({
+                            type: 'metadata',
+                            data: annotation,
+                          })}\n\n`
+                        )
+                      );
+                    }
+                  },
+                  merge: (_stream: ReadableStream) => {
+                    // No-op: toUIMessageStream returns empty stream in tests
+                  },
+                  onError: options.onError,
                 },
               });
               // Wait a bit for any async onFinish callbacks to complete
@@ -134,10 +129,13 @@ jest.mock('ai', () => {
           });
         },
       });
-      return new Response(mockStream, {
+    }),
+    createUIMessageStreamResponse: jest.fn((options: any) => {
+      return new Response(options.stream, {
         headers: { 'Content-Type': 'text/event-stream' },
       });
     }),
+    stepCountIs: jest.fn((n: number) => ({ type: 'stepCount', count: n })),
   };
 });
 /* eslint-enable @typescript-eslint/no-unused-vars */

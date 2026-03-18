@@ -19,19 +19,19 @@ const VISION_MODEL_NAME = process.env.VISION_MODEL_NAME || MODEL_NAME;
 function createModel(provider: string, modelName: string): LanguageModel {
   switch (provider) {
     case 'google':
-      return google(modelName) as LanguageModel;
+      return google(modelName) as unknown as LanguageModel;
 
     case 'anthropic':
-      return anthropic(modelName) as LanguageModel;
+      return anthropic(modelName) as unknown as LanguageModel;
 
     case 'groq':
-      return groq(modelName) as LanguageModel;
+      return groq(modelName) as unknown as LanguageModel;
 
     case 'mistral':
-      return mistral(modelName) as LanguageModel;
+      return mistral(modelName) as unknown as LanguageModel;
 
     case 'deepseek':
-      return deepseek(modelName) as LanguageModel;
+      return deepseek(modelName) as unknown as LanguageModel;
 
     case 'openai':
     default:
@@ -41,9 +41,9 @@ function createModel(provider: string, modelName: string): LanguageModel {
           apiKey: process.env.OPENAI_API_KEY || '',
           baseURL: process.env.OPENAI_API_BASE,
         });
-        return customProvider(modelName) as LanguageModel;
+        return customProvider(modelName) as unknown as LanguageModel;
       }
-      return openai(modelName) as LanguageModel;
+      return openai(modelName) as unknown as LanguageModel;
   }
 }
 
@@ -57,7 +57,7 @@ const DEFAULT_RESPONSES_MODEL =
   MODEL_PROVIDER === 'openai'
     ? ((openai.responses
         ? openai.responses(RESPONSES_MODEL_NAME)
-        : openai(RESPONSES_MODEL_NAME)) as LanguageModel)
+        : openai(RESPONSES_MODEL_NAME)) as unknown as LanguageModel)
     : createModel(MODEL_PROVIDER, RESPONSES_MODEL_NAME);
 
 /**
