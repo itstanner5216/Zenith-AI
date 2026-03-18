@@ -89,6 +89,7 @@ export class BackgroundScribe {
     const projectsPath = this.plugin.settings.projectsPath;
     if (!projectsPath) return null;
     const escapedPath = projectsPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // nosemgrep: detect-non-literal-regexp
     const match = filePath.match(new RegExp(`${escapedPath}/([^/]+)`));
     return match ? match[1] : null;
   }
