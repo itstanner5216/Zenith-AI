@@ -92,8 +92,8 @@ export function ExecuteActionsHandler({ toolInvocation, handleAddResult, app }: 
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[var(--border-defined)]">
-      <div className="text-[var(--text-normal)]">
+    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+      <div className="text-[#bebebe]">
         Ready to process {toolInvocation.args.filePaths.length} file(s) based on content analysis
       </div>
       {results.length > 0 && (
@@ -103,10 +103,10 @@ export function ExecuteActionsHandler({ toolInvocation, handleAddResult, app }: 
               key={i}
               className={
                 result.startsWith("✅")
-                  ? "text-[var(--text-accent)]"
+                  ? "text-[#0fb6d6]"
                   : result.startsWith("ℹ️")
-                  ? "text-[var(--text-dim)]"
-                  : "text-[var(--text-sub-accent)]"
+                  ? "text-[#45aaff]"
+                  : "text-[#f4569d]"
               }
             >
               {result}
@@ -116,7 +116,7 @@ export function ExecuteActionsHandler({ toolInvocation, handleAddResult, app }: 
       )}
       {!isDone && (
         <button
-          className="px-4 py-2 text-xs rounded-md bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)] disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleExecute}
           disabled={isProcessing}
         >

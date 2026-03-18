@@ -24,7 +24,7 @@ interface CommandListProps {
 const CommandIcon = ({ icon, selected }: { icon: React.ReactNode; selected?: boolean }) => {
   return (
     <span className={`flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors duration-150 ${
-      selected ? 'text-[var(--text-accent)]' : 'text-[var(--text-dim)]'
+      selected ? 'text-[#0fb6d6]' : 'text-[#45aaff]'
     }`}>
       {icon}
     </span>
@@ -106,14 +106,14 @@ export const CommandList = forwardRef<
   const categories = ["format", "action", "ai"] as const;
 
   return props.items.length ? (
-    <div className="max-h-[400px] overflow-y-auto bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-lg shadow-[var(--elevation-lg),var(--glow-cyan-sm)] w-80 zenith-scrollbar">
+    <div className="max-h-[400px] overflow-y-auto bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-lg shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)] w-80 zenith-scrollbar">
       {categories.map(category => {
         const items = groupedItems[category] || [];
         if (items.length === 0) return null;
 
         return (
           <div key={category} className="py-1.5 first:pt-2.5 last:pb-2.5">
-            <div className="text-xs font-semibold text-[var(--text-dim)] uppercase px-3 py-1.5 mb-1">
+            <div className="text-xs font-semibold text-[#45aaff] uppercase px-3 py-1.5 mb-1">
               {getCategoryLabel(category)}
             </div>
             {items.map(item => {
@@ -121,10 +121,10 @@ export const CommandList = forwardRef<
               return (
                 <button
                   key={item.id}
-                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] ${
+                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(14,210,247,0.45)] ${
                     isSelected
-                      ? "bg-[rgba(14,210,247,0.08)] text-[var(--text-accent)] border-l-2 border-l-[var(--text-accent)] shadow-[var(--glow-cyan-sm)]"
-                      : "text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:shadow-[var(--glow-cyan-sm)]"
+                      ? "bg-[rgba(14,210,247,0.08)] text-[#0fb6d6] border-l-2 border-l-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
+                      : "text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)]"
                   }`}
                   onClick={() => selectItem(item.originalIndex)}
                 >
@@ -134,7 +134,7 @@ export const CommandList = forwardRef<
                       {item.label}
                     </span>
                     {item.description && (
-                      <span className="text-xs text-[var(--text-dim)] leading-tight">
+                      <span className="text-xs text-[#45aaff] leading-tight">
                         {item.description}
                       </span>
                     )}
@@ -147,9 +147,9 @@ export const CommandList = forwardRef<
       })}
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center py-6 text-center bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-lg shadow-[var(--elevation-lg)]">
-      <p className="text-sm text-[var(--text-normal)] opacity-50">No matching commands found</p>
-      <p className="text-xs text-[var(--text-dim)] mt-1 opacity-70">Try a different search term</p>
+    <div className="flex flex-col items-center justify-center py-6 text-center bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-lg shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+      <p className="text-sm text-[#bebebe] opacity-50">No matching commands found</p>
+      <p className="text-xs text-[#45aaff] mt-1 opacity-70">Try a different search term</p>
     </div>
   );
 });

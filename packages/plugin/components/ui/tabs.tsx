@@ -13,7 +13,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-10 items-center justify-center rounded-lg bg-[var(--bg-depth-1)] p-1 text-[var(--text-dim)] border border-[var(--border-defined)]",
+      "inline-flex h-10 items-center justify-center rounded-lg bg-[#0d0b12] p-1 text-[#45aaff] border border-[rgba(14,210,247,0.08)]",
       className
     )}
     {...props}
@@ -28,7 +28,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-[var(--bg-depth-1)] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-active)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-[var(--text-accent)] hover:bg-[var(--bg-depth-2)] data-[state=active]:bg-[var(--bg-depth-3)] data-[state=active]:text-[var(--text-accent)] data-[state=active]:shadow-[var(--glow-cyan-sm)]",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-[#0d0b12] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(14,210,247,0.45)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-[#0fb6d6] hover:bg-[#100e17] data-[state=active]:bg-[#191621] data-[state=active]:text-[#0fb6d6] data-[state=active]:shadow-[0_0_6px_rgba(14,210,247,0.2)]",
       className
     )}
     {...props}
@@ -43,7 +43,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "mt-2 ring-offset-[var(--bg-depth-1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--border-active)] focus-visible:ring-offset-2",
+      "mt-2 ring-offset-[#0d0b12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(14,210,247,0.45)] focus-visible:ring-offset-2",
       className
     )}
     {...props}

@@ -123,13 +123,13 @@ export const ContextItems: React.FC = () => {
           <div className="flex items-center justify-end mb-1 gap-2">
             {showClearConfirm ? (
               <div className="flex items-center gap-1.5 text-xs">
-                <span className="text-[var(--text-dim)]">Clear context?</span>
+                <span className="text-[#45aaff]">Clear context?</span>
                 <button
                   onClick={handleClearAll}
                   className={tw(
-                    "text-[var(--text-sub-accent)] hover:text-[var(--text-sub-accent)]",
+                    "text-[#f4569d] hover:text-[#f4569d]",
                     "flex items-center gap-1 px-2 py-1 rounded",
-                    "hover:bg-[rgba(244,86,157,0.1)] hover:shadow-[var(--glow-pink-sm)]",
+                    "hover:bg-[rgba(244,86,157,0.1)] hover:shadow-[0_0_6px_rgba(244,86,157,0.2)]",
                     "active:scale-[0.97] transition-all duration-150",
                     "font-medium"
                   )}
@@ -140,7 +140,7 @@ export const ContextItems: React.FC = () => {
                 <button
                   onClick={() => setShowClearConfirm(false)}
                   className={tw(
-                    "text-[var(--text-dim)] hover:text-[var(--text-normal)]",
+                    "text-[#45aaff] hover:text-[#bebebe]",
                     "px-2 py-1 rounded",
                     "hover:bg-[rgba(14,210,247,0.08)] transition-all duration-150"
                   )}
@@ -152,9 +152,9 @@ export const ContextItems: React.FC = () => {
               <button
                 onClick={handleClearAll}
                 className={tw(
-                  "text-xs text-[var(--text-dim)] hover:text-[var(--text-accent)]",
+                  "text-xs text-[#45aaff] hover:text-[#0fb6d6]",
                   "flex items-center gap-1 px-2 py-1 rounded",
-                  "hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)]",
+                  "hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)]",
                   "transition-all duration-150"
                 )}
                 title="Clear all context items (files, folders, tags, etc.)"

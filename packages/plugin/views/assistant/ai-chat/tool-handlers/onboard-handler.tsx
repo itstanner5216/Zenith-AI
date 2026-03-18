@@ -116,7 +116,7 @@ export function OnboardHandler({
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-[var(--text-dim)]">
+      <div className="text-sm text-[#45aaff]">
         This will analyze your vault structure to suggest optimal organization
         and settings. The analysis will:
         <ul className="list-disc ml-4 mt-2 space-y-1">
@@ -133,8 +133,8 @@ export function OnboardHandler({
           disabled={isAnalyzing}
           className={`px-4 py-2 text-xs rounded-md font-semibold transition-all duration-150 ${
                   isAnalyzing
-                    ? 'bg-[rgba(14,210,247,0.08)] text-[var(--text-dim)] cursor-not-allowed'
-                    : 'bg-[var(--text-accent)] text-[var(--bg-depth-1)] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]'
+                    ? 'bg-[rgba(14,210,247,0.08)] text-[#45aaff] cursor-not-allowed'
+                    : 'bg-[#0fb6d6] text-[#0d0b12] hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]'
               }`}
         >
           {isAnalyzing ? "Analyzing..." : "Start Analysis"}

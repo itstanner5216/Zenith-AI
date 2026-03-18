@@ -206,8 +206,8 @@ export function MergeFilesHandler({
 
   if (isComplete || isDone) {
     return (
-      <div className="text-sm border-b border-[var(--border-defined)] pb-2">
-        <div className="text-[var(--text-accent)] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#0fb6d6] text-xs">
           {isDone && !isConfirmed ? "✗ Merge cancelled" : "✓ Files merged"}
         </div>
       </div>
@@ -216,8 +216,8 @@ export function MergeFilesHandler({
 
   if (validFiles.length === 0 && invalidPaths.length > 0) {
     return (
-      <div className="text-sm border-b border-[var(--border-defined)] pb-2">
-        <div className="text-[var(--text-sub-accent)] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#f4569d] text-xs">
           ✗ No valid files to merge. All paths were invalid.
         </div>
       </div>
@@ -226,8 +226,8 @@ export function MergeFilesHandler({
 
   if (validFiles.length < 2) {
     return (
-      <div className="text-sm border-b border-[var(--border-defined)] pb-2">
-        <div className="text-[var(--text-sub-accent)] text-xs">
+      <div className="text-sm border-b border-[rgba(14,210,247,0.08)] pb-2">
+        <div className="text-[#f4569d] text-xs">
           ✗ Need at least 2 files to merge.
         </div>
       </div>
@@ -235,23 +235,23 @@ export function MergeFilesHandler({
   }
 
   return (
-    <div className="p-3 space-y-3 bg-[var(--bg-depth-3)] border border-[var(--border-defined)] rounded-md shadow-elevation-md">
+    <div className="p-3 space-y-3 bg-[#191621] border border-[rgba(14,210,247,0.08)] rounded-md shadow-elevation-md">
       <div className="flex items-start gap-2">
-        <span className="text-[var(--text-accent)] text-lg">⚡</span>
+        <span className="text-[#0fb6d6] text-lg">⚡</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-[var(--text-normal)] mb-1">
+          <div className="text-sm font-semibold text-[#bebebe] mb-1">
             Confirm Merge
           </div>
-          <div className="text-xs text-[var(--text-dim)] mb-2">{reason}</div>
+          <div className="text-xs text-[#45aaff] mb-2">{reason}</div>
         </div>
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[var(--text-dim)] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Files to merge ({validFiles.length})
         </div>
         {validFiles.slice(0, 5).map((file) => (
-          <div key={file.path} className="text-[var(--text-normal)] pl-2">
+          <div key={file.path} className="text-[#bebebe] pl-2">
             • {file.basename}
           </div>
         ))}
@@ -263,20 +263,20 @@ export function MergeFilesHandler({
       </div>
 
       <div className="text-xs space-y-1">
-        <div className="font-semibold text-[var(--text-dim)] uppercase">
+        <div className="font-semibold text-[#45aaff] uppercase">
           Output file
         </div>
-        <div className="text-[var(--text-normal)] pl-2">📄 {outputFileName}.md</div>
+        <div className="text-[#bebebe] pl-2">📄 {outputFileName}.md</div>
       </div>
 
       {invalidPaths.length > 0 && (
-        <div className="text-xs text-[var(--text-sub-accent)]">
+        <div className="text-xs text-[#f4569d]">
           ⚠ {invalidPaths.length} invalid path(s) will be skipped
         </div>
       )}
 
       {deleteSource && (
-        <div className="p-2 bg-[var(--bg-depth-3)] text-xs text-[var(--text-warning)] border border-[rgba(255,183,77,0.2)] rounded" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
+        <div className="p-2 bg-[#191621] text-xs text-[#ffb74d] border border-[rgba(255,183,77,0.2)] rounded" style={{ textShadow: '0 0 8px rgba(255,183,77,0.3)' }}>
           <strong>⚠ Warning:</strong> Source files will be moved to trash after
           merge
         </div>
@@ -285,7 +285,7 @@ export function MergeFilesHandler({
       <div className="flex gap-2">
         <button
           onClick={handleCancel}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[var(--border-accent)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.45)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
         >
           Cancel
         </button>
@@ -294,7 +294,7 @@ export function MergeFilesHandler({
             setIsConfirmed(true);
             handleConfirmMerge();
           }}
-          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
+          className="flex-1 px-3 py-1.5 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
         >
           Merge {validFiles.length} Files
         </button>

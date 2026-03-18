@@ -50,20 +50,20 @@ export const SearchRenameHandler: React.FC<ToolHandlerProps> = ({ toolInvocation
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[var(--border-defined)]">
-      <div className="text-[var(--text-normal)]">
+    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
+      <div className="text-[#bebebe]">
         Searching for files matching: "{toolInvocation.args.query}"
       </div>
 
       {error && (
-        <div className="text-[var(--text-sub-accent)] text-sm">
+        <div className="text-[#f4569d] text-sm">
           Error: {error}
         </div>
       )}
 
       {!isSearching && !error && (
         <>
-          <div className="text-sm text-[var(--text-dim)]">
+          <div className="text-sm text-[#45aaff]">
             Found {matchedFiles.length} matching files:
             {matchedFiles.length > 0 && (
               <ul className="list-disc ml-4 mt-1">
@@ -80,7 +80,7 @@ export const SearchRenameHandler: React.FC<ToolHandlerProps> = ({ toolInvocation
           <div className="flex space-x-2">
             <button
               onClick={handleSearch}
-              className="px-4 py-2 text-xs rounded-md bg-[var(--text-accent)] text-[var(--bg-depth-1)] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
+              className="px-4 py-2 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
               disabled={matchedFiles.length === 0}
             >
               Use These Files
@@ -94,7 +94,7 @@ export const SearchRenameHandler: React.FC<ToolHandlerProps> = ({ toolInvocation
                   })
                 )
               }
-              className="px-4 py-2 text-xs rounded-md border border-[var(--border-accent)] text-[var(--text-normal)] hover:bg-[rgba(14,210,247,0.06)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-[0.97] transition-all duration-150"
+              className="px-4 py-2 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.45)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
             >
               Cancel
             </button>

@@ -15,7 +15,7 @@ export const SelectedItem: React.FC<SelectedItemProps> = ({
   onRemove,
 }) => (
   <motion.div
-    className="bg-[var(--bg-depth-3)] text-[var(--text-normal)] rounded px-2 py-1 text-sm m-1 flex gap-1 min-w-fit h-fit border border-[var(--border-defined)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)] transition-all duration-150"
+    className="bg-[#191621] text-[#bebebe] rounded px-2 py-1 text-sm m-1 flex gap-1 min-w-fit h-fit border border-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-150"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.8 }}
@@ -23,14 +23,14 @@ export const SelectedItem: React.FC<SelectedItemProps> = ({
   >
     <span
       onClick={onClick}
-      className="cursor-pointer hover:text-[var(--text-accent)] transition-colors duration-150"
+      className="cursor-pointer hover:text-[#0fb6d6] transition-colors duration-150"
     >
       {prefix}
       {item}
     </span>
     <div
       onClick={onRemove}
-      className="text-[var(--text-dim)] hover:text-[var(--text-sub-accent)] hover:drop-shadow-[0_0_4px_rgba(244,86,157,0.3)] cursor-pointer transition-all duration-150"
+      className="text-[#45aaff] hover:text-[#f4569d] hover:drop-shadow-[0_0_4px_rgba(244,86,157,0.3)] cursor-pointer transition-all duration-150"
     >
       ×
     </div>

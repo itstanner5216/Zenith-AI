@@ -163,14 +163,14 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
   const renderContent = () => {
     if (contentLoadStatus === "error" || classificationStatus === "error") {
       return (
-        <div className="text-[var(--text-sub-accent)] p-2 bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.2)] rounded">
+        <div className="text-[#f4569d] p-2 bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.2)] rounded">
           Unable to process the content. Please try again later.
         </div>
       );
     }
     if (classificationStatus === "loading") {
       return (
-        <div className="text-[var(--text-dim)] p-2">Classifying content...</div>
+        <div className="text-[#45aaff] p-2">Classifying content...</div>
       );
     }
 
@@ -178,7 +178,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
       <div className="flex flex-col space-y-2">
         <div className="relative" ref={dropdownRef}>
           <button
-            className="w-full flex items-center justify-between px-3 py-2 bg-[var(--bg-depth-1)] text-[var(--text-normal)] border border-[var(--border-defined)] rounded hover:bg-[rgba(14,210,247,0.08)] hover:border-[var(--border-accent)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)] focus-visible:shadow-[var(--glow-cyan-sm)] transition-all duration-200"
+            className="w-full flex items-center justify-between px-3 py-2 bg-[#0d0b12] text-[#bebebe] border border-[rgba(14,210,247,0.08)] rounded hover:bg-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(14,210,247,0.45)] focus-visible:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-200"
             onClick={() => setShowDropdown(!showDropdown)}
           >
             <span>{getDisplayText()}</span>
@@ -198,12 +198,12 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
             </svg>
           </button>
           {showDropdown && (
-            <div className="absolute z-10 w-full mt-1 bg-[var(--bg-depth-3)] border border-[var(--border-accent)] rounded shadow-[var(--elevation-lg),var(--glow-cyan-sm)]">
+            <div className="absolute z-10 w-full mt-1 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)]">
               {dropdownTemplates.length > 0 ? (
                 dropdownTemplates.map((templateName, index) => (
                   <div
                     key={index}
-                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)] text-[var(--text-normal)] transition-all duration-150"
+                    className="px-3 py-2 cursor-pointer hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] text-[#bebebe] transition-all duration-150"
                     onClick={() => {
                       setSelectedTemplateName(templateName);
                       setShowDropdown(false);
@@ -213,7 +213,7 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-2 text-[var(--text-dim)]">
+                <div className="px-3 py-2 text-[#45aaff]">
                   No templates available
                 </div>
               )}
@@ -221,15 +221,15 @@ export const UserTemplates: React.FC<UserTemplatesProps> = ({
           )}
         </div>
         {isFileTooLarge && (
-          <div className="text-[var(--text-sub-accent)] p-2 bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.2)] rounded">
+          <div className="text-[#f4569d] p-2 bg-[rgba(244,86,157,0.08)] border border-[rgba(244,86,157,0.2)] rounded">
             File is too large to format.
           </div>
         )}
         <button
           className={`px-4 py-2 transition-all duration-200 flex items-center justify-center rounded active:scale-[0.97] ${
             !selectedTemplateName || formatting
-              ? "bg-[rgba(14,210,247,0.05)] text-[var(--text-dim)] cursor-not-allowed border border-[var(--border-subtle)]"
-              : "bg-[rgba(14,210,247,0.15)] text-[var(--text-accent)] border border-[var(--border-active)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[var(--border-active)] hover:shadow-[var(--glow-cyan-sm)]"
+              ? "bg-[rgba(14,210,247,0.05)] text-[#45aaff] cursor-not-allowed border border-[rgba(14,210,247,0.05)]"
+              : "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6] border border-[rgba(14,210,247,0.45)] hover:bg-[rgba(14,210,247,0.25)] hover:border-[rgba(14,210,247,0.45)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)]"
           }`}
           disabled={!selectedTemplateName || formatting || isFileTooLarge}
           onClick={handleFormatClick}

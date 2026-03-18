@@ -63,36 +63,36 @@ export function ProjectContextTab() {
   return (
     <div className={tw("flex flex-col h-full p-3 overflow-y-auto")}>
       <div className={tw("flex items-center gap-2 mb-4")}>
-        <Compass className="w-4 h-4 text-[var(--text-accent)]" />
-        <h3 className={tw("text-sm font-semibold text-[var(--text-normal)]")}>
+        <Compass className="w-4 h-4 text-[#0fb6d6]" />
+        <h3 className={tw("text-sm font-semibold text-[#bebebe]")}>
           Cosmic Context
         </h3>
       </div>
 
       {/* Active Project */}
-      <div className={tw("mb-4 p-2 rounded border border-[var(--border-defined)] bg-[var(--bg-depth-1)]")}>
-        <div className={tw("text-[10px] uppercase tracking-wider text-[var(--text-dim)] mb-1")}>
+      <div className={tw("mb-4 p-2 rounded border border-[rgba(14,210,247,0.08)] bg-[#0d0b12]")}>
+        <div className={tw("text-[10px] uppercase tracking-wider text-[#45aaff] mb-1")}>
           Active Project
         </div>
-        <div className={tw("text-sm text-[var(--text-normal)]")}>
+        <div className={tw("text-sm text-[#bebebe]")}>
           {activeProject || "None detected"}
         </div>
       </div>
 
       {/* Related Files */}
       <div className={tw("flex-1")}>
-        <div className={tw("text-[10px] uppercase tracking-wider text-[var(--text-dim)] mb-2")}>
+        <div className={tw("text-[10px] uppercase tracking-wider text-[#45aaff] mb-2")}>
           Contextually Related Files
         </div>
 
         {isLoading && (
-          <div className={tw("text-xs text-[var(--text-dim)] animate-pulse")}>
+          <div className={tw("text-xs text-[#45aaff] animate-pulse")}>
             Searching vault...
           </div>
         )}
 
         {!isLoading && relatedFiles.length === 0 && (
-          <div className={tw("text-xs text-[var(--text-dim)] opacity-60")}>
+          <div className={tw("text-xs text-[#45aaff] opacity-60")}>
             {lastQuery ? "No related files found" : "Start a chat to see related context"}
           </div>
         )}
@@ -104,15 +104,15 @@ export function ProjectContextTab() {
               onClick={() => openFile(file.id)}
               className={tw(
                 "w-full text-left p-2 rounded text-xs transition-all duration-150",
-                "hover:bg-[var(--bg-depth-3)] border border-transparent hover:border-[var(--border-subtle)]",
+                "hover:bg-[#191621] border border-transparent hover:border-[rgba(14,210,247,0.05)]",
                 "flex items-center gap-2 group cursor-pointer"
               )}
             >
-              <FileText className="w-3 h-3 text-[var(--text-dim)] group-hover:text-[var(--text-accent)] flex-shrink-0" />
-              <span className={tw("text-[var(--text-normal)] truncate flex-1")}>
+              <FileText className="w-3 h-3 text-[#45aaff] group-hover:text-[#0fb6d6] flex-shrink-0" />
+              <span className={tw("text-[#bebebe] truncate flex-1")}>
                 {file.id.replace(/\.md$/, '').split('/').pop()}
               </span>
-              <span className={tw("text-[var(--text-dim)] text-[10px] flex-shrink-0")}>
+              <span className={tw("text-[#45aaff] text-[10px] flex-shrink-0")}>
                 {(file.similarity * 100).toFixed(0)}%
               </span>
             </button>

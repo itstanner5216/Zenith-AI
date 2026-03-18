@@ -67,7 +67,7 @@ export function ContextLimitIndicator({
 
   if (error) {
     return (
-      <div className="mt-2 p-2 rounded text-xs text-[var(--text-sub-accent)] border border-[rgba(244,86,157,0.3)]">
+      <div className="mt-2 p-2 rounded text-xs text-[#f4569d] border border-[rgba(244,86,157,0.3)]">
         {error}
       </div>
     );
@@ -85,10 +85,10 @@ export function ContextLimitIndicator({
           className={`px-2 py-1 min-w-max rounded-md text-xs flex gap-1.5 items-center justify-between cursor-pointer hover:bg-[rgba(14,210,247,0.06)] transition-all duration-150
           ${
             isOverLimit
-              ? "border border-[rgba(244,86,157,0.35)] text-[var(--text-sub-accent)] shadow-[0_0_6px_rgba(244,86,157,0.15)]"
+              ? "border border-[rgba(244,86,157,0.35)] text-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.15)]"
               : shouldWarn
-              ? "border border-[rgba(255,183,77,0.35)] text-[var(--text-warning)] shadow-[0_0_6px_rgba(255,183,77,0.2)]"
-              : "border border-[var(--border-defined)] text-[var(--text-dim)] hover:border-[var(--border-accent)]"
+              ? "border border-[rgba(255,183,77,0.35)] text-[#ffb74d] shadow-[0_0_6px_rgba(255,183,77,0.2)]"
+              : "border border-[rgba(14,210,247,0.08)] text-[#45aaff] hover:border-[rgba(14,210,247,0.15)]"
           }`}
           onMouseEnter={() => setIsTooltipOpen(true)}
           onMouseLeave={() => setIsTooltipOpen(false)}
@@ -105,7 +105,7 @@ export function ContextLimitIndicator({
 
         {/* Enhanced menu-style tooltip - renders above, stays open on hover */}
         <div
-          className={`absolute left-0 bottom-full mb-1 w-72 bg-[var(--bg-depth-3)] border border-[var(--border-accent)] rounded-md shadow-[var(--elevation-lg),var(--glow-cyan-sm)] transition-opacity z-20 ${
+          className={`absolute left-0 bottom-full mb-1 w-72 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)] transition-opacity z-20 ${
             isTooltipOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
@@ -118,21 +118,21 @@ export function ContextLimitIndicator({
             className={`w-full px-4 py-3.5 text-left text-xs flex items-center gap-3 hover:bg-[rgba(14,210,247,0.08)] cursor-pointer rounded-md
               ${
                 isLightweightMode
-                  ? "text-[var(--text-accent)]"
-                  : "text-[var(--text-normal)]"
+                  ? "text-[#0fb6d6]"
+                  : "text-[#bebebe]"
               }`}
           >
             <div
               className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors
               ${
                 isLightweightMode
-                  ? "border-[var(--text-accent)] bg-[var(--text-accent)]"
-                  : "border-[var(--text-dim)] bg-[var(--bg-depth-1)]"
+                  ? "border-[#0fb6d6] bg-[#0fb6d6]"
+                  : "border-[#45aaff] bg-[#0d0b12]"
               }`}
             >
               {isLightweightMode && (
                 <svg
-                  className="w-3.5 h-3.5 text-[var(--bg-depth-2)]"
+                  className="w-3.5 h-3.5 text-[#100e17]"
                   viewBox="0 0 14 14"
                   fill="none"
                 >
@@ -148,7 +148,7 @@ export function ContextLimitIndicator({
             </div>
             <div className="space-y-1.5 flex-1">
               <div className="font-medium">Disable Context</div>
-              <div className="text-[var(--text-dim)] text-[11px] leading-relaxed opacity-70">
+              <div className="text-[#45aaff] text-[11px] leading-relaxed opacity-70">
                 Removes file content from context while preserving metadata.
                 Useful for batch operations like moving, renaming, or tagging
                 files.

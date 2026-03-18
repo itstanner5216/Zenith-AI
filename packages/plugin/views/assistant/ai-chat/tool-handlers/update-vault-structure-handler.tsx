@@ -55,11 +55,11 @@ export function UpdateVaultStructureHandler({
 
   return (
     <div className="text-sm p-2">
-      <div className="font-medium mb-1" style={{ color: "var(--text-normal)" }}>
+      <div className="font-medium mb-1" style={{ color: "#bebebe" }}>
         {isComplete ? "✓ Cosmic Vault Structure updated" : `⏳ ${status}`}
       </div>
       {toolInvocation.args?.reason && (
-        <div className="text-xs mt-1" style={{ color: "var(--text-dim)" }}>
+        <div className="text-xs mt-1" style={{ color: "#45aaff" }}>
           Reason: {toolInvocation.args.reason}
         </div>
       )}

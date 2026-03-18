@@ -12,11 +12,11 @@ const StatusBadge: React.FC<{ status: FileStatus }> = ({ status }) => {
   const getStatusColor = () => {
     switch (status) {
       case "error":
-        return "bg-[var(--text-sub-accent)] shadow-[var(--glow-pink-sm)]";
+        return "bg-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]";
       case "bypassed":
-        return "bg-[var(--text-dim)]";
+        return "bg-[#45aaff]";
       default:
-        return "bg-[var(--text-dim)]";
+        return "bg-[#45aaff]";
     }
   };
 
@@ -94,20 +94,20 @@ const IssueCard: React.FC<{
   };
 
   return (
-    <div className="border-b border-[var(--border-subtle)] p-2 hover:bg-[rgba(14,210,247,0.04)] hover:border-[var(--border-accent)] hover:shadow-[var(--glow-cyan-sm)] transition-all duration-150">
+    <div className="border-b border-[rgba(14,210,247,0.05)] p-2 hover:bg-[rgba(14,210,247,0.04)] hover:border-[rgba(14,210,247,0.15)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-150">
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <StatusBadge status={record.status} />
-            <div className="text-sm text-[var(--text-normal)] truncate">
+            <div className="text-sm text-[#bebebe] truncate">
               {record.originalName}
             </div>
           </div>
-          <div className="text-xs text-[var(--text-sub-accent)] truncate opacity-80">
+          <div className="text-xs text-[#f4569d] truncate opacity-80">
             {errorMessage}
           </div>
           {getMostRecentTimestamp() && (
-            <div className="text-xs text-[var(--text-dim)] mt-0.5 opacity-75">
+            <div className="text-xs text-[#45aaff] mt-0.5 opacity-75">
               {new Date(getMostRecentTimestamp()).toLocaleString()}
             </div>
           )}
@@ -117,7 +117,7 @@ const IssueCard: React.FC<{
           disabled={isRetrying}
           size="sm"
           variant="outline"
-          className={tw("flex items-center gap-1 text-xs border-[var(--border-accent)] text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[var(--glow-cyan-sm)] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-active)]")}
+          className={tw("flex items-center gap-1 text-xs border-[rgba(14,210,247,0.15)] text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(14,210,247,0.45)]")}
           title="Retry processing this file"
         >
           <RotateCcw className={tw(`w-3 h-3 ${isRetrying ? "animate-spin zenith-spinner-glow" : ""}`)} />
@@ -290,15 +290,15 @@ export const RecentIssuesPanel: React.FC<{ plugin: any }> = ({ plugin }) => {
   }
 
   return (
-    <div className="border-b border-[var(--border-subtle)]">
-      <div className="px-3 py-2 bg-[var(--bg-depth-2)]">
+    <div className="border-b border-[rgba(14,210,247,0.05)]">
+      <div className="px-3 py-2 bg-[#100e17]">
         <div className="flex items-center gap-2 mb-2">
-          <AlertCircle className="w-4 h-4 text-[var(--text-sub-accent)] drop-shadow-[0_0_4px_rgba(244,86,157,0.4)]" />
-          <h3 className="text-sm font-semibold text-[var(--text-sub-accent)]">
+          <AlertCircle className="w-4 h-4 text-[#f4569d] drop-shadow-[0_0_4px_rgba(244,86,157,0.4)]" />
+          <h3 className="text-sm font-semibold text-[#f4569d]">
             Recent Issues ({issues.length})
           </h3>
         </div>
-        <div className="text-xs text-[var(--text-dim)] mb-2 opacity-75">
+        <div className="text-xs text-[#45aaff] mb-2 opacity-75">
           Files that failed processing or were bypassed
         </div>
       </div>

@@ -209,9 +209,9 @@ const suggestion = {
           onCreate(instance: any) {
             const box = instance.popper.querySelector('.tippy-box');
             if (box) {
-              box.style.background = 'var(--bg-depth-3)';
-              box.style.border = '1px solid var(--border-defined)';
-              box.style.boxShadow = 'var(--elevation-lg), var(--glow-cyan-sm)';
+              box.style.background = '#191621';
+              box.style.border = '1px solid rgba(14,210,247,0.08)';
+              box.style.boxShadow = '0_4px_16px_rgba(0,0,0,0.5), 0_0_6px_rgba(14,210,247,0.2)';
               box.style.borderRadius = '8px';
               box.style.overflow = 'hidden';
             }

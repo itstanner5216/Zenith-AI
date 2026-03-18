@@ -28,7 +28,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({ onRefresh }) => {
       }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className="text-[var(--text-accent)] px-2 py-1 hover:text-[rgba(14,210,247,0.8)]"
+      className="text-[#0fb6d6] px-2 py-1 hover:text-[rgba(14,210,247,0.8)]"
       onClick={handleRefresh}
       disabled={loading}
     >

@@ -16,8 +16,8 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       title={isGenerating ? "Stop generation" : "Send message"}
       className={`flex-none ml-2 font-bold px-3.5 flex items-center justify-center h-full rounded-md transition-all duration-150 ${
         isGenerating
-          ? "bg-[rgba(244,86,157,0.1)] text-[var(--text-sub-accent)] border border-[rgba(244,86,157,0.3)] hover:bg-[rgba(244,86,157,0.18)] hover:border-[rgba(244,86,157,0.5)] hover:shadow-[0_0_10px_rgba(244,86,157,0.25)] cursor-pointer"
-          : "bg-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.85)] text-[var(--bg-depth-0)] active:scale-[0.96] shadow-[0_0_10px_rgba(14,210,247,0.3)] hover:shadow-[0_0_18px_rgba(14,210,247,0.5)] border border-transparent"
+          ? "bg-[rgba(244,86,157,0.1)] text-[#f4569d] border border-[rgba(244,86,157,0.3)] hover:bg-[rgba(244,86,157,0.18)] hover:border-[rgba(244,86,157,0.5)] hover:shadow-[0_0_10px_rgba(244,86,157,0.25)] cursor-pointer"
+          : "bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.85)] text-[#0d0b12] active:scale-[0.96] shadow-[0_0_10px_rgba(14,210,247,0.3)] hover:shadow-[0_0_18px_rgba(14,210,247,0.5)] border border-transparent"
       } ${className}`}
     >
       {isGenerating ? (

@@ -87,26 +87,26 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
   const getStepIcon = (status: TimelineStep["status"]) => {
     switch (status) {
       case "completed":
-        return <Check className={tw("w-4 h-4 text-[var(--text-accent)]")} style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.5))' }} />;
+        return <Check className={tw("w-4 h-4 text-[#0fb6d6]")} style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.5))' }} />;
       case "processing":
-        return <Loader className={tw("w-4 h-4 text-[var(--text-accent)] animate-spin zenith-spinner-glow")} />;
+        return <Loader className={tw("w-4 h-4 text-[#0fb6d6] animate-spin zenith-spinner-glow")} />;
       case "error":
-        return <AlertCircle className={tw("w-4 h-4 text-[var(--text-sub-accent)]")} />;
+        return <AlertCircle className={tw("w-4 h-4 text-[#f4569d]")} />;
       case "skipped":
         return <div className={tw("w-4 h-4 rounded-full bg-[rgba(14,210,247,0.1)]")} />;
       default:
-        return <Clock className={tw("w-4 h-4 text-[var(--text-dim)]")} />;
+        return <Clock className={tw("w-4 h-4 text-[#45aaff]")} />;
     }
   };
 
   const getStepColor = (status: TimelineStep["status"]) => {
     switch (status) {
       case "completed":
-        return "bg-[var(--text-accent)]";
+        return "bg-[#0fb6d6]";
       case "processing":
-        return "bg-[var(--text-accent)]";
+        return "bg-[#0fb6d6]";
       case "error":
-        return "bg-[var(--text-sub-accent)]";
+        return "bg-[#f4569d]";
       default:
         return "bg-[rgba(14,210,247,0.1)]";
     }
@@ -129,13 +129,13 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
   }
 
   return (
-    <StyledContainer className={tw("bg-[var(--bg-depth-1)] rounded p-4 border border-[var(--border-defined)]")}>
+    <StyledContainer className={tw("bg-[#0d0b12] rounded p-4 border border-[rgba(14,210,247,0.08)]")}>
       <div className={tw("flex items-center justify-between mb-4")}>
-        <h4 className={tw("text-sm font-medium text-[var(--text-accent)]")}>Processing Timeline</h4>
+        <h4 className={tw("text-sm font-medium text-[#0fb6d6]")}>Processing Timeline</h4>
         <div className={tw("text-xs")}>
-          {record.status === "completed" && <span className="text-[var(--text-accent)]" style={{ textShadow: '0 0 8px rgba(14,210,247,0.5)' }}>✓ Completed</span>}
-          {record.status === "processing" && <span className="text-[var(--text-accent)]">⏳ In Progress</span>}
-          {record.status === "error" && <span className="text-[var(--text-sub-accent)]">⚠ Error</span>}
+          {record.status === "completed" && <span className="text-[#0fb6d6]" style={{ textShadow: '0 0 8px rgba(14,210,247,0.5)' }}>✓ Completed</span>}
+          {record.status === "processing" && <span className="text-[#0fb6d6]">⏳ In Progress</span>}
+          {record.status === "error" && <span className="text-[#f4569d]">⚠ Error</span>}
         </div>
       </div>
 
@@ -144,11 +144,11 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
           <div key={step.action} className={tw("flex items-start gap-3")}>
             {/* Timeline connector */}
             <div className={tw("flex flex-col items-center")}>
-              <div className={`w-8 h-8 rounded-full bg-[var(--bg-depth-1)] border-2 flex items-center justify-center transition-all duration-200 ${
-                step.status === "completed" ? "border-[var(--text-accent)] shadow-[var(--glow-cyan-sm)]" :
-                step.status === "error" ? "border-[var(--text-sub-accent)] shadow-[var(--glow-pink-sm)]" :
-                step.status === "processing" ? "border-[var(--text-accent)] shadow-[var(--glow-cyan-sm)] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]" :
-                "border-[var(--border-defined)]"
+              <div className={`w-8 h-8 rounded-full bg-[#0d0b12] border-2 flex items-center justify-center transition-all duration-200 ${
+                step.status === "completed" ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.2)]" :
+                step.status === "error" ? "border-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]" :
+                step.status === "processing" ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.2)] animate-[zenith-cyan-pulse_2s_ease-in-out_infinite]" :
+                "border-[rgba(14,210,247,0.08)]"
               }`}>
                 {getStepIcon(step.status)}
               </div>
@@ -160,22 +160,22 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
             {/* Step details */}
             <div className={tw("flex-1 pb-2")}>
               <div className={tw("flex items-center justify-between")}>
-                <span className={tw("text-sm font-medium text-[var(--text-normal)]")}>
+                <span className={tw("text-sm font-medium text-[#bebebe]")}>
                   {step.label}
                 </span>
                 {step.duration !== undefined && step.duration > 0 && (
-                  <span className={tw("text-xs text-[var(--text-dim)] font-mono opacity-75")}>
+                  <span className={tw("text-xs text-[#45aaff] font-mono opacity-75")}>
                     {formatDuration(step.duration)}
                   </span>
                 )}
               </div>
               {step.timestamp && (
-                <div className={tw("text-xs text-[var(--text-dim)] mt-0.5 opacity-75")}>
+                <div className={tw("text-xs text-[#45aaff] mt-0.5 opacity-75")}>
                   {formatTime(step.timestamp)}
                 </div>
               )}
               {step.status === "skipped" && (
-                <div className={tw("text-xs text-[var(--text-dim)] italic mt-1 opacity-50")}>
+                <div className={tw("text-xs text-[#45aaff] italic mt-1 opacity-50")}>
                   Skipped
                 </div>
               )}
@@ -186,10 +186,10 @@ export const ProcessingTimeline: React.FC<ProcessingTimelineProps> = ({ record }
 
       {/* Summary stats */}
       {record.status === "completed" && stepsWithDuration.length > 1 && (
-        <div className={tw("mt-4 pt-4 border-t border-[var(--border-defined)]")}>
+        <div className={tw("mt-4 pt-4 border-t border-[rgba(14,210,247,0.08)]")}>
           <div className={tw("flex items-center justify-between text-xs")}>
-            <span className={tw("text-[var(--text-dim)]")}>Total time:</span>
-            <span className={tw("text-[var(--text-accent)] font-mono font-medium")}>
+            <span className={tw("text-[#45aaff]")}>Total time:</span>
+            <span className={tw("text-[#0fb6d6] font-mono font-medium")}>
               {formatDuration(
                 stepsWithDuration.reduce((sum, step) => sum + (step.duration || 0), 0)
               )}

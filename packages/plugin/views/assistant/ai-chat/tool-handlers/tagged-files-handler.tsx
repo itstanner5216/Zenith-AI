@@ -125,12 +125,12 @@ export function TaggedFilesHandler({
   return (
     <div className="text-sm">
       {!isComplete ? (
-        <div className="text-[var(--text-dim)]">
+        <div className="text-[#45aaff]">
           Searching for files tagged{" "}
           {tags.map((t: string) => `#${t}`).join(", ")}...
         </div>
       ) : (
-        <div className="text-[var(--text-normal)]">
+        <div className="text-[#bebebe]">
           ✓ Tag search complete
         </div>
       )}

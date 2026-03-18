@@ -56,8 +56,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           onClick={() => plugin.settings.showLocalLLMInChat && setIsModelSelectorOpen(!isModelSelectorOpen)}
           className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 ${
             plugin.settings.showLocalLLMInChat
-              ? 'text-[var(--text-dim)] hover:text-[var(--text-accent)] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[var(--border-accent)]'
-              : 'text-[var(--text-dim)] opacity-75'
+              ? 'text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[rgba(14,210,247,0.15)]'
+              : 'text-[#45aaff] opacity-75'
           }`}
         >
           <span className="font-medium">{getDisplayName(selectedModel)}</span>
@@ -79,17 +79,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           )}
         </div>
         {isModelSelectorOpen && plugin.settings.showLocalLLMInChat && (
-          <div className="absolute bottom-full right-0 mb-1.5 bg-[var(--bg-depth-4)] border border-[var(--border-accent)] rounded-md shadow-[var(--elevation-xl),var(--glow-cyan-sm)] z-50 min-w-[140px] overflow-hidden">
+          <div className="absolute bottom-full right-0 mb-1.5 bg-[rgba(25,22,33,0.85)] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_6px_rgba(14,210,247,0.2)] z-50 min-w-[140px] overflow-hidden">
             <div className="py-1">
               <div
                 onClick={() => handleModelSelect("gpt-4o-mini")}
                 className={`cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs transition-all duration-150 ${
                   selectedModel === "gpt-4o-mini"
-                    ? 'bg-[rgba(14,210,247,0.08)] text-[var(--text-accent)] border-l-2 border-l-[var(--text-accent)]'
-                    : 'text-[var(--text-normal)] hover:bg-[var(--bg-depth-3)] hover:shadow-[var(--glow-cyan-sm)] hover:text-[var(--text-accent)]'
+                    ? 'bg-[rgba(14,210,247,0.08)] text-[#0fb6d6] border-l-2 border-l-[#0fb6d6]'
+                    : 'text-[#bebebe] hover:bg-[#191621] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:text-[#0fb6d6]'
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-success)] shadow-[0_0_4px_rgba(80,250,123,0.5)] flex-shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#50fa7b] shadow-[0_0_4px_rgba(80,250,123,0.5)] flex-shrink-0" />
                 {getDisplayName("gpt-4o-mini")}
               </div>
 
@@ -99,19 +99,19 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                     type="text"
                     value={customModel}
                     onChange={(e) => setCustomModel(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border bg-[var(--bg-depth-1)] text-[var(--text-normal)] border-[var(--border-defined)] rounded focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[var(--glow-cyan-sm)] transition-all duration-150"
+                    className="w-full px-2 py-1 text-sm border bg-[#0d0b12] text-[#bebebe] border-[rgba(14,210,247,0.08)] rounded focus:outline-none focus:border-[rgba(14,210,247,0.45)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-150"
                     placeholder="Enter model name..."
                   />
                   <div className="flex justify-end mt-2 space-x-2">
                     <button
                       onClick={() => setIsCustomizing(false)}
-                      className="px-2 py-1 text-xs text-[var(--text-dim)] hover:text-[var(--text-normal)] cursor-pointer transition-colors"
+                      className="px-2 py-1 text-xs text-[#45aaff] hover:text-[#bebebe] cursor-pointer transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleCustomModelSave}
-                      className="px-2 py-1 text-xs bg-[rgba(14,210,247,0.1)] text-[var(--text-accent)] border border-[var(--border-accent)] rounded hover:bg-[rgba(14,210,247,0.18)] hover:shadow-[var(--glow-cyan-sm)] cursor-pointer active:scale-[0.97] transition-all duration-150"
+                      className="px-2 py-1 text-xs bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.15)] rounded hover:bg-[rgba(14,210,247,0.18)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] cursor-pointer active:scale-[0.97] transition-all duration-150"
                     >
                       Save
                     </button>
@@ -120,13 +120,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
               ) : (
                 <div
                   onClick={() => handleModelSelect("custom")}
-                  className={`cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs transition-all duration-150 border-t border-[var(--border-subtle)] ${
+                  className={`cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs transition-all duration-150 border-t border-[rgba(14,210,247,0.05)] ${
                     selectedModel === "custom"
-                      ? 'bg-[rgba(14,210,247,0.08)] text-[var(--text-accent)] border-l-2 border-l-[var(--text-accent)]'
-                      : 'text-[var(--text-normal)] hover:bg-[var(--bg-depth-3)] hover:shadow-[var(--glow-cyan-sm)] hover:text-[var(--text-accent)]'
+                      ? 'bg-[rgba(14,210,247,0.08)] text-[#0fb6d6] border-l-2 border-l-[#0fb6d6]'
+                      : 'text-[#bebebe] hover:bg-[#191621] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:text-[#0fb6d6]'
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-sub-accent)] shadow-[0_0_4px_rgba(244,86,157,0.5)] flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#f4569d] shadow-[0_0_4px_rgba(244,86,157,0.5)] flex-shrink-0" />
                   {getDisplayName("custom")}
                 </div>
               )}

@@ -83,7 +83,7 @@ export function SearchHandler({
   const searchResults = useContextItems(state => state.searchResults);
 
   return (
-    <div className="text-sm text-[var(--text-dim)]">
+    <div className="text-sm text-[#45aaff]">
       {!("result" in toolInvocation)
         ? "Searching through your notes..."
         : Object.keys(searchResults).length > 0
