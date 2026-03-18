@@ -434,19 +434,7 @@ export class Inbox {
 async function moveAttachmentFile(
   context: ProcessingContext,
 ): Promise<ProcessingContext> {
-  if (VALID_MEDIA_EXTENSIONS.includes(context.inboxFile.extension)) {
-    context.attachmentFile = context.inboxFile;
-    const newPath = await safeMove(
-      context.plugin.app,
-      context.inboxFile,
-      context.plugin.settings.attachmentsPath,
-    );
-    const movedFile = context.plugin.app.vault.getAbstractFileByPath(newPath);
-    if (movedFile instanceof TFile) {
-      context.attachmentFile = movedFile;
-      context.inboxFile = movedFile;
-    }
-  }
+  // Attachment path feature removed — media files stay in place
   return context;
 }
 
@@ -567,12 +555,7 @@ async function recommendFolderWithEmbeddingsStep(
       `/${context.plugin.settings.projectsPath}/`,
     );
 
-    let threshold = context.plugin.settings.autoSortConfidenceThreshold;
-    if (isInGeneral) {
-      threshold = context.plugin.settings.generalMergeThreshold;
-    } else if (!isInProjects) {
-      threshold = context.plugin.settings.globalMergeThreshold;
-    }
+    const threshold = context.plugin.settings.autoSortConfidenceThreshold;
 
     if (best.score < threshold) return context; // low confidence, fall through to model
 
@@ -753,14 +736,7 @@ async function handleBypass(
 
     // Show user notification
     const fileName = context.inboxFile.basename;
-    const bypassedFolderPath = context.plugin.settings.bypassedFilePath;
-
-    if (context.plugin.settings.enableProcessingNotifications) {
-      new Notice(
-        `⚠️ Bypassed: ${fileName}\nReason: ${reason}\nLocation: ${bypassedFolderPath}`,
-        5000,
-      );
-    }
+    const bypassedFolderPath = context.plugin.settings.backupFolderPath;
 
     // Then move the file
     await safeMove(context.plugin.app, context.inboxFile, bypassedFolderPath);
@@ -808,13 +784,7 @@ async function formatContentStep(
   await initializeTokenCounter();
   const tokenAmount = getTokenCount(context.content);
   cleanup();
-  if (tokenAmount > context.plugin.settings.maxFormattingTokens) {
-    logger.info("Skipping formatting: content too large", {
-      tokenAmount,
-      maxFormattingTokens: context.plugin.settings.maxFormattingTokens,
-    });
-    return context;
-  }
+
 
   try {
     const instructions = await context.plugin.getTemplateInstructions(
@@ -954,33 +924,9 @@ async function handleError(
   let errorType: string;
 
   // Different handling based on error type
-  switch (errorAction) {
-    case Action.ERROR_MOVING_ATTACHMENT:
-    case Action.ERROR_MOVING:
-      destinationFolder = context.plugin.settings.errorFilePath;
-      errorType = "File system error";
-      await moveFileToErrorFolder(context);
-      break;
-    case Action.ERROR_CLASSIFY:
-    case Action.ERROR_TAGGING:
-      destinationFolder = context.plugin.settings.backupFolderPath;
-      errorType = "AI processing error";
-      await moveToBackupFolder(context);
-      break;
-    default:
-      destinationFolder = context.plugin.settings.errorFilePath;
-      errorType = "Processing error";
-      await moveFileToErrorFolder(context);
-  }
-
-  // Show user notification
-  if (context.plugin.settings.enableProcessingNotifications && errorAction) {
-    const formattedMessage = formatErrorMessage(errorAction, errorMessage);
-    new Notice(
-      `❌ Error: ${fileName}\n${errorType}: ${formattedMessage}\nLocation: ${destinationFolder}`,
-      6000,
-    );
-  }
+  destinationFolder = context.plugin.settings.backupFolderPath;
+  errorType = "Processing error";
+  await moveToBackupFolder(context);
 }
 
 // moveToBackupFolder
@@ -989,17 +935,6 @@ async function moveToBackupFolder(context: ProcessingContext): Promise<void> {
     context.plugin.app,
     context.inboxFile,
     context.plugin.settings.backupFolderPath,
-  );
-}
-
-// Helper functions for file operations
-async function moveFileToErrorFolder(
-  context: ProcessingContext,
-): Promise<void> {
-  await safeMove(
-    context.plugin.app,
-    context.inboxFile,
-    context.plugin.settings.errorFilePath,
   );
 }
 
@@ -1019,14 +954,8 @@ export function getInboxStatus(): QueueStatus {
 // skip actions when settings below are false
 function shouldSkipAction(context: ProcessingContext, action: Action): boolean {
   switch (action) {
-    case Action.CLASSIFY:
-      return !context.plugin.settings.enableDocumentClassification;
-    case Action.FORMATTING:
-      return !context.plugin.settings.enableDocumentClassification;
     case Action.RENAME:
       return !context.plugin.settings.enableFileRenaming;
-    case Action.TAGGING:
-      return !context.plugin.settings.useSimilarTags;
     default:
       return false;
   }
@@ -1114,18 +1043,7 @@ async function executeStep(
     context.recordManager.addAction(context.hash, action);
 
     // Show toast notification for processing steps (only for key actions)
-    const shouldNotify = context.plugin.settings.enableProcessingNotifications;
-    if (
-      shouldNotify &&
-      [
-        Action.EXTRACT,
-        Action.CLASSIFY,
-        Action.MOVING,
-        Action.RENAME,
-        Action.TAGGING,
-        Action.FORMATTING,
-      ].includes(action)
-    ) {
+    if (false) {
       const fileName =
         context.containerFile?.basename || context.inboxFile.basename;
       const actionName = getActionDisplayName(action);

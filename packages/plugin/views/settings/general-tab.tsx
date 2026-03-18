@@ -82,7 +82,8 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
   const checkLicenseStatus = async () => {
     if (!licenseKey) return;
     setKeyStatus("checking");
-    const isValid = await plugin.isLicenseKeyValid(licenseKey);
+    const validation = validateApiKey(licenseKey);
+    const isValid = validation.isValid;
     setKeyStatus(isValid ? "valid" : "invalid");
 
     // Refresh usage data after key validation
@@ -374,19 +375,6 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               : "No usage data available. Please check your connection and try again."}
           </p>
         )}
-
-        {/* Upgrade Plan button - only show for free tier (100K limit); paid tier has no superior plan */}
-        {usageData &&
-          usageData.maxTokenUsage === FREE_TIER_TOKEN_LIMIT && (
-            <div className="mt-4">
-              <button
-                onClick={() => plugin.openUpgradePlanModal()}
-                className="w-full bg-[#0fb6d6] text-[#0d0b12] px-4 py-2 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.98] transition-all duration-150 shadow-[0_0_12px_rgba(14,210,247,0.25)] hover:shadow-[0_0_18px_rgba(14,210,247,0.4)]"
-              >
-                Upgrade Plan
-              </button>
-            </div>
-          )}
       </div>
 
       <AccountData

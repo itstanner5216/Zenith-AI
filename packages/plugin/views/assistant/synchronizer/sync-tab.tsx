@@ -308,8 +308,7 @@ export function SyncTab({
 
     try {
       // Determine destination folder - use the dedicated sync folder
-      const folderPath =
-        plugin.settings.syncFolderPath || "_NoteCompanion/Sync";
+      const folderPath = "_ZenithAI/Sync";
 
       try {
         await plugin.ensureFolderExists(folderPath);

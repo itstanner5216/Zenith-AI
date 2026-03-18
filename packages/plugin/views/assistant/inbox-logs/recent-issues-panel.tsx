@@ -181,39 +181,21 @@ export const RecentIssuesPanel: React.FC<{ plugin: any }> = ({ plugin }) => {
         if (record.file) {
           fileToRetry = record.file;
         } else {
-          // File might have been moved to error/bypass folder
-          // Try to find it by searching common error/bypass paths
-          const errorPath = plugin.settings.errorFilePath;
-          const bypassPath = plugin.settings.bypassedFilePath;
+          // File might have been moved to backup folder
+          const backupPath = plugin.settings.backupFolderPath;
           const inboxPath = plugin.settings.pathToWatch;
 
-          // Try error folder first (check both originalName and newName)
-          if (errorPath) {
+          // Try backup folder (check both originalName and newName)
+          if (backupPath) {
             const searchNames = [record.originalName];
             if (record.newName) searchNames.push(record.newName);
 
             for (const name of searchNames) {
-              const errorFile = plugin.app.vault.getAbstractFileByPath(
-                `${errorPath}/${name}`
+              const backupFile = plugin.app.vault.getAbstractFileByPath(
+                `${backupPath}/${name}`
               );
-              if (errorFile instanceof TFile) {
-                fileToRetry = errorFile;
-                break;
-              }
-            }
-          }
-
-          // Try bypass folder
-          if (!fileToRetry && bypassPath) {
-            const searchNames = [record.originalName];
-            if (record.newName) searchNames.push(record.newName);
-
-            for (const name of searchNames) {
-              const bypassFile = plugin.app.vault.getAbstractFileByPath(
-                `${bypassPath}/${name}`
-              );
-              if (bypassFile instanceof TFile) {
-                fileToRetry = bypassFile;
+              if (backupFile instanceof TFile) {
+                fileToRetry = backupFile;
                 break;
               }
             }
@@ -251,16 +233,12 @@ export const RecentIssuesPanel: React.FC<{ plugin: any }> = ({ plugin }) => {
           return;
         }
 
-        // If file is in error/bypass folder, move it back to inbox first
+        // If file is in backup folder, move it back to inbox first
         const currentPath = fileToRetry.path;
         const inboxPath = plugin.settings.pathToWatch;
-        const errorPath = plugin.settings.errorFilePath;
-        const bypassPath = plugin.settings.bypassedFilePath;
+        const backupPath = plugin.settings.backupFolderPath;
 
-        if (
-          (errorPath && currentPath.startsWith(errorPath)) ||
-          (bypassPath && currentPath.startsWith(bypassPath))
-        ) {
+        if (backupPath && currentPath.startsWith(backupPath)) {
           // Move back to inbox
           const targetPath = `${inboxPath}/${fileToRetry.name}`;
           await plugin.app.fileManager.renameFile(fileToRetry, targetPath);

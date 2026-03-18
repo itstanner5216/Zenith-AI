@@ -11,7 +11,6 @@ describe('DEFAULT_SETTINGS', () => {
 
   it('has new setting defaults', () => {
     expect(DEFAULT_SETTINGS.showLocalLLMInChat).toBe(false);
-    expect(DEFAULT_SETTINGS.formatBehavior).toBe('override');
   });
 
   it('has critical default values', () => {
