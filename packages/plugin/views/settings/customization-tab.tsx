@@ -54,8 +54,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   ) => {
     if (!Number.isFinite(value)) return;
     const nextValue = Math.min(
-      options?.max ?? value,
-      Math.max(options?.min ?? value, value)
+      options?.max ?? Infinity,
+      Math.max(options?.min ?? -Infinity, value)
     );
     setter(nextValue);
     // nosemgrep: detect-object-injection
