@@ -15,15 +15,16 @@ export class BackgroundScribe {
     this.client = client;
   }
 
-  activate(): void {
-    if (this.isActive) return;
-    if (!this.plugin.settings.backgroundScribeEnabled) return;
+  activate(): boolean {
+    if (this.isActive) return true;
+    if (!this.plugin.settings.backgroundScribeEnabled) return false;
     this.isActive = true;
     this.plugin.app.workspace.on(
       "vault-intelligence:chat-turn" as any,
       this.handleChatTurn
     );
     console.log("[BackgroundScribe] Activated - will buffer chat turns");
+    return true;
   }
 
   deactivate(): void {

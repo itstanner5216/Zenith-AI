@@ -1350,8 +1350,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       plugin.backgroundScribe.deactivate();
       setScribeActive(false);
     } else {
-      plugin.backgroundScribe.activate();
-      setScribeActive(true);
+      const activated = plugin.backgroundScribe.activate();
+      if (activated) {
+        setScribeActive(true);
+      }
     }
   }, [plugin.backgroundScribe, scribeActive]);
 

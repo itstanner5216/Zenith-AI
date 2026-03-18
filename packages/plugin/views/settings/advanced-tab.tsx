@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Notice } from "obsidian";
 import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
+import { ZenithAISettings } from "../../settings";
+import { ToggleSetting } from "./components";
 
 interface AdvancedTabProps {
   plugin: ZenithAI;
@@ -18,6 +20,9 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
   const [debugMode, setDebugMode] = useState(plugin.settings.debugMode);
   const [showLocalLLMInChat, setShowLocalLLMInChat] = useState(
     plugin.settings.showLocalLLMInChat
+  );
+  const [backgroundScribeEnabled, setBackgroundScribeEnabled] = useState(
+    plugin.settings.backgroundScribeEnabled
   );
   const [showLogs, setShowLogs] = useState(false);
   const [contentCutoffChars, setContentCutoffChars] = useState(
@@ -37,18 +42,29 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     setEnableSelfHosting(plugin.settings.enableSelfHosting);
     setSelfHostingURL(plugin.settings.selfHostingURL);
     setShowLocalLLMInChat(plugin.settings.showLocalLLMInChat);
+    setBackgroundScribeEnabled(plugin.settings.backgroundScribeEnabled);
   }, [
     plugin.settings.useLogs,
     plugin.settings.debugMode,
     plugin.settings.enableSelfHosting,
     plugin.settings.selfHostingURL,
     plugin.settings.showLocalLLMInChat,
+    plugin.settings.backgroundScribeEnabled,
   ]);
 
-  const handleToggleChange = async (value: boolean) => {
-    setEnableSelfHosting(value);
-    plugin.settings.enableSelfHosting = value;
+  // Generic helper: update local state, persist to settings, save — no side effects.
+  const handleBooleanSettingChange = async (
+    value: boolean,
+    setter: React.Dispatch<React.SetStateAction<boolean>>,
+    settingKey: keyof ZenithAISettings
+  ) => {
+    setter(value);
+    (plugin.settings as any)[settingKey] = value;
     await plugin.saveSettings();
+  };
+
+  const handleToggleChange = async (value: boolean) => {
+    await handleBooleanSettingChange(value, setEnableSelfHosting, "enableSelfHosting");
   };
 
   const handleURLChange = async (value: string) => {
@@ -65,10 +81,8 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Zenith-AI File Logs"
         description="Allows you to keep track of the changes made by file Organizer."
         value={useLogs}
-        onChange={value => {
-          setUseLogs(value);
-          plugin.settings.useLogs = value;
-          plugin.saveSettings();
+        onChange={async (value) => {
+          await handleBooleanSettingChange(value, setUseLogs, "useLogs");
         }}
       />
 
@@ -76,11 +90,9 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Debug Mode"
         description="Enable detailed logging for troubleshooting. This may impact performance."
         value={debugMode}
-        onChange={value => {
-          setDebugMode(value);
+        onChange={async (value) => {
           logger.configure(value);
-          plugin.settings.debugMode = value;
-          plugin.saveSettings();
+          await handleBooleanSettingChange(value, setDebugMode, "debugMode");
         }}
       />
       </div>
@@ -140,10 +152,17 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         name="Enable Local LLM in Chat"
         description="Show the model selector in chat and allow routing to a local Ollama model instead of the cloud API."
         value={showLocalLLMInChat}
-        onChange={value => {
-          setShowLocalLLMInChat(value);
-          plugin.settings.showLocalLLMInChat = value;
-          plugin.saveSettings();
+        onChange={async (value) => {
+          await handleBooleanSettingChange(value, setShowLocalLLMInChat, "showLocalLLMInChat");
+        }}
+      />
+
+      <ToggleSetting
+        name="Background Scribe"
+        description="Automatically buffer chat turns and synthesize a TODO file from your conversation. Enable to allow the ▶ Scribe button in the chat panel to start recording."
+        value={backgroundScribeEnabled}
+        onChange={async (value) => {
+          await handleBooleanSettingChange(value, setBackgroundScribeEnabled, "backgroundScribeEnabled");
         }}
       />
       </div>
@@ -298,11 +317,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             min="100"
             max="10000"
             value={contentCutoffChars}
-            onChange={e => {
+            onChange={async e => {
               const value = parseInt(e.target.value);
               setContentCutoffChars(value);
               plugin.settings.contentCutoffChars = value;
-              plugin.saveSettings();
+              await plugin.saveSettings();
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -325,11 +344,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             max="500000"
             step="1000"
             value={maxFormattingTokens}
-            onChange={e => {
+            onChange={async e => {
               const value = parseInt(e.target.value);
               setMaxFormattingTokens(value);
               plugin.settings.maxFormattingTokens = value;
-              plugin.saveSettings();
+              await plugin.saveSettings();
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -349,11 +368,11 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
             min="1"
             max="500"
             value={pdfPageLimit}
-            onChange={e => {
+            onChange={async e => {
               const value = parseInt(e.target.value, 10);
               setPdfPageLimit(value);
               plugin.settings.pdfPageLimit = value;
-              plugin.saveSettings();
+              await plugin.saveSettings();
             }}
             className="w-24 bg-[var(--bg-depth-1)] text-[var(--text-normal)] text-xs border border-[var(--border-defined)] rounded-md px-2 py-1 text-center focus:outline-none focus:border-[var(--border-active)] focus:ring-1 focus:ring-[var(--border-accent)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)] transition-all duration-150"
           />
@@ -363,45 +382,3 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     </div>
   );
 };
-
-interface ToggleSettingProps {
-  name: string;
-  description: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-}
-
-const ToggleSetting: React.FC<ToggleSettingProps> = ({
-  name,
-  description,
-  value,
-  onChange,
-}) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-[var(--border-subtle)] last:border-b-0">
-    <div>
-      <div className="font-medium text-[var(--text-normal)]">{name}</div>
-      <div className="text-xs text-[var(--text-dim)] opacity-70">{description}</div>
-    </div>
-    <div>
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={e => onChange(e.target.checked)}
-          className="sr-only peer"
-        />
-        <div className={`relative w-8 h-4 rounded-full border transition-all duration-200 ${
-          value
-            ? 'bg-[rgba(14,210,247,0.25)] border-[var(--text-accent)] shadow-[0_0_6px_rgba(14,210,247,0.3)]'
-            : 'bg-[var(--bg-depth-1)] border-[var(--border-accent)]'
-        }`}>
-          <div className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
-            value
-              ? 'right-0.5 bg-[var(--text-accent)]'
-              : 'left-0.5 bg-[var(--text-dim)] opacity-60'
-          }`} />
-        </div>
-      </label>
-    </div>
-  </div>
-);
