@@ -113,7 +113,19 @@ export class BackgroundScribe {
         throw new Error(`Background Scribe output parent path is not a folder: ${parentDir}`);
       }
       if (!existingFolder) {
-        await this.plugin.app.vault.createFolder(parentDir);
+        // Create parent folders recursively
+        const parts = parentDir.split('/');
+        let currentPath = '';
+        for (const part of parts) {
+          currentPath = currentPath ? `${currentPath}/${part}` : part;
+          const existing = this.plugin.app.vault.getAbstractFileByPath(currentPath);
+          if (existing && !(existing instanceof TFolder)) {
+            throw new Error(`Background Scribe output parent path is not a folder: ${currentPath}`);
+          }
+          if (!existing) {
+            await this.plugin.app.vault.createFolder(currentPath);
+          }
+        }
       }
     }
     const file = this.plugin.app.vault.getAbstractFileByPath(path);
