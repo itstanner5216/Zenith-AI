@@ -14,10 +14,16 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
   const [customFolderInstructions, setCustomFolderInstructions] = useState(plugin.settings.customFolderInstructions);
   const [enableDocumentClassification, setEnableDocumentClassification] = useState(plugin.settings.enableDocumentClassification);
   const [customTagInstructions, setCustomTagInstructions] = useState(plugin.settings.customTagInstructions);
+  const [enableProcessingNotifications, setEnableProcessingNotifications] = useState(plugin.settings.enableProcessingNotifications ?? true);
   const [vertexBrainUrl, setVertexBrainUrl] = useState(plugin.settings.vertexBrainUrl ?? "");
   const [enableVectorAutoSort, setEnableVectorAutoSort] = useState(plugin.settings.enableVectorAutoSort ?? false);
   const [autoSortConfidenceThreshold, setAutoSortConfidenceThreshold] = useState(plugin.settings.autoSortConfidenceThreshold ?? 0.75);
+  const [generalMergeThreshold, setGeneralMergeThreshold] = useState(plugin.settings.generalMergeThreshold ?? 0.50);
+  const [globalMergeThreshold, setGlobalMergeThreshold] = useState(plugin.settings.globalMergeThreshold ?? 0.70);
+  const [pinnedTag, setPinnedTag] = useState(plugin.settings.pinnedTag ?? "pinned");
+  const [projectsPath, setProjectsPath] = useState(plugin.settings.projectsPath ?? "Projects");
   const [organizationRulesPath, setOrganizationRulesPath] = useState(plugin.settings.organizationRulesPath ?? "");
+  const [backgroundScribeOutputFile, setBackgroundScribeOutputFile] = useState(plugin.settings.backgroundScribeOutputFile ?? "TODO.md");
 
   // force set user embeddings to false
   useEffect(() => {
@@ -77,6 +83,12 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             description="Automatically append similar tags to new files during inbox processing."
             value={useSimilarTags}
             onChange={(value) => handleToggleChange(value, setUseSimilarTags, 'useSimilarTags')}
+          />
+          <ToggleSetting
+            name="Processing Notifications"
+            description="Show toast notifications during inbox file processing (bypass, error, and progress notices)."
+            value={enableProcessingNotifications}
+            onChange={(value) => handleToggleChange(value, setEnableProcessingNotifications, 'enableProcessingNotifications')}
           />
         </div>
       </section>
@@ -140,6 +152,17 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               value={customFolderInstructions}
               onChange={(value) => handleTextChange(value, setCustomFolderInstructions, 'customFolderInstructions')}
             />
+            <TextInputSetting
+              name="Pinned Tag"
+              description="Files with this tag will be excluded from auto-sort. Leave empty to disable."
+              value={pinnedTag}
+              placeholder="pinned"
+              onChange={async (value) => {
+                setPinnedTag(value);
+                (plugin.settings.pinnedTag as string) = value;
+                await plugin.saveSettings();
+              }}
+            />
           </div>
         </div>
 
@@ -184,6 +207,43 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
               await plugin.saveSettings();
             }}
           />
+          <NumberInputSetting
+            name="General Merge Threshold"
+            description="Confidence threshold (0–1) for auto-sorting files from the General directory into Projects. Default: 0.50"
+            value={generalMergeThreshold}
+            min={0}
+            max={1}
+            step={0.05}
+            onChange={async (value) => {
+              setGeneralMergeThreshold(value);
+              (plugin.settings.generalMergeThreshold as number) = value;
+              await plugin.saveSettings();
+            }}
+          />
+          <NumberInputSetting
+            name="Global Merge Threshold"
+            description="Confidence threshold (0–1) for auto-sorting files from non-General, non-Project locations. Default: 0.70"
+            value={globalMergeThreshold}
+            min={0}
+            max={1}
+            step={0.05}
+            onChange={async (value) => {
+              setGlobalMergeThreshold(value);
+              (plugin.settings.globalMergeThreshold as number) = value;
+              await plugin.saveSettings();
+            }}
+          />
+          <TextInputSetting
+            name="Projects Path"
+            description="Root folder used for project detection during auto-sort and Background Scribe. Default: Projects"
+            value={projectsPath}
+            placeholder="Projects"
+            onChange={async (value) => {
+              setProjectsPath(value);
+              (plugin.settings.projectsPath as string) = value;
+              await plugin.saveSettings();
+            }}
+          />
           <TextInputSetting
             name="Cosmic Vault Structure Path"
             description="Path to the note that defines your Cosmic Vault Structure"
@@ -192,6 +252,29 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({ plugin }) =>
             onChange={async (value) => {
               setOrganizationRulesPath(value);
               (plugin.settings.organizationRulesPath as string) = value;
+              await plugin.saveSettings();
+            }}
+          />
+        </div>
+      </section>
+
+      {/* Background Scribe Section */}
+      <section>
+        <h3 className="text-lg font-semibold mb-4 text-[var(--text-accent)]">Background Scribe</h3>
+        <div className="bg-[var(--bg-depth-3)] p-4 rounded-lg mb-4 border border-[var(--border-defined)] shadow-elevation-md">
+          <div className="text-xs text-[var(--text-dim)] opacity-70">
+            Background Scribe buffers chat conversations and synthesizes actionable TODO items into a file. Toggle it on/off from the AI chat panel.
+          </div>
+        </div>
+        <div className="space-y-4">
+          <TextInputSetting
+            name="Scribe Output File"
+            description="File path where Background Scribe writes synthesized TODO items. Default: TODO.md"
+            value={backgroundScribeOutputFile}
+            placeholder="TODO.md"
+            onChange={async (value) => {
+              setBackgroundScribeOutputFile(value);
+              (plugin.settings.backgroundScribeOutputFile as string) = value;
               await plugin.saveSettings();
             }}
           />
