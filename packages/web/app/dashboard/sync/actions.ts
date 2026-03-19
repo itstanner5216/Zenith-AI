@@ -1,10 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { db, uploadedFiles } from "@/drizzle/schema";
 import { eq, desc, sql } from "drizzle-orm";
-import { put } from "@vercel/blob";
-import { revalidatePath } from "next/cache";
 
 // Types
 interface PaginationParams {
@@ -38,46 +35,18 @@ interface FileStatusResponse {
   error: string | null;
 }
 
-interface UploadFileParams {
-  name: string;
-  type: string;
-  base64: string;
-}
-
-interface UploadResponse {
-  success: boolean;
-  fileId?: number;
-  status?: string;
-  error?: string;
-  retryable?: boolean;
-}
-
-const ALLOWED_FILE_TYPES = {
-  "application/pdf": "pdf",
-  "image/jpeg": "image",
-  "image/png": "image",
-  "image/webp": "image",
-};
-
 // Get files with pagination
 export async function getFiles(
   { page = 1, limit = 10 },
-  someUserId?: string
+  userId?: string
 ): Promise<FileListResponse | { error: string }> {
   try {
-    let userId = someUserId;
-    if (!someUserId) {
-      const authResult = await auth();
-      userId = authResult.userId;
-    }
-
     if (!userId) {
       return { error: "Unauthorized" };
     }
 
     const offset = (page - 1) * limit;
 
-    // Get files with pagination
     const files = await db
       .select({
         id: uploadedFiles.id,
@@ -96,7 +65,6 @@ export async function getFiles(
       .limit(limit)
       .offset(offset);
 
-    // Get total count
     const [{ count }] = await db
       .select({
         count: sql<number>`count(*)`,
@@ -125,12 +93,10 @@ export async function getFileStatus(
   userId?: string
 ): Promise<FileStatusResponse | { error: string }> {
   try {
-    // Regular web authentication flow
     if (!userId) {
       return { error: "Unauthorized" };
     }
 
-    // Check if file exists and belongs to user
     const [file] = await db
       .select({
         userId: uploadedFiles.userId,
@@ -146,12 +112,10 @@ export async function getFileStatus(
       return { error: "File not found" };
     }
 
-    // Check if file belongs to user
     if (file.userId !== userId) {
       return { error: "Unauthorized" };
     }
 
-    // Return file status
     return {
       status: file.status,
       text: file.textContent,
@@ -163,85 +127,16 @@ export async function getFileStatus(
   }
 }
 
-// Upload file
-export async function uploadFile(
-  { name: fileName, type: mimeType, base64 }: UploadFileParams,
-  userId?: string
-): Promise<UploadResponse> {
-  try {
-    // Regular web authentication flow
-    if (!userId) {
-      return {
-        success: false,
-        error: "Unauthorized",
-        retryable: false,
-      };
-    }
-
-    if (!fileName || !mimeType || !base64) {
-      return {
-        success: false,
-        error: "Missing required fields",
-        retryable: true,
-      };
-    }
-
-    // Generate a unique blob name
-    const blobName = `${Date.now()}-${fileName.replace(
-      /[^a-zA-Z0-9.-]/g,
-      "_"
-    )}`;
-
-    // Normalize file type for consistency
-    let normalizedMimeType = mimeType;
-    if (mimeType.toLowerCase().includes("pdf")) {
-      normalizedMimeType = "application/pdf";
-    }
-
-    // Upload to blob storage
-    const { url } = await put(blobName, Buffer.from(base64, "base64"), {
-      contentType: normalizedMimeType,
-      access: "public",
-    });
-
-    // Create database record
-    const [file] = await db
-      .insert(uploadedFiles)
-      .values({
-        userId,
-        originalName: fileName,
-        fileType: normalizedMimeType,
-        status: "uploaded",
-        blobUrl: url,
-      })
-      .returning();
-
-    return {
-      success: true,
-      fileId: file.id,
-      status: file.status,
-    };
-  } catch (error) {
-    console.error("Upload error:", error);
-    return {
-      success: false,
-      error: "Server error during upload",
-      retryable: true,
-    };
-  }
-}
-
 // Delete file
 export async function deleteFile(
-  fileId: number
+  fileId: number,
+  userId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { userId } = await auth();
     if (!userId) {
       return { success: false, error: "Unauthorized" };
     }
 
-    // Check if file exists and belongs to user
     const [file] = await db
       .select()
       .from(uploadedFiles)
@@ -256,11 +151,7 @@ export async function deleteFile(
       return { success: false, error: "Unauthorized" };
     }
 
-    // Delete from database
     await db.delete(uploadedFiles).where(eq(uploadedFiles.id, fileId));
-
-    // Revalidate the files page to reflect the deletion
-    revalidatePath("/dashboard/sync");
 
     return { success: true };
   } catch (error) {

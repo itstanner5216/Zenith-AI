@@ -1,56 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db, uploadedFiles, UploadedFile } from "@/drizzle/schema";
 import { eq, or, and } from "drizzle-orm";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import fs from "fs";
+import path from "path";
 import sharp from "sharp";
 import { processImageWithVision } from "@/lib/vision";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
-export const maxDuration = 800; // This function can run for a maximum of 5 seconds
+export const maxDuration = 800;
 
-// --- R2/S3 Configuration (Copied from process-pending-uploads) ---
-const R2_BUCKET = process.env.R2_BUCKET;
-const R2_ENDPOINT = process.env.R2_ENDPOINT;
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
-const R2_REGION = process.env.R2_REGION || "auto";
+// --- Local Filesystem Helpers ---
+const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads');
 
-if (!R2_BUCKET || !R2_ENDPOINT || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY) {
-  console.error("Missing R2 environment variables!");
+function readLocalFile(filePath: string): Buffer {
+  const fullPath = filePath.startsWith('/') ? filePath : path.join(process.cwd(), filePath);
+  return fs.readFileSync(fullPath);
 }
 
-const r2Client = new S3Client({
-  endpoint: R2_ENDPOINT,
-  region: R2_REGION,
-  credentials: {
-    accessKeyId: R2_ACCESS_KEY_ID!,
-    secretAccessKey: R2_SECRET_ACCESS_KEY!,
-  },
-});
-
-// --- Helper Functions (Copied/Adapted from process-pending-uploads) ---
-
-// Helper to download from R2 and return a Buffer
-async function downloadFromR2(key: string): Promise<Buffer> {
-  console.log(`Downloading from R2: ${key}`);
-  const command = new GetObjectCommand({
-    Bucket: R2_BUCKET,
-    Key: key,
-  });
-
-  try {
-    const response = await r2Client.send(command);
-    if (!response.Body) {
-      throw new Error("No body received from R2 getObject");
-    }
-    const byteArray = await response.Body.transformToByteArray();
-    return Buffer.from(byteArray);
-  } catch (error) {
-    console.error(`Error downloading ${key} from R2:`, error);
-    throw new Error(`Failed to download file from R2: ${key}`);
+function getLocalFilePath(fileRecord: { blobUrl: string; r2Key: string | null }): string {
+  if (fileRecord.r2Key) {
+    return path.join(UPLOAD_DIR, path.basename(fileRecord.r2Key));
   }
+  const blobPath = fileRecord.blobUrl;
+  if (blobPath.startsWith('/')) {
+    return path.join(process.cwd(), blobPath);
+  }
+  const parts = blobPath.split('/');
+  const uploadIdx = parts.findIndex(p => p === 'uploads');
+  if (uploadIdx !== -1) {
+    return path.join(UPLOAD_DIR, ...parts.slice(uploadIdx + 1));
+  }
+  return path.join(UPLOAD_DIR, parts[parts.length - 1]);
 }
 
-// --- Reusable Processing Function (Copied from process-pending-uploads) ---
+// --- Reusable Processing Function ---
 async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
   status: "completed" | "error";
   textContent: string | null;
@@ -65,32 +47,9 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
   try {
     console.log(`Starting single file processing for ID: ${fileId}`);
 
-    // Determine R2 key
-    let r2Key = fileRecord.r2Key;
-    if (!r2Key) {
-      const urlParts = fileRecord.blobUrl.split("/");
-      const uploadSegmentIndex = urlParts.findIndex(
-        (part) => part === "uploads"
-      );
-      if (
-        uploadSegmentIndex !== -1 &&
-        uploadSegmentIndex < urlParts.length - 1
-      ) {
-        r2Key = urlParts.slice(uploadSegmentIndex).join("/");
-        console.log(`Derived R2 key from blobUrl: ${r2Key}`);
-      } else {
-        throw new Error(
-          `Could not determine R2 key from blobUrl: ${fileRecord.blobUrl}`
-        );
-      }
-    }
-    if (!r2Key) {
-      throw new Error(`Missing R2 key for file ID ${fileId}`);
-    }
-
-    // Download file from R2
-    // Note: Downloading happens here, not needed before calling this function if called directly
-    // const buffer = await downloadFromR2(r2Key); // This line is removed if buffer is not needed directly here
+    // Determine local file path
+    const localPath = getLocalFilePath(fileRecord);
+    console.log(`Using local file path: ${localPath}`);
 
     const fileType = fileRecord.fileType.toLowerCase();
 
@@ -101,7 +60,6 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
       textContent = "[PDF Content - Processing Pending Implementation]";
       tokensUsed = 0;
     } else if (fileType.startsWith("image/")) {
-      // We pass the public blobUrl directly to the vision model
       console.log(
         `Processing Image (${fileId}) using vision model with URL: ${fileRecord.blobUrl}`
       );
@@ -115,17 +73,13 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
         processingError = textContent;
       }
     } else {
-      // Handle text files explicitly if needed, otherwise mark as unsupported
       if (fileType === "text/plain" || fileType === "text/markdown") {
-        // For text files, we need the content. Download if not already present?
-        // Assuming text content might be handled differently or stored directly
-        // For now, let's assume direct text uploads are handled elsewhere or text needs download
         console.warn(
-          `Text file processing (${fileId}) needs content - assuming download required`
+          `Text file processing (${fileId}) - reading from local filesystem`
         );
-        const buffer = await downloadFromR2(r2Key);
+        const buffer = readLocalFile(localPath);
         textContent = buffer.toString("utf-8");
-        tokensUsed = 0; // No LLM processing cost for plain text
+        tokensUsed = 0;
         console.log(
           `Extracted ${textContent.length} chars from text file ${fileId}`
         );
@@ -172,10 +126,8 @@ export async function POST(request: NextRequest) {
     // 1. Authorization
     console.log("API: Received request to /api/process-file");
     const authResult = await handleAuthorizationV2(request);
-    userId = authResult.userId; // Assign userId here
+    userId = authResult.userId;
     if (!userId) {
-      // handleAuthorizationV2 should throw or return specific structure on failure
-      // but double-check ensures userId is available.
       console.error("Authorization failed - no userId returned");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -228,10 +180,10 @@ export async function POST(request: NextRequest) {
         `File ${fileId} is already in status '${fileRecord.status}'. Skipping reprocessing.`
       );
       return NextResponse.json({
-        success: true, // Indicate the call was received okay
+        success: true,
         message: `File already processed with status: ${fileRecord.status}`,
         status: fileRecord.status,
-        text: fileRecord.textContent, // Return existing text if completed
+        text: fileRecord.textContent,
         error: fileRecord.error,
       });
     }
@@ -240,7 +192,7 @@ export async function POST(request: NextRequest) {
     console.log(`Marking file ${fileId} as processing...`);
     await db
       .update(uploadedFiles)
-      .set({ status: "processing", updatedAt: new Date(), error: null }) // Clear previous error
+      .set({ status: "processing", updatedAt: new Date(), error: null })
       .where(eq(uploadedFiles.id, fileId));
 
     // 5. Call Reusable Processing Function
@@ -272,7 +224,6 @@ export async function POST(request: NextRequest) {
           `Failed to increment token usage for user ${userId} after processing file ${fileId}:`,
           tokenError
         );
-        // Log but don't fail the overall request
       }
     }
 
@@ -285,12 +236,11 @@ export async function POST(request: NextRequest) {
         success: true,
         message: "File processed successfully.",
         status: result.status,
-        text: result.textContent, // Return extracted text on success
+        text: result.textContent,
       });
     } else {
-      // Return error status but 200 OK for the API call itself
       return NextResponse.json({
-        success: false, // Indicate processing failed
+        success: false,
         message: "File processing failed.",
         status: result.status,
         error: result.error,
@@ -302,9 +252,7 @@ export async function POST(request: NextRequest) {
       error
     );
 
-    // Attempt to mark the file as error if possible
     if (fileId && userId) {
-      // Check if we have enough info
       try {
         await db
           .update(uploadedFiles)
@@ -317,7 +265,7 @@ export async function POST(request: NextRequest) {
           })
           .where(
             and(eq(uploadedFiles.id, fileId), eq(uploadedFiles.userId, userId))
-          ); // Ensure user match
+          );
       } catch (dbUpdateError) {
         console.error(
           `Failed to mark file ${fileId} as error after unhandled exception:`,
@@ -326,7 +274,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return a generic server error response
     return NextResponse.json(
       { error: "Failed to process file due to an internal server error." },
       { status: 500 }
