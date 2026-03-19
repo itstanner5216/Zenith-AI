@@ -32,10 +32,7 @@ import {
 import { ZenithAISettings, DEFAULT_SETTINGS } from "./settings";
 
 import { registerEventHandlers } from "./handlers/eventHandlers";
-import {
-  initializeOrganizer,
-  initializeFileOrganizationCommands,
-} from "./handlers/commandHandlers";
+import { initializeOrganizer } from "./handlers/commandHandlers";
 import {
   ensureFolderExists,
 } from "./fileUtils";
@@ -122,7 +119,6 @@ export default class ZenithAI extends Plugin {
     await this.saveSettings();
 
     initializeOrganizer(this);
-    initializeFileOrganizationCommands(this);
 
     this.app.workspace.onLayoutReady(() => registerEventHandlers(this));
 
