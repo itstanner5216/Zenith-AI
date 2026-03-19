@@ -33,10 +33,6 @@ import {
   AssistantViewWrapper,
   ORGANIZER_VIEW_TYPE,
 } from "./views/assistant/view";
-import {
-  DashboardView,
-  DASHBOARD_VIEW_TYPE,
-} from "./views/assistant/dashboard/view";
 
 import { ZenithAISettings, DEFAULT_SETTINGS } from "./settings";
 
@@ -538,8 +534,7 @@ export default class ZenithAI extends Plugin {
       const doc = await pdfjsLib.getDocument({ data: bytes }).promise;
       let text = "";
 
-      // Use pdfPageLimit to cap the maximum pages read.
-      const pageLimit = Math.min(doc.numPages, this.settings.pdfPageLimit);
+      const pageLimit = doc.numPages;
       for (let pageNum = 1; pageNum <= pageLimit; pageNum++) {
         const page = await doc.getPage(pageNum);
         const textContent = await page.getTextContent();
@@ -619,7 +614,7 @@ export default class ZenithAI extends Plugin {
     content: string,
     classifications: string[]
   ): Promise<string> {
-    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
+    const trimmedContent = content.slice(0, 1000);
 
     // Use server-based approach (default or fallback)
     const serverUrl = this.getServerUrl();
@@ -747,7 +742,6 @@ export default class ZenithAI extends Plugin {
     const settingsPaths = [
       this.settings.pathToWatch,
       this.settings.defaultDestinationPath,
-      this.settings.attachmentsPath,
       this.settings.backupFolderPath,
     ];
     const allFiles = this.app.vault.getMarkdownFiles();
@@ -762,11 +756,9 @@ export default class ZenithAI extends Plugin {
     const ignoredFolders = [
       ...this.settings.ignoreFolders,
       this.settings.defaultDestinationPath,
-      this.settings.attachmentsPath,
       this.settings.backupFolderPath,
       this.settings.templatePaths,
       this.settings.pathToWatch,
-      this.settings.errorFilePath,
       "_ZenithAI",
       "/",
     ];
@@ -843,7 +835,7 @@ export default class ZenithAI extends Plugin {
   ): Promise<
     Array<{ score: number; tag: string; reason: string; isNew: boolean }>
   > {
-    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
+    const trimmedContent = content.slice(0, 1000);
 
     // Use server-based approach (default or fallback)
     const response = await fetch(`${this.getServerUrl()}/api/tags/v2`, {
@@ -856,7 +848,6 @@ export default class ZenithAI extends Plugin {
         content: trimmedContent,
         fileName: filePath,
         existingTags,
-        customInstructions: this.settings.customTagInstructions,
       }),
     });
 
@@ -908,8 +899,7 @@ export default class ZenithAI extends Plugin {
     content: string,
     fileName: string
   ): Promise<FolderSuggestion[]> {
-    const customInstructions = this.settings.customFolderInstructions;
-    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
+    const trimmedContent = content.slice(0, 1000);
 
     const folders = this.getAllUserFolders();
 
@@ -925,7 +915,7 @@ export default class ZenithAI extends Plugin {
         content: trimmedContent,
         fileName: fileName,
         folders,
-        customInstructions: `${customInstructions}${rulesContext}`,
+        customInstructions: rulesContext || undefined,
       }),
     });
 
@@ -995,16 +985,6 @@ export default class ZenithAI extends Plugin {
       return;
     }
 
-    // Append similar tags
-    if (this.settings.useSimilarTagsInFrontmatter) {
-      await this.appendToFrontMatter(
-        file,
-        "tags",
-        formattedTag.replace("#", "")
-      );
-      return;
-    }
-
     // If we find no '#' symbol at all, add a blank line before appending the first tag
     if (!fileContent.includes("#")) {
       await this.app.vault.append(file, `\n\n${formattedTag}`);
@@ -1030,17 +1010,8 @@ export default class ZenithAI extends Plugin {
 
     if (!newTags.length) return;
 
-    if (this.settings.useSimilarTagsInFrontmatter) {
-      await this.app.fileManager.processFrontMatter(file, (fm) => {
-        fm.tags = fm.tags || [];
-        for (const tag of newTags) {
-          fm.tags.push(tag.replace("#", ""));
-        }
-      });
-    } else {
-      const prefix = fileContent.includes("#") ? "\n" : "\n\n";
-      await this.app.vault.append(file, prefix + newTags.join("\n"));
-    }
+    const prefix = fileContent.includes("#") ? "\n" : "\n\n";
+    await this.app.vault.append(file, prefix + newTags.join("\n"));
   }
 
   async ensureAssistantView(): Promise<AssistantViewWrapper | null> {
@@ -1227,9 +1198,6 @@ export default class ZenithAI extends Plugin {
       },
     });
 
-    // Dashboard infrastructure is preserved for a future planning workspace,
-    // but it is intentionally not exposed in the current product surface.
-
     // Add processing status bar item
     this.statusBarItem = this.addStatusBarItem();
     this.statusBarRoot = createRoot(this.statusBarItem);
@@ -1338,9 +1306,7 @@ export default class ZenithAI extends Plugin {
     content: string,
     fileName: string
   ): Promise<TitleSuggestion[]> {
-    const trimmedContent = content.slice(0, this.settings.contentCutoffChars);
-
-    const customInstructions = this.settings.renameInstructions;
+    const trimmedContent = content.slice(0, 1000);
     const response = await fetch(`${this.getServerUrl()}/api/title/v2`, {
       method: "POST",
       headers: {
@@ -1350,7 +1316,6 @@ export default class ZenithAI extends Plugin {
       body: JSON.stringify({
         content: trimmedContent,
         fileName: fileName,
-        customInstructions,
       }),
     });
 
@@ -1372,28 +1337,6 @@ export default class ZenithAI extends Plugin {
     return titles;
   }
 
-  async activateDashboard(): Promise<DashboardView | null> {
-    const { workspace } = this.app;
-
-    let leaf = workspace.getLeavesOfType(DASHBOARD_VIEW_TYPE)[0];
-
-    if (!leaf) {
-      const rightLeaf = workspace.getRightLeaf(false);
-      if (rightLeaf) {
-        leaf = rightLeaf;
-        await leaf.setViewState({
-          type: DASHBOARD_VIEW_TYPE,
-          active: true,
-        });
-      } else {
-        return null;
-      }
-    }
-
-    workspace.revealLeaf(leaf);
-    return leaf.view as DashboardView;
-  }
-
   // Create all necessary folders for the plugin to function properly
   public async checkAndCreateRequiredFolders(): Promise<void> {
     try {
@@ -1401,13 +1344,9 @@ export default class ZenithAI extends Plugin {
       const folderPaths = [
         this.settings.pathToWatch,
         this.settings.defaultDestinationPath,
-        this.settings.attachmentsPath,
         this.settings.logFolderPath,
         this.settings.backupFolderPath,
         this.settings.templatePaths,
-        this.settings.bypassedFilePath,
-        this.settings.errorFilePath,
-        this.settings.syncFolderPath,
       ];
 
       // Create each folder individually using ensureFolderExists

@@ -323,10 +323,8 @@ export async function checkAndCreateFolders(
 ) {
   await ensureFolderExists(app, settings.pathToWatch);
   await ensureFolderExists(app, settings.defaultDestinationPath);
-  await ensureFolderExists(app, settings.attachmentsPath);
   await ensureFolderExists(app, settings.logFolderPath);
   await ensureFolderExists(app, settings.templatePaths);
-
   await ensureFolderExists(app, settings.backupFolderPath);
 }
 

@@ -65,4 +65,5 @@ tsconfig.tsbuildinfo
 
 .worktrees/
 AGENTS.md
+.gitignore
 public/_piny/piny.phone.js

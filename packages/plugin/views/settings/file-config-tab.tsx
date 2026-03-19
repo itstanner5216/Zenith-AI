@@ -10,9 +10,6 @@ interface FileConfigTabProps {
 
 export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
   const [pathToWatch, setPathToWatch] = useState(plugin.settings.pathToWatch);
-  const [attachmentsPath, setAttachmentsPath] = useState(
-    plugin.settings.attachmentsPath
-  );
   const [logFolderPath, setLogFolderPath] = useState(
     plugin.settings.logFolderPath
   );
@@ -27,15 +24,6 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
   );
   const [templatePaths, setTemplatePaths] = useState(
     plugin.settings.templatePaths
-  );
-  const [bypassedFilePath, setBypassedFilePath] = useState(
-    plugin.settings.bypassedFilePath
-  );
-  const [errorFilePath, setErrorFilePath] = useState(
-    plugin.settings.errorFilePath
-  );
-  const [recordingsFolderPath, setRecordingsFolderPath] = useState(
-    plugin.settings.recordingsFolderPath
   );
 
   const [warnings, setWarnings] = useState<Record<string, string>>({});
@@ -240,13 +228,10 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     const checkPaths = async () => {
       const pathsToCheck = [
         pathToWatch,
-        attachmentsPath,
         logFolderPath,
         defaultDestinationPath,
         backupFolderPath,
         templatePaths,
-        bypassedFilePath,
-        errorFilePath,
       ];
 
       const existenceResults = await Promise.all(
@@ -259,13 +244,10 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     checkPaths();
   }, [
     pathToWatch,
-    attachmentsPath,
     logFolderPath,
     defaultDestinationPath,
     backupFolderPath,
     templatePaths,
-    bypassedFilePath,
-    errorFilePath,
   ]);
 
   useEffect(() => {
@@ -279,13 +261,10 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     };
 
     checkPath(pathToWatch, "pathToWatch");
-    checkPath(attachmentsPath, "attachmentsPath");
     checkPath(logFolderPath, "logFolderPath");
     checkPath(defaultDestinationPath, "defaultDestinationPath");
     checkPath(backupFolderPath, "backupFolderPath");
     checkPath(templatePaths, "templatePaths");
-    checkPath(bypassedFilePath, "bypassedFilePath");
-    checkPath(errorFilePath, "errorFilePath");
 
     // Special check for ignoreFolders
     if (ignoreFolders !== "*") {
@@ -299,14 +278,11 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
     setWarnings(newWarnings);
   }, [
     pathToWatch,
-    attachmentsPath,
     logFolderPath,
     defaultDestinationPath,
     ignoreFolders,
     backupFolderPath,
     templatePaths,
-    bypassedFilePath,
-    errorFilePath,
   ]);
 
   const renderSettingItem = (
@@ -388,18 +364,6 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
           e =>
             handleSettingChange(e.target.value, setPathToWatch, "pathToWatch"),
           "pathToWatch"
-        )}
-        {renderSettingItem(
-          "Attachments folder",
-          "Enter the path to the folder where the original images will be moved.",
-          attachmentsPath,
-          e =>
-            handleSettingChange(
-              e.target.value,
-              setAttachmentsPath,
-              "attachmentsPath"
-            ),
-          "attachmentsPath"
         )}
         {renderSettingItem(
           "File Organizer log folder",
@@ -523,42 +487,6 @@ export const FileConfigTab: React.FC<FileConfigTabProps> = ({ plugin }) => {
             </button>
           </div>
         </div>
-        {renderSettingItem(
-          "Bypassed notes path",
-          "Choose a folder for bypassed notes.",
-          bypassedFilePath,
-          e =>
-            handleSettingChange(
-              e.target.value,
-              setBypassedFilePath,
-              "bypassedFilePath"
-            ),
-          "bypassedFilePath"
-        )}
-        {renderSettingItem(
-          "Error notes path",
-          "Choose a folder for error notes.",
-          errorFilePath,
-          e =>
-            handleSettingChange(
-              e.target.value,
-              setErrorFilePath,
-              "errorFilePath"
-            ),
-          "errorFilePath"
-        )}
-        {renderSettingItem(
-          "Recordings folder",
-          "Choose a folder for meeting recordings.",
-          recordingsFolderPath,
-          e =>
-            handleSettingChange(
-              e.target.value,
-              setRecordingsFolderPath,
-              "recordingsFolderPath"
-            ),
-          "recordingsFolderPath"
-        )}
       </div>
     </div>
   );
