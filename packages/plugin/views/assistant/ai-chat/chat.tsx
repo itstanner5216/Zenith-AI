@@ -117,8 +117,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   interface ReloadBody {
     currentDatetime: string;
     model: string;
-    enableSearchGrounding: boolean;
-    deepSearch: boolean;
     newUnifiedContext: string;
   }
   const forcedReloadBodyRef = useRef<ReloadBody | null>(null);
@@ -251,18 +249,11 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       currentDatetime,
       newUnifiedContext: fullContext,
       model: plugin.settings.selectedModel,
-      enableSearchGrounding:
-        plugin.settings.enableSearchGrounding ||
-        selectedModel === "gpt-4o-search-preview" ||
-        selectedModel === "gpt-4o-mini-search-preview",
-      deepSearch: plugin.settings.enableDeepSearch,
     }),
     [
       currentDatetime,
       fullContext,
       plugin.settings.selectedModel,
-      plugin.settings.enableSearchGrounding,
-      plugin.settings.enableDeepSearch,
       selectedModel,
     ]
   );
@@ -459,11 +450,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         currentDatetime,
         newUnifiedContext: contextToSend,
         model: plugin.settings.selectedModel,
-        enableSearchGrounding:
-          plugin.settings.enableSearchGrounding ||
-          selectedModel === "gpt-4o-search-preview" ||
-          selectedModel === "gpt-4o-mini-search-preview",
-        deepSearch: plugin.settings.enableDeepSearch,
       };
 
       // Return OBJECT (not string) — callChatApi will JSON.stringify it
@@ -1678,11 +1664,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       forcedReloadBodyRef.current = {
         currentDatetime,
         model: plugin.settings.selectedModel,
-        enableSearchGrounding:
-          plugin.settings.enableSearchGrounding ||
-          selectedModel === "gpt-4o-search-preview" ||
-          selectedModel === "gpt-4o-mini-search-preview",
-        deepSearch: plugin.settings.enableDeepSearch,
         newUnifiedContext: snapshot, // ✅ the important part
       };
 
@@ -2006,7 +1987,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 unifiedContext={contextString}
                 maxContextSize={maxContextSize}
               />
-              {/* Removed SearchToggle - search grounding now auto-triggered by tools */}
               {hasScribe && (
                 <button
                   onClick={toggleScribe}
