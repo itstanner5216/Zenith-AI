@@ -7,7 +7,7 @@ describe('DEFAULT_SETTINGS', () => {
 
   it('has correct defaults for all settings', () => {
     expect(DEFAULT_SETTINGS.API_KEY).toBe('');
-    expect(DEFAULT_SETTINGS.enableSelfHosting).toBe(false);
+    expect(DEFAULT_SETTINGS.enableSelfHosting).toBe(true);
     expect(DEFAULT_SETTINGS.selfHostingURL).toBe('http://localhost:3010');
     expect(DEFAULT_SETTINGS.selectedModel).toBe('gpt-4o-mini');
     expect(DEFAULT_SETTINGS.customModelName).toBe('llama3.2');

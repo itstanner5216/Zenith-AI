@@ -21,32 +21,23 @@ function TabContent({
   plugin: ZenithAI;
   onTokenLimitError?: (error: string) => void;
 }) {
+  // Auto-activate/deactivate background scribe based on tab selection
+  React.useEffect(() => {
+    if (activeTab === "scribe") {
+      plugin.backgroundScribe?.activate();
+    } else {
+      plugin.backgroundScribe?.deactivate();
+    }
+  }, [activeTab, plugin]);
+
   return (
     <div className={tw("flex flex-col h-full w-full")}>
-      <div
-        className={tw(
-          "flex-1 min-h-0 w-full",
-          activeTab === "chat" ? "flex flex-col" : "hidden"
-        )}
-      >
-        <AIChatSidebar
-          plugin={plugin}
-          apiKey={plugin.settings.API_KEY}
-          onTokenLimitError={onTokenLimitError}
-          isChatTabActive={activeTab === "chat"}
-        />
-      </div>
-
-      <div
-        className={tw(
-          "flex-1 min-h-0 w-full flex flex-col items-center justify-center",
-          activeTab === "scribe" ? "flex" : "hidden"
-        )}
-      >
-        <div className={tw("text-[#45aaff] text-sm opacity-70")}>
-          Background Scribe is active
-        </div>
-      </div>
+      <AIChatSidebar
+        plugin={plugin}
+        apiKey={plugin.settings.API_KEY}
+        onTokenLimitError={onTokenLimitError}
+        isChatTabActive={true}
+      />
     </div>
   );
 }
@@ -115,12 +106,6 @@ function AssistantContent({
   React.useEffect(() => {
     onTabChange(setActiveTab);
   }, [onTabChange]);
-
-  React.useEffect(() => {
-    if (activeTab === "scribe" && plugin.backgroundScribe) {
-      plugin.backgroundScribe.activate();
-    }
-  }, [activeTab, plugin]);
 
   return (
     <div className={tw("flex flex-col h-full w-full bg-[#0d0b12]")}>

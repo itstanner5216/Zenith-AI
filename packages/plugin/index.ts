@@ -21,8 +21,6 @@ import {
   TFile,
   normalizePath,
   loadPdfJs,
-  CachedMetadata,
-  LinkCache,
 } from "obsidian";
 import { logMessage } from "./someUtils";
 import { ZenithAISettingTab } from "./views/settings/view";
@@ -34,18 +32,15 @@ import {
 import { ZenithAISettings, DEFAULT_SETTINGS } from "./settings";
 
 import { registerEventHandlers } from "./handlers/eventHandlers";
-import {
-  initializeOrganizer,
-  initializeFileOrganizationCommands,
-} from "./handlers/commandHandlers";
+import { initializeOrganizer } from "./handlers/commandHandlers";
 import {
   ensureFolderExists,
-  moveFile,
 } from "./fileUtils";
 
 import { logger } from "./services/logger";
 import { addTextSelectionContext } from "./views/assistant/ai-chat/use-context-items";
 import { BackgroundScribe } from "./services/background-scribe";
+import { createBrainClient } from "./services/vertex-brain-client";
 
 export default class ZenithAI extends Plugin {
   settings: ZenithAISettings;
@@ -56,6 +51,8 @@ export default class ZenithAI extends Plugin {
   }
 
   getServerUrl(): string {
+    // Self-hosting is the default mode
+    // Cloud mode (app.notecompanion.ai) stays in codebase but is not exposed in UI
     let serverUrl = this.settings.enableSelfHosting
       ? this.settings.selfHostingURL
       : "https://app.notecompanion.ai";
@@ -91,27 +88,8 @@ export default class ZenithAI extends Plugin {
     return this.settings.API_KEY;
   }
 
-  async getCurrentFileLinks(file: TFile): Promise<LinkCache[]> {
-    await this.app.vault.read(file);
-    const cache = this.app.metadataCache.getFileCache(file);
-    return cache?.links || [];
-  }
-
   async ensureFolderExists(folderPath: string) {
     await ensureFolderExists(this.app, folderPath);
-  }
-
-  async moveFile(
-    file: TFile,
-    humanReadableFileName: string,
-    destinationFolder = ""
-  ) {
-    return await moveFile(
-      this.app,
-      file,
-      humanReadableFileName,
-      destinationFolder
-    );
   }
 
   async ensureAssistantView(): Promise<AssistantViewWrapper | null> {
@@ -144,7 +122,10 @@ export default class ZenithAI extends Plugin {
     await this.saveSettings();
 
     initializeOrganizer(this);
-    initializeFileOrganizationCommands(this);
+
+    // Initialize Background Scribe
+    const brainClient = createBrainClient(this);
+    this.backgroundScribe = new BackgroundScribe(this, brainClient);
 
     this.app.workspace.onLayoutReady(() => registerEventHandlers(this));
 
@@ -186,5 +167,9 @@ export default class ZenithAI extends Plugin {
   async initializePlugin() {
     await this.loadSettings();
     this.addSettingTab(new ZenithAISettingTab(this.app, this));
+  }
+
+  onunload() {
+    this.backgroundScribe?.deactivate();
   }
 }
