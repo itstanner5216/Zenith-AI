@@ -50,6 +50,8 @@ export default class ZenithAI extends Plugin {
   }
 
   getServerUrl(): string {
+    // Self-hosting is the default mode
+    // Cloud mode (app.notecompanion.ai) stays in codebase but is not exposed in UI
     let serverUrl = this.settings.enableSelfHosting
       ? this.settings.selfHostingURL
       : "https://app.notecompanion.ai";
