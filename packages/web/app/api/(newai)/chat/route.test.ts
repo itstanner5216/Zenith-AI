@@ -8,21 +8,12 @@ jest.mock('ai', () => {
     streamText: jest.fn().mockImplementation(async (options: any) => {
       // Call onFinish immediately to simulate stream completion
       if (options?.onFinish) {
-        // Simulate sources for search mode (when web_search_preview tool is present)
-        if (options?.tools?.web_search_preview) {
           await options.onFinish({
             usage: { totalTokens: 100 },
             sources: [
               { url: 'https://example.com', title: 'Example Website' },
             ],
           });
-        } else {
-          // For non-search mode, call onFinish without sources
-          await options.onFinish({
-            usage: { totalTokens: 100 },
-            sources: [],
-          });
-        }
       }
       return {
         toUIMessageStream: jest.fn(() => new ReadableStream()),
@@ -141,8 +132,8 @@ jest.mock('ai', () => {
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 // Mock the OpenAI SDK
-jest.mock('@ai-sdk/openai', () => ({
-  openai: Object.assign(
+jest.mock('@ai-sdk/openai', () => {
+  const mockOpenai = Object.assign(
     jest.fn(() => ({
       generateText: jest.fn().mockImplementation(async () => ({
         text: 'Test response',
@@ -164,19 +155,18 @@ jest.mock('@ai-sdk/openai', () => ({
       })),
     })),
     {
-      tools: {
-        webSearchPreview: jest.fn((options: any) => ({
-          type: 'web_search_preview',
-          searchContextSize: options?.searchContextSize || 'medium',
-        })),
-      },
+      tools: {},
       responses: jest.fn((model: string) => ({
         generateText: jest.fn(),
         streamText: jest.fn(),
       })),
     }
-  ),
-}));
+  );
+  return {
+    openai: mockOpenai,
+    createOpenAI: jest.fn(() => mockOpenai),
+  };
+});
 
 describe('Chat API Route', () => {
   beforeEach(() => {

@@ -52,23 +52,6 @@ export const chatTools = {
         .describe('The number of last modified files to retrieve'),
     }),
   },
-  appendContentToFile: {
-    description:
-      'Add new content to existing notes while preserving structure and formatting',
-    parameters: z.object({
-      content: z
-        .string()
-        .describe('The formatted content to append to the file'),
-      message: z
-        .string()
-        .describe('Clear explanation of what content will be added'),
-      fileName: z
-        .string()
-        .describe(
-          'Specific file to append to, or empty string to use current file'
-        ),
-    }),
-  },
   addTextToDocument: {
     description:
       'Add new sections or content to notes with proper formatting and structure',
@@ -104,20 +87,6 @@ export const chatTools = {
     description:
       'Create personalized vault organization settings based on user preferences and best practices',
     parameters: settingsSchema,
-  },
-  analyzeVaultStructure: {
-    description:
-      'Analyze vault organization and provide actionable improvement suggestions for initial workspace setup and ongoing organization tuning',
-    parameters: z.object({
-      path: z
-        .string()
-        .describe(
-          "Path to analyze. Use '/' for all files or specific folder path"
-        ),
-      maxDepth: z
-        .number()
-        .describe('Maximum folder depth to analyze (0 = unlimited)'),
-    }),
   },
 
   moveFiles: {
@@ -180,20 +149,7 @@ export const chatTools = {
         ),
     }),
   },
-  executeActionsOnFileBasedOnPrompt: {
-    description:
-      'Analyze and organize files through tagging, moving, or renaming based on content analysis',
-    parameters: z.object({
-      filePaths: z
-        .array(z.string())
-        .describe('List of file paths to analyze and organize'),
-      userPrompt: z
-        .string()
-        .describe('Specific instructions for file organization strategy'),
-    }),
-  },
 
-  // New Metadata & Analysis Tools
   getFileMetadata: {
     description:
       'Extract comprehensive metadata from files including frontmatter, tags, links, headings, and creation/modification dates. Use with includeContent: true when merging notes intelligently or when full content is needed for content-aware operations.',
@@ -217,26 +173,6 @@ export const chatTools = {
     }),
   },
 
-  updateFrontmatter: {
-    description:
-      'Update or add YAML frontmatter properties to files. Can add new properties, update existing ones, or delete properties.',
-    parameters: z.object({
-      filePath: z.string().describe('Path to the file to update'),
-      updatesJson: z
-        .string()
-        .describe(
-          'JSON string of properties to add/update (e.g., \'{"status": "in-progress", "priority": "high"}\' or \'{}\' for none)'
-        ),
-      deletions: z
-        .array(z.string())
-        .describe(
-          'Array of property names to remove from frontmatter (empty array if none)'
-        ),
-      message: z
-        .string()
-        .describe('Clear explanation of what changes will be made'),
-    }),
-  },
 
   addTags: {
     description:
@@ -260,32 +196,6 @@ export const chatTools = {
     }),
   },
 
-  getBacklinks: {
-    description:
-      'Get all files that link to specified files (backlinks/incoming links). Useful for understanding note relationships and knowledge graph connections.',
-    parameters: z.object({
-      filePaths: z.array(z.string()).describe('Files to get backlinks for'),
-      includeUnresolved: z
-        .boolean()
-        .describe('Include unresolved/broken links (default: false)'),
-    }),
-  },
-
-  getOutgoingLinks: {
-    description:
-      'Get all outgoing links and embeds from files. Useful for understanding note dependencies and content structure.',
-    parameters: z.object({
-      filePaths: z
-        .array(z.string())
-        .describe('Files to analyze for outgoing links'),
-      includeEmbeds: z
-        .boolean()
-        .describe('Include embedded files/images (default: true)'),
-      resolvedOnly: z
-        .boolean()
-        .describe('Only include resolved links (default: false)'),
-    }),
-  },
 
   getHeadings: {
     description:
@@ -326,59 +236,7 @@ export const chatTools = {
     }),
   },
 
-  findBrokenLinks: {
-    description:
-      'Find broken/unresolved [[wikilinks]] in the vault, a folder, or specific files. Useful for vault maintenance, health checks, and cleaning up dead links. When the user asks about broken links "in this file" or specific files, pass their paths in filePaths to scope the scan.',
-    parameters: z.object({
-      folder: z
-        .string()
-        .describe(
-          'Folder path to limit scan to. Use empty string "" for entire vault. Ignored when filePaths is non-empty.'
-        ),
-      filePaths: z
-        .array(z.string())
-        .describe(
-          'Specific file paths to check for broken links. Use empty array [] to scan by folder or entire vault.'
-        ),
-      groupBySource: z
-        .boolean()
-        .describe(
-          'If true, group results by source file. If false, group by broken link target (default: true)'
-        ),
-      limit: z
-        .number()
-        .min(1)
-        .max(200)
-        .describe(
-          'Max number of broken-link entries to return (default: 100). Results are truncated with a total count if exceeded.'
-        ),
-    }),
-  },
 
-  extractHighlights: {
-    description:
-      'Get content from the current note, selection, or specified files so the assistant can extract key quotes and insights. Use when the user asks for highlights, key takeaways, main points, or memorable quotes. Prefer selection when the user has selected text. When the user refers to "this note", "current file", or @-mentioned files, use the exact file paths from the "Attached file paths" / Current File section in the context for filePath or filePaths.',
-    parameters: z.object({
-      scope: z
-        .enum(['selection', 'document', 'files'])
-        .describe('What to read: selection (active editor selection), document (single file), or files (multiple files)'),
-      filePath: z
-        .string()
-        .describe(
-          'For scope "document": path to the file. Use empty string "" for current file.'
-        ),
-      filePaths: z
-        .array(z.string())
-        .describe(
-          'For scope "files": paths of files to extract content from. Use [] when scope is not "files".'
-        ),
-      maxChars: z
-        .number()
-        .describe(
-          'Cap content size to avoid token overflow. Use 30000 as default. Applied per file when scope is "files".'
-        ),
-    }),
-  },
 
   createNewFiles: {
     description:
@@ -467,29 +325,6 @@ export const chatTools = {
     }),
   },
 
-  createTemplate: {
-    description:
-      'Create reusable note templates with placeholders and default structure. Useful for recurring note types like meeting notes, daily notes, project plans, etc.',
-    parameters: z.object({
-      templateName: z
-        .string()
-        .describe('Name for the template file (without .md extension)'),
-      templateContent: z
-        .string()
-        .describe(
-          'Template content with placeholders like {{title}}, {{date}}, {{tags}}, etc.'
-        ),
-      templateFolder: z
-        .string()
-        .describe("Folder to store template (default: 'Templates')"),
-      description: z
-        .string()
-        .describe('Description of what this template is for'),
-      message: z
-        .string()
-        .describe('Clear explanation of the template purpose and usage'),
-    }),
-  },
 
   bulkFindReplace: {
     description:
@@ -512,19 +347,4 @@ export const chatTools = {
     }),
   },
 
-  exportToFormat: {
-    description:
-      'Export notes to different formats (PDF, HTML, plain text). Useful for sharing notes externally or creating backups.',
-    parameters: z.object({
-      filePaths: z.array(z.string()).describe('Files to export'),
-      format: z.enum(['pdf', 'html', 'txt']).describe('Export format'),
-      outputFolder: z
-        .string()
-        .describe("Folder for exported files (default: 'Exports')"),
-      includeMetadata: z
-        .boolean()
-        .describe('Include frontmatter in export (default: false)'),
-      message: z.string().describe('Clear explanation of export operation'),
-    }),
-  },
 } as const;

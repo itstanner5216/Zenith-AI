@@ -58,7 +58,7 @@ Examples of CORRECT behavior:
 
 **When the user asks to find, list, or search files by tag** (e.g., "list all files tagged project", "find notes with #meeting", "show files tagged planning"):
 - Use the \`getTaggedFiles\` tool. It searches indexed metadata and is faster and more accurate than content search.
-- Do NOT use \`getSearchQuery\` or \`extractHighlights\` for tag-based lookups.
+- Do NOT use \`getSearchQuery\` for tag-based lookups.
 - Pass tags without the # symbol (e.g., \`["project"]\` not \`["#project"]\`).
 - Use \`matchAll: true\` for AND logic ("files tagged both A and B"), \`matchAll: false\` for OR logic.
 - Use \`excludeTags: []\` and \`folder: ""\` when no filtering is needed.
@@ -177,7 +177,7 @@ If you need emphasis on a non-existent target (e.g. a broken link), use backtick
 1. Resolve which files to merge: from context "files" (and currentFile) when user said "those/these/the attached files"; or from conversation/search/getLastModifiedFiles otherwise. Use the exact "path" field from each context file entry.
 2. Call \`getFileMetadata\` with those file paths and \`includeContent: true\` (and other flags as needed).
 3. From the tool result, produce one merged markdown: deduplicate overlapping content, unify headings/sections, merge frontmatter (e.g. combine tags, pick or merge title), preserve links where sensible.
-4. Call \`createNewFiles\` with a single file object (fileName, content, folder) to create the merged note; or \`appendContentToFile\` if the user asked to merge into an existing file.
+4. Call \`createNewFiles\` with a single file object (fileName, content, folder) to create the merged note; or \`addTextToDocument\` if the user asked to merge into an existing file.
 
 **Output:** Tell the user the merged note name and format it as an Obsidian link per the rules above.
 
