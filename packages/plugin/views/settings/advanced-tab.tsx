@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Notice } from "obsidian";
 import ZenithAI from "../../index";
 import { logger } from "../../services/logger";
 import { ToggleSetting, handleSettingChange } from "./components";
@@ -16,25 +15,15 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
     plugin.settings.selfHostingURL,
   );
   const [debugMode, setDebugMode] = useState(plugin.settings.debugMode);
-  const [showLocalLLMInChat, setShowLocalLLMInChat] = useState(
-    plugin.settings.showLocalLLMInChat,
-  );
-  const [backgroundScribeEnabled, setBackgroundScribeEnabled] = useState(
-    plugin.settings.backgroundScribeEnabled,
-  );
 
   useEffect(() => {
     setDebugMode(plugin.settings.debugMode);
     setEnableSelfHosting(plugin.settings.enableSelfHosting);
     setSelfHostingURL(plugin.settings.selfHostingURL);
-    setShowLocalLLMInChat(plugin.settings.showLocalLLMInChat);
-    setBackgroundScribeEnabled(plugin.settings.backgroundScribeEnabled);
   }, [
     plugin.settings.debugMode,
     plugin.settings.enableSelfHosting,
     plugin.settings.selfHostingURL,
-    plugin.settings.showLocalLLMInChat,
-    plugin.settings.backgroundScribeEnabled,
   ]);
 
   const handleToggleChange = async (value: boolean) => {
@@ -93,49 +82,6 @@ export const AdvancedTab: React.FC<AdvancedTabProps> = ({ plugin }) => {
         )}
       </div>
 
-      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)] space-y-3">
-        <h3 className="text-lg font-semibold mb-3 mt-0 text-[#0fb6d6]">
-          Chat Features
-        </h3>
-        <ToggleSetting
-          name="Enable Local LLM in Chat"
-          description="Show local Ollama model option in the chat model selector."
-          value={showLocalLLMInChat}
-          onChange={value =>
-            handleSettingChange(
-              plugin,
-              value,
-              setShowLocalLLMInChat,
-              "showLocalLLMInChat",
-            )
-          }
-        />
-        <ToggleSetting
-          name="Background Scribe"
-          description="Enable Background Scribe to buffer chat conversations and synthesize actionable TODO items."
-          value={backgroundScribeEnabled}
-          onChange={async value => {
-            // Save setting FIRST so activate() guard sees the updated value
-            await handleSettingChange(
-              plugin,
-              value,
-              setBackgroundScribeEnabled,
-              "backgroundScribeEnabled",
-            );
-            // Now safe to activate/deactivate
-            if (!value) {
-              plugin.backgroundScribe?.deactivate();
-            } else {
-              const activated = plugin.backgroundScribe?.activate();
-              if (!activated) {
-                new Notice(
-                  "Failed to activate Background Scribe. Check settings.",
-                );
-              }
-            }
-          }}
-        />
-      </div>
     </div>
   );
 };

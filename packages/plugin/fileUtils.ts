@@ -1,409 +1,9 @@
 import { App, TFolder, TFile, normalizePath, parseYaml } from "obsidian";
-import { ZenithAISettings } from "./settings";
 import { logger } from "./services/logger";
-
-export function getOriginalContent(content: string): string {
-  return content;
-}
-
-// Default template names that come with the plugin
-export const DEFAULT_TEMPLATE_NAMES = [
-  "meeting_note.md",
-  "enhance.md",
-  "research_paper.md",
-  "flash_cards.md",
-] as const;
-
-// Helper functions to get default template content
-function getMeetingNoteTemplateContent(): string {
-  return `Contextual Extraction of Discussion Points and Action Items
-
-Instruction:
-Analyze the provided content, which includes:
-	•	Source Notes: Notes, summaries, and supporting content from the discussion.
-	•	Written Notes: Notes taken by a participant summarizing the discussion.
-
-Task:
-Extract the following while prioritizing the notes written by the participant to infer emphasis and key takeaways:
-	1.	Discussion Points: Summarize the key topics, ideas, or issues discussed. Prioritize points that appear in the written notes and cross-reference with source notes for completeness.
-	2.	Action Items: Identify specific tasks, responsibilities, or decisions agreed upon. For each action item, include:
-	•	A brief description of the task.
-	•	The person(s) responsible, if mentioned.
-	•	Any deadlines, if stated.
-
-Output Format:
-
-**Discussion Points:**
-1. [Point 1]
-2. [Point 2]
-...
-
-**Action Items:**
-1. [Task description] - [Responsible person(s)] - [Deadline]
-2. [Task description] - [Responsible person(s)] - [Deadline]
-...
-
-**Supporting Context:**
-- Key excerpts from Source Notes: [Relevant excerpts related to discussion points and action items].
-- Key highlights from Written Notes: [Direct quotes or summaries from notes].
-`;
-}
-
-function getResearchPaperTemplateContent(): string {
-  return `---
-
-title: "[Full paper title]"
-
-authors: ["Author 1", "Author 2", "etc"]
-
-year: [Publication year]
-
-journal: "[Journal name]"
-
-volume: "[Vol. number]"
-
-issue: "[Issue number]"
-
-pages: "[Page range]"
-
-doi: "[DOI number]"
-
-url: "[Direct URL to access paper]"
-
-tags: ["academic", "paper", "[field]", "[specific subtopic]"]
-
-research_question: "[Exact question/objective as stated by authors]"
-
-significance: "[Why this research matters in 1-2 specific sentences]"
-
-keywords: ["Keyword 1", "Keyword 2", "etc"]
-
-citation: "[Complete citation in APA/MLA format]"
-
----
-
-## 1. Key Arguments & Evidence
-
-- **Argument 1**: [Specific claim made by authors] ([p.X])
-    - Evidence: [Concrete data, statistics, or examples supporting this claim] ([p.X])
-    - Methodology used: [Specific methods used to gather this evidence] ([p.X])
-    - Theoretical basis: [Named theory or framework] ([Author Year, p.X])
-- **Argument 2**: [Continue with same detailed format]
-- **Argument 3**: [Add as many as needed with same detailed format]
-
-## 2. Methodology Details
-
-- **Research design**: [Exact type - e.g., "longitudinal cohort study" not just "quantitative"] ([p.X])
-- **Data collection methods**: [Specific techniques used - e.g., "semi-structured interviews using protocol X"] ([p.X])
-- **Sample characteristics**: [Exact details - e.g., "128 participants: 64 female, 64 male, ages 18-35, from University X"] ([p.X])
-- **Key variables**: [Named variables with operational definitions] ([p.X])
-- **Analytical techniques**: [Specific statistical tests or qualitative approaches with software used] ([p.X])
-- **Ethical considerations**: [Any ethics committee approvals or considerations mentioned] ([p.X])
-
-## 3. Substantive Findings
-
-- **Primary finding**: [Most significant result with exact statistics/p-values/effect sizes] ([p.X])
-- **Secondary findings**: [Additional results with specific data points] ([p.X])
-- **Unexpected results**: [Any surprising outcomes with authors' explanations] ([p.X])
-- **Null findings**: [What didn't work or wasn't supported] ([p.X])
-- **Limitations acknowledged**: [Specific constraints identified by authors] ([p.X])
-
-## 4. Scholarly Context
-
-- **Builds on**: [[Author Year]] - [Named works this paper extends] ([p.X])
-- **Contradicts**: [[Author Year]] - [Specific research this challenges] ([p.X])
-- **Resolves**: [Specific debates this settles] ([p.X])
-- **Theoretical framework**: [Named theory/framework the paper operates within] ([p.X])
-- **Research gap addressed**: [Explicit gap identified by authors] ([p.X])
-
-## 5. Key Quotes
-
-- **Central argument**: "[Direct quote]" ([p.X])
-- **Methodology**: "[Direct quote]" ([p.X])
-- **Main finding**: "[Direct quote]" ([p.X])
-- **Implications**: "[Direct quote]" ([p.X])
-- **Future research**: "[Direct quote]" ([p.X])
-
-## 6. Explicit Recommendations & Applications
-
-- **Direct recommendations**: [List all specific recommendations made by authors] ([p.X])
-- **Policy implications**: [Any policy changes suggested] ([p.X])
-- **Practice implications**: [How practitioners should change behavior] ([p.X])
-- **Industry applications**: [Business or commercial applications] ([p.X])
-- **Educational implications**: [Teaching or learning applications] ([p.X])
-- **Future research directions**: [Specific suggestions for further study] ([p.X])
-
-## 7. Critical Reference Mapping
-
-- [[Author Year]] - [Title] ([p.X in reviewed paper]) - [Precise role in paper's argument]
-- [[Author Year]] - [Title] ([p.X in reviewed paper]) - [Precise role in paper's argument]
-- [[Author Year]] - [Title] ([p.X in reviewed paper]) - [Precise role in paper's argument]
-
-## 8. Personal Research Notes
-
-- **Relevance to my work**: [Specific ways this connects to your research]
-- **Methods I could adapt**: [Specific techniques that could be applied]
-- **Gaps I could address**: [How your work might extend this research]
-- **Potential citations**: [Where in your own writing you might cite this]
-- **Related papers in vault**: [[Paper 1]], [[Paper 2]]
-- **Related concepts**: [[Concept 1]], [[Concept 2]]
-`;
-}
-
-function getEnhanceTemplateContent(): string {
-  return `1. **Use Headings and Subheadings**: Clearly define sections with headings (e.g.,
-\`\`\`
-#
-\`\`\`
-,
-\`\`\`
-##
-\`\`\`
-,
-\`\`\`
-###
-\`\`\`
-) to organize content hierarchically.
-
-2. **Bullet Points and Lists**: Use bullet points or numbered lists to break down information into digestible parts.
-
-3. **Consistent Spacing**: Ensure consistent spacing between sections and paragraphs for better readability.
-
-4. **Highlight Key Points**: Use bold or italics to emphasize important information or key terms.
-
-5. **Tables for Structured Data**: Use tables to organize data that fits into rows and columns for clarity.
-
-6. **Quotes and References**: Use blockquotes for quotes and reference links for sources.
-
-7. **Code Blocks**: Use code blocks for any code snippets or technical instructions.
-
-8. **Images and Diagrams**: Include images or diagrams where applicable to visually represent information.
-
-9. **Linking and Cross-referencing**: Use internal links to connect related notes or sections within your vault.
-
-10. do not use \`\`\` markdown`;
-}
-
-function getFlashCardsTemplateContent(): string {
-  return `Please create an Obsidian note with interactive flashcards using native Obsidian HTML features. The note must include:
-
-1. Frontmatter (at the top) with the following properties:
-
----
-
-total: {{number of flashcards created}}
-
-topics: ["{{topic 1}}", "{{topic 2}}", "{{topic 3}}"]
-
-created: "{{current date in YYYY-MM-DD format}}"
-
----
-
-2. Interactive flashcards using HTML details/summary tags (below the frontmatter).
-
-**Instructions:**
-
-- Extract key concepts, facts, definitions, relationships, and important information from the content
-- Identify all testable knowledge points: definitions, concepts, facts, formulas, relationships, processes, dates, names, theories, principles, etc.
-- Extract 3-7 main topics or themes from the content for the topics array in frontmatter
-- **CRITICAL: Randomize the order of flashcards - mix different topics, difficulty levels, and question types together. Do NOT follow the original content order or group by topic. Create a varied, shuffled study experience.**
-- Create 10-30 flashcards depending on content length and density
-- Prioritize information that is:
-  - Fundamental to understanding the topic
-  - Frequently referenced or important
-  - Easy to forget (dates, numbers, specific details)
-  - Part of a sequence or process
-  - A definition or key concept
-
-- Maintain the exact markdown syntax for the frontmatter block (\`---\` at the top and bottom).
-- Each property in frontmatter must be on its own line with proper YAML indentation
-- Topics should be an array: topics: ["Topic 1", "Topic 2", "Topic 3"]
-- Total should be a number without quotes
-- Created should be a string in quotes with format "YYYY-MM-DD"
-
-- Format each flashcard using HTML details/summary tags:
-  - Each flashcard must be a separate <details> block with class="flashcard"
-  - The <summary> tag must have class="flashcard-question" and contain the question
-  - The answer must be wrapped in <div class="flashcard-answer">
-  - Leave a blank line after </summary> and before </details> for proper spacing
-  - Answers can include markdown formatting (bold, italic, lists, links, etc.)
-  - Answers can span multiple paragraphs
-
-- Questions should test understanding, not just recall
-- Answers should be complete but concise (typically 1-4 sentences, but can be longer if needed)
-- Include context and examples when helpful
-- Use clear, specific language
-- Make questions specific and focused (avoid overly broad questions)
-- Include [[internal links]] to related notes or concepts when relevant
-- Use **bold** for key terms in answers
-- Group related information in answers using lists or structured formatting
-
-- Do not use \`\`\` code blocks or markdown code formatting in the output
-- Focus on accuracy and completeness based on the actual content provided
-
-**Example Output Format:**
-
----
-
-total: 3
-
-topics: ["Cell Biology", "Energy Production", "Molecular Biology"]
-
-created: "2025-01-09"
-
----
-
-<details class="flashcard">
-<summary class="flashcard-question">What is the primary function of mitochondria?</summary>
-
-<div class="flashcard-answer">
-
-Mitochondria are organelles that produce ATP (adenosine triphosphate) through cellular respiration. They are often called the "powerhouse of the cell" because they generate most of the cell's energy supply.
-
-Related: See also [[Chloroplasts]] for plant cell energy production.
-
-</div>
-
-</details>
-
-<details class="flashcard">
-<summary class="flashcard-question">What is the difference between DNA and RNA?</summary>
-
-<div class="flashcard-answer">
-
-- **DNA**: Double-stranded, contains thymine, stores genetic information
-- **RNA**: Single-stranded, contains uracil, involved in protein synthesis
-
-</div>
-
-</details>
-
-<details class="flashcard">
-<summary class="flashcard-question">How does photosynthesis work?</summary>
-
-<div class="flashcard-answer">
-
-Photosynthesis occurs in two stages:
-
-1. **Light-dependent reactions**: Chlorophyll absorbs light energy, splits water molecules, and produces ATP and NADPH
-2. **Calvin cycle**: Uses ATP and NADPH to convert carbon dioxide into glucose
-
-</div>
-
-</details>
-
-Important Notes:
-- ALWAYS include frontmatter with total, topics, and created date
-- Each property in frontmatter must be on its own line (no nesting, flat structure)
-- Topics should be an array: topics: ["Topic 1", "Topic 2", "Topic 3"]
-- Created should be a string in quotes: created: "2025-01-09"
-- Total should be a number without quotes: total: 15
-- Use proper HTML syntax - ensure all tags are properly closed
-- Output the actual HTML tags directly (NOT inside markdown code blocks)
-- Each flashcard should be separated by a blank line for readability
-- **RANDOMIZE THE ORDER: Mix topics, difficulty levels, and question types - do not follow source material order**
-- Include [[internal links]] to related concepts when relevant
-- Answers can include markdown formatting like **bold**, *italic*, lists, and [[internal links]]
-- If content is very long, focus on the most important concepts
-- If content is technical, ensure definitions are clear
-- Maintain the original meaning and accuracy of the source material
-- All flashcards will be in one note - users can click to reveal answers
-- This format works natively in Obsidian without requiring any plugins`;
-}
 
 export async function ensureFolderExists(app: App, folderPath: string) {
   if (!(await app.vault.adapter.exists(folderPath))) {
     await app.vault.createFolder(folderPath);
-  }
-}
-
-export async function checkAndCreateFolders(
-  app: App,
-  settings: ZenithAISettings
-) {
-  await ensureFolderExists(app, settings.pathToWatch);
-  await ensureFolderExists(app, settings.defaultDestinationPath);
-  await ensureFolderExists(app, settings.logFolderPath);
-  await ensureFolderExists(app, settings.templatePaths);
-  await ensureFolderExists(app, settings.backupFolderPath);
-}
-
-export async function checkAndCreateTemplates(
-  app: App,
-  settings: ZenithAISettings
-) {
-  const meetingNoteTemplatePath = `${settings.templatePaths}/meeting_note.md`;
-  const enhanceTemplatePath = `${settings.templatePaths}/enhance.md`;
-  const researchPaperTemplatePath = `${settings.templatePaths}/research_paper.md`;
-  const flashCardsTemplatePath = `${settings.templatePaths}/flash_cards.md`;
-
-  if (!(await app.vault.adapter.exists(meetingNoteTemplatePath))) {
-    await app.vault.create(
-      meetingNoteTemplatePath,
-      getMeetingNoteTemplateContent()
-    );
-  }
-
-  if (!(await app.vault.adapter.exists(researchPaperTemplatePath))) {
-    await app.vault.create(
-      researchPaperTemplatePath,
-      getResearchPaperTemplateContent()
-    );
-  }
-
-  if (!(await app.vault.adapter.exists(enhanceTemplatePath))) {
-    await app.vault.create(enhanceTemplatePath, getEnhanceTemplateContent());
-  }
-
-  if (!(await app.vault.adapter.exists(flashCardsTemplatePath))) {
-    await app.vault.create(
-      flashCardsTemplatePath,
-      getFlashCardsTemplateContent()
-    );
-  }
-}
-
-// Restore default templates to their original plugin versions
-// Only restores the 5 default templates, does not affect user-created templates
-export async function restoreDefaultTemplates(
-  app: App,
-  settings: ZenithAISettings
-) {
-  const templatePaths = {
-    meetingNote: `${settings.templatePaths}/meeting_note.md`,
-    enhance: `${settings.templatePaths}/enhance.md`,
-    researchPaper: `${settings.templatePaths}/research_paper.md`,
-    flashCards: `${settings.templatePaths}/flash_cards.md`,
-  };
-
-  const templateContents = {
-    meetingNote: getMeetingNoteTemplateContent(),
-    enhance: getEnhanceTemplateContent(),
-    researchPaper: getResearchPaperTemplateContent(),
-    flashCards: getFlashCardsTemplateContent(),
-  };
-
-  // Ensure template folder exists
-  await ensureFolderExists(app, settings.templatePaths);
-
-  // Restore each default template
-  for (const [key, path] of Object.entries(templatePaths)) {
-    try {
-      const existing = app.vault.getAbstractFileByPath(path);
-      if (existing && existing instanceof TFile) {
-        // Delete existing file to overwrite
-        await app.vault.delete(existing);
-      }
-      // Create with original content
-      await app.vault.create(
-        path,
-        templateContents[key as keyof typeof templateContents]
-      );
-      logger.info(`Restored default template: ${path}`);
-    } catch (error) {
-      logger.error(`Failed to restore template ${path}:`, error);
-      throw error;
-    }
   }
 }
 
@@ -416,31 +16,23 @@ export async function moveFile(
   newFileName: string,
   destinationFolder = ""
 ): Promise<TFile> {
-  // Extract the file extension from the source file
   const fileExtension = sourceFile.extension;
 
-  // Construct the initial target path
   let targetPath = `${destinationFolder}/${newFileName}.${fileExtension}`;
   const normalizedTargetPath = normalizePath(targetPath);
 
-  // Check if a file with the same name already exists in the destination
   if (await app.vault.adapter.exists(normalizedTargetPath)) {
-    // If it exists, create a unique filename by adding a timestamp
     const timestamp = Date.now();
     const uniqueFileName = `${newFileName}_${timestamp}`;
     targetPath = `${destinationFolder}/${uniqueFileName}.${fileExtension}`;
   }
 
-  // Normalize the final path
   const normalizedFinalPath = normalizePath(targetPath);
 
-  // Ensure the destination folder exists
   await ensureFolderExists(app, destinationFolder);
 
-  // Move the file and update all links
   await app.fileManager.renameFile(sourceFile, normalizedFinalPath);
 
-  // Get the moved file object and return it
   const movedFile = app.vault.getAbstractFileByPath(
     normalizedFinalPath
   ) as TFile;
@@ -527,13 +119,9 @@ export async function safeMove(
   await app.fileManager.renameFile(file, availablePath);
   return availablePath;
 }
-/**
- * Sanitizes content to ensure it's valid for Obsidian
- * Handles frontmatter and content separately for safety
- */
+
 export async function sanitizeContent(content: string): Promise<string> {
   try {
-    // If content is empty or not a string, return empty string
     if (!content || typeof content !== "string") {
       return "";
     }
@@ -545,15 +133,12 @@ export async function sanitizeContent(content: string): Promise<string> {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
-      // Handle frontmatter boundaries
       if (line.trim() === "---") {
         if (i === 0 || (i === 1 && !validContent.length)) {
-          // Start of frontmatter
           inFrontmatter = true;
           validContent.push(line);
           continue;
         } else if (inFrontmatter) {
-          // End of frontmatter
           inFrontmatter = false;
           validContent.push(line);
           continue;
@@ -561,21 +146,18 @@ export async function sanitizeContent(content: string): Promise<string> {
       }
 
       if (inFrontmatter) {
-        // Keep all frontmatter lines as-is
         validContent.push(line);
       } else {
-        // Regular content - remove null characters and other potentially problematic chars
         const sanitizedLine = line
-          .replace(/\0/g, "") // Remove null characters
-          .replace(/\u202E/g, "") // Remove RTL override characters
-          .replace(/^\ufeff/g, "") // Remove BOM
-          .replace(/\r/g, ""); // Normalize line endings
+          .replace(/\0/g, "")
+          .replace(/\u202E/g, "")
+          .replace(/^\ufeff/g, "")
+          .replace(/\r/g, "");
 
         validContent.push(sanitizedLine);
       }
     }
 
-    // Ensure frontmatter is properly closed
     if (inFrontmatter) {
       validContent.push("---");
     }
@@ -583,13 +165,10 @@ export async function sanitizeContent(content: string): Promise<string> {
     return validContent.join("\n");
   } catch (error) {
     logger.error("Error sanitizing content:", error);
-    return content; // Return original content if sanitization fails
+    return content;
   }
 }
 
-/**
- * Safely modifies file content ensuring it's valid for Obsidian
- */
 export async function safeModifyContent(
   app: App,
   file: TFile,
@@ -598,28 +177,21 @@ export async function safeModifyContent(
   try {
     const sanitizedContent = await sanitizeContent(content);
 
-    // Check if content has frontmatter
     if (sanitizedContent.trim().startsWith("---")) {
       const parts = sanitizedContent.split(/^---\s*$/m);
 
-      // Valid frontmatter should create 3 parts: ["", yaml content, remaining content]
       if (parts.length >= 3) {
         try {
-          // Try to parse the YAML part (index 1) to validate it
           const frontmatter = parseYaml(parts[1]);
 
-          // If parsing succeeds, use processFrontMatter to ensure proper handling of arrays
           await app.fileManager.processFrontMatter(file, fm => {
-            // Merge the parsed frontmatter with existing
             Object.assign(fm, frontmatter);
           });
 
-          // Update the content after frontmatter is processed
           await app.vault.modify(file, sanitizedContent);
           return;
         } catch (e) {
           logger.debug("Frontmatter parsing failed:", e);
-          // If parsing fails, preserve the original content
           await app.vault.modify(file, sanitizedContent);
           return;
         }

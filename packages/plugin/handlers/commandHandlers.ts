@@ -15,14 +15,5 @@ export function initializeOrganizer(plugin: ZenithAI) {
 }
 
 export function initializeFileOrganizationCommands(plugin: ZenithAI) {
-  plugin.addCommand({
-    id: "add-to-inbox",
-    name: "Put in inbox",
-    callback: async () => {
-      const activeFile = plugin.app.workspace.getActiveFile();
-      if (activeFile) {
-        await plugin.app.vault.rename(activeFile, `${plugin.settings.pathToWatch}/${activeFile.name}`);
-      }
-    },
-  });
+  // Inbox commands removed — no more pathToWatch setting
 }

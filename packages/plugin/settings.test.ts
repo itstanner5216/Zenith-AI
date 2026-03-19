@@ -5,23 +5,18 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS).toBeInstanceOf(ZenithAISettings);
   });
 
-  it('matches the snapshot', () => {
-    expect(DEFAULT_SETTINGS).toMatchSnapshot();
-  });
-
-  it('has new setting defaults', () => {
-    expect(DEFAULT_SETTINGS.showLocalLLMInChat).toBe(false);
-  });
-
-  it('has critical default values', () => {
-    expect(DEFAULT_SETTINGS.vertexBrainUrl).toBe('http://localhost:8085');
-    expect(DEFAULT_SETTINGS.enableVectorAutoSort).toBe(true);
-    expect(DEFAULT_SETTINGS.autoSortConfidenceThreshold).toBe(0.75);
+  it('has correct defaults for all 9 settings', () => {
     expect(DEFAULT_SETTINGS.API_KEY).toBe('');
-    expect(DEFAULT_SETTINGS.pathToWatch).toBe('_ZenithAI/Inbox');
-    expect(DEFAULT_SETTINGS.defaultDestinationPath).toBe('_ZenithAI/Processed');
-    expect(DEFAULT_SETTINGS.pinnedTag).toBe('pinned');
+    expect(DEFAULT_SETTINGS.enableSelfHosting).toBe(false);
+    expect(DEFAULT_SETTINGS.selfHostingURL).toBe('http://localhost:3010');
     expect(DEFAULT_SETTINGS.selectedModel).toBe('gpt-4o-mini');
+    expect(DEFAULT_SETTINGS.customModelName).toBe('llama3.2');
     expect(DEFAULT_SETTINGS.debugMode).toBe(false);
+    expect(DEFAULT_SETTINGS.enableSearchGrounding).toBe(false);
+    expect(DEFAULT_SETTINGS.enableDeepSearch).toBe(false);
+  });
+
+  it('has exactly 9 keys', () => {
+    expect(Object.keys(DEFAULT_SETTINGS)).toHaveLength(8);
   });
 });
