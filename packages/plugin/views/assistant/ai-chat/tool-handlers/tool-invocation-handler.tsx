@@ -3,35 +3,19 @@ import { motion } from "framer-motion";
 import { App } from "obsidian";
 import { ToolInvocation } from "ai";
 import { SearchHandler } from "./search-handler";
-import { DateRangeHandler } from "./date-range-handler";
 import { LastModifiedHandler } from "./last-modified-handler";
 import { OpenFileHandler } from "./open-file-handler";
-
-import { SettingsUpdateHandler } from "./settings-update-handler";
-import { AppendContentHandler } from "./append-content-handler";
-import { OnboardHandler } from "./onboard-handler";
 import { MoveFilesHandler } from "./move-files-handler";
 import { RenameFilesHandler } from "./rename-files-handler";
 import { SearchRenameHandler } from "./search-rename-handler";
-import { ExecuteActionsHandler } from "./execute-actions-handler";
 import { AddTextHandler } from "./add-text-handler";
 import { ModifyTextHandler } from "./modify-text-handler";
-import { MetadataHandler } from "./metadata-handler";
-import { FrontmatterHandler } from "./frontmatter-handler";
-import { TagsHandler } from "./tags-handler";
 import { TaggedFilesHandler } from "./tagged-files-handler";
-import { BacklinksHandler } from "./backlinks-handler";
-import { OutgoingLinksHandler } from "./outgoing-links-handler";
 import { HeadingsHandler } from "./headings-handler";
-import { ExtractHighlightsHandler } from "./extract-highlights-handler";
 import { CreateFilesHandler } from "./create-files-handler";
 import { DeleteFilesHandler } from "./delete-files-handler";
 import { MergeFilesHandler } from "./merge-files-handler";
-import { CreateTemplateHandler } from "./create-template-handler";
 import { BulkFindReplaceHandler } from "./bulk-find-replace-handler";
-import { ExportToFormatHandler } from "./export-to-format-handler";
-import { BrokenLinksHandler } from "./broken-links-handler";
-import { UpdateVaultStructureHandler } from "./update-vault-structure-handler";
 
 const processedToolCallIds = new Set<string>();
 
@@ -79,41 +63,21 @@ function ToolInvocationHandler({
 
   const getToolTitle = (toolName: string) => {
     const toolTitles = {
-      getNotesForDateRange: "Fetching Notes",
       getSearchQuery: "Searching Notes",
-      askForConfirmation: "Confirmation Required",
       modifyCurrentNote: "Note Modification",
       getLastModifiedFiles: "Recent File Activity",
-
-      generateSettings: "Settings Update",
-      appendContentToFile: "Append Content",
-      analyzeVaultStructure: "Vault Analysis",
       moveFiles: "Moving Files",
       renameFiles: "Renaming Files",
       searchByName: "Search Files by Name",
       openFile: "Opening File",
-      executeActionsOnFileBasedOnPrompt: "Execute Actions on Files",
       addTextToDocument: "Adding Text to Document",
       modifyDocumentText: "Modifying Document Text",
-      onboardUser: "Onboarding User",
-      
-      // New Metadata & Analysis Tools
-      getFileMetadata: "File Metadata Extraction",
-      updateFrontmatter: "Update Frontmatter",
-      addTags: "Add Tags",
       getTaggedFiles: "Find Tagged Files",
-      getBacklinks: "Get Backlinks",
-      getOutgoingLinks: "Get Outgoing Links",
       getHeadings: "Get Document Structure",
-      extractHighlights: "Extracting content for highlights",
       createNewFiles: "Creating New Files",
       deleteFiles: "Deleting Files",
       mergeFiles: "Merging Files",
-      createTemplate: "Creating Template",
       bulkFindReplace: "Find & Replace",
-      exportToFormat: "Exporting Files",
-      findBrokenLinks: "Find Broken Links",
-      update_vault_structure: "Update Cosmic Vault Structure",
     };
     return toolTitles[toolName] ;
   };
@@ -133,13 +97,6 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      getNotesForDateRange: () => (
-        <DateRangeHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
       getLastModifiedFiles: () => (
         <LastModifiedHandler
           toolInvocation={toolInvocation}
@@ -149,26 +106,6 @@ function ToolInvocationHandler({
       ),
       openFile: () => (
         <OpenFileHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-
-      generateSettings: () => (
-        <SettingsUpdateHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-        />
-      ),
-      appendContentToFile: () => (
-        <AppendContentHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-        />
-      ),
-      analyzeVaultStructure: () => (
-        <OnboardHandler
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}
@@ -195,13 +132,6 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      executeActionsOnFileBasedOnPrompt: () => (
-        <ExecuteActionsHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
       addTextToDocument: () => (
         <AddTextHandler
           toolInvocation={toolInvocation}
@@ -216,29 +146,6 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      
-      // New Metadata & Analysis Tools
-      getFileMetadata: () => (
-        <MetadataHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      updateFrontmatter: () => (
-        <FrontmatterHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      addTags: () => (
-        <TagsHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
       getTaggedFiles: () => (
         <TaggedFilesHandler
           toolInvocation={toolInvocation}
@@ -246,29 +153,8 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      getBacklinks: () => (
-        <BacklinksHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      getOutgoingLinks: () => (
-        <OutgoingLinksHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
       getHeadings: () => (
         <HeadingsHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      extractHighlights: () => (
-        <ExtractHighlightsHandler
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}
@@ -295,39 +181,11 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      createTemplate: () => (
-        <CreateTemplateHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
       bulkFindReplace: () => (
         <BulkFindReplaceHandler
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}
-        />
-      ),
-      exportToFormat: () => (
-        <ExportToFormatHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-
-      findBrokenLinks: () => (
-        <BrokenLinksHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      update_vault_structure: () => (
-        <UpdateVaultStructureHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
         />
       ),
     };

@@ -20,7 +20,6 @@ export class BackgroundScribe {
 
   activate(): boolean {
     if (this.isActive) return true;
-    if (!this.plugin.settings.backgroundScribeEnabled) return false;
     this.isActive = true;
     this.plugin.app.workspace.on(
       "vault-intelligence:chat-turn" as any,
@@ -93,7 +92,7 @@ export class BackgroundScribe {
 
     // Write to configured output file
     try {
-      const outputPath = this.plugin.settings.backgroundScribeOutputFile;
+      const outputPath = "TODO.md";
       await this.writeOutputFile(outputPath, todoContent);
       // Only clear buffer after successful write
       this.buffer = [];
@@ -106,7 +105,7 @@ export class BackgroundScribe {
   }
 
   private detectProject(filePath: string): string | null {
-    const projectsPath = this.plugin.settings.projectsPath;
+    const projectsPath = "Projects";
     if (!projectsPath) return null;
     const escapedPath = projectsPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const match = filePath.match(new RegExp(`(?:^|/)${escapedPath}/([^/]+)`));

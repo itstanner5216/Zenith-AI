@@ -37,11 +37,6 @@ import {
 } from "./use-context-items";
 import { ContextItems } from "./components/context-items";
 import { useCurrentFile } from "./hooks/use-current-file";
-import { SearchAnnotationHandler } from "./tool-handlers/search-annotation-handler";
-import {
-  isSearchResultsAnnotation,
-  SearchResultsAnnotation,
-} from "./types/annotations";
 import { ExamplePrompts } from "./components/example-prompts";
 import { AttachmentHandler } from "./components/attachment-handler";
 import { LocalAttachment } from "./types/attachments";
@@ -382,7 +377,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       ];
       const filePathsBlock =
         contextFilePaths.length > 0
-          ? `Attached file paths — use these exact strings for mergeFiles sourceFiles, getFileMetadata filePaths, deleteFiles filePaths, or extractHighlights filePath/filePaths (do not modify):\n${contextFilePaths.join("\n")}\n\n`
+          ? `Attached file paths — use these exact strings for mergeFiles sourceFiles, deleteFiles filePaths (do not modify):\n${contextFilePaths.join("\n")}\n\n`
           : "";
       const freshContextString = filePathsBlock + contextJson;
 
@@ -500,11 +495,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       return headers;
     })(),
     fetch: async (url, options) => {
-      logMessage(plugin.settings.showLocalLLMInChat, "showLocalLLMInChat");
       logMessage(selectedModel, "selectedModel");
 
       // Handle different model types
-      if (!plugin.settings.showLocalLLMInChat || selectedModel === "gpt-4o") {
+      if (selectedModel === "gpt-4o") {
         // Use server fetch for non-local models
         return fetch(url, options);
       }
@@ -2015,18 +2009,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                         chatStatus={status}
                       />
                     );
-                  })}
-                  {/* Then render annotations */}
-                  {message.annotations?.map((annotation, index) => {
-                    if (isSearchResultsAnnotation(annotation)) {
-                      return (
-                        <SearchAnnotationHandler
-                          key={`${message.id}-annotation-${index}`}
-                          annotation={annotation}
-                        />
-                      );
-                    }
-                    return null;
                   })}
                   {/* Finally render the message content (summary) so it appears below tool invocations */}
                   <MessageRenderer
