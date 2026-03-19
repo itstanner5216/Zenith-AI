@@ -39,12 +39,42 @@ function TabContent({
 
       <div
         className={tw(
-          "flex-1 min-h-0 w-full flex flex-col items-center justify-center",
+          "flex-1 min-h-0 w-full flex flex-col p-4 gap-4",
           activeTab === "scribe" ? "flex" : "hidden"
         )}
       >
-        <div className={tw("text-[#45aaff] text-sm opacity-70")}>
-          Background Scribe is active
+        <div className={tw("flex items-center justify-between")}>
+          <div className={tw("flex items-center gap-2")}>
+            <div className={tw(
+              "w-2 h-2 rounded-full",
+              plugin.backgroundScribe?.isActiveState
+                ? "bg-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.4)]"
+                : "bg-[#45aaff] opacity-40"
+            )} />
+            <span className={tw("text-sm text-[#bebebe]")}>
+              {plugin.backgroundScribe?.isActiveState ? "Scribe Active" : "Scribe Inactive"}
+            </span>
+          </div>
+          <button
+            onClick={() => {
+              if (plugin.backgroundScribe?.isActiveState) {
+                plugin.backgroundScribe.deactivate();
+              } else {
+                plugin.backgroundScribe?.activate();
+              }
+            }}
+            className={tw(
+              "px-3 py-1.5 text-xs rounded-md border transition-all duration-150",
+              plugin.backgroundScribe?.isActiveState
+                ? "text-[#f4569d] border-[rgba(244,86,157,0.3)] hover:bg-[rgba(244,86,157,0.1)]"
+                : "text-[#0fb6d6] border-[rgba(14,210,247,0.15)] hover:bg-[rgba(14,210,247,0.08)]"
+            )}
+          >
+            {plugin.backgroundScribe?.isActiveState ? "Deactivate" : "Activate"}
+          </button>
+        </div>
+        <div className={tw("text-xs text-[#45aaff] opacity-60")}>
+          The Background Scribe listens to your chat conversations and automatically generates TODO documents when a conversation ends.
         </div>
       </div>
     </div>
@@ -115,12 +145,6 @@ function AssistantContent({
   React.useEffect(() => {
     onTabChange(setActiveTab);
   }, [onTabChange]);
-
-  React.useEffect(() => {
-    if (activeTab === "scribe" && plugin.backgroundScribe) {
-      plugin.backgroundScribe.activate();
-    }
-  }, [activeTab, plugin]);
 
   return (
     <div className={tw("flex flex-col h-full w-full bg-[#0d0b12]")}>

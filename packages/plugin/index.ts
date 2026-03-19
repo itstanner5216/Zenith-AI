@@ -40,6 +40,7 @@ import {
 import { logger } from "./services/logger";
 import { addTextSelectionContext } from "./views/assistant/ai-chat/use-context-items";
 import { BackgroundScribe } from "./services/background-scribe";
+import { createBrainClient } from "./services/vertex-brain-client";
 
 export default class ZenithAI extends Plugin {
   settings: ZenithAISettings;
@@ -122,6 +123,10 @@ export default class ZenithAI extends Plugin {
 
     initializeOrganizer(this);
 
+    // Initialize Background Scribe
+    const brainClient = createBrainClient(this);
+    this.backgroundScribe = new BackgroundScribe(this, brainClient);
+
     this.app.workspace.onLayoutReady(() => registerEventHandlers(this));
 
     this.addCommand({
@@ -162,5 +167,9 @@ export default class ZenithAI extends Plugin {
   async initializePlugin() {
     await this.loadSettings();
     this.addSettingTab(new ZenithAISettingTab(this.app, this));
+  }
+
+  onunload() {
+    this.backgroundScribe?.deactivate();
   }
 }

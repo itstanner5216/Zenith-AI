@@ -25,6 +25,10 @@ export class BackgroundScribe {
       "vault-intelligence:chat-turn" as any,
       this.handleChatTurn,
     );
+    this.plugin.app.workspace.on(
+      "zenith-ai:conversation-ended" as any,
+      this.handleConversationEnded,
+    );
     console.log("[BackgroundScribe] Activated - will buffer chat turns");
     this.plugin.app.workspace.trigger(
       "zenith-ai:background-scribe-changed" as any,
@@ -38,6 +42,10 @@ export class BackgroundScribe {
     this.plugin.app.workspace.off(
       "vault-intelligence:chat-turn" as any,
       this.handleChatTurn,
+    );
+    this.plugin.app.workspace.off(
+      "zenith-ai:conversation-ended" as any,
+      this.handleConversationEnded,
     );
     this.buffer = [];
     if (this.debounceTimer) {
@@ -173,4 +181,17 @@ export class BackgroundScribe {
   get isActiveState(): boolean {
     return this.isActive;
   }
+
+  get bufferCount(): number {
+    return this.buffer.length;
+  }
+
+  private handleConversationEnded = async () => {
+    if (!this.isActive || this.buffer.length === 0) return;
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+    await this.synthesizeTODO();
+  };
 }

@@ -157,6 +157,12 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
   }, [activeChatId, allSessions, getVisibleSessions, chatHistoryManager]);
 
   const handleNewChat = () => {
+    // Signal that the previous conversation has ended (for Background Scribe)
+    if (activeChatId) {
+      plugin.app.workspace.trigger("zenith-ai:conversation-ended" as any, {
+        sessionId: activeChatId,
+      });
+    }
     const newSession = chatHistoryManager.createSession();
     const updated = chatHistoryManager.getAllSessions();
     setAllSessions(updated);
