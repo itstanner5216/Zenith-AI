@@ -21,8 +21,6 @@ import {
   TFile,
   normalizePath,
   loadPdfJs,
-  CachedMetadata,
-  LinkCache,
 } from "obsidian";
 import { logMessage } from "./someUtils";
 import { ZenithAISettingTab } from "./views/settings/view";
@@ -40,7 +38,6 @@ import {
 } from "./handlers/commandHandlers";
 import {
   ensureFolderExists,
-  moveFile,
 } from "./fileUtils";
 
 import { logger } from "./services/logger";
@@ -91,27 +88,8 @@ export default class ZenithAI extends Plugin {
     return this.settings.API_KEY;
   }
 
-  async getCurrentFileLinks(file: TFile): Promise<LinkCache[]> {
-    await this.app.vault.read(file);
-    const cache = this.app.metadataCache.getFileCache(file);
-    return cache?.links || [];
-  }
-
   async ensureFolderExists(folderPath: string) {
     await ensureFolderExists(this.app, folderPath);
-  }
-
-  async moveFile(
-    file: TFile,
-    humanReadableFileName: string,
-    destinationFolder = ""
-  ) {
-    return await moveFile(
-      this.app,
-      file,
-      humanReadableFileName,
-      destinationFolder
-    );
   }
 
   async ensureAssistantView(): Promise<AssistantViewWrapper | null> {
