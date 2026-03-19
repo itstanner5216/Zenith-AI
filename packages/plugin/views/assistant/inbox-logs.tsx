@@ -27,8 +27,6 @@ import {
   VALID_IMAGE_EXTENSIONS,
 } from "../../constants";
 import { TFile, Notice } from "obsidian";
-import { ProcessingTimeline } from "./organizer/components/processing-timeline";
-import { UndoButton } from "./organizer/components/undo-button";
 import { RecentIssuesPanel } from "./inbox-logs/recent-issues-panel";
 
 // Enhanced log entry display component
@@ -453,7 +451,6 @@ function FileCard({ record }: { record: FileRecord }) {
               )}
             </div>
           </div>
-          <UndoButton record={record} plugin={plugin} />
         </div>
 
         {/* Essential info - only when expanded */}
@@ -466,7 +463,6 @@ function FileCard({ record }: { record: FileRecord }) {
               record.status === "completed" ||
               record.status === "error") && (
               <div className="mt-4 -mx-3 px-3">
-                <ProcessingTimeline record={record} />
               </div>
             )}
           </div>

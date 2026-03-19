@@ -1,95 +1,28 @@
-import { ItemView, WorkspaceLeaf, TFile } from "obsidian";
+import { ItemView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
-import { AssistantView } from "./organizer/organizer";
 import ZenithAI from "../..";
-import { InboxLogs } from "./inbox-logs";
-import { SectionHeader } from "./section-header";
 import { AppContext } from "./provider";
 import AIChatSidebar from "./ai-chat/container";
-import ReactMarkdown from "react-markdown";
-import { ProjectContextTab } from "./context";
 import { StyledContainer } from "../../components/ui/utils";
 import { tw } from "../../lib/utils";
-import { Sparkles, Inbox, MessageSquare, Compass } from "lucide-react";
-import { Inbox as InboxService } from "../../inbox";
+import { MessageSquare, Bot } from "lucide-react";
 
 export const ORGANIZER_VIEW_TYPE = "fo2k.assistant.sidebar2";
 
-type Tab = "organizer" | "inbox" | "chat" | "context";
+type Tab = "chat" | "scribe";
 
 function TabContent({
   activeTab,
   plugin,
-  leaf,
   onTokenLimitError,
 }: {
   activeTab: Tab;
   plugin: ZenithAI;
-  leaf: WorkspaceLeaf;
   onTokenLimitError?: (error: string) => void;
 }) {
-  const [activeFile, setActiveFile] = React.useState<TFile | null>(null);
-  const [noteContent, setNoteContent] = React.useState<string>("");
-  const [refreshKey, setRefreshKey] = React.useState<number>(0);
-
-  React.useEffect(() => {
-    const updateActiveFile = async () => {
-      const file = plugin.app.workspace.getActiveFile();
-      if (file) {
-        const content = await plugin.app.vault.read(file);
-        setNoteContent(content);
-        setActiveFile(file);
-      }
-    };
-    updateActiveFile();
-
-    const handler = () => {
-      updateActiveFile();
-    };
-
-    plugin.app.workspace.on("file-open", handler);
-    plugin.app.workspace.on("active-leaf-change", handler);
-
-    return () => {
-      plugin.app.workspace.off("file-open", handler);
-      plugin.app.workspace.off("active-leaf-change", handler);
-    };
-  }, [plugin.app.workspace, plugin.app.vault]);
-
-  function renderNoteContent(content: string) {
-    return (
-      <div className={tw("markdown-preview")}>
-        <ReactMarkdown>{content}</ReactMarkdown>
-      </div>
-    );
-  }
-
   return (
     <div className={tw("flex flex-col h-full w-full")}>
-      <div
-        className={tw(
-          "flex-1 min-h-0 w-full",
-          activeTab === "organizer" ? "block" : "hidden"
-        )}
-      >
-        <AssistantView
-          plugin={plugin}
-          leaf={leaf}
-          onTokenLimitError={onTokenLimitError}
-        />
-      </div>
-
-      <div
-        className={tw(
-          "flex-1 min-h-0 w-full flex flex-col",
-          activeTab === "inbox" ? "block" : "hidden"
-        )}
-      >
-        <SectionHeader text="Inbox Processing" icon="📥 " />
-        <InboxLogs />
-      </div>
-
       <div
         className={tw(
           "flex-1 min-h-0 w-full",
@@ -106,11 +39,13 @@ function TabContent({
 
       <div
         className={tw(
-          "flex-1 min-h-0 w-full",
-          activeTab === "context" ? "block" : "hidden"
+          "flex-1 min-h-0 w-full flex flex-col items-center justify-center",
+          activeTab === "scribe" ? "flex" : "hidden"
         )}
       >
-        <ProjectContextTab />
+        <div className={tw("text-[#45aaff] text-sm opacity-70")}>
+          Background Scribe is active
+        </div>
       </div>
     </div>
   );
@@ -168,54 +103,24 @@ function TabButton({
 
 function AssistantContent({
   plugin,
-  leaf,
   initialTab,
   onTabChange,
 }: {
   plugin: ZenithAI;
-  leaf: WorkspaceLeaf;
   initialTab: Tab;
   onTabChange: (setTab: (tab: Tab) => void) => void;
 }) {
   const [activeTab, setActiveTab] = React.useState<Tab>(initialTab);
-  const [processingCount, setProcessingCount] = React.useState(0);
 
   React.useEffect(() => {
     onTabChange(setActiveTab);
   }, [onTabChange]);
 
-  // Track processing count for Inbox badge
   React.useEffect(() => {
-    const updateProcessingCount = () => {
-      try {
-        const inbox = InboxService.getInstance();
-        const analytics = inbox.getAnalytics();
-        const activeCount =
-          analytics.queueStats.processing + analytics.queueStats.queued;
-        setProcessingCount(activeCount);
-      } catch (error) {
-        // Silently handle errors (Inbox might not be initialized)
-        setProcessingCount(0);
-      }
-    };
-
-    updateProcessingCount();
-    const interval = setInterval(updateProcessingCount, 500);
-
-    // Listen to workspace events
-    const handler = () => updateProcessingCount();
-    const workspaceWithProcessingEvent =
-      plugin.app.workspace as typeof plugin.app.workspace & {
-        on: (name: string, callback: () => void) => unknown;
-        off: (name: string, callback: () => void) => void;
-      };
-    workspaceWithProcessingEvent.on("file-organizer:processing-step", handler);
-
-    return () => {
-      clearInterval(interval);
-      workspaceWithProcessingEvent.off("file-organizer:processing-step", handler);
-    };
-  }, [plugin]);
+    if (activeTab === "scribe" && plugin.backgroundScribe) {
+      plugin.backgroundScribe.activate();
+    }
+  }, [activeTab, plugin]);
 
   return (
     <div className={tw("flex flex-col h-full w-full bg-[#0d0b12]")}>
@@ -227,21 +132,6 @@ function AssistantContent({
       >
         <div className={tw("flex gap-0")}>
           <TabButton
-            isActive={activeTab === "organizer"}
-            onClick={() => setActiveTab("organizer")}
-            icon={<Sparkles className="w-4 h-4" />}
-          >
-            Organizer
-          </TabButton>
-          <TabButton
-            isActive={activeTab === "inbox"}
-            onClick={() => setActiveTab("inbox")}
-            icon={<Inbox className="w-4 h-4" />}
-            badge={processingCount}
-          >
-            Inbox
-          </TabButton>
-          <TabButton
             isActive={activeTab === "chat"}
             onClick={() => setActiveTab("chat")}
             icon={<MessageSquare className="w-4 h-4" />}
@@ -249,11 +139,11 @@ function AssistantContent({
             Chat
           </TabButton>
           <TabButton
-            isActive={activeTab === "context"}
-            onClick={() => setActiveTab("context")}
-            icon={<Compass className="w-4 h-4" />}
+            isActive={activeTab === "scribe"}
+            onClick={() => setActiveTab("scribe")}
+            icon={<Bot className="w-4 h-4" />}
           >
-            Context
+            Scribe
           </TabButton>
         </div>
       </div>
@@ -263,7 +153,6 @@ function AssistantContent({
         <TabContent
           activeTab={activeTab}
           plugin={plugin}
-          leaf={leaf}
           onTokenLimitError={undefined}
         />
       </div>
@@ -274,25 +163,12 @@ function AssistantContent({
 export class AssistantViewWrapper extends ItemView {
   root: Root | null = null;
   plugin: ZenithAI;
-  private activeTab: Tab = "organizer";
+  private activeTab: Tab = "chat";
   private setActiveTab: (tab: Tab) => void = () => {};
 
   constructor(leaf: WorkspaceLeaf, plugin: ZenithAI) {
     super(leaf);
     this.plugin = plugin;
-
-    // Register commands
-    this.plugin.addCommand({
-      id: "open-organizer-tab",
-      name: "Open Organizer Tab",
-      callback: () => this.activateTab("organizer"),
-    });
-
-    this.plugin.addCommand({
-      id: "open-inbox-tab",
-      name: "Open Inbox Tab",
-      callback: () => this.activateTab("inbox"),
-    });
 
     this.plugin.addCommand({
       id: "open-chat-tab",
@@ -301,9 +177,9 @@ export class AssistantViewWrapper extends ItemView {
     });
 
     this.plugin.addCommand({
-      id: "open-context-tab",
-      name: "Open Cosmic Context Tab",
-      callback: () => this.activateTab("context"),
+      id: "open-scribe-tab",
+      name: "Open Scribe Tab",
+      callback: () => this.activateTab("scribe"),
     });
 
   }
@@ -343,7 +219,6 @@ export class AssistantViewWrapper extends ItemView {
           <StyledContainer>
             <AssistantContent
               plugin={this.plugin}
-              leaf={this.leaf}
               initialTab={this.activeTab}
               onTabChange={setTab => {
                 this.setActiveTab = setTab;

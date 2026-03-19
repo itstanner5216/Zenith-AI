@@ -6,7 +6,6 @@ import ZenithAI from "../../../index";
 import { Button } from "../../../components/ui/button";
 import { StyledContainer } from "@/components/ui/utils";
 import { tw } from "@/lib/utils";
-import { EmptyState } from "../organizer/components/empty-state";
 
 // Import icons for file types
 import {
@@ -489,7 +488,7 @@ export function SyncTab({
       ) : (
         <>
           {files.length === 0 ? (
-            <EmptyState message="No files yet. Upload via mobile or web app." />
+            <div className={tw("p-4 text-center text-[#45aaff] opacity-70 text-sm")}>No files yet. Upload via mobile or web app.</div>
           ) : (
             <div className={tw("border-t border-[rgba(14,210,247,0.08)]")}>
               {files.map(file => (
