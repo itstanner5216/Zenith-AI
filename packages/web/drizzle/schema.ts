@@ -50,13 +50,4 @@ export const uploadedFiles = pgTable('uploaded_files', {
 export type UploadedFile = typeof uploadedFiles.$inferSelect;
 export type NewUploadedFile = typeof uploadedFiles.$inferInsert;
 
-// Stubs — imported by lib/incrementAndLogTokenUsage.ts which Plan A will delete.
-// Remove after Plan A merges.
-export const incrementTokenUsage = async (
-  _userId: string,
-  _tokens: number
-): Promise<{ remaining: number; usageError: boolean }> => ({ remaining: 0, usageError: false });
 
-export const checkTokenUsage = async (
-  _userId: string
-): Promise<{ remaining: number; usageError: boolean }> => ({ remaining: 0, usageError: false });
