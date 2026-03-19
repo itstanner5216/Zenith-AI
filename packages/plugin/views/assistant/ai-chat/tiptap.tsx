@@ -1,6 +1,7 @@
 import { useEditor, EditorContent, Editor, Range } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import React, { useEffect, useCallback } from "react";
+import { TFile } from "obsidian";
 import MentionWithSpaces from "./mention-with-spaces";
 import suggestion from "./suggestion";
 import SlashCommand from "./slash-command";
@@ -58,8 +59,13 @@ const Tiptap: React.FC<TiptapProps> = ({
   }) => {
     // Load file content if it's a file mention
     if (props.type === "file") {
-      const content = await loadFileContent(props.path);
-      props.content = content || "";
+      const file = plugin.app.vault.getFileByPath(props.path);
+      if (file instanceof TFile && file.extension === "pdf") {
+        props.content = await plugin.extractTextFromPDF(file);
+      } else {
+        const content = await loadFileContent(props.path);
+        props.content = content || "";
+      }
     }
 
     // Insert mention in editor
