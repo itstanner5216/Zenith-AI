@@ -2,7 +2,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { classifyDocument } from "../aiService";
 import { handleAuthorizationV2, AuthorizationError } from "@/lib/handleAuthorization";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import { getModel } from "@/lib/models";
 
 /**
@@ -24,10 +23,6 @@ export async function POST(request: NextRequest) {
       templateNames,
       model as any // Type cast for compatibility
     );
-    // increment tokenUsage
-    const tokens = response.usage.totalTokens;
-    console.log("incrementing token usage classify", userId, tokens);
-    await incrementAndLogTokenUsage(userId, tokens);
     const documentType = response.object.documentType;
     return NextResponse.json({ documentType });
   } catch (error) {

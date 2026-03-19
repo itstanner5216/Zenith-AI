@@ -1,15 +1,10 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { streamText } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 jest.mock('ai', () => ({
   streamText: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -24,10 +19,6 @@ describe('POST /api/(newai)/format-stream', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
     (streamText as jest.Mock).mockResolvedValue({
       toTextStreamResponse: jest.fn(() => new Response('streamed content')),
     });
@@ -104,31 +95,6 @@ describe('POST /api/(newai)/format-stream', () => {
     const args = (streamText as jest.Mock).mock.calls[0][0];
     expect(args.messages[0].content).toContain('Time:');
     expect(args.messages[0].content).toMatch(/\d{4}-\d{2}-\d{2}T/);
-  });
-
-  it('increments token usage from onFinish callback', async () => {
-    let onFinishCallback: ((payload: { usage: { totalTokens: number } }) => Promise<void>) | undefined;
-
-    (streamText as jest.Mock).mockImplementationOnce((options: { onFinish?: typeof onFinishCallback }) => {
-      onFinishCallback = options.onFinish;
-      return Promise.resolve({
-        toTextStreamResponse: () => new Response('streamed content'),
-      });
-    });
-
-    const request = new NextRequest('http://localhost:3000/api/format-stream', {
-      method: 'POST',
-      body: JSON.stringify({
-        content: 'Content',
-        formattingInstruction: 'Format',
-      }),
-    });
-
-    await POST(request);
-    expect(onFinishCallback).toBeDefined();
-
-    await onFinishCallback?.({ usage: { totalTokens: 150 } });
-    expect(incrementAndLogTokenUsage).toHaveBeenCalledWith('test-user-id', 150);
   });
 
   it('returns auth failures as JSON response', async () => {

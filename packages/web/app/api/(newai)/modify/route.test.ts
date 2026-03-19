@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateObject } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -25,10 +20,6 @@ describe('POST /api/(newai)/modify', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path', () => {
@@ -68,10 +59,6 @@ describe('POST /api/(newai)/modify', () => {
       expect(data.content).toBe(modifiedContent);
       expect(data.diff).toBeDefined();
       expect(data.explanation).toBe('Updated content with new information and added a new line');
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        200
-      );
     });
 
     it('should generate diff from original and modified content', async () => {
@@ -201,35 +188,6 @@ describe('POST /api/(newai)/modify', () => {
       expect(data.error).toBe('Rate limit exceeded');
     });
 
-    it('should handle token increment errors gracefully', async () => {
-      const mockResponse = {
-        object: {
-          content: 'Modified',
-          diff: [],
-          explanation: 'Modified',
-        },
-        usage: { totalTokens: 150 },
-      };
-      (generateObject as jest.Mock).mockResolvedValueOnce(mockResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest('http://localhost:3000/api/modify', {
-        method: 'POST',
-        body: JSON.stringify({
-          content: 'Content',
-          originalContent: 'Original',
-          instructions: 'Modify',
-        }),
-      });
-
-      // Token increment errors are caught and return 500
-      const response = await POST(request);
-      const data = await response.json();
-      expect(response.status).toBe(500);
-      expect(data).toHaveProperty('error');
-    });
   });
 
   describe('Edge Cases', () => {

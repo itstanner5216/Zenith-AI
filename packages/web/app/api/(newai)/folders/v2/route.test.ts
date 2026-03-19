@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateObject } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -33,10 +28,6 @@ describe('POST /api/(newai)/folders/v2', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path', () => {
@@ -72,10 +63,6 @@ describe('POST /api/(newai)/folders/v2', () => {
       expect(data.folders[0].folder).toBe('meetings');
       expect(data.folders[1].folder).toBe('planning');
       expect(data.folders[2].folder).toBe('notes');
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        200
-      );
     });
 
     it('should handle custom instructions', async () => {
@@ -199,33 +186,6 @@ describe('POST /api/(newai)/folders/v2', () => {
       expect(data.error).toBe('Rate limit exceeded');
     });
 
-    it('should handle token increment errors gracefully', async () => {
-      const mockResponse = {
-        object: {
-          suggestedFolders: [
-            { score: 80, isNewFolder: true, folder: 'folder', reason: 'Reason' },
-          ],
-        },
-        usage: { totalTokens: 150 },
-      };
-      (generateObject as jest.Mock).mockResolvedValueOnce(mockResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest('http://localhost:3000/api/folders/v2', {
-        method: 'POST',
-        body: JSON.stringify({
-          content: 'Content',
-          fileName: 'file.md',
-          folders: ['folder1'],
-        }),
-      });
-
-      // Should still return folders even if token increment fails
-      const response = await POST(request);
-      expect(response.status).toBe(200);
-    });
   });
 
   describe('Edge Cases', () => {

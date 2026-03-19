@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { db, uploadedFiles, UploadedFile } from "@/drizzle/schema";
 import { eq, or, and } from "drizzle-orm";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import sharp from "sharp";
 import { processImageWithVision } from "@/lib/vision";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
@@ -265,7 +264,6 @@ export async function POST(request: NextRequest) {
     // 7. Increment Token Usage (if successful)
     if (result.status === "completed" && result.tokensUsed > 0) {
       try {
-        await incrementAndLogTokenUsage(userId, result.tokensUsed);
         console.log(
           `Incremented token usage for user ${userId} by ${result.tokensUsed} for file ${fileId}`
         );

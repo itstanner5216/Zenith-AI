@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateObject } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -25,10 +20,6 @@ describe('POST /api/(newai)/title/v2', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path - Should Rename', () => {
@@ -73,10 +64,6 @@ describe('POST /api/(newai)/title/v2', () => {
       expect(data.titles).toHaveLength(3);
       expect(data.titles[0].score).toBe(90); // Sorted by score descending
       expect(data.titles[0].title).toBe('Better Title');
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        150
-      );
     });
 
     it('should respect count parameter', async () => {
@@ -188,8 +175,6 @@ describe('POST /api/(newai)/title/v2', () => {
       expect(data.titles[0].title).toBe('good-name.md');
       expect(data.titles[0].score).toBe(20);
       expect(data.titles[0].reason).toBe('Current name is already good');
-      // Should not call incrementAndLogTokenUsage for the second call
-      expect(incrementAndLogTokenUsage).not.toHaveBeenCalled();
     });
 
     it('should remove extension from fileName when returning current name', async () => {
@@ -310,44 +295,6 @@ describe('POST /api/(newai)/title/v2', () => {
       expect(data.error).toBe('Rate limit exceeded');
     });
 
-    it('should handle token increment errors gracefully', async () => {
-      const shouldRenameResponse = {
-        object: {
-          score: 80,
-          shouldRename: true,
-          reason: 'Should rename',
-        },
-        usage: { totalTokens: 50 },
-      };
-
-      const titlesResponse = {
-        object: {
-          suggestedTitles: [
-            { score: 90, title: 'Title', reason: 'Reason' },
-          ],
-        },
-        usage: { totalTokens: 150 },
-      };
-
-      (generateObject as jest.Mock)
-        .mockResolvedValueOnce(shouldRenameResponse)
-        .mockResolvedValueOnce(titlesResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest('http://localhost:3000/api/title/v2', {
-        method: 'POST',
-        body: JSON.stringify({
-          content: 'Content',
-          fileName: 'file.md',
-        }),
-      });
-
-      // Should still return titles even if token increment fails
-      const response = await POST(request);
-      expect(response.status).toBe(200);
-    });
   });
 
   describe('Edge Cases', () => {

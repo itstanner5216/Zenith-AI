@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import { getModel } from "@/lib/models";
 import { z } from "zod";
 import { generateObject } from "ai";
@@ -41,9 +40,6 @@ Modified content with the text "${content}" applied according to the instruction
 
     // Generate diff
     const diff = diffLines(originalContent, response.object.content);
-
-    // Log token usage
-    await incrementAndLogTokenUsage(userId, response.usage.totalTokens);
 
     return NextResponse.json({
       content: response.object.content,

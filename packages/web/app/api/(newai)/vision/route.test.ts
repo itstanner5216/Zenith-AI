@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateText } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getVisionModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
   generateText: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -25,10 +20,6 @@ describe('POST /api/(newai)/vision', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getVisionModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path', () => {
@@ -54,10 +45,6 @@ describe('POST /api/(newai)/vision', () => {
       expect(data.text).toBe('Extracted text from image');
       expect(generateText).toHaveBeenCalled();
       expect(getVisionModel).toHaveBeenCalled();
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        200
-      );
     });
 
     it('should use default instruction when no custom instructions provided', async () => {
@@ -194,28 +181,6 @@ describe('POST /api/(newai)/vision', () => {
       expect(data.error).toBe('Rate limit exceeded');
     });
 
-    it('should handle token increment errors gracefully', async () => {
-      const mockResponse = {
-        text: 'Extracted text',
-        usage: { totalTokens: 150 },
-      };
-      (generateText as jest.Mock).mockResolvedValueOnce(mockResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest('http://localhost:3000/api/vision', {
-        method: 'POST',
-        body: JSON.stringify({
-          image: new ArrayBuffer(8),
-        }),
-      });
-
-      const response = await POST(request);
-      const data = await response.json();
-
-      expect(data.error).toBe('Token increment failed');
-    });
   });
 
   describe('Edge Cases', () => {
@@ -312,10 +277,6 @@ describe('POST /api/(newai)/vision', () => {
 
       const response = await POST(request);
       expect(response.status).toBe(200);
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        0
-      );
     });
   });
 });

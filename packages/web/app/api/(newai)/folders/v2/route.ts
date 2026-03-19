@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleAuthorizationV2, AuthorizationError } from "@/lib/handleAuthorization";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import { getModel } from "@/lib/models";
 import { z } from "zod";
 import { generateObject } from "ai";
@@ -33,16 +32,6 @@ export async function POST(request: NextRequest) {
       }`,
       prompt: `Content: "${content}"`,
     });
-    // increment tokenUsage
-    const tokens = response.usage.totalTokens;
-    console.log("incrementing token usage folders", userId, tokens);
-    try {
-      await incrementAndLogTokenUsage(userId, tokens);
-    } catch (error) {
-      // Log error but don't fail the request - token increment is non-critical
-      console.error('Failed to increment token usage:', error);
-    }
-
     return NextResponse.json({
       folders: response.object.suggestedFolders.sort(
         (a, b) => b.score - a.score

@@ -1,6 +1,5 @@
 import { streamText } from 'ai';
 import { NextResponse, NextRequest } from 'next/server';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { handleAuthorizationV2 } from '@/lib/handleAuthorization';
 import { getModel } from '@/lib/models';
 
@@ -102,7 +101,6 @@ CRITICAL:
       ],
       onFinish: async ({ usage }) => {
         console.log('Token usage for meeting note enhancement:', usage);
-        await incrementAndLogTokenUsage(userId, usage.totalTokens);
       },
     });
 

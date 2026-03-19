@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 import {  generateText } from "ai";
 import { getVisionModel } from "@/lib/models";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 
 export const maxDuration = 300; // Vision models can be slower for complex images
 
@@ -31,10 +30,6 @@ export async function POST(request: NextRequest) {
         ],
       }],
     });
-    const tokens = response.usage.totalTokens;
-    console.log("incrementing token usage vision", userId, tokens);
-    await incrementAndLogTokenUsage(userId, tokens);
-
     return NextResponse.json({ text: response.text });
   } catch (error) {
     if (error) {

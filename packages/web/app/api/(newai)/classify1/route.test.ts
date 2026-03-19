@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { classifyDocument } from '../aiService';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('../aiService', () => ({
   classifyDocument: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -33,10 +28,6 @@ describe('POST /api/(newai)/classify1', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path', () => {
@@ -66,10 +57,6 @@ describe('POST /api/(newai)/classify1', () => {
         'meeting.md',
         ['meeting-notes', 'todo-list', 'journal'],
         { modelId: 'gpt-4o-mini' }
-      );
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        150
       );
     });
 
@@ -164,31 +151,6 @@ describe('POST /api/(newai)/classify1', () => {
       // classify1 route returns status 500 when error.status is undefined
       expect(response.status).toBe(500);
       expect(data.error).toBe('AI service unavailable');
-    });
-
-    it('should handle token increment errors gracefully', async () => {
-      const mockResponse = {
-        object: { documentType: 'meeting-notes' },
-        usage: { totalTokens: 150 },
-      };
-      (classifyDocument as jest.Mock).mockResolvedValueOnce(mockResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest('http://localhost:3000/api/classify1', {
-        method: 'POST',
-        body: JSON.stringify({
-          content: 'Content',
-          fileName: 'file.md',
-          templateNames: ['template1'],
-        }),
-      });
-
-      const response = await POST(request);
-      const data = await response.json();
-
-      expect(data.error).toBe('Token increment failed');
     });
 
     it('should handle errors with status codes', async () => {
@@ -366,10 +328,6 @@ describe('POST /api/(newai)/classify1', () => {
 
       const response = await POST(request);
       expect(response.status).toBe(200);
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        0
-      );
     });
   });
 });

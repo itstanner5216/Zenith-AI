@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateObject } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -33,10 +28,6 @@ describe('POST /api/(newai)/tags/v2', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path', () => {
@@ -72,10 +63,6 @@ describe('POST /api/(newai)/tags/v2', () => {
       expect(data.tags[0].tag).toBe('#meeting'); // Should have # prefix
       expect(data.tags[1].tag).toBe('#planning');
       expect(data.tags[2].tag).toBe('#notes');
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        200
-      );
     });
 
     it('should add # prefix to tags that do not have it', async () => {
@@ -224,34 +211,6 @@ describe('POST /api/(newai)/tags/v2', () => {
       expect(data.error).toBe('Rate limit exceeded');
     });
 
-    it('should handle token increment errors gracefully', async () => {
-      const mockResponse = {
-        object: {
-          suggestedTags: [
-            { score: 80, isNew: true, tag: 'tag', reason: 'Reason' },
-          ],
-        },
-        usage: { totalTokens: 150 },
-      };
-      (generateObject as jest.Mock).mockResolvedValueOnce(mockResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest('http://localhost:3000/api/tags/v2', {
-        method: 'POST',
-        body: JSON.stringify({
-          content: 'Content',
-          fileName: 'file.md',
-        }),
-      });
-
-      // Token increment errors are caught and return 500
-      const response = await POST(request);
-      const data = await response.json();
-      expect(response.status).toBe(500);
-      expect(data).toHaveProperty('error');
-    });
   });
 
   describe('Edge Cases', () => {

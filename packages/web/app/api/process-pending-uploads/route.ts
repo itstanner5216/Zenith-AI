@@ -6,7 +6,6 @@ import {
   GetObjectCommand,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import OpenAI, { toFile } from 'openai';
 import fs from 'fs';
 import path from 'path';
@@ -557,7 +556,6 @@ export async function GET(request: NextRequest) {
         if (result.status === 'completed' && result.tokensUsed > 0) {
           processedCount++;
           try {
-            await incrementAndLogTokenUsage(userId, result.tokensUsed);
             console.log(
               `Incremented token usage for user ${userId} by ${result.tokensUsed}`
             );

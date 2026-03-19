@@ -1,7 +1,6 @@
 import { guessRelevantFolder } from '../aiService';
 import { NextRequest, NextResponse } from 'next/server';
 import { handleAuthorizationV2 } from '@/lib/handleAuthorization';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 /**
@@ -33,11 +32,6 @@ export async function POST(request: NextRequest) {
       model as any,
       customInstructions
     );
-    // increment tokenUsage
-    const tokens = response.usage.totalTokens;
-    console.log('incrementing token usage folders', userId, tokens);
-    await incrementAndLogTokenUsage(userId, tokens);
-
     // Return response with deprecation warning in headers
     return NextResponse.json(
       {

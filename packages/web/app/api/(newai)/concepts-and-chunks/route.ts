@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { getModel } from '@/lib/models';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { handleAuthorizationV2 } from '@/lib/handleAuthorization';
 import { generateObject, LanguageModel } from 'ai';
 import { z } from 'zod';
@@ -44,14 +43,6 @@ export async function POST(request: NextRequest) {
     const model = getModel();
 
     const response = await identifyConceptsAndChunks(content, model as any);
-
-    const tokens = response.usage?.totalTokens || 0;
-    console.log(
-      'incrementing token usage for concepts-and-chunks',
-      userId,
-      tokens
-    );
-    await incrementAndLogTokenUsage(userId, tokens);
 
     return NextResponse.json({ concepts: response.object.concepts });
   } catch (error) {
