@@ -1,41 +1,5 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@clerk/nextjs/server';
-
-// Force dynamic rendering to avoid static generation issues with Clerk
-export const dynamic = 'force-dynamic';
 
 export default async function MainPage() {
-  if (process.env.ENABLE_USER_MANAGEMENT !== 'true') {
-    redirect('/dashboard/self-hosted');
-  }
-
-  // Check if Clerk is configured before using auth()
-  const hasClerkConfig =
-    !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-    !!process.env.CLERK_SECRET_KEY;
-
-  if (!hasClerkConfig) {
-    // If user management is enabled but Clerk isn't configured, redirect to self-hosted
-    redirect('/dashboard/self-hosted');
-  }
-
-  let userId: string | null = null;
-  try {
-    const authResult = await auth();
-    userId = authResult.userId;
-  } catch (error) {
-    // Handle the case where auth() is called but clerkMiddleware isn't detected
-    // This can happen for static files or routes that bypass middleware
-    if (error instanceof Error && error.message.includes('clerkMiddleware')) {
-      console.warn('Clerk middleware not detected for this route, redirecting to self-hosted');
-      redirect('/dashboard/self-hosted');
-    }
-    throw error;
-  }
-
-  if (userId) {
-    redirect('/dashboard');
-  }
-
-  redirect('/sign-in');
+  redirect('/dashboard/self-hosted');
 }

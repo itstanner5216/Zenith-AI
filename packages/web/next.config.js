@@ -3,27 +3,11 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  // Required for pnpm monorepo: ensures files outside app directory are traced
   outputFileTracingRoot: path.join(__dirname, '../../'),
   serverExternalPackages: ['postgres'],
   eslint: {
     ignoreDuringBuilds: true,
   },
-  async rewrites() {
-    return [
-      {
-        source: "/ingest/static/:path*",
-        destination: "https://us-assets.i.posthog.com/static/:path*",
-      },
-      {
-        source: "/ingest/:path*",
-        destination: "https://us.i.posthog.com/:path*",
-      },
-    ];
-  },
-  // This is required to support PostHog trailing slash API requests
-  skipTrailingSlashRedirect: true,
-  
   async headers() {
     return [
       {

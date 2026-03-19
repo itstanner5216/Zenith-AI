@@ -15,8 +15,7 @@ const config: Config.InitialOptions = {
   // Module name mapper for Next.js imports and other aliases
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
-    '^next/server$': '<rootDir>/__mocks__/next/server.ts',
-    '^@unkey/api$': '<rootDir>/__mocks__/@unkey/api.ts'
+    '^next/server$': '<rootDir>/__mocks__/next/server.ts'
   },
 
   // Module file extensions for importing

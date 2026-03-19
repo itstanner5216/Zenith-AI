@@ -1,16 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import {
   FileText,
-  Smartphone,
   Upload,
-  Zap,
-  ExternalLink,
   Files,
   Image,
-  Calendar,
   FileSymlink,
   RefreshCw,
 } from 'lucide-react';
@@ -19,20 +14,12 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 
 export default function DashboardPage() {
-  const [apiUsage, setApiUsage] = React.useState({
-    tokenUsage: 0,
-    maxTokenUsage: 0,
-    nextReset: '',
-    isActive: false,
-  });
   const [recentFiles, setRecentFiles] = React.useState<
     Array<{
       id: number;
@@ -51,15 +38,6 @@ export default function DashboardPage() {
       try {
         setIsLoading(true);
         setError(null);
-
-        // Fetch API usage data
-        const usageResponse = await fetch('/api/usage', {});
-
-        if (!usageResponse.ok) {
-          throw new Error('Failed to fetch API usage data');
-        }
-        const usageData = await usageResponse.json();
-        setApiUsage(usageData);
 
         // Fetch recent files
         const filesResponse = await fetch('/api/files/recent');
@@ -112,16 +90,6 @@ export default function DashboardPage() {
     }
   };
 
-  // Format number with commas
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat().format(num);
-  };
-
-  // Calculate percentage for progress bars
-  const calculatePercentage = (current: number, max: number) => {
-    return Math.min(Math.round((current / max) * 100), 100);
-  };
-
   // Handle file upload
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -168,140 +136,6 @@ export default function DashboardPage() {
           </p>
         </div>
       </div>
-
-      {/* API Usage Card */}
-      <Card className="w-full">
-        <CardHeader className="pb-4">
-          <CardTitle>API Usage</CardTitle>
-          <CardDescription>Your current token usage</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
-            </div>
-          ) : error ? (
-            <div className="text-center py-4 text-red-500">
-              <p className="text-sm">{error}</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Token Usage</span>
-                  <span className="text-sm text-muted-foreground">
-                    {formatNumber(apiUsage.tokenUsage)} /{' '}
-                    {formatNumber(apiUsage.maxTokenUsage)} tokens
-                  </span>
-                </div>
-                <Progress
-                  value={calculatePercentage(
-                    apiUsage.tokenUsage,
-                    apiUsage.maxTokenUsage
-                  )}
-                  className="h-2"
-                />
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="bg-slate-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FileText className="h-4 w-4 text-blue-500" />
-                    <span className="text-sm font-medium">Access</span>
-                  </div>
-                  <p className="text-xl font-bold">
-                    {apiUsage.isActive ? 'Enabled' : 'Inactive'}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    API usage is available for your current key
-                  </p>
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Zap className="h-4 w-4 text-amber-500" />
-                    <span className="text-sm font-medium">Usage</span>
-                  </div>
-                  <p className="text-xl font-bold">
-                    {calculatePercentage(
-                      apiUsage.tokenUsage,
-                      apiUsage.maxTokenUsage
-                    )}
-                    %
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    of your monthly allocation
-                  </p>
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Calendar className="h-4 w-4 text-green-500" />
-                    <span className="text-sm font-medium">Next Reset</span>
-                  </div>
-                  <p className="text-xl font-bold">
-                    {apiUsage.nextReset || 'Loading...'}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Usage resets on this date
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Mobile App Card - Hidden for now */}
-      {false && (
-        <div className="grid gap-6 md:grid-cols-1">
-          {/* New Mobile App Card */}
-          <Card className="col-span-1">
-            <CardHeader className="pb-2">
-              <CardTitle>Zenith-AI Mobile</CardTitle>
-              {/* <CardDescription>Our brand new mobile experience</CardDescription> */}
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="flex items-start gap-4">
-                <div className="h-16 w-16 flex items-center justify-center rounded-full bg-blue-50">
-                  <Smartphone className="h-8 w-8 text-blue-600" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-medium">Now in Beta</h3>
-                  <p className="text-sm text-muted-foreground">
-                    The Zenith-AI mobile app is now available for iOS.
-                    Capture notes, screenshots, and sync them directly to your
-                    vault with ease.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                      iOS
-                    </Badge>
-                    <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-                      Share Extension
-                    </Badge>
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                      Instant Sync
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="pt-0">
-              <Button className="w-full" size="sm" asChild>
-                <a
-                  href="https://discord.gg/udQnCRFyus"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Join early access through discord
-                </a>
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-      )}
 
       {/* Recent Files Card */}
       <Card className="w-full">
