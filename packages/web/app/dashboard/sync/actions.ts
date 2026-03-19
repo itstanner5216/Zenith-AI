@@ -2,7 +2,6 @@
 
 import { db, uploadedFiles } from "@/drizzle/schema";
 import { eq, desc, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 
 // Types
 interface PaginationParams {
@@ -39,14 +38,15 @@ interface FileStatusResponse {
 // Get files with pagination
 export async function getFiles(
   { page = 1, limit = 10 },
-  someUserId?: string
+  userId?: string
 ): Promise<FileListResponse | { error: string }> {
   try {
-    const userId = someUserId ?? "user";
+    if (!userId) {
+      return { error: "Unauthorized" };
+    }
 
     const offset = (page - 1) * limit;
 
-    // Get files with pagination
     const files = await db
       .select({
         id: uploadedFiles.id,
@@ -65,7 +65,6 @@ export async function getFiles(
       .limit(limit)
       .offset(offset);
 
-    // Get total count
     const [{ count }] = await db
       .select({
         count: sql<number>`count(*)`,
@@ -94,9 +93,10 @@ export async function getFileStatus(
   userId?: string
 ): Promise<FileStatusResponse | { error: string }> {
   try {
-    const resolvedUserId = userId ?? "user";
+    if (!userId) {
+      return { error: "Unauthorized" };
+    }
 
-    // Check if file exists and belongs to user
     const [file] = await db
       .select({
         userId: uploadedFiles.userId,
@@ -112,12 +112,10 @@ export async function getFileStatus(
       return { error: "File not found" };
     }
 
-    // Check if file belongs to user
-    if (file.userId !== resolvedUserId) {
+    if (file.userId !== userId) {
       return { error: "Unauthorized" };
     }
 
-    // Return file status
     return {
       status: file.status,
       text: file.textContent,
@@ -131,12 +129,14 @@ export async function getFileStatus(
 
 // Delete file
 export async function deleteFile(
-  fileId: number
+  fileId: number,
+  userId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const userId = "user";
+    if (!userId) {
+      return { success: false, error: "Unauthorized" };
+    }
 
-    // Check if file exists and belongs to user
     const [file] = await db
       .select()
       .from(uploadedFiles)
@@ -151,11 +151,7 @@ export async function deleteFile(
       return { success: false, error: "Unauthorized" };
     }
 
-    // Delete from database
     await db.delete(uploadedFiles).where(eq(uploadedFiles.id, fileId));
-
-    // Revalidate the files page to reflect the deletion
-    revalidatePath("/dashboard/sync");
 
     return { success: true };
   } catch (error) {

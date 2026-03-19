@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleAuthorizationV2, AuthorizationError } from "@/lib/handleAuthorization";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import { getModel } from "@/lib/models";
 import { z } from "zod";
 import { generateObject } from "ai";
@@ -64,8 +63,6 @@ export async function POST(request: NextRequest) {
               ${safeContent}
               """`,
     });
-
-    await incrementAndLogTokenUsage(userId, response.usage.totalTokens);
 
     // Sort tags by score and format response
     // Add fallback reason if missing (defensive programming)

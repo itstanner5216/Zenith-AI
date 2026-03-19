@@ -21,18 +21,15 @@ export const openai = Object.assign(
     }))
   })),
   {
-    tools: {
-      webSearchPreview: jest.fn((options: any) => ({
-        type: 'web_search_preview',
-        searchContextSize: options?.searchContextSize || 'medium',
-      })),
-    },
+    tools: {},
     responses: jest.fn((model: string) => ({
       generateText: jest.fn(),
       streamText: jest.fn(),
     })),
   }
 );
+
+export const createOpenAI = jest.fn(() => openai);
 
 export type OpenAIProviderMetadata = {
   annotations?: Array<{

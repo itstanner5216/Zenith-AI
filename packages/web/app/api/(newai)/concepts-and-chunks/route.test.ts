@@ -1,16 +1,11 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import { generateObject } from 'ai';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { getModel } from '@/lib/models';
 
 // Mock dependencies
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
-}));
-
-jest.mock('@/lib/incrementAndLogTokenUsage', () => ({
-  incrementAndLogTokenUsage: jest.fn(),
 }));
 
 jest.mock('@/lib/models', () => ({
@@ -25,10 +20,6 @@ describe('POST /api/(newai)/concepts-and-chunks', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getModel as jest.Mock).mockReturnValue({ modelId: 'gpt-4o-mini' });
-    (incrementAndLogTokenUsage as jest.Mock).mockResolvedValue({
-      remaining: 1000,
-      usageError: false,
-    });
   });
 
   describe('Happy Path', () => {
@@ -71,10 +62,6 @@ describe('POST /api/(newai)/concepts-and-chunks', () => {
       expect(data.concepts).toHaveLength(3);
       expect(data.concepts[0].name).toBe('Machine Learning');
       expect(data.concepts[0].chunk).toBeDefined();
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        300
-      );
     });
 
     it('should preserve markdown formatting in chunks', async () => {
@@ -178,35 +165,6 @@ describe('POST /api/(newai)/concepts-and-chunks', () => {
       expect(data.error).toBe('Rate limit exceeded');
     });
 
-    it('should handle token increment errors gracefully', async () => {
-      const mockResponse = {
-        object: {
-          concepts: [
-            { name: 'Concept', chunk: 'Chunk' },
-          ],
-        },
-        usage: { totalTokens: 150 },
-      };
-      (generateObject as jest.Mock).mockResolvedValueOnce(mockResponse);
-      (incrementAndLogTokenUsage as jest.Mock).mockRejectedValueOnce(
-        new Error('Token increment failed')
-      );
-
-      const request = new NextRequest(
-        'http://localhost:3000/api/concepts-and-chunks',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            content: 'Content',
-          }),
-        }
-      );
-
-      const response = await POST(request);
-      const data = await response.json();
-
-      expect(data.error).toBe('Token increment failed');
-    });
   });
 
   describe('Edge Cases', () => {
@@ -341,10 +299,6 @@ describe('POST /api/(newai)/concepts-and-chunks', () => {
 
       const response = await POST(request);
       expect(response.status).toBe(200);
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        0
-      );
     });
 
     it('should handle missing usage in response', async () => {
@@ -371,10 +325,6 @@ describe('POST /api/(newai)/concepts-and-chunks', () => {
       const response = await POST(request);
       expect(response.status).toBe(200);
       // Should default to 0 tokens if usage is missing
-      expect(incrementAndLogTokenUsage).toHaveBeenCalledWith(
-        'test-user-id',
-        0
-      );
     });
   });
 });

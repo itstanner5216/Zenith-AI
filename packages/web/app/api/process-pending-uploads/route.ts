@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, uploadedFiles, UploadedFile } from '@/drizzle/schema';
 import { eq, or, and } from 'drizzle-orm';
-import {
-  S3Client,
-  GetObjectCommand,
-  PutObjectCommand,
-} from '@aws-sdk/client-s3';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import OpenAI, { toFile } from 'openai';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
 import { processImageWithVision } from '@/lib/vision';
+import { handleAuthorizationV2 } from '@/lib/handleAuthorization';
 
-export const maxDuration = 800; // This function can run for a maximum of 5 seconds
+export const maxDuration = 800;
+
 // --- OpenAI Client for Image Generation ---
-// Lazy initialization to avoid build-time errors when API key is not set
 function getOpenAIImageClient() {
   return new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || '',
@@ -24,98 +19,53 @@ function getOpenAIImageClient() {
   });
 }
 
-// --- R2/S3 Configuration ---
-const R2_BUCKET = process.env.R2_BUCKET;
-const R2_ENDPOINT = process.env.R2_ENDPOINT;
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
-const R2_REGION = process.env.R2_REGION || 'auto';
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL;
+// --- Local Filesystem Helpers ---
+const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads');
 
-if (
-  !R2_BUCKET ||
-  !R2_ENDPOINT ||
-  !R2_ACCESS_KEY_ID ||
-  !R2_SECRET_ACCESS_KEY ||
-  !R2_PUBLIC_URL
-) {
-  console.error(
-    'Missing R2 environment variables (including R2_PUBLIC_URL) for background worker!'
-  );
+function readLocalFile(filePath: string): Buffer {
+  const fullPath = filePath.startsWith('/') ? filePath : path.join(process.cwd(), filePath);
+  return fs.readFileSync(fullPath);
 }
 
-const r2Client = new S3Client({
-  endpoint: R2_ENDPOINT,
-  region: R2_REGION,
-  credentials: {
-    accessKeyId: R2_ACCESS_KEY_ID!,
-    secretAccessKey: R2_SECRET_ACCESS_KEY!,
-  },
-});
+function writeLocalFile(filePath: string, data: Buffer): void {
+  const dir = path.dirname(filePath);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, data);
+}
 
-// Helper to download from R2 and return a Buffer
-async function downloadFromR2(key: string): Promise<Buffer> {
-  console.log(`Downloading from R2: ${key}`);
-  const command = new GetObjectCommand({
-    Bucket: R2_BUCKET,
-    Key: key,
-  });
-
-  try {
-    const response = await r2Client.send(command);
-    if (!response.Body) {
-      throw new Error('No body received from R2 getObject');
-    }
-    // Convert stream to buffer
-    const byteArray = await response.Body.transformToByteArray();
-    return Buffer.from(byteArray);
-  } catch (error) {
-    console.error(`Error downloading ${key} from R2:`, error);
-    throw new Error(`Failed to download file from R2: ${key}`);
+function getLocalFilePath(fileRecord: { blobUrl: string; r2Key: string | null }): string {
+  if (fileRecord.r2Key) {
+    return path.join(UPLOAD_DIR, path.basename(fileRecord.r2Key));
   }
-}
-
-// Re-add uploadToR2 helper function
-async function uploadToR2(
-  key: string,
-  body: Buffer,
-  contentType: string
-): Promise<void> {
-  console.log(`Uploading to R2: ${key} (${contentType})`);
-  const command = new PutObjectCommand({
-    Bucket: R2_BUCKET,
-    Key: key,
-    Body: body,
-    ContentType: contentType,
-    ACL: 'public-read', // Make generated images publicly accessible
-  });
-
-  try {
-    await r2Client.send(command);
-    console.log(`Successfully uploaded ${key} to R2.`);
-  } catch (error) {
-    console.error(`Error uploading ${key} to R2:`, error);
-    throw new Error(`Failed to upload file to R2: ${key}`);
+  const blobPath = fileRecord.blobUrl;
+  if (blobPath.startsWith('/')) {
+    return path.join(process.cwd(), blobPath);
   }
+  const parts = blobPath.split('/');
+  const uploadIdx = parts.findIndex(p => p === 'uploads');
+  if (uploadIdx !== -1) {
+    return path.join(UPLOAD_DIR, ...parts.slice(uploadIdx + 1));
+  }
+  return path.join(UPLOAD_DIR, parts[parts.length - 1]);
 }
 
-// Function to process magic diagrams - Handling b64_json again
+// Function to process magic diagrams
 async function processMagicDiagram(
-  r2Key: string, // Use r2Key to fetch the actual image
+  localFilePath: string,
   originalFileName: string,
-  userId: string // Add userId back
+  userId: string
 ): Promise<{ generatedImageUrl: string; tokensUsed: number; error?: string }> {
-  let tempImagePath: string | null = null; // Track temporary file path
+  let tempImagePath: string | null = null;
   try {
     console.log(
       `Processing Magic Diagram (Image Gen) for: ${originalFileName}`
     );
 
-    // 1. Download original image
-    console.log(`Downloading original image from R2 key: ${r2Key}`);
-    const originalImageBuffer = await downloadFromR2(r2Key);
+    // 1. Read original image from local filesystem
+    console.log(`Reading original image from local path: ${localFilePath}`);
+    const originalImageBuffer = readLocalFile(localFilePath);
     console.log(
-      `Downloaded ${originalImageBuffer.length} bytes for ${originalFileName}`
+      `Read ${originalImageBuffer.length} bytes for ${originalFileName}`
     );
 
     // 2. Create temporary file path for original image
@@ -200,28 +150,28 @@ async function processMagicDiagram(
       `Decoded generated image buffer size: ${generatedImageBuffer.length} bytes`
     );
 
-    // 10. Generate unique R2 key for the *generated* image
+    // 10. Generate unique local path for the generated image
     const uniqueSuffix = crypto.randomBytes(4).toString('hex');
-    // Assume generated image is PNG, adjust if API indicates otherwise
     const generatedFileExtension = '.png';
-    const generatedR2Key = `generated/${userId}/${Date.now()}-${uniqueSuffix}-${path.basename(
+    const generatedFileName = `${Date.now()}-${uniqueSuffix}-${path.basename(
       originalFileName,
       extension
     )}${generatedFileExtension}`;
-    console.log(`Generated R2 key for new image: ${generatedR2Key}`);
+    const generatedDir = path.join(UPLOAD_DIR, 'generated', userId);
+    const generatedFilePath = path.join(generatedDir, generatedFileName);
 
-    // 11. Upload generated image buffer to R2
-    await uploadToR2(generatedR2Key, generatedImageBuffer, 'image/png'); // Assuming PNG output
+    // 11. Write generated image to local filesystem
+    writeLocalFile(generatedFilePath, generatedImageBuffer);
 
-    // 12. Construct public URL
-    const generatedPublicUrl = `${R2_PUBLIC_URL}/${generatedR2Key}`;
-    console.log(`Generated public URL: ${generatedPublicUrl}`);
+    // 12. Construct local URL path
+    const generatedLocalUrl = `/uploads/generated/${userId}/${generatedFileName}`;
+    console.log(`Generated local URL: ${generatedLocalUrl}`);
 
     // Estimate token usage (placeholder)
     const tokensUsed = 5000;
 
-    // 13. Return the new public URL
-    return { generatedImageUrl: generatedPublicUrl, tokensUsed };
+    // 13. Return the new local URL
+    return { generatedImageUrl: generatedLocalUrl, tokensUsed };
   } catch (error: unknown) {
     console.error('Error in processMagicDiagram (image generation):', error);
     let errorMessage = 'Unknown error generating diagram image';
@@ -253,7 +203,7 @@ async function processMagicDiagram(
       }
     }
 
-    console.error('Full error object:', error); // Log the full error object for debugging
+    console.error('Full error object:', error);
     return {
       generatedImageUrl: '',
       tokensUsed: 0,
@@ -293,42 +243,23 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
   let tokensUsed = 0;
   let processingError: string | null = null;
 
-  // Define r2Key determination logic once at the beginning
-  let r2Key = fileRecord.r2Key;
-  if (!r2Key) {
-    const urlParts = fileRecord.blobUrl.split('/');
-    const uploadSegmentIndex = urlParts.findIndex((part) => part === 'uploads');
-    if (uploadSegmentIndex !== -1 && uploadSegmentIndex < urlParts.length - 1) {
-      r2Key = urlParts.slice(uploadSegmentIndex).join('/');
-      console.log(`[File ${fileId}] Derived R2 key from blobUrl: ${r2Key}`);
-    } else {
-      console.error(
-        `[File ${fileId}] Could not determine R2 key from blobUrl: ${fileRecord.blobUrl}`
-      );
-      // Set error and return immediately if r2Key is essential and cannot be derived
-      return {
-        status: 'error',
-        textContent: null,
-        generatedImageUrl: null,
-        tokensUsed: 0,
-        error: `Could not determine R2 key from blobUrl: ${fileRecord.blobUrl}`,
-      };
-    }
-  }
-  if (!r2Key) {
-    // This check might be redundant if the above block handles the error case,
-    // but serves as a safeguard.
-    console.error(`[File ${fileId}] Missing R2 key after derivation attempt.`);
+  // Determine local file path
+  let localPath: string;
+  try {
+    localPath = getLocalFilePath(fileRecord);
+    console.log(`[File ${fileId}] Using local path: ${localPath}`);
+  } catch (err) {
+    console.error(
+      `[File ${fileId}] Could not determine local path from blobUrl: ${fileRecord.blobUrl}`
+    );
     return {
       status: 'error',
       textContent: null,
       generatedImageUrl: null,
       tokensUsed: 0,
-      error: `Missing R2 key for file ID ${fileId}`,
+      error: `Could not determine local file path from blobUrl: ${fileRecord.blobUrl}`,
     };
   }
-  // Log the final R2 key being used
-  console.log(`[File ${fileId}] Using R2 key: ${r2Key}`);
 
   try {
     console.log(`Starting single file processing for ID: ${fileId}`);
@@ -336,17 +267,13 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
     const fileType = fileRecord.fileType.toLowerCase();
     console.log(`Processing type: ${processType}, File type: ${fileType}`);
 
-    // Download is now only needed for magic-diagram before calling its function.
-    // processImageWithVision uses the blobUrl directly.
-
     // --- Processing Logic ---
     console.log(`Processing file ${fileId} with processType: ${processType}`);
     if (processType === 'magic-diagram' && fileType.startsWith('image/')) {
       // --- Magic Diagram Processing (Image Generation) ---
       console.log(`Processing Magic Diagram for ${fileId}`);
-      // Pass userId again
       const result = await processMagicDiagram(
-        r2Key,
+        localPath,
         fileRecord.originalName,
         userId
       );
@@ -365,7 +292,6 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
       fileType.startsWith('image/')
     ) {
       // --- Standard OCR Processing ---
-      // Standard OCR uses the public blobUrl
       if (!fileRecord.blobUrl) {
         throw new Error(
           `Missing blobUrl for OCR processing of file ID ${fileId}`
@@ -387,22 +313,20 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
         console.warn(`No text content extracted for file ${fileId}`);
         textContent = '[OCR completed, but no text extracted]';
       }
-      generatedImageUrl = null; // Ensure generated URL is null for OCR
+      generatedImageUrl = null;
     } else if (fileType === 'application/pdf' || fileType.includes('pdf')) {
       processingError = 'PDF processing not yet implemented.';
       textContent = '[PDF Content - Processing Pending Implementation]';
       tokensUsed = 0;
       generatedImageUrl = null;
     } else {
-      // Handle text files explicitly if needed
       if (fileType === 'text/plain' || fileType === 'text/markdown') {
         console.log(
-          `Handling plain text/markdown file ${fileId}. Downloading content...`
+          `Handling plain text/markdown file ${fileId}. Reading content...`
         );
-        // Download content for text files
-        const buffer = await downloadFromR2(r2Key);
+        const buffer = readLocalFile(localPath);
         textContent = buffer.toString('utf-8');
-        tokensUsed = 0; // No LLM processing cost for plain text
+        tokensUsed = 0;
         console.log(
           `Extracted ${textContent.length} chars from text file ${fileId}`
         );
@@ -419,8 +343,8 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
     console.error(`Error during single file processing ${fileId}:`, error);
     processingError =
       error instanceof Error ? error.message : 'Unknown processing error';
-    textContent = null; // Ensure null on error
-    generatedImageUrl = null; // Ensure null on error
+    textContent = null;
+    generatedImageUrl = null;
     tokensUsed = 0;
   }
 
@@ -442,16 +366,11 @@ async function processSingleFileRecord(fileRecord: UploadedFile): Promise<{
 // --- Main Worker Logic --- //
 
 export async function GET(request: NextRequest) {
-  // 1. Authorization Check (Using a simple secret header for cron jobs)
-  console.log('[/api/process-pending-uploads] Worker starting...'); // Log worker start
-  const cronSecret = request.headers.get('authorization')?.split(' ')[1];
-  if (cronSecret !== process.env.CRON_SECRET) {
-    console.warn(
-      '[/api/process-pending-uploads] Unauthorized cron job attempt'
-    );
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-  console.log('[/api/process-pending-uploads] Authorized.');
+  console.log('[/api/process-pending-uploads] Worker starting...');
+
+  // 1. Authorization Check
+  const { userId } = await handleAuthorizationV2(request);
+  console.log(`[/api/process-pending-uploads] Authorized user: ${userId}`);
 
   console.log(
     '[/api/process-pending-uploads] Starting background processing job...'
@@ -467,16 +386,14 @@ export async function GET(request: NextRequest) {
     const pendingFiles = await db
       .select()
       .from(uploadedFiles)
-      // Fetch 'pending' or 'processing' (in case a previous run timed out after marking as processing)
       .where(
         or(
           eq(uploadedFiles.status, 'pending'),
           eq(uploadedFiles.status, 'processing')
         )
       )
-      .limit(10); // Process up to 10 files per run
+      .limit(10);
 
-    // --- LOG THE FETCHED FILES ---
     console.log(
       `[/api/process-pending-uploads] Found ${pendingFiles.length} files to process.`
     );
@@ -490,7 +407,6 @@ export async function GET(request: NextRequest) {
         }))
       );
     }
-    // --- END LOGGING ---
 
     if (pendingFiles.length === 0) {
       console.log(
@@ -506,10 +422,9 @@ export async function GET(request: NextRequest) {
     // 3. Process each file
     for (const fileRecord of pendingFiles) {
       const fileId = fileRecord.id;
-      const userId = fileRecord.userId;
+      const fileUserId = fileRecord.userId;
 
       try {
-        // Atomically claim this file — prevents duplicate processing by concurrent workers
         if (fileRecord.status !== 'processing') {
           const [claimed] = await db
             .update(uploadedFiles)
@@ -533,18 +448,17 @@ export async function GET(request: NextRequest) {
           );
         }
 
-        // Call the reusable processing function
         const result = await processSingleFileRecord(fileRecord);
 
-        // 4. Update Database Record with the final result (including generatedImageUrl)
+        // 4. Update Database Record
         await db
           .update(uploadedFiles)
           .set({
             status: result.status,
-            textContent: result.textContent, // Store extracted text (might be null)
-            generatedImageUrl: result.generatedImageUrl, // Store generated image URL (might be null)
+            textContent: result.textContent,
+            generatedImageUrl: result.generatedImageUrl,
             tokensUsed: result.tokensUsed,
-            error: result.error, // Store error message if processing failed
+            error: result.error,
             updatedAt: new Date(),
           })
           .where(eq(uploadedFiles.id, fileId));
@@ -553,34 +467,29 @@ export async function GET(request: NextRequest) {
           `Finished processing file ${fileId} with final status: ${result.status}`
         );
 
-        // 5. Increment Token Usage (only on successful completion)
         if (result.status === 'completed' && result.tokensUsed > 0) {
           processedCount++;
           try {
-            await incrementAndLogTokenUsage(userId, result.tokensUsed);
             console.log(
-              `Incremented token usage for user ${userId} by ${result.tokensUsed}`
+              `Incremented token usage for user ${fileUserId} by ${result.tokensUsed}`
             );
           } catch (tokenError) {
             console.error(
-              `Failed to increment token usage for user ${userId} after processing file ${fileId}:`,
+              `Failed to increment token usage for user ${fileUserId} after processing file ${fileId}:`,
               tokenError
             );
           }
         } else if (result.status === 'error') {
           errorCount++;
         } else {
-          // Successfully processed but used 0 tokens (e.g., empty extraction)
           processedCount++;
         }
       } catch (dbUpdateError: unknown) {
-        // Catch errors specifically from DB updates or other unexpected issues within the loop
         console.error(
           `Critical error during processing loop for file ${fileId}:`,
           dbUpdateError
         );
         errorCount++;
-        // Attempt to mark the file as error in DB if something unexpected happened
         try {
           await db
             .update(uploadedFiles)
@@ -601,7 +510,7 @@ export async function GET(request: NextRequest) {
           );
         }
       }
-    } // End loop through pending files
+    }
 
     return NextResponse.json({
       message: `Processing complete. Attempted: ${pendingFiles.length}, Succeeded: ${processedCount}, Errors: ${errorCount}`,

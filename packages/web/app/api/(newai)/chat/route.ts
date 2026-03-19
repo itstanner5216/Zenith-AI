@@ -7,9 +7,7 @@ import {
   stepCountIs,
 } from 'ai';
 import { NextResponse, NextRequest } from 'next/server';
-import { incrementAndLogTokenUsage } from '@/lib/incrementAndLogTokenUsage';
 import { handleAuthorizationV2 } from '@/lib/handleAuthorization';
-import { openai } from '@ai-sdk/openai';
 import { getModel, getResponsesModel } from '@/lib/models';
 import { getChatSystemPrompt } from '@/lib/prompts/chat-prompt';
 import { chatTools } from './tools';
@@ -97,7 +95,6 @@ export async function POST(req: NextRequest) {
           currentDatetime,
           unifiedContext: oldUnifiedContext,
           enableSearchGrounding = false,
-          deepSearch = false,
         } = await req.json();
 
         // CRITICAL: Strip unmatched tool calls - every tool call must have a corresponding tool result
@@ -400,7 +397,7 @@ export async function POST(req: NextRequest) {
         dataStream.writeData('initialized call');
 
         // Use search-enabled models when requested or when deep search is enabled
-        const shouldUseSearch = enableSearchGrounding || deepSearch;
+        const shouldUseSearch = enableSearchGrounding;
 
         // Use filtered messages for all processing
         const messagesToProcess = filteredMessages;
@@ -501,7 +498,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (shouldUseSearch) {
-          console.log(`Search grounding enabled (deep: ${deepSearch})`);
+          console.log('Search grounding enabled');
 
           // Messages are already filtered above, but double-check before converting
           // Final safety check - strip any unmatched tool calls
@@ -588,9 +585,6 @@ export async function POST(req: NextRequest) {
             messages: coreMessages, // Use converted messages
             tools: {
               ...chatTools,
-              web_search_preview: openai.tools.webSearchPreview({
-                searchContextSize: deepSearch ? 'high' : 'medium',
-              }) as any, // Type cast for AI SDK v2 compatibility
             } as any,
             onFinish: async ({ usage, sources }) => {
               console.log('Token usage:', usage);
@@ -614,7 +608,6 @@ export async function POST(req: NextRequest) {
                 }
               }
 
-              await incrementAndLogTokenUsage(userId, usage.totalTokens);
               dataStream.writeData('call completed');
             },
           });
@@ -831,7 +824,6 @@ export async function POST(req: NextRequest) {
                 });
               }
 
-              await incrementAndLogTokenUsage(userId, usage.totalTokens);
               dataStream.writeData('call completed');
             },
           });

@@ -33,9 +33,9 @@ export async function POST(request: NextRequest) {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.CRON_SECRET}`,
+          Authorization: request.headers.get("Authorization") || "",
         },
-        cache: 'no-store', // Ensure it's not cached
+        cache: 'no-store',
       }
     );
 

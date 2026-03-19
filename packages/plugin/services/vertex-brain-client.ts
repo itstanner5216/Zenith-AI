@@ -37,10 +37,36 @@ export function createBrainClient(plugin: ZenithAI): VertexBrainClient {
           throw new Error(`Server responded with ${response.status}`);
         }
 
-        const data = await response.json();
-        return {
-          answer: data.choices?.[0]?.message?.content ?? "",
-        };
+        // /api/chat returns an AI SDK v4 data stream (not JSON)
+        // Read the stream and extract text content from "0:" prefixed lines
+        const reader = response.body?.getReader();
+        if (!reader) {
+          throw new Error("No response body");
+        }
+
+        const decoder = new TextDecoder();
+        let fullText = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
+          for (const line of lines) {
+            if (line.startsWith("0:")) {
+              try {
+                const text = JSON.parse(line.slice(2));
+                if (typeof text === "string") {
+                  fullText += text;
+                }
+              } catch {
+                // Not valid JSON, skip
+              }
+            }
+          }
+        }
+
+        return { answer: fullText };
       } catch (error) {
         console.error("[VertexBrainClient] answer failed:", error);
         return { answer: "" };

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleAuthorizationV2 } from "@/lib/handleAuthorization";
-import { incrementAndLogTokenUsage } from "@/lib/incrementAndLogTokenUsage";
 import { getModel } from "@/lib/models";
 import { z } from "zod";
 import { generateObject } from "ai";
@@ -59,10 +58,6 @@ export async function POST(request: NextRequest) {
       prompt: `Content: "${content}"`,
     });
 
-    // increment tokenUsage
-    const tokens = response.usage.totalTokens;
-    console.log("incrementing token usage titles", userId, tokens);
-    await incrementAndLogTokenUsage(userId, tokens);
     const safeTitles = response.object.suggestedTitles.map((title) => {
       return { ...title, title: title.title };
     });
