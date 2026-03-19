@@ -2,7 +2,6 @@ import {
   LanguageModel,
   generateObject,
   generateText,
-  streamObject,
 } from "ai";
 import { z } from "zod";
 import fs from "fs";
@@ -213,8 +212,6 @@ export async function extractTextFromImage(
   image: ArrayBuffer,
   model: LanguageModel
 ): Promise<string> {
-  const modelName = getModelId(model);
-
   const messages = [
     {
       role: "user",
@@ -231,26 +228,12 @@ export async function extractTextFromImage(
     },
   ];
 
-  switch (modelName) {
-    case "gpt-4o": {
-      const response = await generateText({
-        model: model as any, // Type cast for AI SDK v2 compatibility
-        //@ts-ignore
-        messages,
-      });
-
-      return response.text.trim() + "\n\n";
-    }
-    default: {
-      const defaultResponse = await generateText({
-        model,
-        //@ts-ignore
-        messages,
-      });
-      // add empty line to the end of the response for better readability
-      return defaultResponse.text.trim() + "\n\n";
-    }
-  }
+  const response = await generateText({
+    model,
+    //@ts-ignore
+    messages,
+  });
+  return response.text.trim() + "\n\n";
 }
 
 // Function to classify document type
@@ -284,40 +267,6 @@ export async function classifyDocument(
   });
 
   return response;
-}
-
-// Function to format document content
-export async function formatDocumentContent(
-  content: string,
-  formattingInstruction: string,
-  model: LanguageModel
-) {
-  const { partialObjectStream } = await streamObject({
-    model,
-    schema: z.object({
-      formattedContent: z.string(),
-    }),
-    system: "Answer directly in markdown",
-    prompt: `Format the following content according to the given instruction, only use context if asked in instruction:
-        Context:
-        Time: ${new Date().toISOString()}
-
-
-        Content:
-        "${content}"
-
-        Formatting Instruction:
-        "${formattingInstruction}"
-
-        `,
-  });
-
-  let formattedContent = "";
-  for await (const partialObject of partialObjectStream) {
-    formattedContent = partialObject.formattedContent || "";
-  }
-
-  return { object: { formattedContent }, usage: { totalTokens: 0 } };
 }
 
 export async function identifyConceptsAndFetchChunks(

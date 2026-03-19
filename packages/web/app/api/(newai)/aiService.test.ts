@@ -8,12 +8,12 @@ import {
   generateDocumentTitle,
   extractTextFromImage,
   classifyDocument,
-  formatDocumentContent,
+
   identifyConceptsAndFetchChunks,
   generateTranscriptFromAudio,
 } from './aiService';
 import { LanguageModel } from 'ai';
-import { generateObject, generateText, streamObject } from 'ai';
+import { generateObject, generateText } from 'ai';
 import { createReadStream } from 'fs';
 import { promises as fsPromises } from 'fs';
 
@@ -23,7 +23,6 @@ const mockOpenAICreate = jest.fn();
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
   generateText: jest.fn(),
-  streamObject: jest.fn(),
 }));
 
 jest.mock('openai', () => ({
@@ -368,53 +367,6 @@ describe('aiService', () => {
       );
 
       expect(result.object.documentType).toBe('');
-    });
-  });
-
-  describe('formatDocumentContent', () => {
-    it('should format document content', async () => {
-      const mockStream = [
-        { formattedContent: 'Formatted ' },
-        { formattedContent: 'Formatted content' },
-      ];
-      const asyncIterator = async function* () {
-        for (const item of mockStream) {
-          yield item;
-        }
-      };
-
-      (streamObject as jest.Mock).mockResolvedValueOnce({
-        partialObjectStream: asyncIterator(),
-        usage: { totalTokens: 100 },
-      });
-
-      const result = await formatDocumentContent(
-        'Unformatted content',
-        'Format as markdown',
-        mockModel
-      );
-
-      expect(result.object.formattedContent).toBe('Formatted content');
-    });
-
-    it('should include current datetime in prompt', async () => {
-      const mockStream = [{ formattedContent: 'Formatted' }];
-      const asyncIterator = async function* () {
-        for (const item of mockStream) {
-          yield item;
-        }
-      };
-
-      (streamObject as jest.Mock).mockResolvedValueOnce({
-        partialObjectStream: asyncIterator(),
-        usage: { totalTokens: 100 },
-      });
-
-      await formatDocumentContent('Content', 'Format', mockModel);
-
-      const callArgs = (streamObject as jest.Mock).mock.calls[0][0];
-      expect(callArgs.prompt).toContain('Time:');
-      expect(callArgs.prompt).toMatch(/\d{4}-\d{2}-\d{2}T/);
     });
   });
 
