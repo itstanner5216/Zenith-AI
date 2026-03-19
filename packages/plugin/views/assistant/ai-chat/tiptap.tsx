@@ -3,7 +3,6 @@ import StarterKit from "@tiptap/starter-kit";
 import React, { useEffect, useCallback } from "react";
 import MentionWithSpaces from "./mention-with-spaces";
 import suggestion from "./suggestion";
-import SlashCommand from "./slash-command";
 import {
   addFileContext,
   addTagContext,
@@ -115,11 +114,6 @@ const Tiptap: React.FC<TiptapProps> = ({
             "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] px-1 py-0.5 rounded",
         },
       }),
-      SlashCommand.configure({
-        HTMLAttributes: {
-          class: "slash-command",
-        },
-      }),
     ],
     content: value,
     onUpdate: handleUpdate,
@@ -128,7 +122,7 @@ const Tiptap: React.FC<TiptapProps> = ({
         class:
           "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none",
         "data-placeholder":
-          "Type @ to mention files, folders, or tags, or / for commands...",
+          "Type @ to mention files, folders, or tags...",
       },
       handleKeyDown: (view, event) => {
         // Check if we're in a mention context (suggestion is active)
@@ -195,23 +189,6 @@ const Tiptap: React.FC<TiptapProps> = ({
     }
   }, [editor, files, folders, tags]);
 
-  // Load template names and store in editor storage
-  useEffect(() => {
-    const loadTemplates = async () => {
-      if (editor && plugin) {
-        try {
-          const templateNames = await plugin.getTemplateNames();
-          editor.storage.templates = templateNames;
-        } catch (error) {
-          console.error("Error loading template names:", error);
-          editor.storage.templates = [];
-        }
-      }
-    };
-
-    loadTemplates();
-  }, [editor, plugin]);
-
   // Sync editor content with value prop
   useEffect(() => {
     if (editor && editor.getText() !== value) {
@@ -253,7 +230,7 @@ const Tiptap: React.FC<TiptapProps> = ({
       <EditorContent editor={editor} />
       {isEmpty && editor && (
         <div className="absolute left-[10px] top-[10px] pointer-events-none text-[#45aaff] text-sm select-none opacity-40 italic">
-          Type @ to mention files, folders, or tags, or / for commands...
+          Type @ to mention files, folders, or tags...
         </div>
       )}
     </div>
