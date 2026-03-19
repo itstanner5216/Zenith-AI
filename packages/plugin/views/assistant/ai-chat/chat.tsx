@@ -1820,6 +1820,11 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             <ContextItems />
           </div>
 
+          {/* File attachments - drag and drop */}
+          <AttachmentHandler
+            onAttachmentsChange={handleAttachmentsChange}
+          />
+
           {/* Row 2: Input area with embedded send button */}
           <div className="relative" ref={inputRef}>
             {/* Show editor context badge if we have selection */}
