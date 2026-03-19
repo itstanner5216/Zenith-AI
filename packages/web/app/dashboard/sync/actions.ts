@@ -1,9 +1,7 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { db, uploadedFiles } from "@/drizzle/schema";
 import { eq, desc, sql } from "drizzle-orm";
-import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 
 // Types
@@ -38,42 +36,13 @@ interface FileStatusResponse {
   error: string | null;
 }
 
-interface UploadFileParams {
-  name: string;
-  type: string;
-  base64: string;
-}
-
-interface UploadResponse {
-  success: boolean;
-  fileId?: number;
-  status?: string;
-  error?: string;
-  retryable?: boolean;
-}
-
-const ALLOWED_FILE_TYPES = {
-  "application/pdf": "pdf",
-  "image/jpeg": "image",
-  "image/png": "image",
-  "image/webp": "image",
-};
-
 // Get files with pagination
 export async function getFiles(
   { page = 1, limit = 10 },
   someUserId?: string
 ): Promise<FileListResponse | { error: string }> {
   try {
-    let userId = someUserId;
-    if (!someUserId) {
-      const authResult = await auth();
-      userId = authResult.userId;
-    }
-
-    if (!userId) {
-      return { error: "Unauthorized" };
-    }
+    const userId = someUserId ?? "user";
 
     const offset = (page - 1) * limit;
 
@@ -125,10 +94,7 @@ export async function getFileStatus(
   userId?: string
 ): Promise<FileStatusResponse | { error: string }> {
   try {
-    // Regular web authentication flow
-    if (!userId) {
-      return { error: "Unauthorized" };
-    }
+    const resolvedUserId = userId ?? "user";
 
     // Check if file exists and belongs to user
     const [file] = await db
@@ -147,7 +113,7 @@ export async function getFileStatus(
     }
 
     // Check if file belongs to user
-    if (file.userId !== userId) {
+    if (file.userId !== resolvedUserId) {
       return { error: "Unauthorized" };
     }
 
@@ -163,83 +129,12 @@ export async function getFileStatus(
   }
 }
 
-// Upload file
-export async function uploadFile(
-  { name: fileName, type: mimeType, base64 }: UploadFileParams,
-  userId?: string
-): Promise<UploadResponse> {
-  try {
-    // Regular web authentication flow
-    if (!userId) {
-      return {
-        success: false,
-        error: "Unauthorized",
-        retryable: false,
-      };
-    }
-
-    if (!fileName || !mimeType || !base64) {
-      return {
-        success: false,
-        error: "Missing required fields",
-        retryable: true,
-      };
-    }
-
-    // Generate a unique blob name
-    const blobName = `${Date.now()}-${fileName.replace(
-      /[^a-zA-Z0-9.-]/g,
-      "_"
-    )}`;
-
-    // Normalize file type for consistency
-    let normalizedMimeType = mimeType;
-    if (mimeType.toLowerCase().includes("pdf")) {
-      normalizedMimeType = "application/pdf";
-    }
-
-    // Upload to blob storage
-    const { url } = await put(blobName, Buffer.from(base64, "base64"), {
-      contentType: normalizedMimeType,
-      access: "public",
-    });
-
-    // Create database record
-    const [file] = await db
-      .insert(uploadedFiles)
-      .values({
-        userId,
-        originalName: fileName,
-        fileType: normalizedMimeType,
-        status: "uploaded",
-        blobUrl: url,
-      })
-      .returning();
-
-    return {
-      success: true,
-      fileId: file.id,
-      status: file.status,
-    };
-  } catch (error) {
-    console.error("Upload error:", error);
-    return {
-      success: false,
-      error: "Server error during upload",
-      retryable: true,
-    };
-  }
-}
-
 // Delete file
 export async function deleteFile(
   fileId: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return { success: false, error: "Unauthorized" };
-    }
+    const userId = "user";
 
     // Check if file exists and belongs to user
     const [file] = await db
