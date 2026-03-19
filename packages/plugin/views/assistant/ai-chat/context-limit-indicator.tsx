@@ -3,7 +3,6 @@ import { init, get_encoding } from "tiktoken/init";
 import wasmBinary from "tiktoken/tiktoken_bg.wasm";
 import { useDebouncedCallback } from "use-debounce";
 import { logger } from "../../../services/logger";
-import { useContextItems } from "./use-context-items";
 
 interface TokenStats {
   contextSize: number;
@@ -23,8 +22,6 @@ export function ContextLimitIndicator({
   });
   const [error, setError] = React.useState<string>();
   const [tiktokenInitialized, setTiktokenInitialized] = React.useState(false);
-  const { isLightweightMode, toggleLightweightMode } = useContextItems();
-
   // Initialize encoder once on mount
   React.useEffect(() => {
     async function setup() {
@@ -101,60 +98,6 @@ export function ContextLimitIndicator({
               : "Context used"}
           </span>
           <span className="font-mono">{stats.percentUsed.toFixed(0)}%</span>
-        </div>
-
-        {/* Enhanced menu-style tooltip - renders above, stays open on hover */}
-        <div
-          className={`absolute left-0 bottom-full mb-1 w-72 bg-[#191621] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)] transition-opacity z-20 ${
-            isTooltipOpen
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
-          onMouseEnter={() => setIsTooltipOpen(true)}
-          onMouseLeave={() => setIsTooltipOpen(false)}
-        >
-          <div
-            onClick={toggleLightweightMode}
-            className={`w-full px-4 py-3.5 text-left text-xs flex items-center gap-3 hover:bg-[rgba(14,210,247,0.08)] cursor-pointer rounded-md
-              ${
-                isLightweightMode
-                  ? "text-[#0fb6d6]"
-                  : "text-[#bebebe]"
-              }`}
-          >
-            <div
-              className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors
-              ${
-                isLightweightMode
-                  ? "border-[#0fb6d6] bg-[#0fb6d6]"
-                  : "border-[#45aaff] bg-[#0d0b12]"
-              }`}
-            >
-              {isLightweightMode && (
-                <svg
-                  className="w-3.5 h-3.5 text-[#100e17]"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                >
-                  <path
-                    d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
-            </div>
-            <div className="space-y-1.5 flex-1">
-              <div className="font-medium">Disable Context</div>
-              <div className="text-[#45aaff] text-[11px] leading-relaxed opacity-70">
-                Removes file content from context while preserving metadata.
-                Useful for batch operations like moving, renaming, or tagging
-                files.
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

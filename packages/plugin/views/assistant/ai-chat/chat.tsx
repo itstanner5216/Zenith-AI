@@ -145,7 +145,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     searchResults,
     currentFile,
     textSelections,
-    isLightweightMode,
   } = useContextItems();
 
   const uniqueReferences = getUniqueReferences();
@@ -174,48 +173,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const [chatHasStarted, setChatHasStarted] = useState(false);
 
   const contextString = React.useMemo(() => {
-    if (isLightweightMode) {
-      // In lightweight mode, only include metadata
-      const lightweightContext = {
-        files: Object.fromEntries(
-          Object.entries(files).map(([id, file]) => [
-            id,
-            { ...file, content: "" },
-          ])
-        ),
-        folders: Object.fromEntries(
-          Object.entries(folders).map(([id, folder]) => [
-            id,
-            {
-              ...folder,
-              files: folder.files.map(f => ({ ...f, content: "" })),
-            },
-          ])
-        ),
-        tags: Object.fromEntries(
-          Object.entries(tags).map(([id, tag]) => [
-            id,
-            { ...tag, files: tag.files.map(f => ({ ...f, content: "" })) },
-          ])
-        ),
-        searchResults: Object.fromEntries(
-          Object.entries(searchResults).map(([id, search]) => [
-            id,
-            {
-              ...search,
-              results: search.results.map(r => ({ ...r, content: "" })),
-            },
-          ])
-        ),
-        // Keep these as is
-        currentFile: currentFile ? { ...currentFile, content: "" } : null,
-
-        textSelections,
-      };
-      return JSON.stringify(lightweightContext);
-    }
     return JSON.stringify(contextItems);
-  }, [contextItems, isLightweightMode]);
+  }, [contextItems]);
   logger.debug("contextString", contextString);
 
   const [selectedModel, setSelectedModel] = useState<ModelType>(
@@ -316,46 +275,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         allStoreKeys: Object.keys(store),
       });
 
-      const contextJson = store.isLightweightMode
-        ? JSON.stringify({
-            files: Object.fromEntries(
-              Object.entries(freshContextItems.files).map(([id, file]) => [
-                id,
-                { ...file, content: "" },
-              ])
-            ),
-            folders: Object.fromEntries(
-              Object.entries(freshContextItems.folders).map(([id, folder]) => [
-                id,
-                {
-                  ...folder,
-                  files: folder.files.map(f => ({ ...f, content: "" })),
-                },
-              ])
-            ),
-            tags: Object.fromEntries(
-              Object.entries(freshContextItems.tags).map(([id, tag]) => [
-                id,
-                { ...tag, files: tag.files.map(f => ({ ...f, content: "" })) },
-              ])
-            ),
-            searchResults: Object.fromEntries(
-              Object.entries(freshContextItems.searchResults).map(
-                ([id, search]) => [
-                  id,
-                  {
-                    ...search,
-                    results: search.results.map(r => ({ ...r, content: "" })),
-                  },
-                ]
-              )
-            ),
-            currentFile: freshContextItems.currentFile
-              ? { ...freshContextItems.currentFile, content: "" }
-              : null,
-            textSelections: freshContextItems.textSelections,
-          })
-        : JSON.stringify(freshContextItems);
+      const contextJson = JSON.stringify(freshContextItems);
 
       const contextFilePaths = [
         ...Object.values(freshContextItems.files).map((f: { path: string }) => f.path),
@@ -430,7 +350,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       console.log("[Chat] prepareRequestBody - Context summary:", {
         messagesCount: messages.length,
         contextStringLength,
-        isLightweightMode: store.isLightweightMode,
         hasEditorContext: !!freshEditorContext,
         hasFiles: Object.keys(freshContextItems.files).length > 0,
         filesCount: Object.keys(freshContextItems.files).length,
@@ -647,54 +566,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             searchResults: store.searchResults || {},
             textSelections: store.textSelections || {},
           };
-          const freshContextString = store.isLightweightMode
-            ? JSON.stringify({
-                files: Object.fromEntries(
-                  Object.entries(freshContextItems.files).map(([id, file]) => [
-                    id,
-                    { ...file, content: "" },
-                  ])
-                ),
-                folders: Object.fromEntries(
-                  Object.entries(freshContextItems.folders).map(
-                    ([id, folder]) => [
-                      id,
-                      {
-                        ...folder,
-                        files: folder.files.map(f => ({ ...f, content: "" })),
-                      },
-                    ]
-                  )
-                ),
-                tags: Object.fromEntries(
-                  Object.entries(freshContextItems.tags).map(([id, tag]) => [
-                    id,
-                    {
-                      ...tag,
-                      files: tag.files.map(f => ({ ...f, content: "" })),
-                    },
-                  ])
-                ),
-                searchResults: Object.fromEntries(
-                  Object.entries(freshContextItems.searchResults).map(
-                    ([id, search]) => [
-                      id,
-                      {
-                        ...search,
-                        results: search.results.map(r => ({
-                          ...r,
-                          content: "",
-                        })),
-                      },
-                    ]
-                  )
-                ),
-                currentFile: freshContextItems.currentFile
-                  ? { ...freshContextItems.currentFile, content: "" }
-                  : null,
-                textSelections: freshContextItems.textSelections,
-              })
-            : JSON.stringify(freshContextItems);
+          const freshContextString = JSON.stringify(freshContextItems);
 
           // Get editor context
           let freshEditorContext = "";
@@ -1224,7 +1096,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           title = generatedTitle;
         }
 
-        // Store lightweight context snapshot (metadata only, not full content)
+        // Store context snapshot for reference
         // Context is always built fresh from current vault state when sending messages,
         // but we store a snapshot for reference
         // Note: We read files/folders/tags/currentFile from closure, but don't include them in deps

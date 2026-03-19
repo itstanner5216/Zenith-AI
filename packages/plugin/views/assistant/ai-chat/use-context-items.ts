@@ -71,7 +71,6 @@ type ContextCollections = {
 interface ContextItemsState extends ContextCollections {
   currentFile: FileContextItem | null;
   includeCurrentFile: boolean;
-  isLightweightMode: boolean;
 
   // Actions for each type
   addFile: (file: FileContextItem) => void;
@@ -87,7 +86,6 @@ interface ContextItemsState extends ContextCollections {
   toggleCurrentFile: () => void;
   clearAll: () => void;
   clearEphemeral: () => void; // Clear all ephemeral context items
-  toggleLightweightMode: () => void;
 
   // Processing methods
   processFolderFiles: (
@@ -109,90 +107,61 @@ export const useContextItems = create<ContextItemsState>((set, get) => ({
   textSelections: {},
   currentFile: null,
   includeCurrentFile: true,
-  isLightweightMode: false,
 
-  // Add toggle function
-  toggleLightweightMode: () => set(state => ({ isLightweightMode: !state.isLightweightMode })),
-
-  // Update addFile to handle lightweight mode
   addFile: file =>
     set(state => {
       const existingItemIndex = Object.values(state.files).findIndex(
         item => item.reference === file.reference
       );
 
-      const lightweightFile = state.isLightweightMode ? {
-        ...file,
-        content: '', // Remove content in lightweight mode
-      } : file;
-
       if (existingItemIndex !== -1) {
         return {
           files: {
             ...state.files,
-            [file.id]: { ...lightweightFile, createdAt: Date.now() },
+            [file.id]: { ...file, createdAt: Date.now() },
           },
         };
       }
 
       return {
-        files: { ...state.files, [file.id]: lightweightFile },
+        files: { ...state.files, [file.id]: file },
       };
     }),
 
-  // Update addFolder to handle lightweight mode
   addFolder: folder =>
     set(state => {
       const existingItemIndex = Object.values(state.folders).findIndex(
         item => item.reference === folder.reference
       );
 
-      const lightweightFolder = state.isLightweightMode ? {
-        ...folder,
-        files: folder.files.map(f => ({ ...f, content: '' })), // Remove content in lightweight mode
-      } : folder;
-
       if (existingItemIndex !== -1) {
         return {
           folders: {
             ...state.folders,
-            [folder.id]: { ...lightweightFolder, createdAt: Date.now() },
+            [folder.id]: { ...folder, createdAt: Date.now() },
           },
         };
       }
 
       return {
-        folders: { ...state.folders, [folder.id]: lightweightFolder },
+        folders: { ...state.folders, [folder.id]: folder },
       };
     }),
 
-  // Update addTag to handle lightweight mode
   addTag: tag =>
     set(state => {
-      const lightweightTag = state.isLightweightMode ? {
-        ...tag,
-        files: tag.files.map(f => ({ ...f, content: '' })), // Remove content in lightweight mode
-      } : tag;
-
       return {
-        tags: { ...state.tags, [tag.id]: lightweightTag },
+        tags: { ...state.tags, [tag.id]: tag },
       };
     }),
 
-  // Update addSearchResults to handle lightweight mode
   addSearchResults: search =>
     set(state => {
-      const lightweightSearch = state.isLightweightMode ? {
-        ...search,
-        results: search.results.map(r => ({ ...r, content: '' })), // Remove content in lightweight mode
-      } : search;
-
       return {
-        searchResults: { ...state.searchResults, [search.id]: lightweightSearch },
+        searchResults: { ...state.searchResults, [search.id]: search },
       };
     }),
 
-  // Add text selection without lightweight mode
   addTextSelection: selection =>
     set(state => {
       const reference = selection.reference;
