@@ -6,6 +6,7 @@ export default function NotFound() {
     <div>
       <h2>Not Found</h2>
       <p>Could not find requested resource</p>
+      {/* @ts-expect-error React 19 / Next.js 16 type incompatibility with ForwardRefExoticComponent */}
       <Link href="/">Return Home</Link>
     </div>
   )

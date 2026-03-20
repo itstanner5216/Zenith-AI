@@ -9,6 +9,7 @@ export default function Logo() {
       >
         <div className="filter-hue-rotate-0 rounded-full opacity-100">
           <div className="flex items-center filter-hue-rotate-0 rounded-full opacity-100">
+            {/* @ts-expect-error React 19 / Next.js 16 type incompatibility with ForwardRefExoticComponent */}
             <Image
               decoding="async"
               sizes="32px"

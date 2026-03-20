@@ -6,10 +6,23 @@ import {
 } from '@/lib/handleAuthorization';
 
 type FilesResponse = {
-  files: any[];
-  total: number;
-  page: number;
-  limit: number;
+  files: Array<{
+    id: number;
+    originalName: string;
+    fileType: string;
+    status: string;
+    createdAt: Date;
+    tokensUsed: number | null;
+    error: string | null;
+    textContent: string | null;
+    blobUrl: string;
+  }>;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 };
 
 export async function GET(request: NextRequest) {

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { App, TFile } from "obsidian";
-import { ToolInvocation } from "ai";
+import { ToolInvocation } from "./types";
 
 interface HeadingsHandlerProps {
   toolInvocation: ToolInvocation;

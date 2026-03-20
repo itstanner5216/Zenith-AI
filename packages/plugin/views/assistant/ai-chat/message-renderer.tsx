@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { User, Bot } from "lucide-react";
 import { AIMarkdown } from "./ai-message-renderer";
 import { UserMarkdown } from "./user-message-renderer";
-import { Message } from "ai";
+import { Message } from "@ai-sdk/react";
 import { usePlugin } from "../provider";
 import { Attachment } from "./types/attachments";
 import { AppendButton } from "./components/append-button";

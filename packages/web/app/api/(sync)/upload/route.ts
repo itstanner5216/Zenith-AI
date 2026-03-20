@@ -34,7 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const uniqueName = `${uuidv4()}-${name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filePath = path.join(UPLOAD_DIR, uniqueName);
       const buffer = Buffer.from(base64, 'base64');
-      fs.writeFileSync(filePath, buffer);
+      fs.writeFileSync(filePath, new Uint8Array(buffer));
 
       const localUrl = `/uploads/${uniqueName}`;
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const uniqueName = `${uuidv4()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
         const filePath = path.join(UPLOAD_DIR, uniqueName);
         const buffer = Buffer.from(await file.arrayBuffer());
-        fs.writeFileSync(filePath, buffer);
+        fs.writeFileSync(filePath, new Uint8Array(buffer));
 
         const localUrl = `/uploads/${uniqueName}`;
 

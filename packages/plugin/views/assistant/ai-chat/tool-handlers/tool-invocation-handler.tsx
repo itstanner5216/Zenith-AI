@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { App } from "obsidian";
-import { ToolInvocation } from "ai";
+import { ToolInvocation } from "./types";
 import { SearchHandler } from "./search-handler";
 import { LastModifiedHandler } from "./last-modified-handler";
 import { OpenFileHandler } from "./open-file-handler";

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { App, TFile, Notice } from "obsidian";
-import { ToolInvocation } from "ai";
+import { ToolInvocation } from "./types";
 import { resolveFile } from "./resolve-file";
 import { useContextItems } from "../use-context-items";
 

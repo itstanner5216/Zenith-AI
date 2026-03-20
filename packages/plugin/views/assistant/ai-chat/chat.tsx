@@ -7,7 +7,7 @@ import React, {
   useLayoutEffect,
 } from "react";
 import { createPortal } from "react-dom";
-import { useChat, UseChatOptions } from "@ai-sdk/react";
+import { useChat, UseChatOptions, Message } from "@ai-sdk/react";
 import { moment, Notice, MarkdownView } from "obsidian";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, AlertCircle, Send, Square, Bot, Download } from "lucide-react";
@@ -22,7 +22,8 @@ import { usePlugin } from "../provider";
 import { logMessage } from "../../../someUtils";
 import { MessageRenderer } from "./message-renderer";
 import ToolInvocationHandler from "./tool-handlers/tool-invocation-handler";
-import { convertToCoreMessages, streamText, ToolInvocation, Message } from "ai";
+import { ToolInvocation } from "./tool-handlers/types";
+import { convertToCoreMessages, streamText, LanguageModel } from "ai";
 import { ollama } from "ollama-ai-provider";
 import { SourcesSection } from "./components/SourcesSection";
 import { ContextLimitIndicator } from "./context-limit-indicator";
@@ -419,7 +420,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         messageCount: messages.length,
       });
       const result = await streamText({
-        model: ollama(selectedModel),
+        model: ollama(selectedModel) as unknown as LanguageModel,
         system: `
           ${newUnifiedContext},
           currentDatetime: ${currentDatetime},
@@ -427,7 +428,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         messages: convertToCoreMessages(messages),
       });
 
-      return result.toDataStreamResponse();
+      return result.toUIMessageStreamResponse();
     },
     keepLastMessageOnError: true,
     onError: error => {
@@ -1667,7 +1668,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 toolInvocations = messageAny.toolInvocations;
               }
 
-              // 2. Try message.parts (AI SDK v4 UIMessage format)
+              // 2. Try message.parts (AI SDK v4 Message format)
               if (toolInvocations.length === 0 && Array.isArray(messageAny.parts)) {
                 for (const part of messageAny.parts) {
                   // Format A: { type: "tool-invocation", toolInvocation: { toolCallId, toolName, args, ... } }

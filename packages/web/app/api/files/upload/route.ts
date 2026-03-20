@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         const filePath = path.join(uploadDir, uniqueFileName);
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        fs.writeFileSync(filePath, buffer);
+        fs.writeFileSync(filePath, new Uint8Array(buffer));
 
         const stats = fs.statSync(filePath);
 

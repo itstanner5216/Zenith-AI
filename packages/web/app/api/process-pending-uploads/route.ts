@@ -30,7 +30,7 @@ function readLocalFile(filePath: string): Buffer {
 function writeLocalFile(filePath: string, data: Buffer): void {
   const dir = path.dirname(filePath);
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(filePath, data);
+  fs.writeFileSync(filePath, new Uint8Array(data));
 }
 
 function getLocalFilePath(fileRecord: { blobUrl: string; r2Key: string | null }): string {

@@ -6,6 +6,7 @@ import { CloudUpload, RefreshCw, Clock, CheckCircle } from "lucide-react";
 export default function SyncDashboard() {
   return (
     <div className="container max-w-6xl mx-auto p-6">
+      {/* @ts-expect-error styled-jsx types not recognized in strict TypeScript */}
       <style jsx global>{`
         .markdown-body {
           color: #24292e;
