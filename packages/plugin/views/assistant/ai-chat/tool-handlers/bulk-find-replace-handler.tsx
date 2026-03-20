@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { App, TFile, Notice } from "obsidian";
-import { ToolInvocation } from "ai";
+import type { ToolInvocation } from "@ai-sdk/ui-utils";
 
 interface BulkFindReplaceHandlerProps {
   toolInvocation: ToolInvocation;

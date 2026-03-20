@@ -22,7 +22,8 @@ import { usePlugin } from "../provider";
 import { logMessage } from "../../../someUtils";
 import { MessageRenderer } from "./message-renderer";
 import ToolInvocationHandler from "./tool-handlers/tool-invocation-handler";
-import { convertToCoreMessages, streamText, ToolInvocation, Message } from "ai";
+import { convertToCoreMessages, streamText, LanguageModel } from "ai";
+import type { Message, ToolInvocation } from "@ai-sdk/ui-utils";
 import { ollama } from "ollama-ai-provider";
 import { SourcesSection } from "./components/SourcesSection";
 import { ContextLimitIndicator } from "./context-limit-indicator";
@@ -419,7 +420,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         messageCount: messages.length,
       });
       const result = await streamText({
-        model: ollama(selectedModel),
+        // ollama-ai-provider implements LanguageModelV1 (AI SDK provider protocol v1)
+        // but ai@5.x requires LanguageModelV2. Cast is needed until the provider
+        // is updated; runtime compatibility is maintained by the AI SDK bridge layer.
+        model: ollama(selectedModel) as unknown as LanguageModel,
         system: `
           ${newUnifiedContext},
           currentDatetime: ${currentDatetime},
@@ -427,7 +431,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         messages: convertToCoreMessages(messages),
       });
 
-      return result.toDataStreamResponse();
+      return result.toTextStreamResponse();
     },
     keepLastMessageOnError: true,
     onError: error => {
@@ -1667,7 +1671,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 toolInvocations = messageAny.toolInvocations;
               }
 
-              // 2. Try message.parts (AI SDK v4 UIMessage format)
+              // 2. Try message.parts (AI SDK v4 Message format)
               if (toolInvocations.length === 0 && Array.isArray(messageAny.parts)) {
                 for (const part of messageAny.parts) {
                   // Format A: { type: "tool-invocation", toolInvocation: { toolCallId, toolName, args, ... } }
