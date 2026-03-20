@@ -31,7 +31,6 @@ import {
 
 import { ZenithAISettings, DEFAULT_SETTINGS } from "./settings";
 
-import { registerEventHandlers } from "./handlers/eventHandlers";
 import { initializeOrganizer } from "./handlers/commandHandlers";
 import {
   ensureFolderExists,
@@ -126,8 +125,6 @@ export default class ZenithAI extends Plugin {
     // Initialize Background Scribe
     const brainClient = createBrainClient(this);
     this.backgroundScribe = new BackgroundScribe(this, brainClient);
-
-    this.app.workspace.onLayoutReady(() => registerEventHandlers(this));
 
     this.addCommand({
       id: "open-chat-tab",

@@ -8,7 +8,6 @@ import { OpenFileHandler } from "./open-file-handler";
 import { MoveFilesHandler } from "./move-files-handler";
 import { RenameFilesHandler } from "./rename-files-handler";
 import { SearchRenameHandler } from "./search-rename-handler";
-import { AddTextHandler } from "./add-text-handler";
 import { ModifyTextHandler } from "./modify-text-handler";
 import { TaggedFilesHandler } from "./tagged-files-handler";
 import { HeadingsHandler } from "./headings-handler";
@@ -70,7 +69,6 @@ function ToolInvocationHandler({
       renameFiles: "Renaming Files",
       searchByName: "Search Files by Name",
       openFile: "Opening File",
-      addTextToDocument: "Adding Text to Document",
       modifyDocumentText: "Modifying Document Text",
       getTaggedFiles: "Find Tagged Files",
       getHeadings: "Get Document Structure",
@@ -127,13 +125,6 @@ function ToolInvocationHandler({
       ),
       searchByName: () => (
         <SearchRenameHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      addTextToDocument: () => (
-        <AddTextHandler
           toolInvocation={toolInvocation}
           handleAddResult={handleAddResult}
           app={app}

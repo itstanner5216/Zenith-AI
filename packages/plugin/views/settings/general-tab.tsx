@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ZenithAI from "../../index";
-import { validateApiKey } from "../../apiUtils";
 
 interface GeneralTabProps {
   plugin: ZenithAI;
@@ -24,28 +23,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   const checkLicenseStatus = async () => {
     if (!licenseKey) return;
-    setKeyStatus("checking");
-    const validation = validateApiKey(licenseKey);
-    const isValid = validation.isValid;
-    setKeyStatus(isValid ? "valid" : "invalid");
+    setKeyStatus(licenseKey.trim().length >= 10 ? "valid" : "invalid");
   };
 
   const handleLicenseKeyChange = async (value: string) => {
     setLicenseKey(value);
     setKeyStatus("idle");
     setValidationError(null);
-
-    const validation = validateApiKey(value);
-    if (!validation.isValid) {
-      setValidationError(validation.error || "Invalid API key format");
-      plugin.settings.API_KEY = value;
-      await plugin.saveSettings();
-      return;
-    }
-
-    if (validation.error) {
-      setValidationError(validation.error);
-    }
 
     plugin.settings.API_KEY = value;
     await plugin.saveSettings();
