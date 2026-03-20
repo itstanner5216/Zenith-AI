@@ -420,6 +420,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         messageCount: messages.length,
       });
       const result = await streamText({
+        // ollama-ai-provider@0.15.2 returns LanguageModelV1; ai@5 expects LanguageModelV2
         model: ollama(selectedModel) as unknown as LanguageModel,
         system: `
           ${newUnifiedContext},

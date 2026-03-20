@@ -14,6 +14,7 @@ const Separator = React.forwardRef<
     { className, orientation = "horizontal", decorative = true, ...props },
     ref
   ) => {
+    // Spread via props object to avoid React 19 ref type mismatch with Radix
     const separatorProps = {
       ref,
       decorative,
