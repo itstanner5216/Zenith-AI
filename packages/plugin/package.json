@@ -30,7 +30,7 @@
     "tailwindcss": "^3.4.14",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@ai-sdk/openai": "catalog:",
@@ -57,7 +57,6 @@
     "moment": "^2.29.4",
     "natural": "^8.0.1",
     "node-fetch": "^3.3.2",
-    "openai": "^4.19.0",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-markdown": "^9.0.1",
