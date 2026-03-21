@@ -42,6 +42,18 @@ describe("migrateSettings", () => {
     expect(settings.activeModelConfigId).toBe("");
   });
 
+  it("does NOT migrate when only selectedModel is present (no API_KEY)", () => {
+    const settings = new ZenithAISettings();
+    const rawData = { selectedModel: "gpt-4o" };
+
+    const migrated = migrateSettings(settings, rawData);
+
+    expect(migrated).toBe(false);
+    expect(settings.providerKeys).toHaveLength(0);
+    expect(settings.modelConfigs).toHaveLength(0);
+    expect(settings.activeModelConfigId).toBe("");
+  });
+
   it("does nothing when no legacy data exists", () => {
     const settings = new ZenithAISettings();
     const rawData = {};

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { convertToModelMessages } from "ai";
 import type { UIMessage, ToolSet, StepResult } from "ai";
 import type { AIService } from "../../../../services/ai/ai-service";
@@ -44,6 +44,11 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const isGeneratingRef = useRef(false);
+  const messagesRef = useRef<UIMessage[]>([]);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   /**
    * Core streaming function. Converts current messages to model format,
@@ -86,57 +91,49 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
       setStatus("streaming");
 
       let accumulatedText = "";
+      const toolCallParts: UIMessage["parts"] = [];
 
-      // Process the text stream
-      for await (const chunk of result.textStream) {
+      // Use fullStream to capture text across ALL steps and tool calls in one pass.
+      // result.textStream only yields the final step; fullStream surfaces everything.
+      for await (const part of result.fullStream) {
         if (abortController.signal.aborted) break;
-        accumulatedText += chunk;
-
-        setMessages(prev => {
-          const updated = [...prev];
-          const lastIdx = updated.length - 1;
-          if (lastIdx >= 0 && updated[lastIdx].id === assistantMessageId) {
-            updated[lastIdx] = {
-              ...updated[lastIdx],
-              parts: [{ type: "text" as const, text: accumulatedText }],
-            };
-          }
-          return updated;
-        });
-      }
-
-      // After stream completes, await the resolved Promises on StreamTextResult
-      const [resolvedText, resolvedToolCalls] = await Promise.all([
-        result.text,
-        result.toolCalls,
-      ]);
-
-      // Build final parts from the response
-      const finalParts: UIMessage["parts"] = [];
-
-      // Add tool call parts using v6 tool-<toolName> pattern
-      if (resolvedToolCalls && resolvedToolCalls.length > 0) {
-        for (const tc of resolvedToolCalls) {
-          finalParts.push({
-            type: `tool-${tc.toolName}`,
-            toolCallId: tc.toolCallId,
-            input: tc.input,
+        if (part.type === "text-delta") {
+          accumulatedText += part.text;
+          setMessages(prev => {
+            const updated = [...prev];
+            const lastIdx = updated.length - 1;
+            if (lastIdx >= 0 && updated[lastIdx].id === assistantMessageId) {
+              updated[lastIdx] = {
+                ...updated[lastIdx],
+                parts: [
+                  ...updated[lastIdx].parts.filter(p => p.type !== "text"),
+                  { type: "text" as const, text: accumulatedText },
+                ],
+              };
+            }
+            return updated;
+          });
+        } else if (part.type === "tool-call") {
+          toolCallParts.push({
+            type: `tool-${part.toolName}`,
+            toolCallId: part.toolCallId,
+            input: part.input,
             state: "input-available",
-          } as any);
+          } as UIMessage["parts"][number]);
         }
       }
 
-      // Add text part
-      const finalText = resolvedText || accumulatedText;
-      if (finalText) {
-        finalParts.push({ type: "text" as const, text: finalText });
-      }
+      // Build final parts — text + tool calls
+      const finalParts: UIMessage["parts"] = [
+        ...toolCallParts,
+        ...(accumulatedText ? [{ type: "text" as const, text: accumulatedText }] : []),
+      ];
 
       // Update the assistant message with final parts
       const finalMessage: UIMessage = {
         id: assistantMessageId,
         role: "assistant",
-        parts: finalParts.length > 0 ? finalParts : [{ type: "text" as const, text: finalText }],
+        parts: finalParts,
       };
 
       setMessages(prev => {
@@ -196,6 +193,8 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
         if (msg.role !== "assistant") return msg;
 
         const updatedParts = msg.parts.map((part): typeof part => {
+          // The tool-* union type doesn't expose toolCallId directly, so we
+          // narrow with "in" and cast to access the property safely.
           if (
             part.type.startsWith("tool-") &&
             "toolCallId" in part &&
@@ -222,11 +221,14 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
 
   /** Reload: remove last assistant message and re-stream */
   const reload = useCallback(async (opts?: { context?: string; systemPrompt?: string }) => {
-    // Find and remove the last assistant message
-    const lastAssistantIdx = messages.findLastIndex(m => m.role === "assistant");
+    const current = messagesRef.current;
+    let lastAssistantIdx = -1;
+    for (let i = current.length - 1; i >= 0; i--) {
+      if (current[i].role === "assistant") { lastAssistantIdx = i; break; }
+    }
     if (lastAssistantIdx === -1) return;
 
-    const messagesWithoutLast = messages.slice(0, lastAssistantIdx);
+    const messagesWithoutLast = current.slice(0, lastAssistantIdx);
     setMessages(messagesWithoutLast);
 
     let systemPrompt = opts?.systemPrompt || "";
@@ -237,7 +239,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     }
 
     await runStream(messagesWithoutLast, systemPrompt || undefined);
-  }, [messages, runStream]);
+  }, [runStream]);
 
   return {
     messages,

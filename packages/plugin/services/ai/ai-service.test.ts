@@ -1,6 +1,7 @@
 import { AIService } from "./ai-service";
 import { ZenithAISettings } from "../../settings";
 import type { ProviderKey, ModelConfig } from "./types";
+import { streamText, stepCountIs } from "ai";
 
 // Mock provider factory
 jest.mock("./provider-factory", () => ({
@@ -10,11 +11,14 @@ jest.mock("./provider-factory", () => ({
   })),
 }));
 
-// Mock streamText
 jest.mock("ai", () => ({
   streamText: jest.fn(() => ({
     textStream: (async function* () { yield "test"; })(),
+    fullStream: (async function* () {
+      yield { type: "text-delta", textDelta: "test" };
+    })(),
   })),
+  stepCountIs: jest.fn((n: number) => ({ _stepCountIs: n })),
 }));
 
 describe("AIService", () => {
@@ -23,6 +27,7 @@ describe("AIService", () => {
   let testConfig: ModelConfig;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     settings = new ZenithAISettings();
     testKey = {
       id: "key-1",
@@ -75,5 +80,48 @@ describe("AIService", () => {
     const service = new AIService(settings);
 
     expect(() => service.getModelForConfig("nonexistent")).toThrow("Model config not found");
+  });
+
+  describe("streamChat", () => {
+    it("calls streamText with the correct model and messages", () => {
+      const service = new AIService(settings);
+      const mockMessages = [{ role: "user" as const, content: [{ type: "text" as const, text: "hi" }] }];
+      service.streamChat({ messages: mockMessages });
+      expect(streamText).toHaveBeenCalledWith(
+        expect.objectContaining({ messages: mockMessages })
+      );
+    });
+
+    it("passes stopWhen via stepCountIs when maxSteps is provided", () => {
+      const service = new AIService(settings);
+      service.streamChat({ messages: [], maxSteps: 3 });
+      expect(stepCountIs).toHaveBeenCalledWith(3);
+    });
+
+    it("does not call stepCountIs when maxSteps is not provided", () => {
+      const service = new AIService(settings);
+      (stepCountIs as jest.Mock).mockClear();
+      service.streamChat({ messages: [] });
+      expect(stepCountIs).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("validateKey", () => {
+    it("returns valid: true when streamText succeeds", async () => {
+      const service = new AIService(settings);
+      const result = await service.validateKey(testKey);
+      expect(result.valid).toBe(true);
+      expect(result.error).toBeUndefined();
+    });
+
+    it("returns valid: false with error message when streamText throws", async () => {
+      (streamText as jest.Mock).mockImplementationOnce(() => {
+        throw new Error("Invalid API key");
+      });
+      const service = new AIService(settings);
+      const result = await service.validateKey(testKey);
+      expect(result.valid).toBe(false);
+      expect(result.error).toBe("Invalid API key");
+    });
   });
 });

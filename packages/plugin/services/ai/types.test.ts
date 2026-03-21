@@ -44,4 +44,11 @@ describe("AI types", () => {
     };
     expect(config.displayName).toBeUndefined();
   });
+
+  it("TokenUsage fields are all optional", () => {
+    const usage: TokenUsage = {};
+    expect(usage.promptTokens).toBeUndefined();
+    expect(usage.completionTokens).toBeUndefined();
+    expect(usage.totalTokens).toBeUndefined();
+  });
 });

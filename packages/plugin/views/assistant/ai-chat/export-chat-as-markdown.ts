@@ -1,4 +1,4 @@
-import type { UIMessage } from "@ai-sdk/ui-utils";
+import type { UIMessage } from "ai";
 import type { App } from "obsidian";
 import { Notice } from "obsidian";
 import { safeCreate } from "../../../fileUtils";

@@ -67,7 +67,6 @@ export class AIService {
       const result = await streamText({
         model,
         messages: [{ role: "user", content: "hi" }],
-        maxOutputTokens: 1,
       });
       // Consume the stream to trigger the request
       for await (const _ of result.textStream) { break; }

@@ -21,7 +21,7 @@ export function migrateSettings(settings: ZenithAISettings, rawData: LegacySetti
   const legacyModel = rawData.selectedModel;
 
   // Already migrated or no legacy data
-  if (!legacyKey && !legacyModel) return false;
+  if (!legacyKey) return false;
   // Don't re-migrate if new data already exists
   if (settings.providerKeys.length > 0) return false;
 
