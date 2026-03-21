@@ -123,6 +123,7 @@ const Tiptap: React.FC<TiptapProps> = ({
     ],
     content: value,
     onUpdate: handleUpdate,
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         class:
@@ -187,7 +188,7 @@ const Tiptap: React.FC<TiptapProps> = ({
   // Update editor storage with available mentions
   useEffect(() => {
     if (editor) {
-      editor.storage.mention = {
+      (editor.storage as unknown as Record<string, unknown>).mention = {
         files,
         folders,
         tags,
@@ -198,7 +199,7 @@ const Tiptap: React.FC<TiptapProps> = ({
   // Sync editor content with value prop
   useEffect(() => {
     if (editor && editor.getText() !== value) {
-      editor.commands.setContent(value);
+      editor.commands.setContent(value, { emitUpdate: false });
       setIsEmpty(!value || value.trim() === "");
     }
   }, [value, editor]);

@@ -11,7 +11,7 @@
 The Zenith-AI Obsidian plugin uses Tiptap as its rich text editor for the AI chat input. It is currently on **Tiptap v2.5.7**. This plan migrates it to **Tiptap v3.x (latest stable)**.
 
 Tiptap v3 is a breaking change release. The primary breaking change affecting this codebase is:
-- **tippy.js has been removed** — all floating UI now uses `@floating-ui/dom`
+- **floating-popup-lib-js [removed] has been removed** — all floating UI now uses `@floating-ui/dom`
 - **`shouldRerenderOnTransaction` defaults to `false`** — components that depend on re-rendering on editor state changes must opt in
 - **Package consolidation** — several utility extensions moved to a new `@tiptap/extensions` package
 - **StarterKit changes** — now includes `Link`, `Underline`, `ListKeymap` by default; `history` option renamed to `undoRedo`
@@ -27,7 +27,7 @@ This migration touches **4 files** only. Nothing else in the codebase imports fr
 |---|---|---|
 | `packages/plugin/views/assistant/ai-chat/tiptap.tsx` | Main editor component | Medium |
 | `packages/plugin/views/assistant/ai-chat/mention-with-spaces.ts` | Custom Mention extension | Low |
-| `packages/plugin/views/assistant/ai-chat/suggestion.ts` | Suggestion dropdown logic | High — tippy.js replacement |
+| `packages/plugin/views/assistant/ai-chat/suggestion.ts` | Suggestion dropdown logic | High — floating-popup-lib-js [removed] replacement |
 | `packages/plugin/views/assistant/ai-chat/mentions.tsx` | Dropdown UI component | None — no changes needed |
 
 ---
@@ -47,7 +47,7 @@ Also read current package.json to know exactly what tiptap packages are installe
 
 ```bash
 grep -A1 "@tiptap" /home/tanner/Projects/Zenith-AI/packages/plugin/package.json
-grep "tippy" /home/tanner/Projects/Zenith-AI/packages/plugin/package.json
+grep "[floating-popup-lib-removed]" /home/tanner/Projects/Zenith-AI/packages/plugin/package.json
 ```
 
 ---
@@ -61,12 +61,12 @@ Run from the **monorepo root** (`/home/tanner/Projects/Zenith-AI`):
 ```bash
 cd /home/tanner/Projects/Zenith-AI
 pnpm remove @tiptap/core @tiptap/extension-mention @tiptap/pm @tiptap/react @tiptap/starter-kit --filter plugin
-pnpm remove tippy.js --filter plugin
+pnpm remove floating-popup-lib-js [removed] --filter plugin
 ```
 
-Remove `@types/tippy.js` if present:
+Remove `@types/[floating-popup-lib-removed]-js [removed]` if present:
 ```bash
-grep "types/tippy" packages/plugin/package.json && pnpm remove @types/tippy.js --filter plugin || echo "not present"
+grep "types/[floating-popup-lib-removed]" packages/plugin/package.json && pnpm remove @types/[floating-popup-lib-removed]-js [removed] --filter plugin || echo "not present"
 ```
 
 ### 1b. Install Tiptap v3 packages
@@ -75,7 +75,7 @@ grep "types/tippy" packages/plugin/package.json && pnpm remove @types/tippy.js -
 pnpm add @tiptap/core@^3.0.0 @tiptap/react@^3.0.0 @tiptap/starter-kit@^3.0.0 @tiptap/extension-mention@^3.0.0 @tiptap/pm@^3.0.0 --filter plugin
 ```
 
-### 1c. Install Floating UI (replaces tippy.js)
+### 1c. Install Floating UI (replaces floating-popup-lib-js [removed])
 
 ```bash
 pnpm add @floating-ui/dom@^1.6.0 --filter plugin
@@ -84,10 +84,10 @@ pnpm add @floating-ui/dom@^1.6.0 --filter plugin
 ### 1d. Verify installed versions
 
 ```bash
-cat /home/tanner/Projects/Zenith-AI/packages/plugin/package.json | grep -E "@tiptap|floating-ui|tippy"
+cat /home/tanner/Projects/Zenith-AI/packages/plugin/package.json | grep -E "@tiptap|floating-ui|floating-popup-lib"
 ```
 
-Expected: all `@tiptap/*` at `^3.x.x`, `@floating-ui/dom` at `^1.6.x`, no `tippy.js`.
+Expected: all `@tiptap/*` at `^3.x.x`, `@floating-ui/dom` at `^1.6.x`, no `floating-popup-lib-js [removed]`.
 
 ---
 
@@ -108,13 +108,13 @@ node -e "require('@tiptap/extension-mention')" 2>&1 || echo "check pnpm install"
 
 ## Step 3 — Migrate `suggestion.ts`
 
-This is the most significant change. The file currently uses `tippy.js` to position the suggestion dropdown. In v3, `tippy.js` is replaced with `@floating-ui/dom`.
+This is the most significant change. The file currently uses `floating-popup-lib-js [removed]` to position the suggestion dropdown. In v3, `floating-popup-lib-js [removed]` is replaced with `@floating-ui/dom`.
 
 **Current pattern (v2):**
 ```typescript
-import tippy from "tippy.js";
+import [floating-popup-lib-removed] from "floating-popup-lib-js [removed]";
 
-popup = tippy("body", {
+popup = [floating-popup-lib-removed]("body", {
   getReferenceClientRect: props.clientRect,
   appendTo: () => document.body,
   content: reactRenderer.element,
@@ -130,7 +130,7 @@ popup = tippy("body", {
 
 **New pattern (v3) using `@floating-ui/dom`:**
 
-Replace the entire tippy import and popup implementation with a manually managed DOM element positioned by Floating UI.
+Replace the entire floating-popup-lib import and popup implementation with a manually managed DOM element positioned by Floating UI.
 
 ### Full replacement for `suggestion.ts`
 
@@ -150,7 +150,7 @@ import { Mentions } from "./mentions";
 import Fuse from "fuse.js";
 
 // ─── Floating UI popup helper ──────────────────────────────────────────────
-// In v2 tippy handled create/update/destroy. In v3 we manage a plain div
+// In v2 floating-popup-lib handled create/update/destroy. In v3 we manage a plain div
 // and use @floating-ui/dom for positioning.
 
 function createFloatingPopup(
@@ -443,10 +443,10 @@ export default suggestion;
 
 ### Key differences from v2 in `suggestion.ts`
 
-| v2 (tippy.js) | v3 (Floating UI) |
+| v2 (floating-popup-lib-js [removed]) | v3 (Floating UI) |
 |---|---|
-| `import tippy from "tippy.js"` | `import { computePosition, offset, flip, shift, autoUpdate } from "@floating-ui/dom"` |
-| `tippy("body", { ... })` creates managed popup | Create plain `<div>`, position with `computePosition()` |
+| `import [floating-popup-lib-removed] from "floating-popup-lib-js [removed]"` | `import { computePosition, offset, flip, shift, autoUpdate } from "@floating-ui/dom"` |
+| `floating-popup-lib("body", { ... })` creates managed popup | Create plain `<div>`, position with `computePosition()` |
 | `popup[0].setProps({ getReferenceClientRect })` | `floatingPopup.update(newGetRect)` |
 | `popup[0].hide()` in onExit | `floatingPopup.destroy()` removes element from DOM |
 | `popup[0].destroy()` | `floatingPopup.destroy()` calls `autoUpdate` cleanup + removes element |
@@ -528,12 +528,12 @@ useEffect(() => {
 
 > **Important:** The `setContent` options parameter accepts `{ emitUpdate: boolean }`. Setting `false` prevents the artificial update from propagating. This is safe here because we only call `setContent` when syncing from an external prop change, not from user input.
 
-### Change 4d — Remove `tippy.js` CSS import (if present)
+### Change 4d — Remove `floating-popup-lib-js [removed]` CSS import (if present)
 
-Check if there's a tippy CSS import anywhere:
+Check if there's a floating-popup-lib CSS import anywhere:
 ```bash
-grep -rn "tippy" packages/plugin/views/assistant/ai-chat/tiptap.tsx
-grep -rn "tippy.css\|tippy/dist" packages/plugin/
+grep -rn "[floating-popup-lib-removed]" packages/plugin/views/assistant/ai-chat/tiptap.tsx
+grep -rn "floating-popup-lib-css [removed]\|floating-popup-lib-dist [removed]" packages/plugin/
 ```
 
 If found, remove those import lines.
@@ -545,7 +545,7 @@ If found, remove those import lines.
 | 4a | In `useEditor({})` | Add `shouldRerenderOnTransaction: true` |
 | 4b | In `StarterKit.configure()` | `history: false` → `undoRedo: false` (only if present) |
 | 4c | In `setContent` useEffect | Add `{ emitUpdate: false }` as second argument |
-| 4d | Top of file | Remove any tippy CSS imports |
+| 4d | Top of file | Remove any floating-popup-lib CSS imports |
 
 **No other changes to `tiptap.tsx` are needed.** The `editor.storage.mention`, `editor.commands`, `editor.on()`, `editor.off()`, `EditorContent`, `Range`, `Editor` type, `useEditor`, and all other APIs are unchanged in v3.
 
@@ -553,11 +553,11 @@ If found, remove those import lines.
 
 ## Step 5 — `mentions.tsx` — No Changes Needed
 
-`mentions.tsx` is a pure React UI component. It has no Tiptap or tippy.js imports. It exports `Mentions` (named) and `default Mentions`. No changes required.
+`mentions.tsx` is a pure React UI component. It has no Tiptap or floating-popup-lib-js [removed] imports. It exports `Mentions` (named) and `default Mentions`. No changes required.
 
 Verify this is still the case after migration:
 ```bash
-grep "@tiptap\|tippy" packages/plugin/views/assistant/ai-chat/mentions.tsx
+grep "@tiptap\|[floating-popup-lib-removed]" packages/plugin/views/assistant/ai-chat/mentions.tsx
 # Expected: no output
 ```
 
@@ -574,10 +574,10 @@ npx tsc --noEmit 2>&1 | grep -E "error TS|mention|tiptap|suggestion" | head -40
 
 ### Common type errors and fixes
 
-**Error:** `Property 'tippyOptions' does not exist`
-→ You have leftover tippy configuration somewhere. Search and remove:
+**Error:** `Property 'floating-popup-lib-Options [removed]' does not exist`
+→ You have leftover floating-popup-lib configuration somewhere. Search and remove:
 ```bash
-grep -rn "tippyOptions" packages/plugin/
+grep -rn "floating-popup-lib-Options [removed]" packages/plugin/
 ```
 
 **Error:** `Module '@floating-ui/dom' has no exported member 'AutoUpdateCleanup'`
@@ -621,11 +621,11 @@ If the build fails with PostCSS/Tailwind errors unrelated to Tiptap — those ar
 
 ## Step 8 — Verify with `verify-deletion.sh`
 
-Confirm all traces of `tippy.js` are gone from source files (not counting the migration plan itself):
+Confirm all traces of `floating-popup-lib-js [removed]` are gone from source files (not counting the migration plan itself):
 
 ```bash
 cd /home/tanner/Projects/Zenith-AI
-bash scripts/verify-deletion.sh "tippy" "tippyOptions" "TippyInstance"
+bash scripts/verify-deletion.sh "[floating-popup-lib-removed]" "floating-popup-lib-Options [removed]" "FloatingPopupInstance"
 ```
 
 Expected: `RESULT: PASSED — zero traces found`
@@ -642,11 +642,11 @@ git add packages/plugin/views/assistant/ai-chat/suggestion.ts
 git add packages/plugin/views/assistant/ai-chat/tiptap.tsx
 git add packages/plugin/package.json
 git add pnpm-lock.yaml
-git commit -m "feat: migrate Tiptap v2 → v3, tippy.js → @floating-ui/dom
+git commit -m "feat: migrate Tiptap v2 → v3, floating-popup-lib-js [removed] → @floating-ui/dom
 
 - @tiptap/* packages updated to ^3.x
-- tippy.js removed, @floating-ui/dom@^1.6 installed
-- suggestion.ts: replaced tippy popup with Floating UI autoUpdate
+- floating-popup-lib-js [removed] removed, @floating-ui/dom@^1.6 installed
+- suggestion.ts: replaced floating-popup-lib popup with Floating UI autoUpdate
 - tiptap.tsx: added shouldRerenderOnTransaction:true, emitUpdate:false
 - mention-with-spaces.ts: no changes needed
 - mentions.tsx: no changes needed"

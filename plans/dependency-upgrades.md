@@ -308,7 +308,7 @@ pnpm add @tiptap/core@^3.0.0 @tiptap/react@^3.0.0 @tiptap/starter-kit@^3.0.0 @ti
 **Suggestion API:**
 - The `suggestion` utility used in `suggestion.ts` for dropdown rendering has changed in v3
 - `SuggestionOptions` type and the `render()` lifecycle (`onStart`, `onUpdate`, `onKeyDown`, `onExit`) likely have updated signatures
-- Floating UI / Tippy.js integration may also change — check if `tippyjs-for-react` is still the recommended approach in v3
+- Floating UI integration may also change — check recommended positioning approach in v3
 
 **Schema changes:**
 - If any custom nodes/marks are defined, their `schema` block format may differ in v3
