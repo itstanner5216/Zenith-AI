@@ -138,14 +138,19 @@ function patchTreeSitterLanguageStubs() {
   }
 }
 
-ensureExists(
-  clang,
-  `Expected local Emscripten clang at ${clang}. Install the SDK first or set EMSDK_DIR.`
-);
-ensureExists(
-  sysroot,
-  `Expected Emscripten sysroot at ${sysroot}. Install the SDK first or set EMSDK_DIR.`
-);
+if (!existsSync(clang) || !existsSync(sysroot)) {
+  const prebuiltWasm = path.join(pkgDir, "rust_tree_sitter_bridge_bg.wasm");
+  if (existsSync(prebuiltWasm)) {
+    console.log(
+      "Emscripten SDK not found; using pre-built WASM artifacts. " +
+      "Set EMSDK_DIR to rebuild from source."
+    );
+    process.exit(0);
+  }
+  throw new Error(
+    `Expected local Emscripten clang at ${clang}. Install the SDK first or set EMSDK_DIR.`
+  );
+}
 
 mkdirSync(pkgDir, { recursive: true });
 patchTreeSitterLanguageStubs();
