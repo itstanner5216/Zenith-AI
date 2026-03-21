@@ -137,15 +137,17 @@ export function messagesToMarkdown(
   for (const message of messages) {
     const content = getMessageContentAsString(message);
     const roleLabel = message.role === "user" ? "User" : "Assistant";
+    // createdAt is not part of AI SDK v5's UIMessage type; access via cast for backwards compat
+    const legacyMsg = message as any;
     const createdAtMs =
-      message.createdAt == null
+      legacyMsg.createdAt == null
         ? null
-        : typeof message.createdAt === "number"
-          ? message.createdAt
-          : message.createdAt instanceof Date
-            ? message.createdAt.getTime()
-            : typeof message.createdAt === "string"
-              ? Date.parse(message.createdAt)
+        : typeof legacyMsg.createdAt === "number"
+          ? legacyMsg.createdAt
+          : legacyMsg.createdAt instanceof Date
+            ? legacyMsg.createdAt.getTime()
+            : typeof legacyMsg.createdAt === "string"
+              ? Date.parse(legacyMsg.createdAt)
               : Number.NaN;
     const timestamp =
       includeTimestamps &&

@@ -115,12 +115,12 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
           });
         } else if (part.type === "tool-call") {
           toolCallParts.push({
-            type: "tool-invocation",
+            type: `tool-${part.toolName}` as `tool-${string}`,
             toolCallId: part.toolCallId,
             toolName: part.toolName,
             input: part.input,
-            state: "call",
-          } as UIMessage["parts"][number]);
+            state: "input-available",
+          } as unknown as UIMessage["parts"][number]);
         }
       }
 
@@ -167,13 +167,16 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     content: string,
     opts?: { context?: string; systemPrompt?: string },
   ) => {
+    if (isGeneratingRef.current) return;
+
     const userMessage: UIMessage = {
       id: crypto.randomUUID(),
       role: "user",
       parts: [{ type: "text" as const, text: content }],
     };
 
-    const updatedMessages = [...messages, userMessage];
+    // Use ref to avoid stale closure — messagesRef is kept in sync via useEffect
+    const updatedMessages = [...messagesRef.current, userMessage];
     setMessages(updatedMessages);
 
     // Build system prompt with optional context
@@ -185,7 +188,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     }
 
     await runStream(updatedMessages, systemPrompt || undefined);
-  }, [messages, runStream]);
+  }, [runStream]);
 
   /** Add a tool result — updates the matching tool part's state to output-available */
   const addToolResult = useCallback((result: { toolCallId: string; result: string }) => {
@@ -197,7 +200,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
           // The tool-* union type doesn't expose toolCallId directly, so we
           // narrow with "in" and cast to access the property safely.
           if (
-            part.type === "tool-invocation" &&
+            part.type.startsWith("tool-") &&
             "toolCallId" in part &&
             (part as any).toolCallId === result.toolCallId
           ) {

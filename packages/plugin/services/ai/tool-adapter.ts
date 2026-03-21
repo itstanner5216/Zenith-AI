@@ -4,6 +4,11 @@ import type { ToolSet } from "ai";
 /**
  * Creates AI SDK tool definitions for the plugin's vault operations.
  *
+ * NOTE (intentional plan deviation): The phase plan specified Zod schemas via
+ * `parameters: z.object(...)`. We use `inputSchema: jsonSchema(...)` instead to
+ * avoid deep TypeScript instantiation that causes OOM crashes in ts-jest/tsc.
+ * Functional behavior is identical; Zod runtime validation is the only loss.
+ *
  * Tools are defined WITHOUT execute functions — execution happens client-side
  * via ToolCallHandler React components. The AI SDK will emit tool calls,
  * and the chat hook collects results from the UI before re-sending.

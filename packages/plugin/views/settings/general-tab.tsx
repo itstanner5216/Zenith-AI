@@ -8,7 +8,7 @@ interface GeneralTabProps {
 export const GeneralTab: React.FC<GeneralTabProps> = () => {
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-depth-3 p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-depth-3 p-4 rounded-lg border border-neon-cyan/8 shadow-elevation-md">
         <h3 className="text-lg font-semibold mb-2 mt-0 text-neon-cyan">
           AI Providers
         </h3>

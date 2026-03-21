@@ -53,6 +53,8 @@ export class AIService {
       messages: params.messages,
       system: params.systemPrompt,
       tools: params.tools,
+      // NOTE (intentional plan deviation): plan specified `maxSteps` directly;
+      // AI SDK v5 uses `stopWhen: stepCountIs(n)` instead.
       stopWhen: params.maxSteps ? stepCountIs(params.maxSteps) : undefined,
       abortSignal: params.abortSignal,
       onStepFinish: params.onStepFinish,

@@ -923,16 +923,14 @@ ${freshEditorContext}`
             </div>
           ) : (
             messages.map(message => {
-              const toolParts = (message.parts ?? []).filter(
-                (part): part is any => part.type === "tool-invocation"
-              );
+              const toolParts = (message.parts ?? []).filter(isToolUIPart);
 
               if (toolParts.length > 0) {
                 console.log("[Chat] Tool parts for message:", message.id,
                   toolParts.map(p => ({
-                    id: p.toolCallId,
-                    name: p.toolName,
-                    state: p.state,
+                    id: (p as any).toolCallId,
+                    type: p.type,
+                    state: (p as any).state,
                   }))
                 );
               }

@@ -262,11 +262,14 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
 
   const handleAddModel = (configData: Omit<ModelConfig, "id">) => {
     const newConfig: ModelConfig = { id: crypto.randomUUID(), ...configData };
-    const isFirst = modelConfigs.length === 0;
-    setModelConfigs(prev => [...prev, newConfig]);
-    if (isFirst) {
-      setActiveModelConfigId(newConfig.id);
-    }
+    setModelConfigs(prev => {
+      const updated = [...prev, newConfig];
+      // Auto-select if this is the first model (read from prev, not stale closure)
+      if (prev.length === 0) {
+        setActiveModelConfigId(newConfig.id);
+      }
+      return updated;
+    });
     setShowAddModel(false);
   };
 
