@@ -8,7 +8,7 @@
     "build:ci": "pnpm next build",
     "build": "pnpm run db:migrate  && pnpm next build",
     "start": "PORT=${PORT:-3000} pnpm next start",
-    "lint": "pnpm next lint",
+    "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch",
     "ts:check": "pnpm tsc --noEmit",
