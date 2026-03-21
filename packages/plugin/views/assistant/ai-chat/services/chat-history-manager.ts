@@ -28,7 +28,7 @@ export class ChatHistoryManager {
   private sessions: Map<string, ChatSession> = new Map();
   private app: App;
   private debounceTimeout: TimeoutID | null = null;
-  private readonly CHAT_HISTORY_PATH = normalizePath("_NoteCompanion/.chat-history.json");
+  private readonly CHAT_HISTORY_PATH = normalizePath(".zenith/.chat-history.json");
   private loadPromise: Promise<void> | null = null; // Track loading state
 
   private constructor(app: App) {

@@ -1,8 +1,5 @@
 import { Notice } from "obsidian";
 
-/** Free tier token limit (matches web DEFAULT_LEGACY_PLAN_TOKENS). Upgrade CTA only for this tier. */
-export const FREE_TIER_TOKEN_LIMIT = 100000;
-
 export const VALID_IMAGE_EXTENSIONS = [
   "png",
   "jpg",

@@ -10,10 +10,10 @@ catalog:
   "next-auth": 5.0.0-beta.25
 
   # Dev tooling
-  eslint: ^9.19.0
+  eslint: ^10.0.0
   prettier: ^3.4.2
   tailwindcss: ^3.4.15
-  typescript: ^5.7.3
+  typescript: ^5.9.3
 
   # Misc
   zod: ^3.25.76

@@ -18,7 +18,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const handleSave = async () => {
     const value = draft.trim();
     plugin.settings.selectedModel = value;
-    plugin.settings.customModelName = value;
     await plugin.saveSettings();
     onModelSelect(value);
     setIsEditing(false);
