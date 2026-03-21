@@ -23,7 +23,7 @@
       "@/*": ["./*"]
       
     },
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "baseUrl": ".",
     "composite": true
   },

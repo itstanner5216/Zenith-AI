@@ -61,7 +61,7 @@ function ToolCallHandler({
       renameFiles: "Renaming Files",
       openFile: "Opening File",
     };
-    return toolTitles[toolName] ;
+    return toolTitles[toolName as keyof typeof toolTitles] ;
   };
 
   const renderContent = () => {
@@ -110,7 +110,7 @@ function ToolCallHandler({
 
     };
 
-    const handler = handlers[toolName];
+    const handler = handlers[toolName as keyof typeof handlers];
     if (!handler) {
       console.error("[ToolCallHandler] No handler found for tool:", toolName);
       if (toolInvocation.state !== 'output-available') {

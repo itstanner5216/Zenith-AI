@@ -23,7 +23,7 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
     const renameResults: string[] = [];
 
     await Promise.all(
-      files.map(async (fileData) => {
+      files.map(async (fileData: any) => {
         try {
           const existingFile = plugin.app.vault.getAbstractFileByPath(fileData.oldPath);
           if (existingFile && existingFile instanceof TFile) {

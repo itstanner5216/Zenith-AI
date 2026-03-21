@@ -69,7 +69,7 @@ export function MoveFilesHandler({
   React.useEffect(() => {
     if (!isValidated && !filesToMove.length) {
       const { moves } = toolInvocation.input as any;
-      const matchedFiles = moves.flatMap(move => getMatchingFiles(move));
+      const matchedFiles = moves.flatMap((move: any) => getMatchingFiles(move));
       setFilesToMove(matchedFiles);
     }
   }, [toolInvocation.input, isValidated]);
@@ -79,7 +79,7 @@ export function MoveFilesHandler({
     const results: string[] = [];
 
     await Promise.all(
-      moves.map(async (move) => {
+      moves.map(async (move: any) => {
         try {
           const matchingFiles = getMatchingFiles(move);
           await plugin.app.vault.createFolder(move.destinationPath).catch((err) => {

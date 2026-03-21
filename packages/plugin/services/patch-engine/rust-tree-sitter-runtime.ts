@@ -49,7 +49,7 @@ async function loadBridge(): Promise<RustTreeSitterBridge> {
     env.__bindWasmExports((mod as { __wasm?: unknown }).__wasm ?? mod);
   }
   if (typeof mod.default === "function") {
-    await (mod.default as () => Promise<void>)();
+    await (mod.default as unknown as () => Promise<void>)();
   }
   return mod as unknown as RustTreeSitterBridge;
 }
@@ -81,7 +81,7 @@ export async function getRustTreeSitterBridge(): Promise<RustTreeSitterBridge> {
 // Convenience: parse → CstNode
 // ---------------------------------------------------------------------------
 
-type Grammar = "json" | "markdown" | "typescript" | "tsx" | "javascript" | "python" | "bash" | "css" | "yaml" | "sql" | "go";
+export type Grammar = "json" | "markdown" | "typescript" | "tsx" | "javascript" | "python" | "bash" | "css" | "yaml" | "sql" | "go";
 
 /** Raw JSON shape returned by the Rust bridge (snake_case). */
 interface RawCstNode {

@@ -65,7 +65,7 @@ export default class ZenithAI extends Plugin {
       for (let pageNum = 1; pageNum <= pageLimit; pageNum++) {
         const page = await doc.getPage(pageNum);
         const textContent = await page.getTextContent();
-        text += textContent.items.map(item => item.str).join(" ");
+        text += textContent.items.map((item: { str: string }) => item.str).join(" ");
       }
       return text;
     } catch (error) {

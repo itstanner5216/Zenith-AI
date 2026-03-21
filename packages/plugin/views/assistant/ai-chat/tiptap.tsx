@@ -58,11 +58,11 @@ const Tiptap: React.FC<TiptapProps> = ({
   }) => {
     // Load file content if it's a file mention
     if (props.type === "file") {
-      const file = plugin.app.vault.getFileByPath(props.path);
+      const file = plugin.app.vault.getFileByPath(props.path!);
       if (file instanceof TFile && file.extension === "pdf") {
         props.content = await plugin.extractTextFromPDF(file);
       } else {
-        const content = await loadFileContent(props.path);
+        const content = await loadFileContent(props.path!);
         props.content = content || "";
       }
     }
@@ -87,7 +87,7 @@ const Tiptap: React.FC<TiptapProps> = ({
     switch (props.type) {
       case "file":
         addFileContext({
-          path: props.path,
+          path: props.path!,
           title: props.title,
           content: props.content,
         });
@@ -98,7 +98,7 @@ const Tiptap: React.FC<TiptapProps> = ({
         break;
 
       case "folder":
-        addFolderContext(props.path, plugin.app);
+        addFolderContext(props.path!, plugin.app);
         break;
     }
   };
@@ -150,6 +150,7 @@ const Tiptap: React.FC<TiptapProps> = ({
 
             if (node && node.type.name === "text") {
               const text = node.text;
+              if (!text) continue;
               const relativePos = pos - resolvedPos.start();
               if (relativePos >= 0 && relativePos < text.length) {
                 const char = text[relativePos];

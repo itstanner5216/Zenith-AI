@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { parseCst, type Grammar } from "../rust-tree-sitter-runtime.ts";
+import { parseCst, type Grammar } from "../rust-tree-sitter-runtime";
 
 describe("all grammar smoke tests", () => {
   const tests: [Grammar, string, string][] = [

@@ -60,7 +60,7 @@ import { tw } from "../../../lib/utils";
 interface ChatComponentProps {
   plugin: ZenithAI;
   apiKey: string;
-  inputRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLDivElement | null>;
   onTokenLimitError?: (error: string) => void;
   activeChatId: string | null;
   onSessionUpdate?: (session: ChatSession) => void;
@@ -233,7 +233,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     setMessages,
   } = useChat({
     // CRITICAL: Must use experimental_prepareRequestBody (the SDK ignores "prepareRequestBody")
-    experimental_prepareRequestBody: ({ messages }) => {
+    experimental_prepareRequestBody: ({ messages }: { messages: AIUIMessage[] }) => {
       console.log(
         "[Chat] prepareRequestBody called with messages:",
         messages.length,
