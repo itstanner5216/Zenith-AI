@@ -95,7 +95,7 @@ export function LastModifiedHandler({
           logger.error("Error getting last modified files:", error);
           handleAddResult(JSON.stringify({ 
             success: false,
-            error: error.message 
+            error: error instanceof Error ? error.message : String(error)
           }));
         }
       }

@@ -100,7 +100,7 @@ export function MoveFilesHandler({
             results.push(`ℹ️ No files found matching criteria for ${move.sourcePath}`);
           }
         } catch (error) {
-          results.push(`❌ Error: ${error.message}`);
+          results.push(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
         }
       })
     );

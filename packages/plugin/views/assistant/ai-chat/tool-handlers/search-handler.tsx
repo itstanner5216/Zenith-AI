@@ -72,7 +72,7 @@ export function SearchHandler({
           handleAddResult(JSON.stringify(contextResults));
         } catch (error) {
           logger.error("Error searching notes:", error);
-          handleAddResult(JSON.stringify({ error: error.message }));
+          handleAddResult(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
         }
       }
     };

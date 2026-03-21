@@ -107,7 +107,6 @@ function TabContent({
         <div className={tw("flex-1 min-h-0 border-t border-defined")}>
           <AIChatSidebar
             plugin={plugin}
-            apiKey={plugin.settings.API_KEY}
             onTokenLimitError={onTokenLimitError}
             isChatTabActive={true}
           />
@@ -120,7 +119,6 @@ function TabContent({
     <div className={tw("flex flex-col h-full w-full")}>
       <AIChatSidebar
         plugin={plugin}
-        apiKey={plugin.settings.API_KEY}
         onTokenLimitError={onTokenLimitError}
         isChatTabActive={true}
       />

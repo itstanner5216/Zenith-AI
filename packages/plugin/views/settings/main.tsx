@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ZenithAI from '../../index';
 import { GeneralTab } from './general-tab';
+import { ProvidersTab } from './providers-tab';
 import { AdvancedTab } from './advanced-tab';
 
 interface Tab {
@@ -17,6 +18,7 @@ export const SettingsTabContent: React.FC<SettingsTabContentProps> = ({ plugin }
 
   const tabs: Tab[] = [
     { name: 'General', component: GeneralTab },
+    { name: 'Providers', component: ProvidersTab },
     { name: 'Advanced', component: AdvancedTab },
   ];
 

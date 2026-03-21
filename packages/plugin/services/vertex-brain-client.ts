@@ -23,13 +23,9 @@ export function createBrainClient(plugin: ZenithAI): VertexBrainClient {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            ...(plugin.getApiKey()
-              ? { Authorization: `Bearer ${plugin.getApiKey()}` }
-              : {}),
           },
           body: JSON.stringify({
             messages: [{ role: "user", content: context }],
-            model: plugin.settings.selectedModel,
           }),
         });
 

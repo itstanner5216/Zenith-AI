@@ -94,7 +94,7 @@ export const MarkdownContent: React.FC<MarkdownContentProps> = ({
         setRenderedContent(tempContainer.innerHTML);
       } catch (e) {
         logger.error("Error rendering markdown:", e);
-        setRenderedContent(`<p>Error rendering content: ${e.message}</p>`);
+        setRenderedContent(`<p>Error rendering content: ${e instanceof Error ? e.message : String(e)}</p>`);
       }
     };
 
