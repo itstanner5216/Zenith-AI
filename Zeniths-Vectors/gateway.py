@@ -82,6 +82,7 @@ RETRY_DELAY = float(os.environ.get("RETRY_DELAY", "1.0"))
 OBSIDIAN_HEALTH_CACHE_SECONDS = int(os.environ.get("OBSIDIAN_HEALTH_CACHE_SECONDS", "30"))
 OBSIDIAN_RECONNECT_INTERVAL = int(os.environ.get("OBSIDIAN_RECONNECT_INTERVAL", "10"))
 SESSION_TTL_MINUTES = int(os.environ.get("SESSION_TTL_MINUTES", "30"))
+CORS_ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")]
 
 # =============================================================================
 # PGVECTOR CONFIGURATION
@@ -960,8 +961,13 @@ async def lifespan(app: FastAPI):
         _pg_pool = None
 
 app = FastAPI(title="Vertex AI Search + Obsidian Gateway", version="3.1.0", lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
-                   allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.exception_handler(HTTPException)
 async def _http_exc(req: Request, exc: HTTPException):
