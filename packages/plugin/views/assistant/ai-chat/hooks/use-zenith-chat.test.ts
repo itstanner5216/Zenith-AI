@@ -1,55 +1,31 @@
 /**
+ * @jest-environment jsdom
+ *
  * Tests for useZenithChat hook.
- *
- * Integration-level behavior (streaming, sendMessage) requires a React
- * rendering environment. Tests here cover:
- * - Module export shape
- * - addToolResult pure state transformation (via setMessages + renderHook if available)
- * - stop() safety (no throw when no active stream)
- *
- * Note: @testing-library/react is not available in this package, so tests are
- * limited to module shape and pure-function exports.
+ * Uses jsdom + @testing-library/react renderHook for behavioral tests.
  */
 
+import { renderHook, act } from "@testing-library/react";
 import { useZenithChat } from "./use-zenith-chat";
 import type { ChatStatus, UseZenithChatOptions, UseZenithChatReturn } from "./use-zenith-chat";
 
-// Minimal AIService mock
-const makeAIService = (overrides?: any) => ({
-  streamChat: jest.fn(() => ({
-    fullStream: (async function* () {
-      yield { type: "text-delta", text: "hello" };
-    })(),
-  })),
+// Build a mock AIService with a controllable async generator for fullStream
+function makeFullStream(events: any[]) {
+  return (async function* () {
+    for (const e of events) yield e;
+  })();
+}
+
+const makeAIService = (streamEvents: any[] = [{ type: "text-delta", text: "hello" }]) => ({
+  streamChat: jest.fn(() => ({ fullStream: makeFullStream(streamEvents) })),
   getActiveModel: jest.fn(),
   validateKey: jest.fn(),
   getModelForConfig: jest.fn(),
-  ...overrides,
 });
 
-describe("useZenithChat module", () => {
-  it("exports useZenithChat as a function", () => {
-    expect(typeof useZenithChat).toBe("function");
-  });
-
-  it("makeAIService helper produces a valid mock shape", () => {
-    const svc = makeAIService();
-    expect(typeof svc.streamChat).toBe("function");
-    expect(typeof svc.getActiveModel).toBe("function");
-    expect(typeof svc.validateKey).toBe("function");
-    expect(typeof svc.getModelForConfig).toBe("function");
-  });
-
-  it("makeAIService streamChat returns an object with fullStream", () => {
-    const svc = makeAIService();
-    const result = svc.streamChat();
-    expect(result).toHaveProperty("fullStream");
-    expect(typeof result.fullStream[Symbol.asyncIterator]).toBe("function");
-  });
-});
+// ─── Type contract tests (no render needed) ──────────────────────────────────
 
 describe("useZenithChat type contracts", () => {
-  // Test 1: ChatStatus valid literals
   it("ChatStatus accepts exactly 'ready', 'submitted', and 'streaming'", () => {
     const s1: ChatStatus = "ready";
     const s2: ChatStatus = "submitted";
@@ -57,15 +33,8 @@ describe("useZenithChat type contracts", () => {
     expect([s1, s2, s3]).toEqual(["ready", "submitted", "streaming"]);
   });
 
-  // Test 2: UseZenithChatOptions interface shape
   it("UseZenithChatOptions accepts required aiService and all optional fields", () => {
     const svc = makeAIService();
-
-    // Minimal: only required field
-    const minimal: UseZenithChatOptions = { aiService: svc as any };
-    expect(minimal.aiService).toBe(svc);
-
-    // Full: all optional fields present
     const full: UseZenithChatOptions = {
       aiService: svc as any,
       tools: undefined,
@@ -75,49 +44,8 @@ describe("useZenithChat type contracts", () => {
       onStepFinish: jest.fn() as any,
     };
     expect(full.maxSteps).toBe(10);
-    expect(typeof full.onFinish).toBe("function");
-    expect(typeof full.onError).toBe("function");
-    expect(typeof full.onStepFinish).toBe("function");
   });
 
-  // Test 3: fullStream yields text-delta with .text property (AI SDK v5)
-  it("fullStream mock yields text-delta event with .text property (AI SDK v5, not .textDelta)", async () => {
-    const stream = (async function* () {
-      yield { type: "text-delta", text: "hello" };
-    })();
-
-    const events: any[] = [];
-    for await (const event of stream) {
-      events.push(event);
-    }
-
-    expect(events).toHaveLength(1);
-    expect(events[0].type).toBe("text-delta");
-    expect(events[0]).toHaveProperty("text", "hello");
-    expect(events[0]).not.toHaveProperty("textDelta");
-  });
-
-  // Test 4: fullStream yields multiple event types in order
-  it("fullStream mock yields multiple event types in correct order", async () => {
-    const stream = (async function* () {
-      yield { type: "text-delta", text: "hello" };
-      yield { type: "tool-call", toolName: "search", toolCallId: "tc-1", input: {} };
-      yield { type: "finish" };
-    })();
-
-    const events: any[] = [];
-    for await (const event of stream) {
-      events.push(event);
-    }
-
-    expect(events).toHaveLength(3);
-    expect(events[0].type).toBe("text-delta");
-    expect(events[1].type).toBe("tool-call");
-    expect(events[1].toolCallId).toBe("tc-1");
-    expect(events[2].type).toBe("finish");
-  });
-
-  // Test 5: UseZenithChatReturn interface shape
   it("UseZenithChatReturn typed object contains all required fields", () => {
     const mockReturn: UseZenithChatReturn = {
       messages: [],
@@ -129,40 +57,147 @@ describe("useZenithChat type contracts", () => {
       reload: jest.fn() as any,
       setMessages: jest.fn() as any,
     };
-
-    const expectedKeys = [
-      "messages", "status", "error",
-      "sendMessage", "addToolResult", "stop", "reload", "setMessages",
-    ];
-    expect(Object.keys(mockReturn)).toEqual(expect.arrayContaining(expectedKeys));
-    expect(Object.keys(mockReturn)).toHaveLength(expectedKeys.length);
-    expect(Array.isArray(mockReturn.messages)).toBe(true);
+    expect(Object.keys(mockReturn)).toHaveLength(8);
     expect(mockReturn.error).toBeNull();
   });
 
-  // Test 6: AIService mock completeness
+  it("fullStream mock yields text-delta with .text (AI SDK v5, not .textDelta)", async () => {
+    const events: any[] = [];
+    for await (const e of makeFullStream([{ type: "text-delta", text: "hi" }])) {
+      events.push(e);
+    }
+    expect(events[0]).toHaveProperty("text", "hi");
+    expect(events[0]).not.toHaveProperty("textDelta");
+  });
+
   it("makeAIService creates a mock satisfying all AIService methods", () => {
     const svc = makeAIService();
-    const requiredMethods = ["streamChat", "getActiveModel", "validateKey", "getModelForConfig"];
-
-    for (const method of requiredMethods) {
-      expect(svc).toHaveProperty(method);
-      expect(jest.isMockFunction((svc as any)[method])).toBe(true);
+    for (const m of ["streamChat", "getActiveModel", "validateKey", "getModelForConfig"]) {
+      expect(jest.isMockFunction((svc as any)[m])).toBe(true);
     }
   });
+});
 
-  // Test 7: AbortController signal passthrough to streamChat mock
-  it("AbortController signal can be passed to streamChat mock and tracks aborted state", () => {
-    const svc = makeAIService();
-    const controller = new AbortController();
+// ─── Behavioral tests via renderHook ─────────────────────────────────────────
 
-    svc.streamChat({ messages: [], abortSignal: controller.signal });
+describe("useZenithChat behavior", () => {
+  it("initial state is ready with empty messages and no error", () => {
+    const { result } = renderHook(() =>
+      useZenithChat({ aiService: makeAIService() as any })
+    );
+    expect(result.current.status).toBe("ready");
+    expect(result.current.messages).toEqual([]);
+    expect(result.current.error).toBeNull();
+  });
 
-    const calledWith = svc.streamChat.mock.calls[0][0];
-    expect(calledWith.abortSignal).toBe(controller.signal);
-    expect(calledWith.abortSignal.aborted).toBe(false);
+  it("sendMessage adds a user message immediately", async () => {
+    const svc = makeAIService([]);
+    const { result } = renderHook(() => useZenithChat({ aiService: svc as any }));
 
-    controller.abort();
-    expect(controller.signal.aborted).toBe(true);
+    await act(async () => {
+      await result.current.sendMessage("hello");
+    });
+
+    const userMsg = result.current.messages.find(m => m.role === "user");
+    expect(userMsg).toBeDefined();
+    expect((userMsg!.parts[0] as any).text).toBe("hello");
+  });
+
+  it("sendMessage triggers streamChat on the AIService", async () => {
+    const svc = makeAIService([]);
+    const { result } = renderHook(() => useZenithChat({ aiService: svc as any }));
+
+    await act(async () => {
+      await result.current.sendMessage("ping");
+    });
+
+    expect(svc.streamChat).toHaveBeenCalledTimes(1);
+  });
+
+  it("streaming text-delta events accumulate into assistant message", async () => {
+    const svc = makeAIService([
+      { type: "text-delta", text: "hel" },
+      { type: "text-delta", text: "lo" },
+    ]);
+    const { result } = renderHook(() => useZenithChat({ aiService: svc as any }));
+
+    await act(async () => {
+      await result.current.sendMessage("hi");
+    });
+
+    const assistant = result.current.messages.find(m => m.role === "assistant");
+    expect(assistant).toBeDefined();
+    const textPart = assistant!.parts.find((p: any) => p.type === "text") as any;
+    expect(textPart?.text).toBe("hello");
+  });
+
+  it("status returns to 'ready' after stream completes", async () => {
+    const svc = makeAIService([{ type: "text-delta", text: "done" }]);
+    const { result } = renderHook(() => useZenithChat({ aiService: svc as any }));
+
+    await act(async () => {
+      await result.current.sendMessage("go");
+    });
+
+    expect(result.current.status).toBe("ready");
+  });
+
+  it("onFinish is called with the final assistant message", async () => {
+    const onFinish = jest.fn();
+    const svc = makeAIService([{ type: "text-delta", text: "result" }]);
+    const { result } = renderHook(() =>
+      useZenithChat({ aiService: svc as any, onFinish })
+    );
+
+    await act(async () => {
+      await result.current.sendMessage("test");
+    });
+
+    expect(onFinish).toHaveBeenCalledTimes(1);
+    const msg = onFinish.mock.calls[0][0];
+    expect(msg.role).toBe("assistant");
+  });
+
+  it("stop() aborts the stream without throwing", async () => {
+    const { result } = renderHook(() =>
+      useZenithChat({ aiService: makeAIService() as any })
+    );
+    expect(() => act(() => { result.current.stop(); })).not.toThrow();
+  });
+
+  it("setMessages replaces the messages array", () => {
+    const { result } = renderHook(() =>
+      useZenithChat({ aiService: makeAIService() as any })
+    );
+    act(() => {
+      result.current.setMessages([
+        { id: "1", role: "user", parts: [{ type: "text" as const, text: "hi" }] },
+      ]);
+    });
+    expect(result.current.messages).toHaveLength(1);
+    expect(result.current.messages[0].role).toBe("user");
+  });
+
+  it("addToolResult updates matching tool part state to output-available", async () => {
+    const svc = makeAIService([
+      { type: "tool-call", toolName: "search", toolCallId: "tc-1", input: { query: "test" } },
+    ]);
+    const { result } = renderHook(() => useZenithChat({ aiService: svc as any }));
+
+    await act(async () => {
+      await result.current.sendMessage("search for something");
+    });
+
+    act(() => {
+      result.current.addToolResult({ toolCallId: "tc-1", result: "found it" });
+    });
+
+    const assistant = result.current.messages.find(m => m.role === "assistant");
+    const toolPart = assistant?.parts.find(
+      (p: any) => p.type.startsWith("tool-") && p.toolCallId === "tc-1"
+    ) as any;
+    expect(toolPart?.state).toBe("output-available");
+    expect(toolPart?.output).toBe("found it");
   });
 });
+

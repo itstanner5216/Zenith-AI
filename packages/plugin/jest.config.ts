@@ -17,12 +17,16 @@ const config: Config.InitialOptions = {
     '^./services/logger$': '<rootDir>/__mocks__/services/logger.ts',
     '^../services/logger$': '<rootDir>/__mocks__/services/logger.ts',
     '^../../services/logger$': '<rootDir>/__mocks__/services/logger.ts',
+    // Ensure a single React instance for renderHook to work correctly
+    '^react$': '<rootDir>/node_modules/react',
+    '^react-dom$': '<rootDir>/node_modules/react-dom',
+    '^react-dom/client$': '<rootDir>/node_modules/react-dom/client',
   },
 
   // Module file extensions for importing
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
-  // Test environment
+  // Test environment — node by default; use @jest-environment jsdom docblock in specific files
   testEnvironment: 'node',
 
   // Test file pattern

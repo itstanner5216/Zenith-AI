@@ -17,6 +17,8 @@
   "license": "MIT",
   "devDependencies": {
     "@jest/types": "^30.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.2",
     "@types/jest": "^30.0.0",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
@@ -24,6 +26,7 @@
     "esbuild": "0.27.4",
     "esbuild-postcss": "^0.0.4",
     "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
     "obsidian": "^1.12.3",
     "postcss": "^8.4.31",
     "ts-jest": "^29.4.6",
