@@ -872,12 +872,6 @@ _pg_pool = None
 _pgvector_ready = False
 
 
-class VectorUpsertRequest(BaseModel):
-    id: str
-    content: str
-    embedding: List[float]
-
-
 class VectorSearchRequest(BaseModel):
     embedding: List[float]
     top_k: int = Field(default=5, ge=1, le=100)
@@ -904,6 +898,8 @@ async def init_pgvector_schema():
             CREATE TABLE IF NOT EXISTS vault_embeddings (
                 id TEXT PRIMARY KEY,
                 content TEXT NOT NULL,
+                folder_path TEXT,
+                tags TEXT[],
                 embedding vector(1536) NOT NULL,
                 updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
