@@ -11,10 +11,10 @@ export function NewChatButton({ onClick }: NewChatButtonProps) {
       onClick={onClick}
       className={tw(
         "flex items-center justify-center w-6 h-6 rounded border border-transparent",
-        "text-[#45aaff] hover:text-[#0fb6d6]",
-        "hover:bg-[rgba(14,210,247,0.08)] hover:border-[rgba(14,210,247,0.15)]",
+        "text-dim hover:text-neon-cyan",
+        "hover:bg-[var(--border-defined)] hover:border-accent-border",
         "transition-all duration-150 active:scale-90",
-        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[rgba(14,210,247,0.45)]"
+        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neon-cyan"
       )}
       aria-label="Start new chat"
       title="New chat"

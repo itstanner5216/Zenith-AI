@@ -7,7 +7,6 @@ import React, {
   useLayoutEffect,
 } from "react";
 import { createPortal } from "react-dom";
-import { useChat, UseChatOptions } from "@ai-sdk/react";
 import { moment, Notice, MarkdownView } from "obsidian";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, AlertCircle, Send, Square, Bot, Download } from "lucide-react";
@@ -15,19 +14,18 @@ import { StyledContainer } from "@/components/ui/utils";
 import { Editor } from "@tiptap/react";
 
 import ZenithAI from "../../..";
-import { GroundingMetadata, DataChunk } from "./types/grounding";
 import Tiptap from "./tiptap";
 import { usePlugin } from "../provider";
 
 import { logMessage } from "../../../someUtils";
 import { MessageRenderer } from "./message-renderer";
 import ToolCallHandler from "./tool-handlers/tool-invocation-handler";
-import { convertToCoreMessages, UIMessage as AIUIMessage, isToolUIPart, ToolUIPart } from "ai";
-import { UIMessage } from "@ai-sdk/ui-utils";
-import { SourcesSection } from "./components/SourcesSection";
+import { UIMessage, isToolUIPart, ToolUIPart } from "ai";
 import { ContextLimitIndicator } from "./context-limit-indicator";
 import { ModelSelector } from "./model-selector";
-import { ModelType } from "./types";
+import { useZenithChat } from "./hooks/use-zenith-chat";
+import { AIService } from "../../../services/ai/ai-service";
+import { createPluginTools } from "../../../services/ai/tool-adapter";
 import { logger } from "../../../services/logger";
 import { SubmitButton } from "./submit-button";
 import {
@@ -59,7 +57,6 @@ import { tw } from "../../../lib/utils";
 
 interface ChatComponentProps {
   plugin: ZenithAI;
-  apiKey: string;
   inputRef: React.RefObject<HTMLDivElement | null>;
   onTokenLimitError?: (error: string) => void;
   activeChatId: string | null;
@@ -71,7 +68,6 @@ interface ChatComponentProps {
 }
 
 export const ChatComponent: React.FC<ChatComponentProps> = ({
-  apiKey,
   inputRef,
   onTokenLimitError,
   activeChatId,
@@ -112,14 +108,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
   // Context used by the most recent request (so onFinish can store it)
   const lastContextSentRef = useRef<string>("");
-
-  // If reload({ body }) is supported, this stages the exact body to use for reload
-  interface ReloadBody {
-    currentDatetime: string;
-    model: string;
-    newUnifiedContext: string;
-  }
-  const forcedReloadBodyRef = useRef<ReloadBody | null>(null);
 
   // Ref to track latest messages for onFinish (to avoid stale closure)
   const messagesRef = useRef<UIMessage[]>([]);
@@ -169,7 +157,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     textSelections,
   };
 
-  // Track if chat has started (will be computed after useChat hook)
+  // Track if chat has started (will be computed after useZenithChat hook)
   const [chatHasStarted, setChatHasStarted] = useState(false);
 
   const contextString = React.useMemo(() => {
@@ -177,570 +165,55 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   }, [contextItems]);
   logger.debug("contextString", contextString);
 
-  const [selectedModel, setSelectedModel] = useState<ModelType>(
-    plugin.settings.selectedModel
+  const [activeModelConfigId, setActiveModelConfigId] = useState(
+    plugin.settings.activeModelConfigId
   );
 
-  // Format editor context for AI - MEMOIZED to prevent infinite loop
-  const editorContextString = React.useMemo(
-    () => formatEditorContextForAI(editorContext),
-    [editorContext.selectedText, editorContext.filePath] // Only recalc when selection or file changes
-  );
-
-  // Combine vault context with editor context - MEMOIZED
-  const fullContext = React.useMemo(
-    () =>
-      editorContextString
-        ? `${contextString}\n\n${editorContextString}`
-        : contextString,
-    [contextString, editorContextString]
-  );
-
-  // Calculate datetime ONCE per component mount, not on every render
-  const currentDatetime = React.useMemo(
-    () => window.moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-    [] // Empty deps = only calculate once
-  );
-
-  // MEMOIZE chatBody to prevent infinite loop from RAF updates
-  const chatBody = React.useMemo(
-    () => ({
-      currentDatetime,
-      newUnifiedContext: fullContext,
-      model: plugin.settings.selectedModel,
-    }),
-    [
-      currentDatetime,
-      fullContext,
-      plugin.settings.selectedModel,
-      selectedModel,
-    ]
-  );
-
-  const [groundingMetadata, setGroundingMetadata] =
-    useState<GroundingMetadata | null>(null);
+  const aiService = useMemo(() => new AIService(plugin.settings), [plugin.settings]);
+  const pluginTools = useMemo(() => createPluginTools(), []);
 
   const {
     status,
     messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    stop,
+    sendMessage,
     addToolResult,
+    stop,
     error,
     reload,
     setMessages,
-  } = useChat({
-    // CRITICAL: Must use experimental_prepareRequestBody (the SDK ignores "prepareRequestBody")
-    experimental_prepareRequestBody: ({ messages }: { messages: AIUIMessage[] }) => {
-      console.log(
-        "[Chat] prepareRequestBody called with messages:",
-        messages.length,
-        "tool summary:",
-        JSON.stringify(messages.map((m: any) => ({
-          role: m.role,
-          toolParts: m.parts?.filter?.((p: any) => p.type?.startsWith("tool-"))?.length || 0,
-          hasOutputs: m.parts?.filter?.((p: any) => p.state === "output-available")?.length || 0,
-        })))
-      );
-      // Read directly from Zustand store to get latest values (not from closure)
-      const store = useContextItems.getState();
-      const freshContextItems = {
-        files: store.files || {},
-        folders: store.folders || {},
-        tags: store.tags || {},
-        currentFile: store.currentFile || null,
-        searchResults: store.searchResults || {},
-        textSelections: store.textSelections || {},
-      };
-
-      // Debug: Log store state
-      console.log("[Chat] prepareRequestBody - Store state:", {
-        allStoreKeys: Object.keys(store),
-      });
-
-      const contextJson = JSON.stringify(freshContextItems);
-
-      const contextFilePaths = [
-        ...Object.values(freshContextItems.files).map((f: { path: string }) => f.path),
-        ...(freshContextItems.currentFile &&
-        !Object.values(freshContextItems.files).some(
-          (f: { path: string }) => f.path === freshContextItems.currentFile?.path
-        )
-          ? [freshContextItems.currentFile.path]
-          : []),
-      ];
-      const filePathsBlock =
-        contextFilePaths.length > 0
-          ? `Attached file paths — use these exact strings for mergeFiles sourceFiles, deleteFiles filePaths (do not modify):\n${contextFilePaths.join("\n")}\n\n`
-          : "";
-      const freshContextString = filePathsBlock + contextJson;
-
-      // Get fresh editor context directly from app (not from closure)
-      // This ensures we get the latest editor selection even after refresh
-      let freshEditorContext: string = "";
-      try {
-        const view = app.workspace.getActiveViewOfType(MarkdownView);
-        if (view && view.editor) {
-          const editor = view.editor;
-          const file = view.file;
-          const selectedText = editor.getSelection();
-          const hasSelection = selectedText.length > 0;
-          const cursorPosition = editor.getCursor();
-          const lineNumber = cursorPosition.line;
-          const currentLine = editor.getLine(lineNumber);
-          const selection = hasSelection
-            ? {
-                anchor: editor.getCursor("from"),
-                head: editor.getCursor("to"),
-              }
-            : null;
-
-          const editorContextForAI: EditorSelectionContext = {
-            selectedText,
-            cursorPosition,
-            currentLine,
-            lineNumber,
-            hasSelection,
-            filePath: file?.path || null,
-            fileName: file?.basename || null,
-            selection,
-          };
-
-          freshEditorContext = formatEditorContextForAI(editorContextForAI);
-        }
-      } catch (error) {
-        console.warn("[Chat] Failed to get fresh editor context:", error);
-        // Fallback to frozen context if reading fresh fails
-        freshEditorContext = formatEditorContextForAI(editorContext);
-      }
-
-      const freshFullContext = freshEditorContext
-        ? `${freshContextString}\n\n${freshEditorContext}`
-        : freshContextString;
-
-      // prepareRequestBody is only called for normal requests, not reload({ body })
-      // So we just use fresh context here
-      const contextToSend = freshFullContext;
-
-      // Save for onFinish snapshotting
-      lastContextSentRef.current = contextToSend;
-
-      console.log(
-        "[Chat] prepareRequestBody: Saved context for snapshotting, length:",
-        contextToSend.length
-      );
-      const contextStringLength = freshContextString.length;
-      console.log("[Chat] prepareRequestBody - Context summary:", {
-        messagesCount: messages.length,
-        contextStringLength,
-        hasEditorContext: !!freshEditorContext,
-        hasFiles: Object.keys(freshContextItems.files).length > 0,
-        filesCount: Object.keys(freshContextItems.files).length,
-        hasFolders: Object.keys(freshContextItems.folders).length > 0,
-        foldersCount: Object.keys(freshContextItems.folders).length,
-        hasTags: Object.keys(freshContextItems.tags).length > 0,
-        tagsCount: Object.keys(freshContextItems.tags).length,
-        hasSearchResults:
-          Object.keys(freshContextItems.searchResults).length > 0,
-        searchResultsCount: Object.keys(freshContextItems.searchResults).length,
-        hasCurrentFile: !!freshContextItems.currentFile,
-        contextPreview: freshContextString.substring(0, 200),
-      });
-
-      const requestBody = {
-        messages: messages,
-        currentDatetime,
-        newUnifiedContext: contextToSend,
-        model: plugin.settings.selectedModel,
-      };
-
-      // Return OBJECT (not string) — callChatApi will JSON.stringify it
-      return requestBody;
-    },
-    onDataChunk: (chunk: DataChunk) => {
-      if (chunk.type === "metadata" && chunk.data?.groundingMetadata) {
-        setGroundingMetadata(chunk.data.groundingMetadata);
-      }
-    },
+  } = useZenithChat({
+    aiService,
+    tools: pluginTools,
     maxSteps: 5,
-    api: `${plugin.getServerUrl()}/api/chat`,
-    experimental_throttle: 100,
-    headers: (() => {
-      const apiKey = plugin.getApiKey()?.trim();
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      // Only include Authorization header if API key is valid
-      if (apiKey && apiKey.length > 0) {
-        headers.Authorization = `Bearer ${apiKey}`;
-      } else {
-        console.warn(
-          "[Chat] API key is missing or empty, requests will fail authentication"
-        );
-      }
-
-      return headers;
-    })(),
-    fetch: async (url, options) => {
-      logMessage(selectedModel, "selectedModel");
-      return fetch(url, options);
-    },
-    keepLastMessageOnError: true,
     onError: error => {
       logger.error("Chat error:", error);
-      logger.error("Error details:", {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
-      });
-
-      // Check for authentication errors
-      if (
-        error.message?.includes("Unauthorized") ||
-        error.message?.includes("401") ||
-        error.message?.includes("Authorization")
-      ) {
-        const apiKey = plugin.getApiKey()?.trim();
-        if (!apiKey || apiKey.length === 0) {
-          new Notice(
-            "Authentication failed: API key is missing. Please set your API key in plugin settings.",
-            5000
-          );
-        } else {
-          new Notice(
-            "Authentication failed: Invalid API key. Please check your API key in plugin settings.",
-            5000
-          );
-        }
-        return;
-      }
-
-      // Check if this is a tool invocation error (non-fatal)
-      const isToolError = error.message?.includes(
-        "tool call must have a result"
-      );
-
-      if (isToolError) {
-        // Don't suppress tool errors - let them appear as messages
-        // Just log it and continue without blocking the UI
-        logger.warn("Tool invocation error detected, displaying as message...");
-        return;
-      }
-
-      let userFriendlyMessage = "Something went wrong. Please try again.";
-
-      // Check error type first (more reliable than message content)
-      if (error.name === "TypeError" && error.message?.includes("fetch")) {
-        // This is a real network/fetch error
-        userFriendlyMessage =
-          "Connection failed. Please check your internet connection.";
-      } else if (error.message?.toLowerCase().includes("api key")) {
-        userFriendlyMessage =
-          "API key issue detected. Please check your settings.";
-      } else if (
-        error.message?.toLowerCase().includes("unauthorized") ||
-        error.message?.toLowerCase().includes("401")
-      ) {
-        userFriendlyMessage =
-          "Authentication failed. Please check your API key in settings.";
-      } else if (
-        error.message?.toLowerCase().includes("forbidden") ||
-        error.message?.toLowerCase().includes("403")
-      ) {
-        userFriendlyMessage =
-          "Access denied. Please check your subscription status.";
-      } else if (
-        error.message?.toLowerCase().includes("network") ||
-        error.message?.toLowerCase().includes("fetch")
-      ) {
-        userFriendlyMessage =
-          "Connection failed. Please check your internet connection.";
-      } else if (
-        error.message?.toLowerCase().includes("rate limit") ||
-        error.message?.toLowerCase().includes("429")
-      ) {
-        userFriendlyMessage =
-          "Rate limit reached. Please wait a moment and try again.";
-      } else if (
-        error.message?.toLowerCase().includes("timeout") ||
-        error.message?.toLowerCase().includes("timed out")
-      ) {
-        userFriendlyMessage = "Request timed out. Please try again.";
-      } else if (
-        error.message?.toLowerCase().includes("500") ||
-        error.message?.toLowerCase().includes("internal server error")
-      ) {
-        userFriendlyMessage =
-          "Server error occurred. Please try again in a moment.";
-      } else if (error.message?.toLowerCase().includes("cors")) {
-        userFriendlyMessage =
-          "CORS error. Please check your server URL configuration.";
-      } else if (error.message) {
-        // If we have a specific error message, show it fully (don't truncate)
-        userFriendlyMessage = error.message;
-      }
-
-      setErrorMessage(userFriendlyMessage);
+      setErrorMessage(error.message || "An error occurred");
     },
     onFinish: message => {
-      // Store the exact context that produced THIS assistant message
-      // Store by message ID directly (we have it in onFinish, no need to find index)
-      console.log("[Chat] onFinish called:", {
-        messageId: message?.id,
-        messageRole: message?.role,
-        lastContextLength: lastContextSentRef.current?.length ?? 0,
-        lastContextIsEmpty:
-          !lastContextSentRef.current ||
-          lastContextSentRef.current.length === 0,
-        hasLastContext: !!lastContextSentRef.current,
-      });
-
-      if (message?.id && message.role === "assistant") {
-        // If lastContextSentRef is empty, try to get context from the store as fallback
-        // This handles the case where prepareRequestBody wasn't called or ref was cleared
-        let contextToStore = lastContextSentRef.current;
-
-        if (!contextToStore || contextToStore.length === 0) {
-          console.warn(
-            "[Chat] ⚠️ onFinish: lastContextSentRef is empty, trying to get fresh context from store"
-          );
-          // Fallback: get fresh context from store
-          const store = useContextItems.getState();
-          const freshContextItems = {
-            files: store.files || {},
-            folders: store.folders || {},
-            tags: store.tags || {},
-            currentFile: store.currentFile || null,
-            searchResults: store.searchResults || {},
-            textSelections: store.textSelections || {},
-          };
-          const freshContextString = JSON.stringify(freshContextItems);
-
-          // Get editor context
-          let freshEditorContext = "";
-          try {
-            const view = app.workspace.getActiveViewOfType(MarkdownView);
-            if (view && view.editor) {
-              const editor = view.editor;
-              const file = view.file;
-              const selectedText = editor.getSelection();
-              const hasSelection = selectedText.length > 0;
-              const cursorPosition = editor.getCursor();
-              const lineNumber = cursorPosition.line;
-              const currentLine = editor.getLine(lineNumber);
-              const selection = hasSelection
-                ? {
-                    anchor: editor.getCursor("from"),
-                    head: editor.getCursor("to"),
-                  }
-                : null;
-
-              const editorContextForAI: EditorSelectionContext = {
-                selectedText,
-                cursorPosition,
-                currentLine,
-                lineNumber,
-                hasSelection,
-                filePath: file?.path || null,
-                fileName: file?.basename || null,
-                selection,
-              };
-
-              freshEditorContext = formatEditorContextForAI(editorContextForAI);
-            }
-          } catch (error) {
-            console.warn(
-              "[Chat] Failed to get editor context in onFinish:",
-              error
-            );
-          }
-
-          contextToStore = freshEditorContext
-            ? `${freshContextString}\n\n${freshEditorContext}`
-            : freshContextString;
-        }
-
-        if (contextToStore && contextToStore.length > 0) {
-          // Store by message ID - this is the most reliable way
-          contextByAssistantIdRef.current[message.id] = contextToStore;
-          console.log(
-            "[Chat] ✅ Stored context snapshot for assistant message:",
-            message.id,
-            "context length:",
-            contextToStore.length
-          );
-        } else {
-          console.error("[Chat] ❌ onFinish: Could not get context to store!", {
-            messageId: message.id,
-            lastContextLength: lastContextSentRef.current?.length ?? 0,
-            fallbackContextLength: contextToStore?.length ?? 0,
-          });
-        }
-
-        // After storing context, ensure messages are saved
-        // Use a longer delay to ensure messages are fully added to the array
-        setTimeout(() => {
-          const currentActiveChatId = activeChatIdRef.current;
-
-          // Ensure we have an active chat session
-          if (!currentActiveChatId) {
-            console.warn(
-              "[Chat] onFinish: No activeChatId, cannot save messages"
-            );
-            return;
-          }
-
-          // Get the latest messages from ref (should be updated by now)
-          const currentMessages = messagesRef.current;
-
-          console.log("[Chat] onFinish: Attempting to save", {
-            activeChatId: currentActiveChatId,
-            messagesCount: currentMessages.length,
-            messageIds: currentMessages.map(m => m.id),
-          });
-
-          if (currentMessages.length > 0) {
-            let session = chatHistoryManager.getSession(currentActiveChatId);
-            let sessionId = currentActiveChatId;
-
-            // If session doesn't exist, try to find the most recent session or create a new one
-            if (!session) {
-              console.warn(
-                "[Chat] onFinish: Session not found for activeChatId:",
-                currentActiveChatId,
-                "- checking for existing sessions"
-              );
-
-              // Try to get the most recent session
-              const allSessions = chatHistoryManager.getAllSessions();
-              if (allSessions.length > 0) {
-                // Use the most recent session
-                session = allSessions[0];
-                sessionId = session.id;
-                activeChatIdRef.current = sessionId;
-                console.log(
-                  "[Chat] onFinish: Using most recent session:",
-                  sessionId
-                );
-              } else {
-                // Create a new session if none exist
-                console.warn(
-                  "[Chat] onFinish: No sessions found, creating new session"
-                );
-                session = chatHistoryManager.createSession();
-                sessionId = session.id;
-                activeChatIdRef.current = sessionId;
-                console.log("[Chat] onFinish: Created new session:", sessionId);
-              }
-            }
-
-            if (session) {
-              // Store context snapshots
-              const messageContextSnapshots: Record<string, string> = {};
-              currentMessages.forEach(msg => {
-                if (
-                  msg.role === "assistant" &&
-                  msg.id &&
-                  contextByAssistantIdRef.current[msg.id]
-                ) {
-                  messageContextSnapshots[msg.id] =
-                    contextByAssistantIdRef.current[msg.id];
-                }
-              });
-
-              // Auto-generate title if needed
-              let title = session.title;
-              if (title === "New Chat") {
-                title =
-                  ChatHistoryManager.generateTitleFromMessages(currentMessages);
-              }
-
-              // Store context items to restore when switching chats
-              const store = useContextItems.getState();
-              const contextItemsToStore = {
-                files: { ...store.files },
-                folders: { ...store.folders },
-                tags: { ...store.tags },
-                searchResults: { ...store.searchResults },
-                textSelections: { ...store.textSelections },
-                currentFile: store.currentFile
-                  ? { ...store.currentFile }
-                  : null,
-              };
-
-              chatHistoryManager.updateSession(sessionId, {
-                messages: currentMessages,
-                messageContextSnapshots,
-                title,
-                contextItems: contextItemsToStore,
-              });
-
-              // Reset saved state so the save effect will also trigger
-              lastSavedMessagesRef.current = "";
-
-              console.log("[Chat] ✅ Force saved messages in onFinish:", {
-                sessionId,
-                messagesCount: currentMessages.length,
-                title,
-                contextSnapshotsCount: Object.keys(messageContextSnapshots)
-                  .length,
-              });
-
-              // Notify parent of update
-              if (onSessionUpdateRef.current) {
-                const updatedSession = chatHistoryManager.getSession(sessionId);
-                if (updatedSession) {
-                  setTimeout(() => {
-                    onSessionUpdateRef.current?.(updatedSession);
-                  }, 0);
-                }
-              }
-            } else {
-              console.error(
-                "[Chat] ❌ onFinish: Failed to create or get session"
-              );
-            }
-          } else {
-            console.warn("[Chat] ⚠️ onFinish: No messages to save");
-          }
-        }, 500);
-
-        // Dispatch vault-intelligence event for Cosmic Context tab
-        try {
-          const currentMessages = messagesRef.current;
-          const summary = currentMessages
-            .filter(m => m.role === "user" || m.role === "assistant")
-            .slice(-6)
-            .map(m => `${m.role}: ${typeof m.content === 'string' ? m.content.slice(0, 300) : ''}`)
-            .join("\n");
-          (app.workspace as any).trigger("vault-intelligence:chat-turn", {
-            conversationSummary: summary,
-            activeFile: app.workspace.getActiveFile(),
-          });
-        } catch (e) {
-          console.warn("[ZenithAI] Failed to dispatch chat-turn event:", e);
-        }
-      } else {
-        console.warn(
-          "[Chat] ❌ onFinish: message missing id or not assistant:",
-          {
-            hasId: !!message?.id,
-            messageId: message?.id,
-            role: message?.role,
-          }
-        );
+      const contextUsed = lastContextSentRef.current;
+      if (message.id) {
+        contextByAssistantIdRef.current[message.id] = contextUsed;
       }
-
-      // Optional: now it's safe to clear ephemeral context here if you want
-      // because refresh won't depend on Zustand store anymore.
-      // clearEphemeralContext();
+      clearEphemeralContext();
+      const currentActiveChatId = activeChatIdRef.current;
+      if (currentActiveChatId) {
+        chatHistoryManager.updateSession(currentActiveChatId, {
+          messages: messages.concat(message) as any,
+        });
+        onSessionUpdateRef.current?.({
+          ...chatHistoryManager.getSession(currentActiveChatId)!,
+          messages: messages.concat(message) as any,
+        });
+      }
+      plugin.app.workspace.trigger("vault-intelligence:chat-turn" as any, {
+        sessionId: currentActiveChatId,
+        message,
+        context: contextUsed,
+      });
     },
-  } as UseChatOptions);
+  });
 
-  // Update messagesRef and chatHasStarted when messages change (must be after useChat)
+  // Update messagesRef and chatHasStarted when messages change (must be after useZenithChat)
   useEffect(() => {
     messagesRef.current = messages;
     setChatHasStarted(messages.length > 0);
@@ -776,7 +249,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     );
     const waitingForAI =
       allToolsComplete &&
-      (!lastMessage.content || lastMessage.content.length === 0);
+      (!(lastMessage as any).content || (lastMessage as any).content.length === 0);
 
     return hasExecutingTools || waitingForAI;
   }, [messages]);
@@ -792,24 +265,24 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const normalizeMessage = (
     msg: UIMessage,
     existingTimestamp?: number
-  ): AIUIMessage & { experimental_attachments?: any; createdAt?: number } => {
+  ): any => {
     const normalized = { ...msg } as any;
     if (existingTimestamp) {
       normalized.createdAt = existingTimestamp;
-    } else if (msg.createdAt instanceof Date) {
-      normalized.createdAt = msg.createdAt.getTime();
-    } else if (typeof msg.createdAt === "number") {
-      normalized.createdAt = msg.createdAt;
+    } else if ((msg as any).createdAt instanceof Date) {
+      normalized.createdAt = (msg as any).createdAt.getTime();
+    } else if (typeof (msg as any).createdAt === "number") {
+      normalized.createdAt = (msg as any).createdAt;
     } else {
       // New message, add timestamp
       normalized.createdAt = Date.now();
     }
-    return normalized as AIUIMessage & { experimental_attachments?: any; createdAt?: number };
+    return normalized;
   };
 
   // Track messages with timestamps (convert Date to number for consistency)
   const [messagesWithTimestamps, setMessagesWithTimestamps] = useState<
-    Array<AIUIMessage & { experimental_attachments?: any; createdAt?: number }>
+    Array<any>
   >([]);
 
   // Sync messages with timestamps
@@ -829,7 +302,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       isLoadingSessionRef.current = true;
       const session = chatHistoryManager.getSession(activeChatId);
       if (session && session.messages.length > 0) {
-        setMessages(session.messages);
+        setMessages(session.messages as any);
 
         // Restore context snapshots from saved session
         if (session.messageContextSnapshots) {
@@ -994,7 +467,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         let title = session.title;
         if (title === "New Chat") {
           const generatedTitle =
-            ChatHistoryManager.generateTitleFromMessages(messages);
+            ChatHistoryManager.generateTitleFromMessages(messages as any);
           title = generatedTitle;
         }
 
@@ -1036,7 +509,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
         };
 
         chatHistoryManager.updateSession(activeChatId, {
-          messages,
+          messages: messages as any,
           title,
           contextSnapshot: JSON.stringify(contextMetadata),
           messageContextSnapshots,
@@ -1174,7 +647,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     const sessionTitle = activeChatId
       ? chatHistoryManager.getSession(activeChatId)?.title ?? null
       : null;
-    exportChatToVault(app, messages, sessionTitle);
+    exportChatToVault(app, messages as any, sessionTitle);
   }, [activeChatId, chatHistoryManager, app, messages]);
 
   const handleExportCopy = useCallback(() => {
@@ -1182,7 +655,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     const sessionTitle = activeChatId
       ? chatHistoryManager.getSession(activeChatId)?.title ?? null
       : null;
-    copyChatToClipboard(messages, sessionTitle);
+    copyChatToClipboard(messages as any, sessionTitle);
   }, [activeChatId, chatHistoryManager, messages]);
 
   const handleAttachmentsChange = useCallback(
@@ -1192,81 +665,88 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     []
   );
 
-  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isGenerating) {
-      handleCancelGeneration();
+    if (status !== "ready") {
+      stop();
       return;
     }
 
-    // Extract content directly from Tiptap editor to ensure we have the latest content
-    // This fixes the issue where input state might not be synced with editor content
     const editor = tiptapEditorRef.current;
     const editorContent = editor?.getText() || "";
+    if (!editorContent.trim()) return;
 
-    // Only log safe properties to avoid circular reference errors
-    logger.debug("handleSendMessage", {
-      input,
-      editorContent,
-      type: e.type,
-      timeStamp: e.timeStamp,
-    });
-
-    // If there's no content, don't send
-    if (!editorContent || editorContent.trim() === "") {
+    if (!plugin.settings.activeModelConfigId) {
+      new Notice("No model configured. Go to Settings → Providers to set up a model.", 5000);
       return;
     }
 
-    // Validate API key before sending
-    const apiKey = plugin.getApiKey()?.trim();
-    if (!apiKey || apiKey.length === 0) {
-      new Notice(
-        "API key is missing. Please set your API key in plugin settings.",
-        5000
-      );
-      return;
-    }
-
-    // Update input state if it's different from editor content
-    // This ensures useChat's handleSubmit will use the correct content
-    if (editorContent !== input) {
-      handleInputChange({
-        target: { value: editorContent },
-      } as React.ChangeEvent<HTMLInputElement>);
-    }
-
-    const messageBody = {
-      ...chatBody,
-      experimental_attachments: attachments.map(
-        ({ id, size, ...attachment }) => ({
-          name: attachment.name,
-          contentType: attachment.contentType,
-          url: attachment.url,
-        })
-      ),
+    const store = useContextItems.getState();
+    const freshContextItems = {
+      files: store.files || {},
+      folders: store.folders || {},
+      tags: store.tags || {},
+      currentFile: store.currentFile || null,
+      searchResults: store.searchResults || {},
+      textSelections: store.textSelections || {},
     };
+    const contextJson = JSON.stringify(freshContextItems);
 
-    // Use setTimeout to ensure the input state update is processed before handleSubmit
-    // React batches state updates, so we need to wait for the next tick
-    // This ensures useChat's handleSubmit will read the updated input value
-    setTimeout(() => {
-      handleSubmit(e, { body: messageBody });
-      // Don't clear ephemeral context here - it's now handled in onFinish after snapshotting
-    }, 0);
+    const contextFilePaths = [
+      ...Object.values(freshContextItems.files).map((f: { path: string }) => f.path),
+      ...(freshContextItems.currentFile &&
+      !Object.values(freshContextItems.files).some(
+        (f: { path: string }) => f.path === freshContextItems.currentFile?.path
+      )
+        ? [freshContextItems.currentFile.path]
+        : []),
+    ];
+    const filePathsBlock =
+      contextFilePaths.length > 0
+        ? `Attached file paths — use these exact strings for mergeFiles sourceFiles, deleteFiles filePaths (do not modify):
+${contextFilePaths.join("\n")}
 
-    // Clear attachments after sending
+`
+        : "";
+    const freshContextString = filePathsBlock + contextJson;
+
+    let freshEditorContext = "";
+    try {
+      const view = plugin.app.workspace.getActiveViewOfType(MarkdownView);
+      if (view && view.editor) {
+        freshEditorContext = formatEditorContextForAI({
+          selectedText: view.editor.getSelection(),
+          cursorPosition: view.editor.getCursor(),
+          currentLine: view.editor.getLine(view.editor.getCursor().line),
+          lineNumber: view.editor.getCursor().line,
+          hasSelection: view.editor.getSelection().length > 0,
+          filePath: view.file?.path || null,
+          fileName: view.file?.basename || null,
+          selection: view.editor.getSelection().length > 0
+            ? { anchor: view.editor.getCursor("from"), head: view.editor.getCursor("to") }
+            : null,
+        });
+      }
+    } catch (err) {
+      logger.warn("Failed to get editor context:", err);
+    }
+
+    const fullContext = freshEditorContext
+      ? `${freshContextString}
+
+${freshEditorContext}`
+      : freshContextString;
+
+    lastContextSentRef.current = fullContext;
+
+    editor?.commands.setContent("");
+
+    await sendMessage(editorContent, { context: fullContext });
+
     setAttachments([]);
   };
 
-  const handleCancelGeneration = () => {
-    stop();
-  };
 
-  const handleTiptapChange = async (newContent: string) => {
-    handleInputChange({
-      target: { value: newContent },
-    } as React.ChangeEvent<HTMLInputElement>);
-  };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -1298,16 +778,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
   const [maxContextSize] = useState(80 * 1000); // Keep this one
 
-  useEffect(() => {
-    // Update selectedModel when plugin settings change
-    setSelectedModel(plugin.settings.selectedModel);
-  }, [plugin.settings.selectedModel]);
 
 
-  const handleExampleClick = (prompt: string) => {
-    handleInputChange({
-      target: { value: prompt },
-    } as React.ChangeEvent<HTMLInputElement>);
+  const handleExampleClick = (example: string) => {
+    tiptapEditorRef.current?.commands.setContent(example);
   };
 
   const handleRetry = () => {
@@ -1327,141 +801,32 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     setErrorMessage(null);
   };
 
-  // Ref to track the target message count after refresh (to detect when state has updated)
-  const pendingReloadRef = useRef<number | null>(null);
 
-  // Effect to trigger reload when messages match the expected count after refresh
-  useEffect(() => {
-    if (pendingReloadRef.current === null) return;
-    if (messages.length !== pendingReloadRef.current) return;
 
-    const targetCount = pendingReloadRef.current;
-    pendingReloadRef.current = null;
+  const handleMessageRefresh = async (messageId: string) => {
+    const messageIndex = messages.findIndex(m => m.id === messageId);
+    if (messageIndex === -1) return;
+    const trimmed = messages.slice(0, messageIndex);
+    setMessages(trimmed);
 
-    const body = forcedReloadBodyRef.current;
-    forcedReloadBodyRef.current = null;
+    const store = useContextItems.getState();
+    const contextJson = JSON.stringify({
+      files: store.files || {},
+      folders: store.folders || {},
+      tags: store.tags || {},
+      currentFile: store.currentFile || null,
+      searchResults: store.searchResults || {},
+      textSelections: store.textSelections || {},
+    });
+    lastContextSentRef.current = contextJson;
 
-    console.log(
-      "[Chat] Triggering reload after message refresh, messages count:",
-      targetCount,
-      "has forced body:",
-      !!body
-    );
-
-    if (!body) {
-      console.warn(
-        "[Chat] Missing forced reload body, calling reload() without body"
-      );
-      reload();
-      return;
-    }
-
-    // Use reload({ body }) to pass the exact body we want
-    // This is the cleanest approach - reload accepts the same options as handleSubmit
-    reload({ body });
-
-    // Save the context from the body for onFinish snapshotting
-    if (body.newUnifiedContext) {
-      lastContextSentRef.current = body.newUnifiedContext;
-    }
-
-    // Reset saved state after reload is triggered so new messages from reload will be saved
-    // The reload will add new messages, and we want to ensure they get saved when they arrive
-    lastSavedMessagesRef.current = "";
-  }, [messages.length, reload]);
-
-  const handleMessageRefresh = useCallback(
-    (messageId: string) => {
-      // Find the message index
-      const messageIndex = messages.findIndex(m => m.id === messageId);
-      if (messageIndex === -1) return;
-
-      // Only allow refreshing assistant messages
-      const messageToRefresh = messages[messageIndex];
-      if (messageToRefresh.role !== "assistant") return;
-
-      // Look up context snapshot by message ID
-      // First try in-memory ref (for newly generated messages)
-      let snapshot = contextByAssistantIdRef.current[messageId];
-
-      // If not in memory, try to load from saved session
-      if (!snapshot && activeChatId) {
-        const session = chatHistoryManager.getSession(activeChatId);
-        if (session?.messageContextSnapshots?.[messageId]) {
-          snapshot = session.messageContextSnapshots[messageId];
-          // Restore to memory for future use
-          contextByAssistantIdRef.current[messageId] = snapshot;
-        }
-      }
-
-      // If still no snapshot, use current context as fallback
-      if (!snapshot) {
-        console.warn(
-          "[Chat] No snapshot for message:",
-          messageId,
-          "- using current context as fallback"
-        );
-        snapshot = fullContext; // Use current full context as fallback
-      }
-
-      console.log("[Chat] refresh debug", {
-        messageId,
-        messageIndex,
-        hasSnapshot: true,
-        snapshotLength: snapshot.length,
-        knownSnapshotKeys: Object.keys(contextByAssistantIdRef.current).slice(
-          -5
-        ),
-      });
-
-      // Remove the message and all subsequent messages
-      const trimmed = messages.slice(0, messageIndex);
-      setMessages(trimmed);
-      setMessagesWithTimestamps(messagesWithTimestamps.slice(0, messageIndex));
-
-      // Reset saved state so the trimmed messages get saved immediately
-      // This ensures the state before reload is saved
-      lastSavedMessagesRef.current = "";
-
-      // Force save the trimmed messages immediately (before reload)
-      if (activeChatId && trimmed.length > 0) {
-        const session = chatHistoryManager.getSession(activeChatId);
-        if (session) {
-          chatHistoryManager.updateSession(activeChatId, {
-            messages: trimmed,
-          });
-        }
-      }
-
-      // Stage the exact body we want reload to use
-      const currentDatetime = window.moment().format("YYYY-MM-DDTHH:mm:ssZ");
-      forcedReloadBodyRef.current = {
-        currentDatetime,
-        model: plugin.settings.selectedModel,
-        newUnifiedContext: snapshot, // ✅ the important part
-      };
-
-      console.log(
-        "[Chat] handleMessageRefresh: Staged reload body with context length:",
-        snapshot.length
-      );
-
-      // Set target count to trigger reload when messages state updates
-      pendingReloadRef.current = trimmed.length;
-    },
-    [
-      messages,
-      messagesWithTimestamps,
-      setMessages,
-      selectedModel,
-      plugin.settings,
-    ]
-  );
+    await reload({ context: contextJson });
+  };
 
   return (
     <StyledContainer className="flex flex-col h-full w-full max-h-full overflow-hidden">
       {/* Chat Header - minimal */}
-      <div className="flex-none border-b border-[rgba(14,210,247,0.08)] px-3 py-1.5 bg-[#0d0b12]">
+      <div className="flex-none border-b border-defined px-3 py-1.5 bg-depth-1">
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             {/* Export chat as markdown - menu rendered in portal so it isn't clipped by overflow-hidden */}
@@ -1478,8 +843,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 className={tw(
                   "clickable-icon flex items-center justify-center w-8 h-8 rounded-md transition-colors",
                   messages.length === 0
-                    ? "text-[#45aaff] cursor-not-allowed opacity-50"
-                    : "text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.08)]"
+                    ? "text-dim cursor-not-allowed opacity-50"
+                    : "text-dim hover:text-neon-cyan hover:bg-[var(--border-defined)]"
                 )}
                 aria-label="Export chat as markdown"
               >
@@ -1492,8 +857,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                     ref={exportDropdownRef}
                     role="menu"
                     className={tw(
-                      "min-w-[200px] py-1 rounded-md border border-[rgba(14,210,247,0.15)]",
-                      "bg-[#191621] shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)]"
+                      "min-w-[200px] py-1 rounded-md border border-accent-border",
+                      "bg-depth-3 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)]"
                     )}
                     style={{
                       position: "fixed",
@@ -1506,8 +871,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                       type="button"
                       role="menuitem"
                       className={tw(
-                        "w-full text-left px-3 py-2 text-sm text-[#bebebe] whitespace-nowrap",
-                        "hover:bg-[rgba(14,210,247,0.08)]"
+                        "w-full text-left px-3 py-2 text-sm text-foreground whitespace-nowrap",
+                        "hover:bg-[var(--border-defined)]"
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1520,8 +885,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                       type="button"
                       role="menuitem"
                       className={tw(
-                        "w-full text-left px-3 py-2 text-sm text-[#bebebe] whitespace-nowrap",
-                        "hover:bg-[rgba(14,210,247,0.08)]"
+                        "w-full text-left px-3 py-2 text-sm text-foreground whitespace-nowrap",
+                        "hover:bg-[var(--border-defined)]"
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1549,7 +914,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       </div>
 
       {/* Chat Messages - compressed spacing */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 bg-[#100e17]">
+      <div className="flex-1 overflow-y-auto px-3 py-2 bg-depth-2">
         <div className="flex flex-col space-y-1">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8">
@@ -1602,21 +967,21 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                 <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(14,210,247,0.15)_0%,transparent_70%)] animate-[zenith-typing-pulse_2s_ease-in-out_infinite]" />
                 <Bot
                   size={16}
-                  className="text-[#0fb6d6] relative z-10 drop-shadow-[0_0_6px_rgba(14,210,247,0.5)]"
+                  className="text-neon-cyan relative z-10 drop-shadow-glow-cyan-sm"
                 />
               </div>
 
               <div className="h-8 flex items-center gap-1.5">
                 <span
-                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:0ms]"
+                  className="w-1.5 h-1.5 bg-neon-cyan rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:0ms]"
                   style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 />
                 <span
-                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:200ms]"
+                  className="w-1.5 h-1.5 bg-neon-cyan rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:200ms]"
                   style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 />
                 <span
-                  className="w-1.5 h-1.5 bg-[#0fb6d6] rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:400ms]"
+                  className="w-1.5 h-1.5 bg-neon-cyan rounded-full animate-[zenith-dot-pulse_1.4s_ease-in-out_infinite] [animation-delay:400ms]"
                   style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
                 />
               </div>
@@ -1625,29 +990,29 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
           {/* Error message - renders as normal message in chat flow */}
           {errorMessage && (
-            <div className="flex items-start gap-2 py-1.5 border-b border-[rgba(14,210,247,0.05)] pb-2">
-              <div className="w-4 text-xs text-[#f4569d]">⚠</div>
+            <div className="flex items-start gap-2 py-1.5 border-b border-subtle pb-2">
+              <div className="w-4 text-xs text-neon-pink">⚠</div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-[#f4569d] font-medium">
+                  <div className="text-sm text-neon-pink font-medium">
                     Error
                   </div>
                   <button
                     onClick={handleDismissError}
-                    className="text-[#45aaff] hover:text-[#bebebe] text-xs"
+                    className="text-dim hover:text-foreground text-xs"
                     title="Dismiss error"
                   >
                     ✕
                   </button>
                 </div>
-                <div className="text-sm text-[#bebebe] whitespace-pre-wrap select-text">
+                <div className="text-sm text-foreground whitespace-pre-wrap select-text">
                   {errorMessage}
                 </div>
                 <Button
                   onClick={handleRetry}
                   variant="ghost"
                   size="sm"
-                  className="text-xs mt-1 hover:bg-[rgba(14,210,247,0.08)]"
+                  className="text-xs mt-1 hover:bg-[var(--border-defined)]"
                 >
                   <RefreshCw className="w-3 h-3 mr-1" />
                   Retry
@@ -1657,14 +1022,11 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           )}
 
           <div ref={messagesEndRef} />
-          {groundingMetadata && (
-            <SourcesSection groundingMetadata={groundingMetadata} />
-          )}
         </div>
       </div>
 
       {/* Unified Command Center Footer */}
-      <div className="flex-none border-t border-[rgba(14,210,247,0.08)] bg-[#0d0b12]">
+      <div className="flex-none border-t border-defined bg-depth-1">
         <form onSubmit={handleSendMessage} className="p-3" role="form" aria-label="Chat message input form">
           {/* Row 1: Context attachments - compact chips */}
           <div className="mb-2" role="region" aria-label="Context attachments">
@@ -1681,8 +1043,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             {/* Show editor context badge if we have selection */}
             <EditorContextBadge context={editorContext} onClear={clearFrozen} />
             <Tiptap
-              value={input}
-              onChange={handleTiptapChange}
+              value=""
+              onChange={() => {}}
               onKeyDown={handleKeyDown}
               editorRef={tiptapEditorRef}
             />
@@ -1690,11 +1052,11 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             <div className="absolute bottom-2 right-2 flex items-center gap-1">
               <button
                 type="submit"
-                disabled={isGenerating || !input.trim()}
+                disabled={isGenerating}
                 className={`flex items-center justify-center transition-all rounded-md w-8 h-8 ${
-                  isGenerating || !input.trim()
-                    ? "text-[#45aaff] cursor-not-allowed opacity-50"
-                    : "text-[#100e17] bg-[#0fb6d6] hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
+                  isGenerating
+                    ? "text-dim cursor-not-allowed opacity-50"
+                    : "text-depth-2 bg-neon-cyan hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
                 }`}
                 title={isGenerating ? "Stop generating" : "Send message"}
                 aria-label={isGenerating ? "Stop generating" : "Send message"}
@@ -1709,7 +1071,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
           </div>
 
           {/* Row 3: Modifier bar - subtle toggles and status */}
-          <div className="flex items-center justify-between mt-1.5 text-xs text-[#45aaff]">
+          <div className="flex items-center justify-between mt-1.5 text-xs text-dim">
             <div className="flex items-center gap-3">
               <ContextLimitIndicator
                 unifiedContext={contextString}
@@ -1721,8 +1083,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
                   className={tw(
                     "px-2 py-1 text-[10px] rounded transition-all duration-150 border",
                     scribeActive
-                      ? "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border-[rgba(14,210,247,0.15)] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
-                      : "text-[#45aaff] border-[rgba(14,210,247,0.05)] hover:text-[#0fb6d6] hover:border-[rgba(14,210,247,0.08)]"
+                      ? "bg-[var(--border-defined)] text-neon-cyan border-accent-border shadow-glow-cyan-sm"
+                      : "text-dim border-subtle hover:text-neon-cyan hover:border-defined"
                   )}
                   title={scribeActive ? "Background Scribe: Active" : "Background Scribe: Inactive"}
                 >
@@ -1731,8 +1093,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
               )}
             </div>
             <ModelSelector
-              selectedModel={selectedModel}
-              onModelSelect={setSelectedModel}
+              selectedModelConfigId={activeModelConfigId}
+              onModelSelect={setActiveModelConfigId}
             />
           </div>
         </form>

@@ -6,13 +6,14 @@ describe('DEFAULT_SETTINGS', () => {
   });
 
   it('has correct defaults for all settings', () => {
-    expect(DEFAULT_SETTINGS.API_KEY).toBe('');
+    expect(DEFAULT_SETTINGS.providerKeys).toEqual([]);
+    expect(DEFAULT_SETTINGS.modelConfigs).toEqual([]);
+    expect(DEFAULT_SETTINGS.activeModelConfigId).toBe('');
     expect(DEFAULT_SETTINGS.selfHostingURL).toBe('http://localhost:3010');
-    expect(DEFAULT_SETTINGS.selectedModel).toBe('');
     expect(DEFAULT_SETTINGS.debugMode).toBe(false);
   });
 
   it('has exactly 5 keys', () => {
-    expect(Object.keys(DEFAULT_SETTINGS)).toHaveLength(4);
+    expect(Object.keys(DEFAULT_SETTINGS)).toHaveLength(5);
   });
 });

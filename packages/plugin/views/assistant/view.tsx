@@ -46,22 +46,22 @@ function ScribeView({ plugin }: { plugin: ZenithAI }) {
   };
 
   return (
-    <div className={tw("flex items-center gap-3 px-3 py-2 bg-[#0d0b12]")}>
+    <div className={tw("flex items-center gap-3 px-3 py-2 bg-depth-1")}>
       {/* Listening indicator */}
       <div className={tw("relative flex-shrink-0")}>
-        <Bot className={tw("w-4 h-4", isActive ? "text-[#0fb6d6]" : "text-[#45aaff] opacity-30")} />
+        <Bot className={tw("w-4 h-4", isActive ? "text-neon-cyan" : "text-dim opacity-30")} />
         {isActive && (
-          <span className={tw("absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#0fb6d6] shadow-[0_0_4px_rgba(14,210,247,0.8)] animate-pulse")} />
+          <span className={tw("absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-neon-cyan shadow-[0_0_4px_rgba(14,210,247,0.8)] animate-pulse")} />
         )}
       </div>
 
       {/* Status text */}
-      <span className={tw("text-xs", isActive ? "text-[#0fb6d6]" : "text-[#45aaff] opacity-40")}>
+      <span className={tw("text-xs", isActive ? "text-neon-cyan" : "text-dim opacity-40")}>
         {isActive ? `Listening · ${bufferCount} turn${bufferCount !== 1 ? "s" : ""} buffered` : "Inactive"}
       </span>
 
       {lastSynth && (
-        <span className={tw("text-[10px] text-[#50fa7b] opacity-70")}>✓ {lastSynth}</span>
+        <span className={tw("text-[10px] text-success opacity-70")}>✓ {lastSynth}</span>
       )}
 
       {/* Manual trigger */}
@@ -72,8 +72,8 @@ function ScribeView({ plugin }: { plugin: ZenithAI }) {
           className={tw(
             "ml-auto text-[10px] px-2 py-0.5 rounded transition-all duration-150",
             isSynthing
-              ? "text-[#45aaff] opacity-40 cursor-not-allowed"
-              : "text-[#0fb6d6] border border-[rgba(14,210,247,0.2)] hover:bg-[rgba(14,210,247,0.08)] active:scale-[0.97]"
+              ? "text-dim opacity-40 cursor-not-allowed"
+              : "text-neon-cyan border border-[rgba(14,210,247,0.2)] hover:bg-[var(--border-defined)] active:scale-[0.97]"
           )}
         >
           {isSynthing ? "Synthesizing…" : "Synthesize now"}
@@ -104,10 +104,9 @@ function TabContent({
     return (
       <div className={tw("flex flex-col h-full w-full")}>
         <ScribeView plugin={plugin} />
-        <div className={tw("flex-1 min-h-0 border-t border-[rgba(14,210,247,0.08)]")}>
+        <div className={tw("flex-1 min-h-0 border-t border-defined")}>
           <AIChatSidebar
             plugin={plugin}
-            apiKey={plugin.settings.API_KEY}
             onTokenLimitError={onTokenLimitError}
             isChatTabActive={true}
           />
@@ -120,7 +119,6 @@ function TabContent({
     <div className={tw("flex flex-col h-full w-full")}>
       <AIChatSidebar
         plugin={plugin}
-        apiKey={plugin.settings.API_KEY}
         onTokenLimitError={onTokenLimitError}
         isChatTabActive={true}
       />
@@ -147,13 +145,13 @@ function TabButton({
       className={tw(
         "px-3 py-2 text-xs transition-all duration-150 relative flex items-center gap-1.5 cursor-pointer select-none",
         isActive
-          ? "text-[#0fb6d6] font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
-          : "text-[#45aaff] opacity-70 hover:opacity-100 hover:text-[#0fb6d6]"
+          ? "text-neon-cyan font-semibold drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
+          : "text-dim opacity-70 hover:opacity-100 hover:text-neon-cyan"
       )}
       style={
         isActive
           ? {
-              borderBottom: "2px solid #0fb6d6",
+              borderBottom: "2px solid var(--text-accent)",
               marginBottom: "-1px",
               textShadow: "0 0 8px rgba(14,210,247,0.3)",
             }
@@ -167,8 +165,8 @@ function TabButton({
           className={tw(
             "ml-0.5 px-1.5 py-0.5 text-[9px] rounded-full font-semibold min-w-[1.1rem] text-center",
             badge > 0
-              ? "bg-[rgba(244,86,157,0.2)] text-[#f4569d] shadow-[0_0_4px_rgba(244,86,157,0.3)]"
-              : "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6]"
+              ? "bg-[var(--bg-sub-accent-55)] text-neon-pink shadow-[0_0_4px_rgba(244,86,157,0.3)]"
+              : "bg-[var(--border-accent)] text-neon-cyan"
           )}
         >
           {badge}
@@ -194,11 +192,11 @@ function AssistantContent({
   }, [onTabChange]);
 
   return (
-    <div className={tw("flex flex-col h-full w-full bg-[#0d0b12]")}>
+    <div className={tw("flex flex-col h-full w-full bg-depth-1")}>
       {/* Native tab navigation */}
       <div
         className={tw(
-          "flex gap-0 px-3 pt-2 pb-0 border-b border-[rgba(14,210,247,0.08)] bg-[#0d0b12] items-center justify-between"
+          "flex gap-0 px-3 pt-2 pb-0 border-b border-defined bg-depth-1 items-center justify-between"
         )}
       >
         <div className={tw("flex gap-0")}>
@@ -220,7 +218,7 @@ function AssistantContent({
       </div>
 
       {/* Content area - Layer 2 */}
-      <div className={tw("flex-1 min-h-0 w-full overflow-hidden bg-[#100e17]")}>
+      <div className={tw("flex-1 min-h-0 w-full overflow-hidden bg-depth-2")}>
         <TabContent
           activeTab={activeTab}
           plugin={plugin}

@@ -7,7 +7,7 @@ export function ClearAllButton() {
   return (
     <Button
       onClick={clearAll}
-      className="bg-transparent hover:bg-[rgba(244,86,157,0.1)] text-[#45aaff] hover:text-[#f4569d] transition-colors"
+      className="bg-transparent hover:bg-[var(--bg-sub-accent-55)] text-dim hover:text-neon-pink transition-colors"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -63,13 +63,13 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
   }, [filesToRename.length, isDone, toolInvocation, handleRename]);
 
   return (
-    <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
-      <div className="text-[#bebebe]">
+    <div className="flex flex-col space-y-4 p-4 border border-defined">
+      <div className="text-foreground">
         {(toolInvocation.input as any).message || "Ready to rename files"}
       </div>
 
       {!isDone && filesToRename.length > 0 && (
-        <div className="text-sm text-[#45aaff]">
+        <div className="text-sm text-dim">
           Found {filesToRename.length} files to rename:
           <ul className="list-disc ml-4 mt-1">
             {filesToRename.slice(0, 5).map((file, i) => (
@@ -89,8 +89,8 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
               key={i}
               className={`${
                 result.startsWith("✅")
-                  ? "text-[#0fb6d6]"
-                  : "text-[#f4569d]"
+                  ? "text-neon-cyan"
+                  : "text-neon-pink"
               }`}
             >
               {result}
@@ -103,7 +103,7 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
         <div className="flex space-x-2">
           <button
             onClick={handleRename}
-            className="px-4 py-2 text-xs rounded-md bg-[#0fb6d6] text-[#0d0b12] font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
+            className="px-4 py-2 text-xs rounded-md bg-neon-cyan text-primary-foreground font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-glow-cyan-sm hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
           >
             Rename {filesToRename.length} Files
           </button>
@@ -116,7 +116,7 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
                 })
               )
             }
-            className="px-4 py-2 text-xs rounded-md border border-[rgba(14,210,247,0.15)] text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:border-[rgba(14,210,247,0.45)] hover:text-[#0fb6d6] active:scale-[0.97] transition-all duration-150"
+            className="px-4 py-2 text-xs rounded-md border border-accent-border text-foreground hover:bg-[var(--border-subtle)] hover:border-active hover:text-neon-cyan active:scale-[0.97] transition-all duration-150"
           >
             Cancel
           </button>

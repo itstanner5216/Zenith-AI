@@ -72,7 +72,7 @@ export function SearchHandler({
           handleAddResult(JSON.stringify(contextResults));
         } catch (error) {
           logger.error("Error searching notes:", error);
-          handleAddResult(JSON.stringify({ error: error.message }));
+          handleAddResult(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
         }
       }
     };
@@ -83,7 +83,7 @@ export function SearchHandler({
   const searchResults = useContextItems(state => state.searchResults);
 
   return (
-    <div className="text-sm text-[#45aaff]">
+    <div className="text-sm text-dim">
       {toolInvocation.state !== 'output-available'
         ? "Searching through your notes..."
         : Object.keys(searchResults).length > 0

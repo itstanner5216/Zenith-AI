@@ -39,14 +39,23 @@ import {
 import { logger } from "./services/logger";
 import { addTextSelectionContext } from "./views/assistant/ai-chat/use-context-items";
 import { BackgroundScribe } from "./services/background-scribe";
+import { migrateSettings } from "./services/settings-migration";
+import { AIService } from "./services/ai/ai-service";
 import { createBrainClient } from "./services/vertex-brain-client";
 
 export default class ZenithAI extends Plugin {
-  settings: ZenithAISettings;
+  settings!: ZenithAISettings;
   backgroundScribe: BackgroundScribe | null = null;
+  aiService: AIService | null = null;
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const rawData = await this.loadData();
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
+
+    // Run migration from legacy API_KEY + selectedModel format
+    if (migrateSettings(this.settings, rawData || {})) {
+      await this.saveSettings();
+    }
   }
 
   getServerUrl(): string {
@@ -74,9 +83,6 @@ export default class ZenithAI extends Plugin {
     }
   }
 
-  getApiKey(): string {
-    return this.settings.API_KEY;
-  }
 
   async ensureFolderExists(folderPath: string) {
     await ensureFolderExists(this.app, folderPath);
@@ -110,6 +116,8 @@ export default class ZenithAI extends Plugin {
     await this.initializePlugin();
     logger.configure(this.settings.debugMode);
     await this.saveSettings();
+
+    this.aiService = new AIService(this.settings);
 
     initializeOrganizer(this);
 

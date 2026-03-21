@@ -17,14 +17,12 @@ import {
 
 interface AIChatSidebarProps {
   plugin: ZenithAI;
-  apiKey: string;
   onTokenLimitError?: (error: string) => void;
   isChatTabActive?: boolean;
 }
 
 const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
   plugin,
-  apiKey,
   onTokenLimitError,
   isChatTabActive,
 }) => {
@@ -205,7 +203,7 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#0d0b12]">
+    <div className="flex flex-col h-full w-full bg-depth-1">
       <ChatTabs
         sessions={chatSessions}
         activeChatId={activeChatId}
@@ -213,10 +211,9 @@ const AIChatSidebar: React.FC<AIChatSidebarProps> = ({
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
       />
-      <div className="flex-1 min-h-0 w-full bg-[#100e17]">
+      <div className="flex-1 min-h-0 w-full bg-depth-2">
         <ChatComponent
           plugin={plugin}
-          apiKey={apiKey}
           inputRef={inputRef}
           onTokenLimitError={onTokenLimitError}
           activeChatId={activeChatId}

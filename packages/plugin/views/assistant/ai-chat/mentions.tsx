@@ -87,7 +87,7 @@ export const Mentions = ({ ref, ...props }: MentionsProps & { ref?: React.Ref<Me
   }));
 
   return (
-    <div className="rounded-md overflow-hidden border border-[rgba(14,210,247,0.15)] shadow-[0_8px_24px_rgba(0,0,0,0.6),0_0_12px_rgba(14,210,247,0.1)] bg-[#191621]">
+    <div className="rounded-md overflow-hidden border border-accent-border shadow-[0_8px_24px_rgba(0,0,0,0.6),0_0_12px_rgba(14,210,247,0.1)] bg-depth-3">
       {props.items.length ? (
         <ul className="max-h-[300px] overflow-y-auto list-none p-1 m-0 zenith-scrollbar">
           {props.items.map((item, index) => (
@@ -98,13 +98,13 @@ export const Mentions = ({ ref, ...props }: MentionsProps & { ref?: React.Ref<Me
               <button
                 className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-all duration-100 cursor-pointer ${
                   index === selectedIndex
-                    ? "bg-[rgba(14,210,247,0.12)] text-[#0fb6d6] shadow-[inset_0_0_0_1px_rgba(14,210,247,0.2)]"
-                    : "text-[#bebebe] hover:bg-[rgba(14,210,247,0.06)] hover:text-[#bebebe]"
+                    ? "bg-[var(--border-accent)] text-neon-cyan shadow-[inset_0_0_0_1px_rgba(14,210,247,0.2)]"
+                    : "text-foreground hover:bg-[var(--border-subtle)] hover:text-foreground"
                 }`}
                 onClick={() => selectItem(index)}
               >
                 <span className={`flex-shrink-0 ${
-                  index === selectedIndex ? "text-[#0fb6d6]" : "text-[#45aaff]"
+                  index === selectedIndex ? "text-neon-cyan" : "text-dim"
                 }`}>
                   <ItemIcon type={item.type} />
                 </span>
@@ -114,7 +114,7 @@ export const Mentions = ({ ref, ...props }: MentionsProps & { ref?: React.Ref<Me
                     {item.title}
                   </div>
                   {item.path && item.path !== item.title && (
-                    <div className="text-[10px] text-[#45aaff] opacity-60 truncate mt-0.5">
+                    <div className="text-[10px] text-dim opacity-60 truncate mt-0.5">
                       {item.path}
                     </div>
                   )}
@@ -123,8 +123,8 @@ export const Mentions = ({ ref, ...props }: MentionsProps & { ref?: React.Ref<Me
                 {item.type && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0 font-medium uppercase tracking-wider ${
                     index === selectedIndex
-                      ? "bg-[rgba(14,210,247,0.15)] text-[#0fb6d6]"
-                      : "bg-[rgba(69,170,255,0.1)] text-[#45aaff]"
+                      ? "bg-[var(--border-accent)] text-neon-cyan"
+                      : "bg-[rgba(69,170,255,0.1)] text-dim"
                   }`}>
                     {item.type}
                   </span>
@@ -134,7 +134,7 @@ export const Mentions = ({ ref, ...props }: MentionsProps & { ref?: React.Ref<Me
           ))}
         </ul>
       ) : (
-        <div className="px-4 py-4 text-xs text-[#45aaff] text-center opacity-60">
+        <div className="px-4 py-4 text-xs text-dim text-center opacity-60">
           No matching items found
         </div>
       )}

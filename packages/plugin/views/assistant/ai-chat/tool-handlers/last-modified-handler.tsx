@@ -95,7 +95,7 @@ export function LastModifiedHandler({
           logger.error("Error getting last modified files:", error);
           handleAddResult(JSON.stringify({ 
             success: false,
-            error: error.message 
+            error: error instanceof Error ? error.message : String(error)
           }));
         }
       }
@@ -110,7 +110,7 @@ export function LastModifiedHandler({
   const resultCount = result?.count || 0;
 
   return (
-    <div className="text-sm text-[#45aaff]">
+    <div className="text-sm text-dim">
       {toolInvocation.state !== 'output-available' ? (
         `Fetching last modified files... ${progress.total > 0 ? `(${progress.done}/${progress.total})` : ""}`
       ) : resultCount > 0 ? (
