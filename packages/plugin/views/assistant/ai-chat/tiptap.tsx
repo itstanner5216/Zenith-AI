@@ -115,7 +115,13 @@ const Tiptap: React.FC<TiptapProps> = ({
           char: "@",
           items: ({ query, editor }) => suggestion.items({ query, editor }),
           render: () => suggestion.render(),
-          command: handleMentionCommand,
+          command: ({ editor, range, props }) => {
+            void handleMentionCommand({
+              editor,
+              range,
+              props: props as unknown as MentionNodeAttrs,
+            });
+          },
           decorationClass:
             "bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] px-1 py-0.5 rounded",
         },
