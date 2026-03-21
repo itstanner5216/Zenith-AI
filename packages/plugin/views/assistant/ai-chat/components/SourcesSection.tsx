@@ -49,11 +49,11 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
   return (
     <div className="mt-6 space-y-4 m-2 z-50">
       <div className="flex justify-between items-center">
-        <h3 className="text-base font-semibold bg-gradient-to-r from-[#45aaff] to-[#b4a5ff] bg-clip-text text-transparent">Sources</h3>
+        <h3 className="text-base font-semibold bg-gradient-to-r from-dim to-[var(--text-faint)] bg-clip-text text-transparent">Sources</h3>
         {sources.length > 3 && (
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-sm text-[#0fb6d6] hover:text-[rgba(14,210,247,0.7)] cursor-pointer transition-colors duration-150"
+            className="text-sm text-neon-cyan hover:text-neon-cyan cursor-pointer transition-colors duration-150"
           >
             {showAll ? 'Show less' : 'Show all'}
           </button>
@@ -64,7 +64,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
         {displayedSources.map((source) => (
           <div
             key={source.id}
-            className="flex items-center p-4 bg-[#191621] border border-[rgba(14,210,247,0.08)] hover:bg-[rgba(25,22,33,0.85)] hover:border-[rgba(14,210,247,0.15)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)] active:scale-[0.99] transition-all duration-200 rounded-md cursor-pointer"
+            className="flex items-center p-4 bg-depth-3 border border-defined hover:bg-depth-4 hover:border-accent-border hover:shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_6px_rgba(14,210,247,0.2)] active:scale-[0.99] transition-all duration-200 rounded-md cursor-pointer"
           >
             <div className="flex-shrink-0 mr-4">
               <div className="relative">
@@ -73,7 +73,7 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   alt={source.domain}
                   className="w-8 h-8 rounded"
                 />
-                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[rgba(25,22,33,0.7)] border border-[rgba(14,210,247,0.45)] shadow-glow-cyan-sm rounded-full text-xs font-medium text-[#0fb6d6]">
+                <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-[rgba(25,22,33,0.7)] border border-active shadow-glow-cyan-sm rounded-full text-xs font-medium text-neon-cyan">
                   {source.id}
                 </div>
               </div>
@@ -84,12 +84,12 @@ export function SourcesSection({ groundingMetadata }: SourcesSectionProps) {
                   href={source.url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-[#0fb6d6] hover:underline"
+                  className="text-neon-cyan hover:underline"
                 >
                   {source.title || source.domain}
                 </a>
               </h4>
-              <p className="text-xs text-[#45aaff] truncate opacity-75">
+              <p className="text-xs text-dim truncate opacity-75">
                 {source.domain}
               </p>
             </div>

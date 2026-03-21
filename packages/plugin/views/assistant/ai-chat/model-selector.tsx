@@ -38,17 +38,17 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           onChange={e => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="model name"
-          className="w-28 px-2 py-0.5 text-xs bg-[#0d0b12] text-[#bebebe] border border-[rgba(14,210,247,0.45)] rounded focus:outline-none focus:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40"
+          className="w-28 px-2 py-0.5 text-xs bg-depth-1 text-foreground border border-active rounded focus:outline-none focus:shadow-glow-cyan-sm transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
         />
         <button
           onClick={handleSave}
-          className="text-xs px-2 py-0.5 bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.15)] rounded hover:bg-[rgba(14,210,247,0.18)] active:scale-[0.97] transition-all duration-150"
+          className="text-xs px-2 py-0.5 bg-[var(--border-defined)] text-neon-cyan border border-accent-border rounded hover:bg-[rgba(14,210,247,0.18)] active:scale-[0.97] transition-all duration-150"
         >
           Save
         </button>
         <button
           onClick={() => setIsEditing(false)}
-          className="text-xs px-1 py-0.5 text-[#45aaff] hover:text-[#bebebe] transition-colors"
+          className="text-xs px-1 py-0.5 text-dim hover:text-foreground transition-colors"
         >
           ✕
         </button>
@@ -59,7 +59,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   return (
     <div
       onClick={() => { setDraft(selectedModel); setIsEditing(true); }}
-      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[rgba(14,210,247,0.15)]"
+      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 text-dim hover:text-neon-cyan hover:bg-[var(--border-subtle)] cursor-pointer border border-transparent hover:border-accent-border"
       title="Click to change model"
     >
       <span className="font-medium">{selectedModel || "set model"}</span>

@@ -43,7 +43,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
     switch (keyStatus) {
       case "valid":
         return (
-          <div className="flex items-center text-[#0fb6d6] text-sm" style={{ textShadow: '0 0 8px rgba(14,210,247,0.4)' }}>
+          <div className="flex items-center text-neon-cyan text-sm" style={{ textShadow: '0 0 8px rgba(14,210,247,0.4)' }}>
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -62,7 +62,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "invalid":
         return (
-          <div className="flex items-center text-[#f4569d] text-sm">
+          <div className="flex items-center text-neon-pink text-sm">
             <svg
               className="w-4 h-4 mr-1.5"
               fill="none"
@@ -81,7 +81,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         );
       case "checking":
         return (
-          <div className="flex items-center text-[#45aaff] text-sm">
+          <div className="flex items-center text-dim text-sm">
             <svg
               className="w-4 h-4 mr-1.5 animate-spin"
               fill="none"
@@ -111,13 +111,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
 
   return (
     <div className="zenith-ai-settings space-y-6">
-      <div className="bg-[#191621] p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-depth-3 p-4 rounded-lg border border-defined shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">
+            <h3 className="text-lg font-semibold mb-2 mt-0 text-neon-cyan">
               Zenith-AI API Key
             </h3>
-            <p className="text-xs text-[#45aaff] opacity-70 mb-4">
+            <p className="text-xs text-dim opacity-70 mb-4">
               Enter your API key.
             </p>
           </div>
@@ -126,12 +126,12 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                className={`flex-1 bg-[#0d0b12] text-[#bebebe] border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40 ${
+                className={`flex-1 bg-depth-1 text-foreground border rounded-md px-3 py-1.5 text-sm outline-none transition-all duration-150 placeholder:text-dim placeholder:opacity-40 ${
                   keyStatus === "valid"
-                    ? "border-[#0fb6d6] shadow-[0_0_6px_rgba(14,210,247,0.2)]"
+                    ? "border-neon-cyan shadow-glow-cyan-sm"
                     : keyStatus === "invalid" || validationError
-                    ? "border-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
-                    : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
+                    ? "border-neon-pink shadow-glow-pink-sm"
+                    : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-neon-cyan focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
                 }`}
                 placeholder="Enter your API key"
                 value={licenseKey}
@@ -140,13 +140,13 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
               <button
                 onClick={handleActivate}
                 disabled={!licenseKey || !!validationError}
-                className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)]"
+                className="bg-neon-cyan text-primary-foreground px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-glow-cyan-md"
               >
                 Save
               </button>
             </div>
             {validationError && (
-              <div className="text-sm text-[#f4569d] mt-1">
+              <div className="text-sm text-neon-pink mt-1">
                 {validationError}
               </div>
             )}

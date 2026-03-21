@@ -64,7 +64,7 @@ export function ContextLimitIndicator({
 
   if (error) {
     return (
-      <div className="mt-2 p-2 rounded text-xs text-[#f4569d] border border-[rgba(244,86,157,0.3)]">
+      <div className="mt-2 p-2 rounded text-xs text-neon-pink border border-[var(--bg-sub-accent-55)]">
         {error}
       </div>
     );
@@ -79,13 +79,13 @@ export function ContextLimitIndicator({
     <div className="mt-2 space-y-2 flex">
       <div className="relative">
         <div
-          className={`px-2 py-1 min-w-max rounded-md text-xs flex gap-1.5 items-center justify-between cursor-pointer hover:bg-[rgba(14,210,247,0.06)] transition-all duration-150
+          className={`px-2 py-1 min-w-max rounded-md text-xs flex gap-1.5 items-center justify-between cursor-pointer hover:bg-[var(--border-subtle)] transition-all duration-150
           ${
             isOverLimit
-              ? "border border-[rgba(244,86,157,0.35)] text-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.15)]"
+              ? "border border-[var(--bg-sub-accent-55)] text-neon-pink shadow-glow-pink-sm"
               : shouldWarn
-              ? "border border-[rgba(255,183,77,0.35)] text-[#ffb74d] shadow-[0_0_6px_rgba(255,183,77,0.2)]"
-              : "border border-[rgba(14,210,247,0.08)] text-[#45aaff] hover:border-[rgba(14,210,247,0.15)]"
+              ? "border border-[rgba(255,183,77,0.35)] text-warning shadow-[0_0_6px_rgba(255,183,77,0.2)]"
+              : "border border-defined text-dim hover:border-accent-border"
           }`}
           onMouseEnter={() => setIsTooltipOpen(true)}
           onMouseLeave={() => setIsTooltipOpen(false)}

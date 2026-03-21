@@ -29,11 +29,11 @@ export const AppendButton: React.FC<AppendButtonProps> = ({ content }) => {
   return (
     <button
       onClick={handleAppend}
-      className="p-1 rounded border-none outline-none bg-transparent hover:bg-[rgba(14,210,247,0.08)] focus-visible:ring-1 focus-visible:ring-[rgba(14,210,247,0.45)] transition-all duration-150 flex items-center justify-center group"
+      className="p-1 rounded border-none outline-none bg-transparent hover:bg-[var(--border-defined)] focus-visible:ring-1 focus-visible:ring-neon-cyan transition-all duration-150 flex items-center justify-center group"
       style={{ width: '22px', height: '22px' }}
       title="Append to current note"
     >
-      <FileText size={14} className="text-[#45aaff] group-hover:text-[#0fb6d6] transition-colors duration-150" />
+      <FileText size={14} className="text-dim group-hover:text-neon-cyan transition-colors duration-150" />
     </button>
   );
 };
