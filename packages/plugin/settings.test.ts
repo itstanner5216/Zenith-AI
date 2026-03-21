@@ -7,14 +7,13 @@ describe('DEFAULT_SETTINGS', () => {
 
   it('has correct defaults for all settings', () => {
     expect(DEFAULT_SETTINGS.API_KEY).toBe('');
-    expect(DEFAULT_SETTINGS.enableSelfHosting).toBe(true);
     expect(DEFAULT_SETTINGS.selfHostingURL).toBe('http://localhost:3010');
-    expect(DEFAULT_SETTINGS.selectedModel).toBe('gpt-4o-mini');
-    expect(DEFAULT_SETTINGS.customModelName).toBe('llama3.2');
+    expect(DEFAULT_SETTINGS.selectedModel).toBe('');
+    expect(DEFAULT_SETTINGS.customModelName).toBe('');
     expect(DEFAULT_SETTINGS.debugMode).toBe(false);
   });
 
-  it('has exactly 6 keys', () => {
-    expect(Object.keys(DEFAULT_SETTINGS)).toHaveLength(6);
+  it('has exactly 5 keys', () => {
+    expect(Object.keys(DEFAULT_SETTINGS)).toHaveLength(5);
   });
 });

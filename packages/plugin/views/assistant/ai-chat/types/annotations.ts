@@ -1,4 +1,4 @@
-import type { Message } from 'ai';
+import type { UIMessage } from '@ai-sdk/ui-utils';
 
 export interface SearchResult {
   segment: {

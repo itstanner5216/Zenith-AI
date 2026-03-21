@@ -56,9 +56,9 @@ export function SearchHandler({
 
   React.useEffect(() => {
     const handleSearchNotes = async () => {
-      if (!hasFetchedRef.current && !("result" in toolInvocation)) {
+      if (!hasFetchedRef.current && toolInvocation.state !== 'output-available') {
         hasFetchedRef.current = true;
-        const { query } = toolInvocation.args as SearchArgs;
+        const { query } = toolInvocation.input as SearchArgs;
         
         try {
           const searchResults = await searchNotes(query);
@@ -84,7 +84,7 @@ export function SearchHandler({
 
   return (
     <div className="text-sm text-[#45aaff]">
-      {!("result" in toolInvocation)
+      {toolInvocation.state !== 'output-available'
         ? "Searching through your notes..."
         : Object.keys(searchResults).length > 0
         ? `Found ${Object.keys(searchResults).length} matching notes`

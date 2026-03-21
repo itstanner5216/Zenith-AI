@@ -13,13 +13,13 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
 
   React.useEffect(() => {
     if (!isDone && !filesToRename.length) {
-      const { files } = toolInvocation.args;
+      const { files } = toolInvocation.input as any;
       setFilesToRename(files);
     }
-  }, [toolInvocation.args, isDone]);
+  }, [toolInvocation.input, isDone]);
 
   const handleRename = React.useCallback(async () => {
-    const { files } = toolInvocation.args;
+    const { files } = toolInvocation.input as any;
     const renameResults: string[] = [];
 
     await Promise.all(
@@ -49,11 +49,11 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
     setResults(renameResults);
     setIsDone(true);
     handleAddResult(JSON.stringify({ success: true, results: renameResults }));
-  }, [toolInvocation.args, plugin.app, handleAddResult]);
+  }, [toolInvocation.input, plugin.app, handleAddResult]);
 
   // Auto-execute for single file renames (especially current file)
   React.useEffect(() => {
-    if (!hasExecutedRef.current && !isDone && filesToRename.length === 1 && !("result" in toolInvocation)) {
+    if (!hasExecutedRef.current && !isDone && filesToRename.length === 1 && toolInvocation.state !== 'output-available') {
       hasExecutedRef.current = true;
       // Small delay to ensure UI is ready
       setTimeout(() => {
@@ -65,7 +65,7 @@ export function RenameFilesHandler({ toolInvocation, handleAddResult, app }: Too
   return (
     <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
       <div className="text-[#bebebe]">
-        {toolInvocation.args.message || "Ready to rename files"}
+        {(toolInvocation.input as any).message || "Ready to rename files"}
       </div>
 
       {!isDone && filesToRename.length > 0 && (

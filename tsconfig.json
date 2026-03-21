@@ -21,16 +21,10 @@
   },
   "references": [
     {
-      "path": "packages/shared"
-    },
-    {
       "path": "packages/plugin"
     },
     {
       "path": "packages/web"
-    },
-    {
-      "path": "packages/mobile"
     }
   ],
   "exclude": [

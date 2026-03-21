@@ -15,9 +15,9 @@ export function OpenFileHandler({
 
   React.useEffect(() => {
     const execute = async () => {
-      if (!hasFetchedRef.current && !("result" in toolInvocation)) {
+      if (!hasFetchedRef.current && toolInvocation.state !== 'output-available') {
         hasFetchedRef.current = true;
-        const args = toolInvocation.args as OpenFileArgs;
+        const args = toolInvocation.input as OpenFileArgs;
 
         try {
           // Get the file from the vault
@@ -57,8 +57,8 @@ export function OpenFileHandler({
     execute();
   }, [toolInvocation, handleAddResult, app]);
 
-  const args = toolInvocation.args as OpenFileArgs;
-  const isComplete = "result" in toolInvocation;
+  const args = toolInvocation.input as OpenFileArgs;
+  const isComplete = toolInvocation.state === 'output-available';
 
   return (
     <div className="text-sm text-[#45aaff]">

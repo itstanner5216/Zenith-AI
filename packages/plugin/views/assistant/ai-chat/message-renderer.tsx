@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { User, Bot } from "lucide-react";
 import { AIMarkdown } from "./ai-message-renderer";
 import { UserMarkdown } from "./user-message-renderer";
-import { Message } from "ai";
+import { UIMessage, isToolUIPart, isTextUIPart } from "ai";
 import { usePlugin } from "../provider";
 import { Attachment } from "./types/attachments";
 import { AppendButton } from "./components/append-button";
@@ -11,7 +11,7 @@ import { CopyButton } from "./components/copy-button";
 import { RefreshButton } from "./components/refresh-button";
 
 interface MessageRendererProps {
-  message: Message & {
+  message: UIMessage & {
     experimental_attachments?: Attachment[];
     createdAt?: number;
   };
@@ -44,19 +44,23 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
 
   const timestamp = getTimestamp();
 
-  // Only hide message if it has tool invocations that are NOT complete (no results yet)
-  // If all tool invocations have results, we should still render the message content
-  if (message.toolInvocations) {
-    const allToolsComplete = message.toolInvocations.every(
-      (tool: any) => "result" in tool
-    );
-    // If tools are still executing, don't render the message yet
-    // But if all tools are complete, render the message content
+  // Only hide message if it has tool parts that are NOT complete (no results yet)
+  // If all tool parts have results, we should still render the message content
+  const toolParts = message.parts?.filter(isToolUIPart) ?? [];
+  if (toolParts.length > 0) {
+    const allToolsComplete = toolParts.every(p => p.state === 'output-available');
     if (!allToolsComplete) {
       return null;
     }
   }
-  if (message.content.length === 0) {
+
+  // In v5, text content lives in TextUIPart parts, not message.content
+  const textContent = message.parts
+    .filter(isTextUIPart)
+    .map(p => p.text)
+    .join("");
+
+  if (textContent.length === 0 && toolParts.length === 0) {
     return null;
   }
 
@@ -89,9 +93,9 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
           style={{ marginTop: 0, paddingTop: 0, marginLeft: 0, paddingLeft: 0 }}
         >
           {isUser ? (
-            <UserMarkdown content={message.content} />
+            <UserMarkdown content={textContent} />
           ) : (
-            <AIMarkdown content={message.content} app={plugin.app} />
+            <AIMarkdown content={textContent} app={plugin.app} />
           )}
         </div>
 
@@ -109,8 +113,8 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
                   onRefresh={onMessageRefresh}
                 />
               )}
-              <AppendButton content={message.content} />
-              <CopyButton content={message.content} />
+              <AppendButton content={textContent} />
+              <CopyButton content={textContent} />
             </div>
           )}
         </div>

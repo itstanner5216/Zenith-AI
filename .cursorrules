@@ -1,117 +1,22 @@
-# Note Companion Development Rules
+# Zenith-AI — Cursor Rules
 
-## Project Overview
-Note Companion (formerly File Organizer 2000) is an AI-powered Obsidian plugin that automatically organizes and enhances notes.
+> Read AGENTS.md before doing any work.
 
-Repository: Nexus-JPF/note-companion
+## Project
+Mode-based vault workspace Obsidian plugin with a self-hosted companion web app.
 
-## Project Structure
+## Active Packages
+- `packages/plugin` — Obsidian plugin (TypeScript, React, esbuild)
+- `packages/web` — Self-hosted Next.js web app (Postgres/Drizzle, Docker standalone)
 
-```
-./packages/web         - Next.js app (port 3010) with user accounts, AI endpoints
-./packages/plugin      - Obsidian plugin (main entry: index.ts)
-./packages/mobile      - Expo React Native app
-./packages/landing     - Marketing website
-./packages/audio-server - Audio transcription service
-./memory/              - Project learnings and decisions
-```
+Only these two packages exist. Do not add, reference, or restore any other package. Do not add external auth, billing, analytics, cloud storage, or media processing without explicit instruction.
 
-## Core Architecture
+## Package Manager
+pnpm only. Lockfile: pnpm-lock.yaml.
 
-### How It Works
-1. **Inbox Processing**: Files placed in vault's inbox folder
-2. **AI Classification**: Plugin analyzes and categorizes files
-3. **Auto-Organization**: Files moved to appropriate folders
-4. **Enhancement**: Notes enhanced with formatting, tags, metadata
-
-### Key Components
-- `packages/web/app/api/(new-ai)/` - AI-related API endpoints
-- `packages/web/app/api/(new-ai)/tools.ts` - AI chat function definitions
-- `packages/plugin/index.ts` - Plugin main entry point
-- `packages/web/drizzle/schema.ts` - Database schema
-
-## Development Guidelines
-
-### Environment Setup
-- **Package Manager**: Always use pnpm
-- **Node Version**: 18+
-- **Development Ports**: Web app runs on port 3010
-
-### Code Style
-- **File Naming**: Always use kebab-case
-- **TypeScript**: Strict mode enabled
-- **React**: Version 19 across all packages
-- **Styling**:
-  - Plugin: TailwindCSS with `fo-` prefix
-  - Web/Mobile: Standard TailwindCSS
-
-### Testing
-- **E2E Testing**: Use Playwright for web/landing packages
-- **Screenshots**: Always verify UI changes with screenshots
-- **Test Credentials**: benjamin.shafii+testinglove@gmail.com
-
-### Git Workflow
-- Commit after each significant change
-- Use descriptive commit messages
-- Main branch: `master`
-
-## AI Integration
-
-### Supported Providers
-- OpenAI (GPT-4, GPT-3.5)
-- Anthropic (Claude)
-- Google (Gemini)
-- Mistral, Groq, DeepSeek
-
-### API Structure
-- All AI endpoints in `packages/web/app/api/(new-ai)/`
-- Shared types and utilities across packages
-
-## Database
-
-### Development Database
-- **Tool**: Use neon MCP tool
-- **Project**: file-organizer-2000-dev
-- **Project ID**: mute-snow-96515814
-- **Database Name**: verceldb
-- **Schema**: See `packages/web/drizzle/schema.ts`
-
-## Memory System
-
-### Before Starting Tasks
-1. Check `/memory` directory for relevant information
-2. Look for files with descriptive names about your task
-
-### Creating Memories
-When learning something unexpected:
-- Create file: `/memory/YYYY-MM-DD-description.md`
-- Document what was learned
-- Include how to apply it in future
-
-## Important Reminders
-
-1. **Mock Data**: If creating mocks, add `/memory` note for future fixes
-2. **Verification**: Always use Playwright to verify implementations
-3. **Documentation**: Update relevant docs when making changes
-4. **Style Conflicts**: Use `fo-` prefix for Tailwind in plugin
-
-## Testing Instructions
-
-### Web Application
-```bash
-pnpm --filter web dev  # Runs on port 3010
-```
-
-### Playwright Testing
-- Navigate to localhost:3010
-- Use provided test credentials
-- Take screenshots of key workflows
-
-## Available Instruction Sets
-
-Use `fetch_rules` for detailed guidelines:
-- `audio-server`: Audio transcription implementation
-- `chatbot-integration`: Vercel AI SDK integration
-- `mobile`: Mobile app development
-- `plugin-development`: Obsidian plugin guidelines
-- `web-development`: Web package information
+## Core rules
+- Functional React components, hooks only
+- tsx for React, ts for logic
+- Named exports preferred
+- No generation/sampling params in model configs
+- After ANY deletion: run ./scripts/verify-deletion.sh — not done until it exits 0

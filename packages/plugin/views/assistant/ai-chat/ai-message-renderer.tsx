@@ -1,6 +1,7 @@
 import React from "react";
 import { App, getLinkpath } from "obsidian";
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 import { usePlugin } from "../provider";
 import { ObsidianCodeBlock } from "./components/obsidian-code-block";
 
@@ -133,107 +134,95 @@ export const AIMarkdown: React.FC<AIMarkdownProps> = ({ content, app }) => {
         }
 
         const isFirstPart = i === 0;
+        const components: Components = {
+          a: ({ node: _node, href, children }) => (
+            <a
+              href={href || ""}
+              className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.8)] underline cursor-pointer transition-all duration-150 hover:drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
+            >
+              {children}
+            </a>
+          ),
+          pre: ({ node: _node, children }) => {
+            // react-markdown v9: block code renders as <pre><code className="language-*">
+            const codeChild = React.Children.toArray(children).find(
+              (child): child is React.ReactElement =>
+                React.isValidElement(child) && (child as React.ReactElement).type === "code"
+            );
+            if (codeChild) {
+              const className = (codeChild.props as { className?: string }).className || "";
+              const lang = className.replace("language-", "");
+              const codeStr = String(
+                (codeChild.props as { children?: React.ReactNode }).children
+              ).replace(/\n$/, "");
+              return <ObsidianCodeBlock language={lang} code={codeStr} />;
+            }
+            return <pre>{children}</pre>;
+          },
+          code: ({ node: _node, children }) => (
+            <code className="inline-code bg-[#0d0b12] border border-[rgba(14,210,247,0.15)] px-1.5 py-0.5 rounded text-[#0fb6d6] text-[0.8em] font-mono">
+              {children}
+            </code>
+          ),
+          p: ({ node: _node, children }) => (
+            <p className={`mb-2 last:mb-0 leading-relaxed ${isFirstPart ? 'first-paragraph' : ''}`}>
+              {children}
+            </p>
+          ),
+          strong: ({ node: _node, children }) => (
+            <strong className="font-semibold text-[#0fb6d6]">
+              {children}
+            </strong>
+          ),
+          em: ({ node: _node, children }) => (
+            <em className="italic text-[#45aaff] opacity-85">
+              {children}
+            </em>
+          ),
+          h1: ({ node: _node, children }) => (
+            <h1 className="text-lg font-bold bg-gradient-to-r from-[#45aaff] to-[#b4a5ff] bg-clip-text text-transparent mt-3 mb-1 border-b border-[rgba(14,210,247,0.15)] pb-1">{children}</h1>
+          ),
+          h2: ({ node: _node, children }) => (
+            <h2 className="text-base font-semibold bg-gradient-to-r from-[#45aaff] to-[#b4a5ff] bg-clip-text text-transparent mt-3 mb-1">{children}</h2>
+          ),
+          h3: ({ node: _node, children }) => (
+            <h3 className="text-sm font-semibold text-[#0fb6d6] mt-2 mb-1">{children}</h3>
+          ),
+          blockquote: ({ node: _node, children }) => (
+            <blockquote className="border-l-2 border-[rgba(14,210,247,0.45)] pl-3 my-2 text-[#45aaff] opacity-85 bg-gradient-to-r from-[#191621] to-transparent rounded-r-md py-1">{children}</blockquote>
+          ),
+          table: ({ node: _node, children }) => (
+            <div className="overflow-x-auto my-2">
+              <table className="w-full text-xs border-collapse">{children}</table>
+            </div>
+          ),
+          thead: ({ node: _node, children }) => (
+            <thead className="bg-[#0d0b12] border-b border-[rgba(14,210,247,0.15)]">{children}</thead>
+          ),
+          th: ({ node: _node, children }) => (
+            <th className="px-2 py-1.5 text-left text-[#0fb6d6] font-semibold text-[10px] uppercase tracking-wider">{children}</th>
+          ),
+          td: ({ node: _node, children }) => (
+            <td className="px-2 py-1.5 text-[#bebebe] border-b border-[rgba(14,210,247,0.05)]">{children}</td>
+          ),
+          tr: ({ node: _node, children }) => (
+            <tr className="hover:bg-[rgba(14,210,247,0.03)] transition-colors duration-100">{children}</tr>
+          ),
+          hr: ({ node: _node }) => (
+            <hr className="my-3 border-0" style={{ background: 'linear-gradient(to right, rgba(244,86,157,0.4), transparent)', height: '1px' }} />
+          ),
+          li: ({ node: _node, children }) => (
+            <li className="mb-0.5">{children}</li>
+          ),
+          ul: ({ node: _node, children }) => (
+            <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>
+          ),
+          ol: ({ node: _node, children }) => (
+            <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>
+          ),
+        };
         return (
-          <ReactMarkdown
-            key={i}
-            components={{
-              a: ({ href, children, ...props }) => (
-                <a
-                  {...props}
-                  href={href || ""}
-                  className="text-[#0fb6d6] hover:text-[rgba(14,210,247,0.8)] underline cursor-pointer transition-all duration-150 hover:drop-shadow-[0_0_4px_rgba(14,210,247,0.4)]"
-                >
-                  {children}
-                </a>
-              ),
-              pre: ({ children }) => {
-                // react-markdown v9: block code renders as <pre><code className="language-*">
-                const codeChild = React.Children.toArray(children).find(
-                  (child): child is React.ReactElement =>
-                    React.isValidElement(child) && (child as React.ReactElement).type === "code"
-                );
-                if (codeChild) {
-                  const className = (codeChild.props as { className?: string }).className || "";
-                  const lang = className.replace("language-", "");
-                  const codeStr = String(
-                    (codeChild.props as { children?: React.ReactNode }).children
-                  ).replace(/\n$/, "");
-                  return <ObsidianCodeBlock language={lang} code={codeStr} />;
-                }
-                return <pre>{children}</pre>;
-              },
-              code: ({ children, ...props }) => (
-                <code
-                  {...props}
-                  className="inline-code bg-[#0d0b12] border border-[rgba(14,210,247,0.15)] px-1.5 py-0.5 rounded text-[#0fb6d6] text-[0.8em] font-mono"
-                >
-                  {children}
-                </code>
-              ),
-              p: ({ children, ...props }) => (
-                <p
-                  {...props}
-                  className={`mb-2 last:mb-0 leading-relaxed ${isFirstPart ? 'first-paragraph' : ''}`}
-                >
-                  {children}
-                </p>
-              ),
-              strong: ({ children, ...props }) => (
-                <strong
-                  {...props}
-                  className="font-semibold text-[#0fb6d6]"
-                >
-                  {children}
-                </strong>
-              ),
-              em: ({ children, ...props }) => (
-                <em {...props} className="italic text-[#45aaff] opacity-85">
-                  {children}
-                </em>
-              ),
-              h1: ({ children, ...props }) => (
-                <h1 {...props} className="text-lg font-bold bg-gradient-to-r from-[#45aaff] to-[#b4a5ff] bg-clip-text text-transparent mt-3 mb-1 border-b border-[rgba(14,210,247,0.15)] pb-1">{children}</h1>
-              ),
-              h2: ({ children, ...props }) => (
-                <h2 {...props} className="text-base font-semibold bg-gradient-to-r from-[#45aaff] to-[#b4a5ff] bg-clip-text text-transparent mt-3 mb-1">{children}</h2>
-              ),
-              h3: ({ children, ...props }) => (
-                <h3 {...props} className="text-sm font-semibold text-[#0fb6d6] mt-2 mb-1">{children}</h3>
-              ),
-              blockquote: ({ children, ...props }) => (
-                <blockquote {...props} className="border-l-2 border-[rgba(14,210,247,0.45)] pl-3 my-2 text-[#45aaff] opacity-85 bg-gradient-to-r from-[#191621] to-transparent rounded-r-md py-1">{children}</blockquote>
-              ),
-              table: ({ children, ...props }) => (
-                <div className="overflow-x-auto my-2">
-                  <table {...props} className="w-full text-xs border-collapse">{children}</table>
-                </div>
-              ),
-              thead: ({ children, ...props }) => (
-                <thead {...props} className="bg-[#0d0b12] border-b border-[rgba(14,210,247,0.15)]">{children}</thead>
-              ),
-              th: ({ children, ...props }) => (
-                <th {...props} className="px-2 py-1.5 text-left text-[#0fb6d6] font-semibold text-[10px] uppercase tracking-wider">{children}</th>
-              ),
-              td: ({ children, ...props }) => (
-                <td {...props} className="px-2 py-1.5 text-[#bebebe] border-b border-[rgba(14,210,247,0.05)]">{children}</td>
-              ),
-              tr: ({ children, ...props }) => (
-                <tr {...props} className="hover:bg-[rgba(14,210,247,0.03)] transition-colors duration-100">{children}</tr>
-              ),
-              hr: ({ ...props }) => (
-                <hr {...props} className="my-3 border-0" style={{ background: 'linear-gradient(to right, rgba(244,86,157,0.4), transparent)', height: '1px' }} />
-              ),
-              li: ({ children, ...props }) => (
-                <li {...props} className="mb-0.5">{children}</li>
-              ),
-              ul: ({ children, ...props }) => (
-                <ul {...props} className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>
-              ),
-              ol: ({ children, ...props }) => (
-                <ol {...props} className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>
-              ),
-            }}
-          >
+          <ReactMarkdown key={i} components={components}>
             {part}
           </ReactMarkdown>
         );

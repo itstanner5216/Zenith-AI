@@ -12,6 +12,77 @@ export const ORGANIZER_VIEW_TYPE = "fo2k.assistant.sidebar2";
 
 type Tab = "chat" | "scribe";
 
+function ScribeView({ plugin }: { plugin: ZenithAI }) {
+  const [isActive, setIsActive] = React.useState(
+    () => plugin.backgroundScribe?.isActiveState ?? false
+  );
+  const [bufferCount, setBufferCount] = React.useState(
+    () => plugin.backgroundScribe?.bufferCount ?? 0
+  );
+  const [lastSynth, setLastSynth] = React.useState<string | null>(null);
+  const [isSynthing, setIsSynthing] = React.useState(false);
+
+  React.useEffect(() => {
+    const onChanged = () => {
+      setIsActive(plugin.backgroundScribe?.isActiveState ?? false);
+      setBufferCount(plugin.backgroundScribe?.bufferCount ?? 0);
+    };
+    plugin.app.workspace.on("zenith-ai:background-scribe-changed" as any, onChanged);
+    return () => plugin.app.workspace.off("zenith-ai:background-scribe-changed" as any, onChanged);
+  }, [plugin]);
+
+  const handleSynthesizeNow = async () => {
+    if (!plugin.backgroundScribe || isSynthing) return;
+    setIsSynthing(true);
+    try {
+      await plugin.backgroundScribe.synthesizeTODO();
+      setLastSynth(new Date().toLocaleTimeString());
+      setBufferCount(0);
+    } catch (e) {
+      console.error("[Scribe] Manual synthesis failed:", e);
+    } finally {
+      setIsSynthing(false);
+    }
+  };
+
+  return (
+    <div className={tw("flex items-center gap-3 px-3 py-2 bg-[#0d0b12]")}>
+      {/* Listening indicator */}
+      <div className={tw("relative flex-shrink-0")}>
+        <Bot className={tw("w-4 h-4", isActive ? "text-[#0fb6d6]" : "text-[#45aaff] opacity-30")} />
+        {isActive && (
+          <span className={tw("absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#0fb6d6] shadow-[0_0_4px_rgba(14,210,247,0.8)] animate-pulse")} />
+        )}
+      </div>
+
+      {/* Status text */}
+      <span className={tw("text-xs", isActive ? "text-[#0fb6d6]" : "text-[#45aaff] opacity-40")}>
+        {isActive ? `Listening · ${bufferCount} turn${bufferCount !== 1 ? "s" : ""} buffered` : "Inactive"}
+      </span>
+
+      {lastSynth && (
+        <span className={tw("text-[10px] text-[#50fa7b] opacity-70")}>✓ {lastSynth}</span>
+      )}
+
+      {/* Manual trigger */}
+      {isActive && bufferCount > 0 && (
+        <button
+          onClick={handleSynthesizeNow}
+          disabled={isSynthing}
+          className={tw(
+            "ml-auto text-[10px] px-2 py-0.5 rounded transition-all duration-150",
+            isSynthing
+              ? "text-[#45aaff] opacity-40 cursor-not-allowed"
+              : "text-[#0fb6d6] border border-[rgba(14,210,247,0.2)] hover:bg-[rgba(14,210,247,0.08)] active:scale-[0.97]"
+          )}
+        >
+          {isSynthing ? "Synthesizing…" : "Synthesize now"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function TabContent({
   activeTab,
   plugin,
@@ -21,7 +92,6 @@ function TabContent({
   plugin: ZenithAI;
   onTokenLimitError?: (error: string) => void;
 }) {
-  // Auto-activate/deactivate background scribe based on tab selection
   React.useEffect(() => {
     if (activeTab === "scribe") {
       plugin.backgroundScribe?.activate();
@@ -29,6 +99,22 @@ function TabContent({
       plugin.backgroundScribe?.deactivate();
     }
   }, [activeTab, plugin]);
+
+  if (activeTab === "scribe") {
+    return (
+      <div className={tw("flex flex-col h-full w-full")}>
+        <ScribeView plugin={plugin} />
+        <div className={tw("flex-1 min-h-0 border-t border-[rgba(14,210,247,0.08)]")}>
+          <AIChatSidebar
+            plugin={plugin}
+            apiKey={plugin.settings.API_KEY}
+            onTokenLimitError={onTokenLimitError}
+            isChatTabActive={true}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={tw("flex flex-col h-full w-full")}>
@@ -154,12 +240,6 @@ export class AssistantViewWrapper extends ItemView {
   constructor(leaf: WorkspaceLeaf, plugin: ZenithAI) {
     super(leaf);
     this.plugin = plugin;
-
-    this.plugin.addCommand({
-      id: "open-chat-tab",
-      name: "Open Chat Tab",
-      callback: () => this.activateTab("chat"),
-    });
 
     this.plugin.addCommand({
       id: "open-scribe-tab",

@@ -21,9 +21,9 @@ import { usePlugin } from "../provider";
 
 import { logMessage } from "../../../someUtils";
 import { MessageRenderer } from "./message-renderer";
-import ToolInvocationHandler from "./tool-handlers/tool-invocation-handler";
-import { convertToCoreMessages, streamText, ToolInvocation, Message } from "ai";
-import { ollama } from "ollama-ai-provider";
+import ToolCallHandler from "./tool-handlers/tool-invocation-handler";
+import { convertToCoreMessages, UIMessage as AIUIMessage, isToolUIPart, ToolUIPart } from "ai";
+import { UIMessage } from "@ai-sdk/ui-utils";
 import { SourcesSection } from "./components/SourcesSection";
 import { ContextLimitIndicator } from "./context-limit-indicator";
 import { ModelSelector } from "./model-selector";
@@ -122,7 +122,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const forcedReloadBodyRef = useRef<ReloadBody | null>(null);
 
   // Ref to track latest messages for onFinish (to avoid stale closure)
-  const messagesRef = useRef<Message[]>([]);
+  const messagesRef = useRef<UIMessage[]>([]);
 
   // Ref to track if we're currently loading a session (to prevent save on load)
   const isLoadingSessionRef = useRef<boolean>(false);
@@ -234,29 +234,14 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   } = useChat({
     // CRITICAL: Must use experimental_prepareRequestBody (the SDK ignores "prepareRequestBody")
     experimental_prepareRequestBody: ({ messages }) => {
-      // Normalize messages: ensure toolInvocations is populated from parts
-      // The SDK's updateToolCallResult only mutates parts, not toolInvocations when it's undefined
-      const normalizedMessages = messages.map((m: any) => {
-        if (m.role === "assistant" && Array.isArray(m.parts)) {
-          const partsToolInvocations = m.parts
-            .filter((p: any) => p.type === "tool-invocation" && p.toolInvocation)
-            .map((p: any) => p.toolInvocation);
-          if (partsToolInvocations.length > 0 && (!m.toolInvocations || m.toolInvocations.length === 0)) {
-            return { ...m, toolInvocations: partsToolInvocations };
-          }
-        }
-        return m;
-      });
-
       console.log(
         "[Chat] prepareRequestBody called with messages:",
-        normalizedMessages.length,
+        messages.length,
         "tool summary:",
-        JSON.stringify(normalizedMessages.map((m: any) => ({
+        JSON.stringify(messages.map((m: any) => ({
           role: m.role,
-          toolInvocations: m.toolInvocations?.length || 0,
-          toolParts: m.parts?.filter?.((p: any) => p.type === "tool-invocation")?.length || 0,
-          hasResults: m.toolInvocations?.filter?.((t: any) => t.result != null)?.length || 0,
+          toolParts: m.parts?.filter?.((p: any) => p.type?.startsWith("tool-"))?.length || 0,
+          hasOutputs: m.parts?.filter?.((p: any) => p.state === "output-available")?.length || 0,
         })))
       );
       // Read directly from Zustand store to get latest values (not from closure)
@@ -365,7 +350,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       });
 
       const requestBody = {
-        messages: normalizedMessages,
+        messages: messages,
         currentDatetime,
         newUnifiedContext: contextToSend,
         model: plugin.settings.selectedModel,
@@ -401,33 +386,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     })(),
     fetch: async (url, options) => {
       logMessage(selectedModel, "selectedModel");
-
-      // Handle different model types
-      if (selectedModel === "gpt-4o") {
-        // Use server fetch for non-local models
-        return fetch(url, options);
-      }
-
-      // Handle local models (llama3.2 or custom)
-      const { messages, newUnifiedContext, currentDatetime } = JSON.parse(
-        options.body as string
-      );
-      logger.debug("local model context", {
-        model: selectedModel,
-        contextLength: newUnifiedContext.length,
-        contextPreview: newUnifiedContext.slice(0, 200),
-        messageCount: messages.length,
-      });
-      const result = await streamText({
-        model: ollama(selectedModel),
-        system: `
-          ${newUnifiedContext},
-          currentDatetime: ${currentDatetime},
-          `,
-        messages: convertToCoreMessages(messages),
-      });
-
-      return result.toDataStreamResponse();
+      return fetch(url, options);
     },
     keepLastMessageOnError: true,
     onError: error => {
@@ -461,7 +420,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
       // Check if this is a tool invocation error (non-fatal)
       const isToolError = error.message?.includes(
-        "ToolInvocation must have a result"
+        "tool call must have a result"
       );
 
       if (isToolError) {
@@ -499,14 +458,6 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       ) {
         userFriendlyMessage =
           "Connection failed. Please check your internet connection.";
-      } else if (
-        error.message?.toLowerCase().includes("token limit exceeded") ||
-        error.message?.toLowerCase().includes("credits limit exceeded")
-      ) {
-        // Show the full error message for token limit - it includes usage details
-        userFriendlyMessage = error.message;
-        // Notify parent component to show upgrade button
-        onTokenLimitError?.(error.message);
       } else if (
         error.message?.toLowerCase().includes("rate limit") ||
         error.message?.toLowerCase().includes("429")
@@ -811,66 +762,17 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     const lastMessage = messages[messages.length - 1];
     if (lastMessage.role !== "assistant") return false;
 
-    // Extract tool invocations from parts (new format) or fallback to deprecated toolInvocations
-    interface ToolPart {
-      type?: string;
-      toolCallId?: string;
-      toolInvocation?: {
-        toolCallId: string;
-        toolName: string;
-        result?: unknown;
-        state?: string;
-      };
-      output?: unknown;
-      state?: string;
-    }
+    // Extract tool parts from message.parts (v5 direction via parts, not toolInvocations)
+    const toolParts = (lastMessage.parts as any[]).filter(isToolUIPart);
 
-    const messageWithParts = lastMessage as Message & {
-      parts?: ToolPart[];
-      toolInvocations?: ToolInvocation[];
-    };
+    if (toolParts.length === 0) return false;
 
-    // Extract tool invocations from parts (preferred) or fallback to deprecated property
-    let toolInvocations: any[] = [];
-
-    if (messageWithParts.parts) {
-      toolInvocations = messageWithParts.parts
-        .filter(
-          (part: ToolPart) =>
-            part.type?.startsWith("tool-") || part.toolInvocation
-        )
-        .map((part: ToolPart) => {
-          if (part.toolInvocation) {
-            return {
-              toolCallId: part.toolInvocation.toolCallId,
-              result: part.toolInvocation.result,
-              state: part.toolInvocation.state || part.state,
-            };
-          }
-          return {
-            toolCallId: part.toolCallId,
-            result: part.output,
-            state: part.state,
-          };
-        })
-        .filter((tool: any) => tool.toolCallId); // Filter out invalid entries
-    }
-
-    // Fallback to deprecated toolInvocations if parts extraction yielded nothing
-    if (toolInvocations.length === 0 && messageWithParts.toolInvocations) {
-      toolInvocations = messageWithParts.toolInvocations as any[];
-    }
-
-    if (toolInvocations.length === 0) return false;
-
-    // Check if any tools are still executing (no result yet)
-    const hasExecutingTools = toolInvocations.some(
-      (tool: any) => !("result" in tool) && tool.state !== "result"
+    const hasExecutingTools = toolParts.some(
+      part => part.state === "input-available" || part.state === "input-streaming"
     );
 
-    // Check if all tools are complete but AI hasn't started streaming yet
-    const allToolsComplete = toolInvocations.every(
-      (tool: any) => "result" in tool || tool.state === "result"
+    const allToolsComplete = toolParts.every(
+      part => part.state === "output-available"
     );
     const waitingForAI =
       allToolsComplete &&
@@ -888,9 +790,9 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
   // Helper to normalize message with timestamp
   const normalizeMessage = (
-    msg: Message,
+    msg: UIMessage,
     existingTimestamp?: number
-  ): Message & { createdAt?: number } => {
+  ): AIUIMessage & { experimental_attachments?: any; createdAt?: number } => {
     const normalized = { ...msg } as any;
     if (existingTimestamp) {
       normalized.createdAt = existingTimestamp;
@@ -902,12 +804,12 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       // New message, add timestamp
       normalized.createdAt = Date.now();
     }
-    return normalized as Message & { createdAt?: number };
+    return normalized as AIUIMessage & { experimental_attachments?: any; createdAt?: number };
   };
 
   // Track messages with timestamps (convert Date to number for consistency)
   const [messagesWithTimestamps, setMessagesWithTimestamps] = useState<
-    Array<Message & { createdAt?: number }>
+    Array<AIUIMessage & { experimental_attachments?: any; createdAt?: number }>
   >([]);
 
   // Sync messages with timestamps
@@ -1655,83 +1557,32 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
             </div>
           ) : (
             messages.map(message => {
-              // Extract tool invocations from AI SDK v4 message format.
-              // The SDK may store them in: message.toolInvocations, message.parts,
-              // or as nested toolInvocation objects inside parts.
-              const messageAny = message as any;
-
-              let toolInvocations: any[] = [];
-
-              // 1. Try message.toolInvocations (legacy / most common)
-              if (Array.isArray(messageAny.toolInvocations) && messageAny.toolInvocations.length > 0) {
-                toolInvocations = messageAny.toolInvocations;
-              }
-
-              // 2. Try message.parts (AI SDK v4 UIMessage format)
-              if (toolInvocations.length === 0 && Array.isArray(messageAny.parts)) {
-                for (const part of messageAny.parts) {
-                  // Format A: { type: "tool-invocation", toolInvocation: { toolCallId, toolName, args, ... } }
-                  if (part.type === "tool-invocation" && part.toolInvocation?.toolCallId) {
-                    toolInvocations.push({
-                      toolCallId: part.toolInvocation.toolCallId,
-                      toolName: part.toolInvocation.toolName,
-                      args: part.toolInvocation.args,
-                      result: part.toolInvocation.result,
-                      state: part.toolInvocation.state || part.state || "call",
-                    });
-                  }
-                  // Format B: { type: "tool-call", toolCallId, toolName, args }
-                  else if (part.type === "tool-call" && part.toolCallId && part.toolName) {
-                    toolInvocations.push({
-                      toolCallId: part.toolCallId,
-                      toolName: part.toolName,
-                      args: part.args || part.input,
-                      state: "call",
-                    });
-                  }
-                  // Format C: { type: "tool-result", toolCallId, result }
-                  else if (part.type === "tool-result" && part.toolCallId) {
-                    const existing = toolInvocations.find(
-                      (t: any) => t.toolCallId === part.toolCallId
-                    );
-                    if (existing) {
-                      existing.result = part.result ?? part.output;
-                      existing.state = "result";
-                    }
-                  }
-                }
-              }
-
-              // Filter out invocations without a valid toolCallId
-              toolInvocations = toolInvocations.filter(
-                (inv: any) => inv?.toolCallId && String(inv.toolCallId).trim() !== ""
+              const toolParts = (message.parts ?? []).filter(
+                (part): part is any => part.type === "tool-invocation"
               );
 
-              if (toolInvocations.length > 0) {
-                console.log("[Chat] Tool invocations for message:", message.id,
-                  toolInvocations.map((t: any) => ({
-                    id: t.toolCallId,
-                    name: t.toolName,
-                    hasResult: "result" in t && t.result != null,
-                    state: t.state,
+              if (toolParts.length > 0) {
+                console.log("[Chat] Tool parts for message:", message.id,
+                  toolParts.map(p => ({
+                    id: p.toolCallId,
+                    name: p.toolName,
+                    state: p.state,
                   }))
                 );
               }
 
               return (
                 <React.Fragment key={message.id}>
-                  {/* Render tool invocations FIRST so they appear above the message content */}
-                  {toolInvocations.map((toolInvocation: any) => {
-                    return (
-                      <ToolInvocationHandler
-                        key={toolInvocation.toolCallId}
-                        toolInvocation={toolInvocation as ToolInvocation}
-                        addToolResult={addToolResult}
-                        app={app}
-                        chatStatus={status}
-                      />
-                    );
-                  })}
+                  {/* Render tool parts FIRST so they appear above the message content */}
+                  {toolParts.map(part => (
+                    <ToolCallHandler
+                      key={part.toolCallId}
+                      toolInvocation={part}
+                      addToolResult={addToolResult}
+                      app={app}
+                      chatStatus={status}
+                    />
+                  ))}
                   {/* Finally render the message content (summary) so it appears below tool invocations */}
                   <MessageRenderer
                     message={

@@ -1,14 +1,8 @@
 import { App } from "obsidian";
-
-export interface ToolInvocation {
-  toolCallId: string;
-  toolName: string;
-  args: Record<string, any>;
-  result?: any;
-}
+import { ToolUIPart } from "ai";
 
 export interface ToolHandlerProps {
-  toolInvocation: ToolInvocation;
+  toolInvocation: ToolUIPart;
   handleAddResult: (result: string) => void;
   app: App;
 }

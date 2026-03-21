@@ -1,5 +1,4 @@
 import React, {
-  forwardRef,
   useEffect,
   useImperativeHandle,
   useState,
@@ -20,6 +19,10 @@ interface MentionsProps {
   command: (item: MentionItem) => void;
 }
 
+export interface MentionsHandle {
+  onKeyDown: (args: { event: KeyboardEvent }) => boolean;
+}
+
 const ItemIcon = ({ type }: { type?: string }) => {
   const className = "w-4 h-4";
   
@@ -37,10 +40,7 @@ const ItemIcon = ({ type }: { type?: string }) => {
 
 
 
-export const Mentions = forwardRef<
-  { onKeyDown: (args: { event: KeyboardEvent }) => boolean },
-  MentionsProps
->((props, ref) => {
+export const Mentions = ({ ref, ...props }: MentionsProps & { ref?: React.Ref<MentionsHandle> }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectItem = (index: number) => {
@@ -140,6 +140,6 @@ export const Mentions = forwardRef<
       )}
     </div>
   );
-});
+};
 
 export default Mentions;

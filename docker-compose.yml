@@ -20,7 +20,6 @@ services:
 
 # Optional: Model Name to specify for OpenAI or for non-OpenAI models
 #      - MODEL_PROVIDER=openai  # Options: openai, anthropic, google, groq, mistral, deepseek
-#      - MODEL_NAME=gpt-4o-mini  # Model name for the selected provider
 
 # Optional: Specific Model selections
 #      - MODEL_VISION=${MODEL_VISION}

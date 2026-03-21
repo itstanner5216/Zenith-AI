@@ -12,111 +12,61 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   onModelSelect,
 }) => {
   const plugin = usePlugin();
-  const [isModelSelectorOpen, setIsModelSelectorOpen] = React.useState(false);
-  const [isCustomizing, setIsCustomizing] = React.useState(false);
-  const [customModel, setCustomModel] = React.useState(plugin.settings.customModelName || "llama3.2");
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState(selectedModel);
 
-  const handleModelSelect = async (model: ModelType) => {
-    if (model === "custom") {
-      setIsCustomizing(true);
-      return;
-    }
-    onModelSelect(model);
-    if (model === "gpt-4o-mini" || model === "llama3.2") {
-      plugin.settings.selectedModel = model;
-    }
+  const handleSave = async () => {
+    const value = draft.trim();
+    plugin.settings.selectedModel = value;
+    plugin.settings.customModelName = value;
     await plugin.saveSettings();
-    setIsModelSelectorOpen(false);
+    onModelSelect(value);
+    setIsEditing(false);
   };
 
-  const handleCustomModelSave = async () => {
-    plugin.settings.customModelName = customModel;
-    plugin.settings.selectedModel = customModel as "gpt-4o-mini" | "llama3.2";
-    await plugin.saveSettings();
-    onModelSelect(customModel);
-    setIsCustomizing(false);
-    setIsModelSelectorOpen(false);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSave();
+    if (e.key === "Escape") setIsEditing(false);
   };
+
+  if (isEditing) {
+    return (
+      <div className="flex items-center gap-1">
+        <input
+          autoFocus
+          type="text"
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="model name"
+          className="w-28 px-2 py-0.5 text-xs bg-[#0d0b12] text-[#bebebe] border border-[rgba(14,210,247,0.45)] rounded focus:outline-none focus:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-150 placeholder:text-[#45aaff] placeholder:opacity-40"
+        />
+        <button
+          onClick={handleSave}
+          className="text-xs px-2 py-0.5 bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.15)] rounded hover:bg-[rgba(14,210,247,0.18)] active:scale-[0.97] transition-all duration-150"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => setIsEditing(false)}
+          className="text-xs px-1 py-0.5 text-[#45aaff] hover:text-[#bebebe] transition-colors"
+        >
+          ✕
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative">
-      <div className="flex items-center justify-end">
-        <div
-          onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-          className="flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[rgba(14,210,247,0.15)]"
-        >
-          <span className="font-medium">{selectedModel}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className={`w-3 h-3 transition-transform ${
-              isModelSelectorOpen ? "rotate-180" : ""
-            }`}
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        {isModelSelectorOpen && (
-          <div className="absolute bottom-full right-0 mb-1.5 bg-[rgba(25,22,33,0.85)] border border-[rgba(14,210,247,0.15)] rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_6px_rgba(14,210,247,0.2)] z-50 min-w-[140px] overflow-hidden">
-            <div className="py-1">
-              <div
-                onClick={() => handleModelSelect("gpt-4o-mini")}
-                className={`cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs transition-all duration-150 ${
-                  selectedModel === "gpt-4o-mini"
-                    ? 'bg-[rgba(14,210,247,0.08)] text-[#0fb6d6] border-l-2 border-l-[#0fb6d6]'
-                    : 'text-[#bebebe] hover:bg-[#191621] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:text-[#0fb6d6]'
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#50fa7b] shadow-[0_0_4px_rgba(80,250,123,0.5)] flex-shrink-0" />
-                {("gpt-4o-mini")}
-              </div>
-
-              {isCustomizing ? (
-                <div className="px-4 py-2">
-                  <input
-                    type="text"
-                    value={customModel}
-                    onChange={(e) => setCustomModel(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border bg-[#0d0b12] text-[#bebebe] border-[rgba(14,210,247,0.08)] rounded focus:outline-none focus:border-[rgba(14,210,247,0.45)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_6px_rgba(14,210,247,0.2)] transition-all duration-150"
-                    placeholder="Enter model name..."
-                  />
-                  <div className="flex justify-end mt-2 space-x-2">
-                    <button
-                      onClick={() => setIsCustomizing(false)}
-                      className="px-2 py-1 text-xs text-[#45aaff] hover:text-[#bebebe] cursor-pointer transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleCustomModelSave}
-                      className="px-2 py-1 text-xs bg-[rgba(14,210,247,0.1)] text-[#0fb6d6] border border-[rgba(14,210,247,0.15)] rounded hover:bg-[rgba(14,210,247,0.18)] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] cursor-pointer active:scale-[0.97] transition-all duration-150"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  onClick={() => handleModelSelect("custom")}
-                  className={`cursor-pointer flex items-center gap-2 w-full text-left px-3 py-2 text-xs transition-all duration-150 border-t border-[rgba(14,210,247,0.05)] ${
-                    selectedModel === "custom"
-                      ? 'bg-[rgba(14,210,247,0.08)] text-[#0fb6d6] border-l-2 border-l-[#0fb6d6]'
-                      : 'text-[#bebebe] hover:bg-[#191621] hover:shadow-[0_0_6px_rgba(14,210,247,0.2)] hover:text-[#0fb6d6]'
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#f4569d] shadow-[0_0_4px_rgba(244,86,157,0.5)] flex-shrink-0" />
-                  {("custom")}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+    <div
+      onClick={() => { setDraft(selectedModel); setIsEditing(true); }}
+      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded transition-all duration-150 text-[#45aaff] hover:text-[#0fb6d6] hover:bg-[rgba(14,210,247,0.06)] cursor-pointer border border-transparent hover:border-[rgba(14,210,247,0.15)]"
+      title="Click to change model"
+    >
+      <span className="font-medium">{selectedModel || "set model"}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 opacity-60">
+        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+      </svg>
     </div>
   );
 };

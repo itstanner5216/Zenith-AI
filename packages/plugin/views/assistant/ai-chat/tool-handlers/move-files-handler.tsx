@@ -68,14 +68,14 @@ export function MoveFilesHandler({
 
   React.useEffect(() => {
     if (!isValidated && !filesToMove.length) {
-      const { moves } = toolInvocation.args;
+      const { moves } = toolInvocation.input as any;
       const matchedFiles = moves.flatMap(move => getMatchingFiles(move));
       setFilesToMove(matchedFiles);
     }
-  }, [toolInvocation.args, isValidated]);
+  }, [toolInvocation.input, isValidated]);
 
   const handleMoveFiles = async () => {
-    const { moves } = toolInvocation.args;
+    const { moves } = toolInvocation.input as any;
     const results: string[] = [];
 
     await Promise.all(
@@ -113,7 +113,7 @@ export function MoveFilesHandler({
   return (
     <div className="flex flex-col space-y-4 p-4 border border-[rgba(14,210,247,0.08)]">
       <div className="text-[#bebebe]">
-        {toolInvocation.args.message || "Ready to move files"}
+        {(toolInvocation.input as any).message || "Ready to move files"}
       </div>
 
       {!isValidated && filesToMove.length > 0 && (

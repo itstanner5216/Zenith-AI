@@ -74,7 +74,7 @@ export class BackgroundScribe {
     );
   };
 
-  private async synthesizeTODO(): Promise<void> {
+  async synthesizeTODO(): Promise<void> {
     if (this.buffer.length === 0) return;
 
     const combinedContent = this.buffer.map(b => b.content).join("\n\n");

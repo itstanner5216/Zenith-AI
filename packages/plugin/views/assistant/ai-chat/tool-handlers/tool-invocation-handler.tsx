@@ -1,51 +1,44 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { App } from "obsidian";
-import { ToolInvocation } from "ai";
+import { ToolUIPart, getToolName } from "ai";
 import { SearchHandler } from "./search-handler";
 import { LastModifiedHandler } from "./last-modified-handler";
 import { OpenFileHandler } from "./open-file-handler";
 import { MoveFilesHandler } from "./move-files-handler";
 import { RenameFilesHandler } from "./rename-files-handler";
-import { SearchRenameHandler } from "./search-rename-handler";
-import { ModifyTextHandler } from "./modify-text-handler";
-import { TaggedFilesHandler } from "./tagged-files-handler";
-import { HeadingsHandler } from "./headings-handler";
-import { CreateFilesHandler } from "./create-files-handler";
-import { DeleteFilesHandler } from "./delete-files-handler";
-import { MergeFilesHandler } from "./merge-files-handler";
-import { BulkFindReplaceHandler } from "./bulk-find-replace-handler";
 
 const processedToolCallIds = new Set<string>();
 
-interface ToolInvocationHandlerProps {
-  toolInvocation: ToolInvocation;
+interface ToolCallHandlerProps {
+  toolInvocation: ToolUIPart;
   addToolResult: (result: { toolCallId: string; result: string }) => void;
   app: App;
   chatStatus: string;
 }
 
-function ToolInvocationHandler({
+function ToolCallHandler({
   toolInvocation,
   addToolResult,
   app,
   chatStatus,
-}: ToolInvocationHandlerProps) {
+}: ToolCallHandlerProps) {
   const toolCallId = toolInvocation.toolCallId;
+  const toolName = getToolName(toolInvocation);
   const pendingResultRef = React.useRef<string | null>(null);
 
   const handleAddResult = (result: string) => {
     if (processedToolCallIds.has(toolCallId)) {
-      console.log("[ToolInvocationHandler] Skipping duplicate addToolResult for:", toolCallId);
+      console.log("[ToolCallHandler] Skipping duplicate addToolResult for:", toolCallId);
       return;
     }
     if (chatStatus !== "ready") {
-      console.log("[ToolInvocationHandler] Deferring addToolResult until stream finishes for:", toolCallId, "status:", chatStatus);
+      console.log("[ToolCallHandler] Deferring addToolResult until stream finishes for:", toolCallId, "status:", chatStatus);
       pendingResultRef.current = result;
       return;
     }
     processedToolCallIds.add(toolCallId);
-    console.log("[ToolInvocationHandler] Calling addToolResult for:", toolCallId);
+    console.log("[ToolCallHandler] Calling addToolResult for:", toolCallId);
     addToolResult({ toolCallId, result });
   };
 
@@ -55,7 +48,7 @@ function ToolInvocationHandler({
       const result = pendingResultRef.current;
       pendingResultRef.current = null;
       processedToolCallIds.add(toolCallId);
-      console.log("[ToolInvocationHandler] Flushing deferred addToolResult for:", toolCallId);
+      console.log("[ToolCallHandler] Flushing deferred addToolResult for:", toolCallId);
       addToolResult({ toolCallId, result });
     }
   }, [chatStatus, toolCallId, addToolResult]);
@@ -63,27 +56,18 @@ function ToolInvocationHandler({
   const getToolTitle = (toolName: string) => {
     const toolTitles = {
       getSearchQuery: "Searching Notes",
-      modifyCurrentNote: "Note Modification",
       getLastModifiedFiles: "Recent File Activity",
       moveFiles: "Moving Files",
       renameFiles: "Renaming Files",
-      searchByName: "Search Files by Name",
       openFile: "Opening File",
-      modifyDocumentText: "Modifying Document Text",
-      getTaggedFiles: "Find Tagged Files",
-      getHeadings: "Get Document Structure",
-      createNewFiles: "Creating New Files",
-      deleteFiles: "Deleting Files",
-      mergeFiles: "Merging Files",
-      bulkFindReplace: "Find & Replace",
     };
     return toolTitles[toolName] ;
   };
 
   const renderContent = () => {
     // Debug: Log tool name matching
-    console.log("[ToolInvocationHandler] Rendering tool:", {
-      toolName: toolInvocation.toolName,
+    console.log("[ToolCallHandler] Rendering tool:", {
+      toolName: toolName,
       toolCallId: toolInvocation.toolCallId,
     });
     
@@ -123,75 +107,20 @@ function ToolInvocationHandler({
           app={app}
         />
       ),
-      searchByName: () => (
-        <SearchRenameHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      modifyDocumentText: () => (
-        <ModifyTextHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      getTaggedFiles: () => (
-        <TaggedFilesHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      getHeadings: () => (
-        <HeadingsHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      createNewFiles: () => (
-        <CreateFilesHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      deleteFiles: () => (
-        <DeleteFilesHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      mergeFiles: () => (
-        <MergeFilesHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
-      bulkFindReplace: () => (
-        <BulkFindReplaceHandler
-          toolInvocation={toolInvocation}
-          handleAddResult={handleAddResult}
-          app={app}
-        />
-      ),
+
     };
 
-    const handler = handlers[toolInvocation.toolName];
+    const handler = handlers[toolName];
     if (!handler) {
-      console.error("[ToolInvocationHandler] No handler found for tool:", toolInvocation.toolName);
-      if (!("result" in toolInvocation)) {
+      console.error("[ToolCallHandler] No handler found for tool:", toolName);
+      if (toolInvocation.state !== 'output-available') {
         handleAddResult(
-          JSON.stringify({ error: `Unknown tool: ${toolInvocation.toolName}` })
+          JSON.stringify({ error: `Unknown tool: ${toolName}` })
         );
       }
       return (
         <div className="text-xs text-[#f4569d] p-2">
-          Unknown tool: {toolInvocation.toolName}
+          Unknown tool: {toolName}
         </div>
       );
     }
@@ -215,7 +144,7 @@ function ToolInvocationHandler({
           style={{ filter: 'drop-shadow(0 0 4px rgba(14,210,247,0.4))' }}
         />
         <h4 className="m-0 text-[#0fb6d6] text-xs font-semibold uppercase tracking-wider">
-          {getToolTitle(toolInvocation.toolName) || toolInvocation.toolName}
+          {getToolTitle(toolName) || toolName}
         </h4>
       </div>
       {/* Tool content */}
@@ -224,5 +153,5 @@ function ToolInvocationHandler({
   );
 }
 
-export default ToolInvocationHandler;
+export default ToolCallHandler;
 

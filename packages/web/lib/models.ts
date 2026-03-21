@@ -9,7 +9,7 @@ import { LanguageModel } from 'ai';
 // Get model configuration from environment variables
 // Defaults to OpenAI for backward compatibility with cloud environment
 const MODEL_PROVIDER = (process.env.MODEL_PROVIDER || 'openai').toLowerCase();
-const MODEL_NAME = process.env.MODEL_NAME || 'gpt-4o-mini';
+const MODEL_NAME = process.env.MODEL_NAME || (() => { throw new Error('MODEL_NAME env var is required'); })();
 const RESPONSES_MODEL_NAME = process.env.RESPONSES_MODEL_NAME || MODEL_NAME;
 const VISION_MODEL_NAME = process.env.VISION_MODEL_NAME || MODEL_NAME;
 

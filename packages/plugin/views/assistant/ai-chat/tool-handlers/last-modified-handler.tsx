@@ -63,9 +63,9 @@ export function LastModifiedHandler({
 
   React.useEffect(() => {
     const handleLastModifiedSearch = async () => {
-      if (!hasFetchedRef.current && !("result" in toolInvocation)) {
+      if (!hasFetchedRef.current && toolInvocation.state !== 'output-available') {
         hasFetchedRef.current = true;
-        const { count } = toolInvocation.args as LastModifiedArgs;
+        const { count } = toolInvocation.input as LastModifiedArgs;
         
         try {
           const searchResults = await getLastModifiedFiles(count);
@@ -106,12 +106,12 @@ export function LastModifiedHandler({
 
   const fileCount = Object.keys(files).length;
   
-  const result = ("result" in toolInvocation) ? JSON.parse(toolInvocation.result as string) : null;
+  const result = (toolInvocation.state === 'output-available') ? JSON.parse(toolInvocation.output as string) : null;
   const resultCount = result?.count || 0;
 
   return (
     <div className="text-sm text-[#45aaff]">
-      {!("result" in toolInvocation) ? (
+      {toolInvocation.state !== 'output-available' ? (
         `Fetching last modified files... ${progress.total > 0 ? `(${progress.done}/${progress.total})` : ""}`
       ) : resultCount > 0 ? (
         `Found ${resultCount} recently modified files`

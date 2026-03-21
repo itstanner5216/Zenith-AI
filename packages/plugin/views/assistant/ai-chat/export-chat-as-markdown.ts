@@ -1,4 +1,4 @@
-import type { Message } from "ai";
+import type { UIMessage } from "@ai-sdk/ui-utils";
 import type { App } from "obsidian";
 import { Notice } from "obsidian";
 import { safeCreate } from "../../../fileUtils";
@@ -14,7 +14,7 @@ export interface MessagesToMarkdownOptions {
   title?: string;
 }
 
-interface ToolInvocationLike {
+interface ToolCallLike {
   toolCallId?: string;
   toolName?: string;
   result?: unknown;
@@ -24,7 +24,7 @@ interface ToolInvocationLike {
 /**
  * Normalize message content to string (handles AI SDK string or array of parts).
  */
-function getMessageContentAsString(message: Message): string {
+function getMessageContentAsString(message: UIMessage): string {
   const content = message.content as
     | string
     | Array<{ type?: string; text?: string }>
@@ -46,15 +46,15 @@ function getMessageContentAsString(message: Message): string {
 /**
  * Extract tool invocations from message (parts or deprecated toolInvocations).
  */
-function getToolInvocations(message: Message): ToolInvocationLike[] {
-  const msg = message as Message & {
+function getToolCalls(message: UIMessage): ToolCallLike[] {
+  const msg = message as UIMessage & {
     parts?: Array<{
       type?: string;
       toolCallId?: string;
       toolInvocation?: { toolCallId: string; toolName: string; result?: unknown };
       output?: unknown;
     }>;
-    toolInvocations?: ToolInvocationLike[];
+    toolInvocations?: ToolCallLike[];
   };
 
   if (msg.parts) {
@@ -78,8 +78,8 @@ function getToolInvocations(message: Message): ToolInvocationLike[] {
   if (msg.toolInvocations && Array.isArray(msg.toolInvocations)) {
     return msg.toolInvocations.map((t) => ({
       toolCallId: t.toolCallId,
-      toolName: (t as ToolInvocationLike).toolName,
-      result: (t as ToolInvocationLike).result ?? (t as ToolInvocationLike).output,
+      toolName: (t as ToolCallLike).toolName,
+      result: (t as ToolCallLike).result ?? (t as ToolCallLike).output,
     }));
   }
   return [];
@@ -104,7 +104,7 @@ function formatToolResultSummary(result: unknown): string {
  * Convert chat messages to markdown string.
  */
 export function messagesToMarkdown(
-  messages: Message[],
+  messages: UIMessage[],
   options: MessagesToMarkdownOptions = {}
 ): string {
   const {
@@ -159,7 +159,7 @@ export function messagesToMarkdown(
     }
 
     if (includeToolCalls && message.role === "assistant") {
-      const tools = getToolInvocations(message);
+      const tools = getToolCalls(message);
       for (const tool of tools) {
         const name = tool.toolName || "tool";
         const summary = formatToolResultSummary(tool.result ?? tool.output);
@@ -177,7 +177,7 @@ export function messagesToMarkdown(
  */
 export async function exportChatToVault(
   app: App,
-  messages: Message[],
+  messages: UIMessage[],
   sessionTitle: string | null
 ): Promise<void> {
   const title = sessionTitle || ChatHistoryManager.generateTitleFromMessages(messages);
@@ -200,7 +200,7 @@ export async function exportChatToVault(
  * Copy current chat as markdown to the clipboard.
  */
 export async function copyChatToClipboard(
-  messages: Message[],
+  messages: UIMessage[],
   sessionTitle: string | null
 ): Promise<void> {
   const title = sessionTitle || ChatHistoryManager.generateTitleFromMessages(messages);

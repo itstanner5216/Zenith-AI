@@ -1,5 +1,5 @@
 import { normalizePath, App } from "obsidian";
-import { Message } from "ai";
+import { UIMessage } from "@ai-sdk/ui-utils";
 import { logger } from "../../../../services/logger";
 
 type TimeoutID = ReturnType<typeof setTimeout>;
@@ -7,7 +7,7 @@ type TimeoutID = ReturnType<typeof setTimeout>;
 export interface ChatSession {
   id: string;
   title: string; // Auto-generated from first user message (max 50 chars)
-  messages: Message[];
+  messages: UIMessage[];
   createdAt: number; // Unix timestamp
   updatedAt: number; // Unix timestamp
   model?: string; // Selected model for this session
@@ -261,7 +261,7 @@ export class ChatHistoryManager {
    * Takes first 50 characters of the first user message
    * Excludes file mentions entirely from the title
    */
-  public static generateTitleFromMessages(messages: Message[]): string {
+  public static generateTitleFromMessages(messages: UIMessage[]): string {
     const firstUserMessage = messages.find(m => m.role === 'user');
     if (firstUserMessage && firstUserMessage.content) {
       let title = firstUserMessage.content.trim();

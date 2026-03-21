@@ -57,7 +57,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            License key activated
+            API key set
           </div>
         );
       case "invalid":
@@ -76,7 +76,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-            Invalid license key
+            Invalid API key
           </div>
         );
       case "checking":
@@ -101,7 +101,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            Checking license key...
+            Checking...
           </div>
         );
       default:
@@ -115,10 +115,10 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
         <div className="space-y-4">
           <div>
             <h3 className="text-lg font-semibold mb-2 mt-0 text-[#0fb6d6]">
-              Zenith-AI License Key
+              Zenith-AI API Key
             </h3>
             <p className="text-xs text-[#45aaff] opacity-70 mb-4">
-              Enter your license key to activate Zenith-AI.
+              Enter your API key.
             </p>
           </div>
 
@@ -133,7 +133,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                     ? "border-[#f4569d] shadow-[0_0_6px_rgba(244,86,157,0.2)]"
                     : "border-[rgba(14,210,247,0.12)] focus:border-[rgba(14,210,247,0.5)] focus:ring-1 focus:ring-[rgba(14,210,247,0.15)] focus:shadow-[0_0_8px_rgba(14,210,247,0.1)]"
                 }`}
-                placeholder="Enter your license key"
+                placeholder="Enter your API key"
                 value={licenseKey}
                 onChange={e => handleLicenseKeyChange(e.target.value)}
               />
@@ -142,7 +142,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({
                 disabled={!licenseKey || !!validationError}
                 className="bg-[#0fb6d6] text-[#0d0b12] px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(14,210,247,0.2)] hover:shadow-[0_0_12px_rgba(14,210,247,0.35)]"
               >
-                Activate
+                Save
               </button>
             </div>
             {validationError && (
