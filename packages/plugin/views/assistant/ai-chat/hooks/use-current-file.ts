@@ -88,14 +88,13 @@ export function useCurrentFile({
     }
 
     // Register event handlers
-    const eventRefs = [
-      app.workspace.on('file-open', updateActiveFile),
-      app.workspace.on('active-leaf-change', updateActiveFile)
-    ];
+    app.workspace.on('file-open', updateActiveFile);
+    app.workspace.on('active-leaf-change', updateActiveFile);
 
     // Cleanup
     return () => {
-      eventRefs.forEach(ref => app.workspace.offref(ref));
+      app.workspace.off('file-open', updateActiveFile);
+      app.workspace.off('active-leaf-change', updateActiveFile);
     };
   }, [app, chatHasStarted]);
 

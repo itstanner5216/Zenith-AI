@@ -154,28 +154,22 @@ export function useEditorSelection(app: App): EditorSelectionResult {
     rafId = requestAnimationFrame(pollSelection);
 
     // Listen to editor changes (for document content)
-    const editorChangeRef = app.workspace.on("editor-change", () => {
-      updateContext();
-    });
+    app.workspace.on("editor-change", updateContext);
 
     // Listen to active leaf changes (when switching files/panes)
-    const activeLeafChangeRef = app.workspace.on("active-leaf-change", () => {
-      updateContext();
-    });
+    app.workspace.on("active-leaf-change", updateContext);
 
     // Listen to file opens
-    const fileOpenRef = app.workspace.on("file-open", () => {
-      updateContext();
-    });
+    app.workspace.on("file-open", updateContext);
 
     // Cleanup
     return () => {
       // Cancel animation frame polling
       cancelAnimationFrame(rafId);
 
-      app.workspace.offref(editorChangeRef);
-      app.workspace.offref(activeLeafChangeRef);
-      app.workspace.offref(fileOpenRef);
+      app.workspace.off("editor-change", updateContext);
+      app.workspace.off("active-leaf-change", updateContext);
+      app.workspace.off("file-open", updateContext);
     };
   }, [app, isManuallyCleared]);
 

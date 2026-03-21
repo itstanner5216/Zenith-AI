@@ -94,7 +94,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       setScribeActive(plugin.backgroundScribe?.isActiveState ?? false);
     };
     const ref = app.workspace.on("zenith-ai:background-scribe-changed" as any, handler);
-    return () => app.workspace.offref(ref);
+    return () => app.workspace.off("zenith-ai:background-scribe-changed" as any, handler);
   }, [app.workspace, plugin]);
 
   // Chat history manager instance

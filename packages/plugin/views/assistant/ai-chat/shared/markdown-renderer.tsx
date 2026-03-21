@@ -107,8 +107,8 @@ export const MarkdownContent: React.FC<MarkdownContentProps> = ({
     const updateActiveFile = () =>
       setActiveFile(plugin.app.workspace.getActiveFile());
     updateActiveFile();
-    const eventRef = plugin.app.workspace.on("file-open", updateActiveFile);
-    return () => plugin.app.workspace.offref(eventRef);
+    plugin.app.workspace.on("file-open", updateActiveFile);
+    return () => plugin.app.workspace.off("file-open", updateActiveFile);
   }, [plugin.app]);
 
   return (
