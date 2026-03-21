@@ -87,14 +87,7 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outdir: outdir,
 	plugins: [
-		postcss({
-			plugins: {
-				tailwindcss: {},
-				autoprefixer: {},
-			},
-			inject: false,
-			extract: true,
-		}),
+		postcss(),
 		rustTreeSitterBridgePlugin,
 	],
 	define: {
