@@ -1,5 +1,5 @@
 import { normalizePath, App } from "obsidian";
-import { UIMessage } from "@ai-sdk/ui-utils";
+import { UIMessage } from "ai";
 import { logger } from "../../../../services/logger";
 
 type TimeoutID = ReturnType<typeof setTimeout>;

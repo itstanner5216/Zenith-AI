@@ -36,13 +36,13 @@ export function createModelFromKey(
         throw new Error(`OpenAI-compatible provider "${key.name}" requires a base URL`);
       }
       const provider = createOpenAI({
-        apiKey: key.apiKey || "not-needed",
+        apiKey: key.apiKey,
         baseURL: key.baseUrl,
       });
       return provider(modelId) as unknown as LanguageModel;
     }
 
     default:
-      throw new Error(`Unknown provider type: ${(key as ProviderKey).provider}`);
+      throw new Error(`Unknown provider type: ${key.provider}`);
   }
 }

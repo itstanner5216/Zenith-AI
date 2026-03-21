@@ -1,5 +1,14 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { convertToModelMessages } from "ai";
+## Layer 3: Chat Hook
+
+### Task 3.1 — Create useZenithChat hook
+
+**New file:** `packages/plugin/views/assistant/ai-chat/hooks/use-zenith-chat.ts`
+
+This is the most critical file. It replaces `useChat` from `@ai-sdk/react`.
+
+```typescript
+import { useState, useCallback, useRef } from "react";
+import { convertToCoreMessages } from "ai";
 import type { UIMessage, ToolSet, StepResult } from "ai";
 import type { AIService } from "../../../../services/ai/ai-service";
 
@@ -44,14 +53,9 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const isGeneratingRef = useRef(false);
-  const messagesRef = useRef<UIMessage[]>([]);
-
-  useEffect(() => {
-    messagesRef.current = messages;
-  }, [messages]);
 
   /**
-   * Core streaming function. Converts current messages to model format,
+   * Core streaming function. Converts current messages to core format,
    * calls streamText, and processes the stream chunk by chunk.
    */
   const runStream = useCallback(async (
@@ -68,10 +72,10 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     try {
       setStatus("submitted");
 
-      const modelMessages = convertToModelMessages(currentMessages);
+      const coreMessages = convertToCoreMessages(currentMessages);
 
       const result = aiService.streamChat({
-        messages: modelMessages,
+        messages: coreMessages,
         systemPrompt,
         tools,
         maxSteps,
@@ -84,6 +88,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
       const assistantMessage: UIMessage = {
         id: assistantMessageId,
         role: "assistant",
+        content: "",
         parts: [],
       };
 
@@ -91,49 +96,57 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
       setStatus("streaming");
 
       let accumulatedText = "";
-      const toolCallParts: UIMessage["parts"] = [];
 
-      // Use fullStream to capture text across ALL steps and tool calls in one pass.
-      // result.textStream only yields the final step; fullStream surfaces everything.
-      for await (const part of result.fullStream) {
+      // Process the text stream
+      for await (const chunk of result.textStream) {
         if (abortController.signal.aborted) break;
-        if (part.type === "text-delta") {
-          accumulatedText += part.text;
-          setMessages(prev => {
-            const updated = [...prev];
-            const lastIdx = updated.length - 1;
-            if (lastIdx >= 0 && updated[lastIdx].id === assistantMessageId) {
-              updated[lastIdx] = {
-                ...updated[lastIdx],
-                parts: [
-                  ...updated[lastIdx].parts.filter(p => p.type !== "text"),
-                  { type: "text" as const, text: accumulatedText },
-                ],
-              };
-            }
-            return updated;
-          });
-        } else if (part.type === "tool-call") {
-          toolCallParts.push({
-            type: `tool-${part.toolName}`,
-            toolCallId: part.toolCallId,
-            input: part.input,
-            state: "input-available",
-          } as UIMessage["parts"][number]);
+        accumulatedText += chunk;
+
+        setMessages(prev => {
+          const updated = [...prev];
+          const lastIdx = updated.length - 1;
+          if (lastIdx >= 0 && updated[lastIdx].id === assistantMessageId) {
+            updated[lastIdx] = {
+              ...updated[lastIdx],
+              content: accumulatedText,
+              parts: [{ type: "text" as const, text: accumulatedText }],
+            };
+          }
+          return updated;
+        });
+      }
+
+      // After stream completes, get the final result with tool calls etc.
+      const finalResult = await result;
+
+      // Build final parts from the response
+      const finalParts: UIMessage["parts"] = [];
+
+      // Add tool call parts if any
+      if (finalResult.toolCalls && finalResult.toolCalls.length > 0) {
+        for (const tc of finalResult.toolCalls) {
+          finalParts.push({
+            type: "tool-invocation" as const,
+            toolCallId: tc.toolCallId,
+            toolName: tc.toolName,
+            args: tc.args,
+            state: "call" as const,
+          } as any);
         }
       }
 
-      // Build final parts — text + tool calls
-      const finalParts: UIMessage["parts"] = [
-        ...toolCallParts,
-        ...(accumulatedText ? [{ type: "text" as const, text: accumulatedText }] : []),
-      ];
+      // Add text part
+      const finalText = finalResult.text || accumulatedText;
+      if (finalText) {
+        finalParts.push({ type: "text" as const, text: finalText });
+      }
 
       // Update the assistant message with final parts
       const finalMessage: UIMessage = {
         id: assistantMessageId,
         role: "assistant",
-        parts: finalParts,
+        content: finalText,
+        parts: finalParts.length > 0 ? finalParts : [{ type: "text" as const, text: finalText }],
       };
 
       setMessages(prev => {
@@ -169,6 +182,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     const userMessage: UIMessage = {
       id: crypto.randomUUID(),
       role: "user",
+      content,
       parts: [{ type: "text" as const, text: content }],
     };
 
@@ -186,23 +200,20 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     await runStream(updatedMessages, systemPrompt || undefined);
   }, [messages, runStream]);
 
-  /** Add a tool result — updates the matching tool part's state to output-available */
+  /** Add a tool result and potentially re-stream for multi-step */
   const addToolResult = useCallback((result: { toolCallId: string; result: string }) => {
     setMessages(prev => {
-      return prev.map(msg => {
+      const updated = prev.map(msg => {
         if (msg.role !== "assistant") return msg;
 
-        const updatedParts = msg.parts.map((part): typeof part => {
-          // The tool-* union type doesn't expose toolCallId directly, so we
-          // narrow with "in" and cast to access the property safely.
+        const updatedParts = msg.parts?.map(part => {
           if (
-            part.type.startsWith("tool-") &&
-            "toolCallId" in part &&
+            part.type === "tool-invocation" &&
             (part as any).toolCallId === result.toolCallId
           ) {
             return {
-              ...(part as any),
-              state: "output-available",
+              ...part,
+              state: "output-available" as const,
               output: result.result,
             };
           }
@@ -211,6 +222,8 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
 
         return { ...msg, parts: updatedParts };
       });
+
+      return updated;
     });
   }, []);
 
@@ -221,14 +234,11 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
 
   /** Reload: remove last assistant message and re-stream */
   const reload = useCallback(async (opts?: { context?: string; systemPrompt?: string }) => {
-    const current = messagesRef.current;
-    let lastAssistantIdx = -1;
-    for (let i = current.length - 1; i >= 0; i--) {
-      if (current[i].role === "assistant") { lastAssistantIdx = i; break; }
-    }
+    // Find and remove the last assistant message
+    const lastAssistantIdx = messages.findLastIndex(m => m.role === "assistant");
     if (lastAssistantIdx === -1) return;
 
-    const messagesWithoutLast = current.slice(0, lastAssistantIdx);
+    const messagesWithoutLast = messages.slice(0, lastAssistantIdx);
     setMessages(messagesWithoutLast);
 
     let systemPrompt = opts?.systemPrompt || "";
@@ -239,7 +249,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     }
 
     await runStream(messagesWithoutLast, systemPrompt || undefined);
-  }, [runStream]);
+  }, [messages, runStream]);
 
   return {
     messages,
@@ -252,3 +262,36 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     setMessages,
   };
 }
+```
+
+**Test file:** `packages/plugin/views/assistant/ai-chat/hooks/use-zenith-chat.test.ts`
+
+```typescript
+/**
+ * Note: This hook is tightly coupled to React state and the AI SDK streaming APIs.
+ * Unit tests cover the pure logic; integration behavior is verified by building
+ * and manually testing the chat in the plugin.
+ *
+ * The hook's contract is:
+ * - It exposes messages, status, error, sendMessage, addToolResult, stop, reload, setMessages
+ * - status transitions: ready → submitted → streaming → ready
+ * - addToolResult updates the correct tool part's state to "output-available"
+ */
+
+// Basic smoke test — the hook module exports the expected function
+import { useZenithChat } from "./use-zenith-chat";
+
+describe("useZenithChat module", () => {
+  it("exports useZenithChat function", () => {
+    expect(typeof useZenithChat).toBe("function");
+  });
+});
+```
+
+**Verify:**
+```bash
+cd /home/tanner/Projects/Zenith-AI/packages/plugin && pnpm test -- --testPathPattern="hooks/use-zenith-chat.test"
+```
+
+---
+

@@ -41,3 +41,4 @@ cd /home/tanner/Projects/Zenith-AI/packages/plugin && rm -rf dist && pnpm build
 ```bash
 cd /home/tanner/Projects/Zenith-AI && ./scripts/verify-deletion.sh "API_KEY" "getApiKey" "selectedModel" "useChat" "@ai-sdk/react"
 ```
+

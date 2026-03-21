@@ -35,12 +35,12 @@ function AddKeyForm({ onSave, onCancel }: {
         placeholder="Key name (e.g., My OpenAI)"
         value={name}
         onChange={e => setName(e.target.value)}
-        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
+        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
       />
       <select
         value={provider}
         onChange={e => setProvider(e.target.value as ProviderType)}
-        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 cursor-pointer"
+        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 cursor-pointer"
       >
         <option value="openai">OpenAI</option>
         <option value="anthropic">Anthropic</option>
@@ -51,7 +51,7 @@ function AddKeyForm({ onSave, onCancel }: {
         placeholder="API Key"
         value={apiKey}
         onChange={e => setApiKey(e.target.value)}
-        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
+        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
       />
       {(provider === "openai-compatible" || provider === "openai") && (
         <input
@@ -59,14 +59,14 @@ function AddKeyForm({ onSave, onCancel }: {
           placeholder={provider === "openai-compatible" ? "Base URL (required)" : "Base URL (optional override)"}
           value={baseUrl}
           onChange={e => setBaseUrl(e.target.value)}
-          className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
+          className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
         />
       )}
       <div className="flex gap-2 pt-1">
         <button
           onClick={handleSave}
           disabled={!name.trim() || (provider === "openai-compatible" && !baseUrl.trim())}
-          className="px-3 py-1 text-xs bg-neon-cyan text-primary-foreground rounded font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 text-xs bg-neon-cyan text-primary-foreground rounded font-semibold hover:bg-neon-cyan/85 active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Save
         </button>
@@ -91,11 +91,11 @@ function ProviderKeyItem({ providerKey, onTest, onDelete }: {
     : "(empty)";
 
   return (
-    <div className="flex items-center justify-between py-2 px-3 bg-depth-3 rounded-md border border-[rgba(14,210,247,0.06)] group hover:border-[rgba(14,210,247,0.15)] transition-all duration-150">
+    <div className="flex items-center justify-between py-2 px-3 bg-depth-3 rounded-md border border-neon-cyan/6 group hover:border-accent-border transition-all duration-150">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground truncate">{providerKey.name}</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[rgba(14,210,247,0.08)] text-neon-cyan">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-neon-cyan/8 text-neon-cyan">
             {providerKey.provider}
           </span>
         </div>
@@ -109,13 +109,13 @@ function ProviderKeyItem({ providerKey, onTest, onDelete }: {
       <div className="flex items-center gap-1.5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={onTest}
-          className="text-[10px] px-2 py-0.5 text-neon-cyan border border-accent-border rounded hover:bg-[rgba(14,210,247,0.08)] transition-all duration-150"
+          className="text-[10px] px-2 py-0.5 text-neon-cyan border border-accent-border rounded hover:bg-neon-cyan/8 transition-all duration-150"
         >
           Test
         </button>
         <button
           onClick={onDelete}
-          className="text-[10px] px-2 py-0.5 text-neon-pink border border-[rgba(244,86,157,0.15)] rounded hover:bg-[rgba(244,86,157,0.08)] transition-all duration-150"
+          className="text-[10px] px-2 py-0.5 text-neon-pink border border-neon-pink/15 rounded hover:bg-neon-pink/8 transition-all duration-150"
         >
           Delete
         </button>
@@ -151,12 +151,12 @@ function AddModelForm({ providerKeys, onSave, onCancel }: {
         placeholder="Model ID (e.g., gpt-4o, claude-sonnet-4)"
         value={modelId}
         onChange={e => setModelId(e.target.value)}
-        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
+        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
       />
       <select
         value={providerKeyId}
         onChange={e => setProviderKeyId(e.target.value)}
-        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 cursor-pointer"
+        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 cursor-pointer"
       >
         {providerKeys.map(k => (
           <option key={k.id} value={k.id}>{k.name} ({k.provider})</option>
@@ -167,13 +167,13 @@ function AddModelForm({ providerKeys, onSave, onCancel }: {
         placeholder="Display name (optional)"
         value={displayName}
         onChange={e => setDisplayName(e.target.value)}
-        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
+        className="w-full px-3 py-1.5 text-xs rounded-md bg-depth-3 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 placeholder:text-dim placeholder:opacity-40"
       />
       <div className="flex gap-2 pt-1">
         <button
           onClick={handleSave}
           disabled={!modelId.trim() || !providerKeyId}
-          className="px-3 py-1 text-xs bg-neon-cyan text-primary-foreground rounded font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 text-xs bg-neon-cyan text-primary-foreground rounded font-semibold hover:bg-neon-cyan/85 active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Save
         </button>
@@ -196,7 +196,7 @@ function ModelConfigItem({ config, providerKeys, onDelete }: {
   const key = providerKeys.find(k => k.id === config.providerKeyId);
 
   return (
-    <div className="flex items-center justify-between py-2 px-3 bg-depth-3 rounded-md border border-[rgba(14,210,247,0.06)] group hover:border-[rgba(14,210,247,0.15)] transition-all duration-150">
+    <div className="flex items-center justify-between py-2 px-3 bg-depth-3 rounded-md border border-neon-cyan/6 group hover:border-accent-border transition-all duration-150">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground truncate font-mono">{config.modelId}</span>
@@ -209,7 +209,7 @@ function ModelConfigItem({ config, providerKeys, onDelete }: {
       <div className="opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={onDelete}
-          className="text-[10px] px-2 py-0.5 text-neon-pink border border-[rgba(244,86,157,0.15)] rounded hover:bg-[rgba(244,86,157,0.08)] transition-all duration-150"
+          className="text-[10px] px-2 py-0.5 text-neon-pink border border-neon-pink/15 rounded hover:bg-neon-pink/8 transition-all duration-150"
         >
           Delete
         </button>
@@ -227,20 +227,12 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
   const [showAddKey, setShowAddKey] = useState(false);
   const [showAddModel, setShowAddModel] = useState(false);
 
-  const saveSettings = async (
-    keys: ProviderKey[],
-    configs: ModelConfig[],
-    activeId: string,
-  ) => {
-    plugin.settings.providerKeys = keys;
-    plugin.settings.modelConfigs = configs;
-    plugin.settings.activeModelConfigId = activeId;
-    await plugin.saveSettings();
-  };
-
   useEffect(() => {
-    saveSettings(providerKeys, modelConfigs, activeModelConfigId);
-  }, [providerKeys, modelConfigs, activeModelConfigId]);
+    plugin.settings.providerKeys = providerKeys;
+    plugin.settings.modelConfigs = modelConfigs;
+    plugin.settings.activeModelConfigId = activeModelConfigId;
+    plugin.saveSettings();
+  }, [providerKeys, modelConfigs, activeModelConfigId, plugin]);
 
   const handleAddKey = (keyData: Omit<ProviderKey, "id">) => {
     const newKey: ProviderKey = { id: crypto.randomUUID(), ...keyData };
@@ -249,14 +241,12 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
   };
 
   const handleDeleteKey = (keyId: string) => {
+    const remaining = modelConfigs.filter(c => c.providerKeyId !== keyId);
     setProviderKeys(prev => prev.filter(k => k.id !== keyId));
-    setModelConfigs(prev => {
-      const remaining = prev.filter(c => c.providerKeyId !== keyId);
-      if (!remaining.find(c => c.id === activeModelConfigId)) {
-        setActiveModelConfigId(remaining[0]?.id || "");
-      }
-      return remaining;
-    });
+    setModelConfigs(remaining);
+    if (!remaining.find(c => c.id === activeModelConfigId)) {
+      setActiveModelConfigId(remaining[0]?.id ?? "");
+    }
   };
 
   const handleTestKey = async (key: ProviderKey) => {
@@ -272,21 +262,20 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
 
   const handleAddModel = (configData: Omit<ModelConfig, "id">) => {
     const newConfig: ModelConfig = { id: crypto.randomUUID(), ...configData };
+    const isFirst = modelConfigs.length === 0;
     setModelConfigs(prev => [...prev, newConfig]);
-    if (modelConfigs.length === 0) {
+    if (isFirst) {
       setActiveModelConfigId(newConfig.id);
     }
     setShowAddModel(false);
   };
 
   const handleDeleteModel = (configId: string) => {
-    setModelConfigs(prev => {
-      const remaining = prev.filter(c => c.id !== configId);
-      if (activeModelConfigId === configId) {
-        setActiveModelConfigId(remaining[0]?.id || "");
-      }
-      return remaining;
-    });
+    const remaining = modelConfigs.filter(c => c.id !== configId);
+    setModelConfigs(remaining);
+    if (activeModelConfigId === configId) {
+      setActiveModelConfigId(remaining[0]?.id ?? "");
+    }
   };
 
   const handleActiveModelChange = (configId: string) => {
@@ -296,12 +285,12 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
   return (
     <div className="space-y-6">
       {/* Provider Keys Section */}
-      <div className="bg-depth-3 p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-depth-3 p-4 rounded-lg border border-neon-cyan/8 shadow-elevation-md">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold m-0 text-neon-cyan">Provider Keys</h3>
           <button
             onClick={() => setShowAddKey(!showAddKey)}
-            className="text-xs px-2.5 py-1 bg-[rgba(14,210,247,0.1)] text-neon-cyan border border-accent-border rounded hover:bg-[rgba(14,210,247,0.18)] active:scale-[0.97] transition-all duration-150"
+            className="text-xs px-2.5 py-1 bg-neon-cyan/10 text-neon-cyan border border-accent-border rounded hover:bg-neon-cyan/18 active:scale-[0.97] transition-all duration-150"
           >
             + Add
           </button>
@@ -330,13 +319,13 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
       </div>
 
       {/* Model Configurations Section */}
-      <div className="bg-depth-3 p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      <div className="bg-depth-3 p-4 rounded-lg border border-neon-cyan/8 shadow-elevation-md">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold m-0 text-neon-cyan">Model Configurations</h3>
           <button
             onClick={() => setShowAddModel(!showAddModel)}
             disabled={providerKeys.length === 0}
-            className="text-xs px-2.5 py-1 bg-[rgba(14,210,247,0.1)] text-neon-cyan border border-accent-border rounded hover:bg-[rgba(14,210,247,0.18)] active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-xs px-2.5 py-1 bg-neon-cyan/10 text-neon-cyan border border-accent-border rounded hover:bg-neon-cyan/18 active:scale-[0.97] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             + Add
           </button>
@@ -369,12 +358,12 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
 
       {/* Active Model Selector */}
       {modelConfigs.length > 0 && (
-        <div className="bg-depth-3 p-4 rounded-lg border border-[rgba(14,210,247,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        <div className="bg-depth-3 p-4 rounded-lg border border-neon-cyan/8 shadow-elevation-md">
           <h3 className="text-lg font-semibold mb-3 mt-0 text-neon-cyan">Active Model</h3>
           <select
             value={activeModelConfigId}
             onChange={e => handleActiveModelChange(e.target.value)}
-            className="w-full px-3 py-2 text-sm rounded-md bg-depth-1 text-foreground border border-[rgba(14,210,247,0.12)] focus:outline-none focus:border-[rgba(14,210,247,0.5)] transition-all duration-150 cursor-pointer"
+            className="w-full px-3 py-2 text-sm rounded-md bg-depth-1 text-foreground border border-neon-cyan/12 focus:outline-none focus:border-neon-cyan/50 transition-all duration-150 cursor-pointer"
           >
             <option value="">Select a model...</option>
             {modelConfigs.map(config => {

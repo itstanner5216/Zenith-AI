@@ -49,7 +49,7 @@ This is the largest single change. The `ChatComponent` in `chat.tsx` (1742 lines
    // Remove: apiKey,
    ```
 
-5. **Remove `selectedModel` state** (line 180-182) and replace with `activeModelConfigId` :
+5. **Remove `selectedModel` state** (line 180-182) and replace with `activeModelConfigId`:
    ```typescript
    const [activeModelConfigId, setActiveModelConfigId] = useState(
      plugin.settings.activeModelConfigId
@@ -110,11 +110,11 @@ This is the largest single change. The `ChatComponent` in `chat.tsx` (1742 lines
    });
    ```
 
-8. **Remove** the `chatBody` , `fullContext` , `contextString` memos (lines 175-218) — context will be built at send time.
+8. **Remove** the `chatBody`, `fullContext`, `contextString` memos (lines 175-218) — context will be built at send time.
 
-9. **Remove** `input` , `handleInputChange` , `handleSubmit` from the hook output (they no longer exist).
+9. **Remove** `input`, `handleInputChange`, `handleSubmit` from the hook output (they no longer exist).
 
-10. **Rewrite `handleSendMessage` ** (lines 1195-1259):
+10. **Rewrite `handleSendMessage`** (lines 1195-1259):
     ```typescript
     const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -198,7 +198,7 @@ This is the largest single change. The `ChatComponent` in `chat.tsx` (1742 lines
     };
     ```
 
-11. **Rewrite `handleMessageRefresh` ** — simplified since we use `reload` :
+11. **Rewrite `handleMessageRefresh`** — simplified since we use `reload`:
     ```typescript
     const handleMessageRefresh = async (messageIndex: number) => {
       // Remove messages from the index onward (including the one being refreshed)
@@ -229,10 +229,77 @@ This is the largest single change. The `ChatComponent` in `chat.tsx` (1742 lines
     />
     ```
 
-13. **Remove the `handleTiptapChange` callback** that syncs to `handleInputChange` (line 1265-1268). The Tiptap editor now manages its own state — content is read directly from the editor ref in `handleSendMessage` .
+13. **Remove the `handleTiptapChange` callback** that syncs to `handleInputChange` (line 1265-1268). The Tiptap editor now manages its own state — content is read directly from the editor ref in `handleSendMessage`.
 
 14. **Remove the `onDataChunk` handler** (lines 362-366) — grounding metadata was from the server, no longer applicable.
 
-15. **Remove `groundingMetadata` state and `SourcesSection` ** rendering — this was server-side data, not from direct provider calls.
+15. **Remove `groundingMetadata` state and `SourcesSection`** rendering — this was server-side data, not from direct provider calls.
+
+---
+
+### Task 5.2 — Remove `apiKey` prop from container and view
+
+**File:** `packages/plugin/views/assistant/ai-chat/container.tsx`
+
+**Changes:**
+1. Remove `apiKey` from `AIChatSidebarProps` (line 20)
+2. Remove `apiKey` from destructuring (line 27)
+3. Remove `apiKey={apiKey}` from `<ChatComponent>` (line 219)
+
+**File:** `packages/plugin/views/assistant/view.tsx`
+
+**Changes:**
+1. Remove `apiKey={plugin.settings.API_KEY}` from both `<AIChatSidebar>` usages (lines 110 and 122)
+
+---
+
+### Task 5.3 — Update index.ts with migration and AIService
+
+**File:** `packages/plugin/index.ts`
+
+**Changes:**
+
+1. **Add imports:**
+   ```typescript
+   import { migrateSettings } from "./services/settings-migration";
+   import { AIService } from "./services/ai/ai-service";
+   ```
+
+2. **Remove `getApiKey()` method** (lines 77-79)
+
+3. **Update `loadSettings()` to run migration** (lines 48-50):
+   ```typescript
+   async loadSettings() {
+     const rawData = await this.loadData();
+     this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
+
+     // Run migration from legacy API_KEY + selectedModel format
+     if (migrateSettings(this.settings, rawData || {})) {
+       await this.saveSettings();
+     }
+   }
+   ```
+
+4. **Add `aiService` property** to the class:
+   ```typescript
+   export default class ZenithAI extends Plugin {
+     settings: ZenithAISettings;
+     backgroundScribe: BackgroundScribe | null = null;
+     aiService: AIService | null = null;
+   ```
+
+5. **Initialize AIService in onload** (after loadSettings):
+   ```typescript
+   async onload() {
+     await this.initializePlugin();
+     logger.configure(this.settings.debugMode);
+     await this.saveSettings();
+
+     this.aiService = new AIService(this.settings);
+
+     initializeOrganizer(this);
+     // ... rest unchanged
+   }
+   ```
 
 ---
