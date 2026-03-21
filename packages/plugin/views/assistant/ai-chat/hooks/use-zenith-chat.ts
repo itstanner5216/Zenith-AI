@@ -105,26 +105,29 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
         });
       }
 
-      // After stream completes, get the final result with tool calls etc.
-      const finalResult = await result;
+      // After stream completes, await the resolved Promises on StreamTextResult
+      const [resolvedText, resolvedToolCalls] = await Promise.all([
+        result.text,
+        result.toolCalls,
+      ]);
 
       // Build final parts from the response
       const finalParts: UIMessage["parts"] = [];
 
       // Add tool call parts using v6 tool-<toolName> pattern
-      if (finalResult.toolCalls && finalResult.toolCalls.length > 0) {
-        for (const tc of finalResult.toolCalls) {
+      if (resolvedToolCalls && resolvedToolCalls.length > 0) {
+        for (const tc of resolvedToolCalls) {
           finalParts.push({
             type: `tool-${tc.toolName}`,
             toolCallId: tc.toolCallId,
-            input: tc.args,
+            input: tc.input,
             state: "input-available",
           } as any);
         }
       }
 
       // Add text part
-      const finalText = finalResult.text || accumulatedText;
+      const finalText = resolvedText || accumulatedText;
       if (finalText) {
         finalParts.push({ type: "text" as const, text: finalText });
       }
