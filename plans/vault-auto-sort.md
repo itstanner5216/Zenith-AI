@@ -360,6 +360,14 @@ Output:
 }
 ```
 
+### `POST /v1/vector-reset`
+Truncates the `vault_embeddings` table. Auth-gated. Used by hard reset only.
+
+Input: none
+Output: `{ "success": true, "cleared": <row_count> }`
+
+---
+
 ### `POST /v1/classify`
 Cosine similarity of a single embedding against a set of named centroids.
 Returns best match name and score.
@@ -459,6 +467,67 @@ Configurable in `vault-sort.json` via `"sort_on_save"` and `"sort_interval_minut
 
 Obsidian command registered: `Vault: Sort now` — triggers `bulkSort()` manually
 regardless of config.
+
+---
+
+## Hard Reset — Full Reindex from Scratch
+
+Wipes all stored state and re-runs bootstrap as if the pipeline has never run.
+Useful when vault structure has changed significantly, centroids have drifted
+incorrectly from bad training signals, or the user wants a clean slate.
+
+**What a reset does:**
+1. Clears all stored centroids from `vault-sort.json` (`"centroids": {}`, `"project_centroids": {}`)
+2. Clears the sort log (`sort-log.jsonl` truncated to empty)
+3. Deletes all embeddings from pgvector (`TRUNCATE vault_embeddings`)
+4. Re-runs `VaultIndexer.bulkIndex()` — re-embeds every vault file from scratch
+5. Re-runs bootstrap — re-derives centroids from existing vault structure
+6. Re-runs `bulkSort()` — re-classifies and moves all files using new centroids
+
+**Obsidian command:** `Vault: Reset and reindex` — requires explicit confirmation
+dialog before running (destructive, moves files).
+
+**Confirmation dialog:**
+```
+⚠️ Reset vault sort?
+
+This will clear all learned centroids and re-sort your
+entire vault from scratch. Pinned files will not move.
+
+This cannot be undone. Continue?
+
+[Cancel]  [Reset and reindex]
+```
+
+**`VaultSorter.hardReset()` method:**
+```typescript
+async hardReset(): Promise<void> {
+  // 1. Clear config state
+  this.config.centroids = {};
+  this.config.project_centroids = {};
+  await this.saveConfig();
+
+  // 2. Clear sort log
+  await this.clearSortLog();
+
+  // 3. Wipe pgvector embeddings
+  await fetch(`${this.plugin.getServerUrl()}/api/vault-reset-index`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${this.plugin.getApiKey()}` },
+  });
+
+  // 4. Re-index + re-bootstrap + re-sort
+  await this.vaultIndexer.bulkIndex();
+  await this.bootstrap();
+  await this.bulkSort();
+
+  new Notice('Vault reindex complete.');
+}
+```
+
+**New gateway endpoint — `POST /v1/vector-reset`:**
+Truncates `vault_embeddings` table. Auth-gated. No request body needed.
+Proxied through web package as `POST /api/vault-reset-index`.
 
 ---
 
