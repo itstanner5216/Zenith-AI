@@ -1,5 +1,31 @@
 # Tiptap v3 Migration Plan — Zenith-AI Plugin
 
+---
+
+## ⚠️ AGENT INSTRUCTIONS — READ BEFORE ANYTHING ELSE
+
+You are executing this plan in an **isolated git worktree**. These rules are non-negotiable:
+
+1. **Your working directory is:** `/home/tanner/Projects/Zenith-AI/.worktrees/tiptap-v3`
+   All file edits, builds, and commands must be run from inside this directory. Do not touch any files outside of it.
+
+2. **Your branch is:** `feat/tiptap-v3-migration`
+   You are already on this branch. Do not switch branches, do not commit to `master`.
+
+3. **When the migration is complete and all verification steps pass:**
+   - Commit all changes to `feat/tiptap-v3-migration`
+   - Push the branch to `origin`: `git push -u origin feat/tiptap-v3-migration`
+   - Open a pull request targeting `master` using: `gh pr create --base master --title "feat: Tiptap v2 → v3, tippy.js → @floating-ui/dom" --body "Migrates Tiptap from v2.5.7 to v3.x and replaces tippy.js with @floating-ui/dom. See plans/tiptap-v3-migration.md for full details."`
+
+4. **After the PR is created:**
+   - Remove the worktree: `git worktree remove /home/tanner/Projects/Zenith-AI/.worktrees/tiptap-v3`
+   - Delete the local worktree directory if it still exists: `rm -rf /home/tanner/Projects/Zenith-AI/.worktrees/tiptap-v3`
+   - Your work lives in the PR. The worktree is gone. Done.
+
+5. **Do not merge the PR yourself.** Leave it open for review.
+
+---
+
 > **Standalone plan. No prior codebase context required.**
 > This plan is written for an agent executing on a clean context with no previous knowledge of this project.
 > Follow every step in order. Do not skip verification steps.
