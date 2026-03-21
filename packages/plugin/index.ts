@@ -50,7 +50,8 @@ export default class ZenithAI extends Plugin {
 
   async loadSettings() {
     const rawData = await this.loadData();
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
+    const base = new ZenithAISettings();
+    this.settings = Object.assign(base, rawData);
 
     // Run migration from legacy API_KEY + selectedModel format
     if (migrateSettings(this.settings, rawData || {})) {

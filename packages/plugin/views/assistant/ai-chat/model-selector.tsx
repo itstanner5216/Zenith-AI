@@ -38,7 +38,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         plugin.settings.activeModelConfigId = e.target.value;
         plugin.saveSettings();
       }}
-      className="text-xs px-2 py-0.5 rounded bg-transparent text-dim border border-transparent hover:border-[rgba(14,210,247,0.15)] hover:text-foreground hover:bg-[rgba(14,210,247,0.06)] focus:outline-none focus:border-[rgba(14,210,247,0.3)] cursor-pointer transition-all duration-150 appearance-none max-w-[200px] truncate"
+      className="text-xs px-2 py-0.5 rounded bg-transparent text-dim border border-transparent hover:border-neon-cyan/15 hover:text-foreground hover:bg-neon-cyan/6 focus:outline-none focus:border-neon-cyan/30 cursor-pointer transition-all duration-150 appearance-none max-w-[200px] truncate"
       title="Select model"
     >
       {modelConfigs.map(config => (

@@ -197,12 +197,13 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
       clearEphemeralContext();
       const currentActiveChatId = activeChatIdRef.current;
       if (currentActiveChatId) {
+        const currentMessages = messagesRef.current;
         chatHistoryManager.updateSession(currentActiveChatId, {
-          messages: messages.concat(message) as any,
+          messages: currentMessages.concat(message) as any,
         });
         onSessionUpdateRef.current?.({
           ...chatHistoryManager.getSession(currentActiveChatId)!,
-          messages: messages.concat(message) as any,
+          messages: currentMessages.concat(message) as any,
         });
       }
       plugin.app.workspace.trigger("vault-intelligence:chat-turn" as any, {
@@ -764,7 +765,7 @@ ${freshEditorContext}`
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, history]);
+  }, [messages]);
 
   useEffect(() => {
     const wasActive = prevChatTabActiveRef.current;
@@ -1052,10 +1053,9 @@ ${freshEditorContext}`
             <div className="absolute bottom-2 right-2 flex items-center gap-1">
               <button
                 type="submit"
-                disabled={isGenerating}
                 className={`flex items-center justify-center transition-all rounded-md w-8 h-8 ${
                   isGenerating
-                    ? "text-dim cursor-not-allowed opacity-50"
+                    ? "text-dim cursor-pointer opacity-80 hover:opacity-100"
                     : "text-depth-2 bg-neon-cyan hover:bg-[rgba(14,210,247,0.8)] shadow-[0_0_8px_rgba(14,210,247,0.3)] hover:shadow-[0_0_14px_rgba(14,210,247,0.5)] active:scale-[0.93] transition-all duration-150"
                 }`}
                 title={isGenerating ? "Stop generating" : "Send message"}

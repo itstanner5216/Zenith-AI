@@ -263,8 +263,12 @@ export class ChatHistoryManager {
    */
   public static generateTitleFromMessages(messages: UIMessage[]): string {
     const firstUserMessage = messages.find(m => m.role === 'user');
-    if (firstUserMessage && firstUserMessage.content) {
-      let title = firstUserMessage.content.trim();
+    if (firstUserMessage) {
+      // AI SDK v5: content lives in parts, not message.content
+      const textPart = firstUserMessage.parts?.find((p: any) => p.type === 'text');
+      const rawText = textPart ? (textPart as any).text : (firstUserMessage as any).content;
+      if (!rawText) return "New Chat";
+      let title = String(rawText).trim();
 
       // Remove all @ mentions completely (not just the @ symbol)
       // This removes patterns like "@file_name", "@my file", "@file_name what is this", etc.

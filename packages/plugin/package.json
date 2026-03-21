@@ -7,7 +7,7 @@
     "dev": "node esbuild.config.mjs",
     "build": "node esbuild.config.mjs production",
     "new-version": "node version-bump.mjs && git add manifest.json versions.json",
-    "test": "jest",
+    "test": "node -e \"const a=process.argv.slice(2).map(x=>x.replace(/^--testPathPattern=/,''));require('child_process').execFileSync(process.execPath,['../../node_modules/.bin/jest'].concat(a),{stdio:'inherit'})\"  --",
     "test:watch": "jest --watch",
     "test:patch-engine": "node --import tsx --test services/patch-engine/testing/byte-text.test.ts services/patch-engine/testing/diagnostic-types.test.ts services/patch-engine/testing/source-resolver.test.ts services/patch-engine/testing/rust-tree-sitter-viability.test.ts",
     "build:rust-tree-sitter-bridge": "node scripts/build-rust-tree-sitter-bridge.mjs",

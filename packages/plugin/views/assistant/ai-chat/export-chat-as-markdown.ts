@@ -22,13 +22,21 @@ interface ToolCallLike {
 }
 
 /**
- * Normalize message content to string (handles AI SDK string or array of parts).
+ * Normalize message content to string (handles AI SDK v5 parts array or legacy string content).
  */
 function getMessageContentAsString(message: UIMessage): string {
-  const content = message.content as
-    | string
-    | Array<{ type?: string; text?: string }>
-    | unknown;
+  // AI SDK v5: text lives in parts, not message.content
+  const msg = message as UIMessage & { parts?: Array<{ type?: string; text?: string }> };
+  if (msg.parts && Array.isArray(msg.parts)) {
+    const text = msg.parts
+      .filter(p => p.type === "text")
+      .map(p => p.text || "")
+      .filter(Boolean)
+      .join("\n");
+    if (text) return text;
+  }
+  // Fallback for legacy string content
+  const content = (message as any).content as string | Array<{ type?: string; text?: string }> | unknown;
   if (typeof content === "string") return content;
   if (Array.isArray(content)) {
     return content

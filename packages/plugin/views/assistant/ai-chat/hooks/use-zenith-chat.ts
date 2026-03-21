@@ -115,10 +115,11 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
           });
         } else if (part.type === "tool-call") {
           toolCallParts.push({
-            type: `tool-${part.toolName}`,
+            type: "tool-invocation",
             toolCallId: part.toolCallId,
+            toolName: part.toolName,
             input: part.input,
-            state: "input-available",
+            state: "call",
           } as UIMessage["parts"][number]);
         }
       }
@@ -196,7 +197,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
           // The tool-* union type doesn't expose toolCallId directly, so we
           // narrow with "in" and cast to access the property safely.
           if (
-            part.type.startsWith("tool-") &&
+            part.type === "tool-invocation" &&
             "toolCallId" in part &&
             (part as any).toolCallId === result.toolCallId
           ) {

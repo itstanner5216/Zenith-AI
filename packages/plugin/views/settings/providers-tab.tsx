@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ZenithAI from "../../index";
 import type { ProviderKey, ModelConfig, ProviderType } from "../../services/ai/types";
 import { AIService } from "../../services/ai/ai-service";
+import { Notice } from "obsidian";
 
 interface ProvidersTabProps {
   plugin: ZenithAI;
@@ -249,10 +250,9 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ plugin }) => {
     }
   };
 
-  const handleTestKey = async (key: ProviderKey) => {
+    const handleTestKey = async (key: ProviderKey) => {
     const aiService = new AIService(plugin.settings);
     const result = await aiService.validateKey(key);
-    const { Notice } = await import("obsidian");
     if (result.valid) {
       new Notice(`Key "${key.name}" is valid`, 3000);
     } else {

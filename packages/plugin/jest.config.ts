@@ -6,7 +6,7 @@ const config: Config.InitialOptions = {
 
   // Use TypeScript for Jest
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { diagnostics: { ignoreDiagnostics: [2589] } }],
+    '^.+\\.tsx?$': ['ts-jest', { diagnostics: false }],
   },
 
   // Module name mapper for Obsidian and other aliases

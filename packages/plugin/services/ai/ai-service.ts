@@ -62,7 +62,12 @@ export class AIService {
   /** Validate that a provider key works by sending a minimal request */
   async validateKey(key: ProviderKey): Promise<{ valid: boolean; error?: string }> {
     try {
-      const testModel = key.provider === "anthropic" ? "claude-haiku-4-5-20251001" : "gpt-4o-mini";
+      const testModel =
+        key.provider === "anthropic"
+          ? "claude-haiku-4-5-20250714"
+          : key.provider === "openai-compatible"
+            ? (key.baseUrl?.includes("localhost") ? "llama3" : "gpt-4o-mini")
+            : "gpt-4o-mini";
       const model = createModelFromKey(key, testModel);
       const result = await streamText({
         model,
