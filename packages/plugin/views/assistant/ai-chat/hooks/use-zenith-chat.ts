@@ -2,6 +2,12 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { convertToModelMessages } from "ai";
 import type { UIMessage, ToolSet, StepResult } from "ai";
 import type { AIService } from "../../../../services/ai/ai-service";
+import {
+  type PluginToolPart,
+  isPluginToolPart,
+  buildPluginToolPart,
+  withOutput,
+} from "../tool-handlers/types";
 
 /** Status states that match the existing ToolCallHandler's expectations */
 export type ChatStatus = "ready" | "submitted" | "streaming";
@@ -23,7 +29,7 @@ export interface UseZenithChatReturn {
     context?: string;
     systemPrompt?: string;
   }) => Promise<void>;
-  addToolResult: (result: { toolCallId: string; result: string }) => void;
+  addToolResult: (toolCallId: string, output: unknown) => void;
   stop: () => void;
   reload: (opts?: { context?: string; systemPrompt?: string }) => Promise<void>;
   setMessages: (messages: UIMessage[] | ((prev: UIMessage[]) => UIMessage[])) => void;
@@ -68,7 +74,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     try {
       setStatus("submitted");
 
-      const modelMessages = convertToModelMessages(currentMessages);
+      const modelMessages = await convertToModelMessages(currentMessages);
 
       const result = aiService.streamChat({
         messages: modelMessages,
@@ -91,7 +97,7 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
       setStatus("streaming");
 
       let accumulatedText = "";
-      const toolCallParts: UIMessage["parts"] = [];
+      const toolCallParts: PluginToolPart[] = [];
 
       // Use fullStream to capture text across ALL steps and tool calls in one pass.
       // result.textStream only yields the final step; fullStream surfaces everything.
@@ -114,13 +120,9 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
             return updated;
           });
         } else if (part.type === "tool-call") {
-          toolCallParts.push({
-            type: `tool-${part.toolName}` as `tool-${string}`,
-            toolCallId: part.toolCallId,
-            toolName: part.toolName,
-            input: part.input,
-            state: "input-available",
-          } as unknown as UIMessage["parts"][number]);
+          // buildPluginToolPart isolates all `unknown → typed` casts to one place.
+          const toolPart = buildPluginToolPart(part.toolName, part.toolCallId, part.input);
+          if (toolPart) toolCallParts.push(toolPart);
         }
       }
 
@@ -190,32 +192,18 @@ export function useZenithChat(options: UseZenithChatOptions): UseZenithChatRetur
     await runStream(updatedMessages, systemPrompt || undefined);
   }, [runStream]);
 
-  /** Add a tool result — updates the matching tool part's state to output-available */
-  const addToolResult = useCallback((result: { toolCallId: string; result: string }) => {
-    setMessages(prev => {
-      return prev.map(msg => {
+  /** Add a tool result — transitions the matching tool part to output-available */
+  const addToolResult = useCallback((toolCallId: string, output: unknown) => {
+    setMessages(prev =>
+      prev.map(msg => {
         if (msg.role !== "assistant") return msg;
-
-        const updatedParts = msg.parts.map((part): typeof part => {
-          // The tool-* union type doesn't expose toolCallId directly, so we
-          // narrow with "in" and cast to access the property safely.
-          if (
-            part.type.startsWith("tool-") &&
-            "toolCallId" in part &&
-            (part as any).toolCallId === result.toolCallId
-          ) {
-            return {
-              ...(part as any),
-              state: "output-available",
-              output: result.result,
-            };
-          }
-          return part;
+        const updatedParts: UIMessage["parts"] = msg.parts.map(part => {
+          if (!isPluginToolPart(part) || part.toolCallId !== toolCallId) return part;
+          return withOutput(part, output);
         });
-
         return { ...msg, parts: updatedParts };
-      });
-    });
+      }),
+    );
   }, []);
 
   /** Stop the current generation */

@@ -11,6 +11,6 @@
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["*.ts", "services/**/*", "services/**/*.json", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*"],
+  "include": ["*.ts", "services/**/*", "services/**/*.json", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*", "tools/generated/**/*"],
   "exclude": ["node_modules", "dist"]
 }

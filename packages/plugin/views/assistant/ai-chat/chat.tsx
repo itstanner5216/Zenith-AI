@@ -20,7 +20,8 @@ import { usePlugin } from "../provider";
 import { logMessage } from "../../../someUtils";
 import { MessageRenderer } from "./message-renderer";
 import ToolCallHandler from "./tool-handlers/tool-invocation-handler";
-import { UIMessage, isToolUIPart, ToolUIPart } from "ai";
+import { UIMessage, isTextUIPart } from "ai";
+import { isPluginToolPart } from "./tool-handlers/types";
 import { ContextLimitIndicator } from "./context-limit-indicator";
 import { ModelSelector } from "./model-selector";
 import { useZenithChat } from "./hooks/use-zenith-chat";
@@ -237,20 +238,18 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
     if (lastMessage.role !== "assistant") return false;
 
     // Extract tool parts from message.parts (v5 direction via parts, not toolInvocations)
-    const toolParts = (lastMessage.parts as any[]).filter(isToolUIPart);
+    const toolParts = (lastMessage.parts ?? []).filter(isPluginToolPart);
 
     if (toolParts.length === 0) return false;
 
     const hasExecutingTools = toolParts.some(
-      part => part.state === "input-available" || part.state === "input-streaming"
+      part => part.state === "input-available",
     );
 
     const allToolsComplete = toolParts.every(
-      part => part.state === "output-available"
+      part => part.state === "output-available",
     );
-    const waitingForAI =
-      allToolsComplete &&
-      (!(lastMessage as any).content || (lastMessage as any).content.length === 0);
+    const waitingForAI = allToolsComplete;
 
     return hasExecutingTools || waitingForAI;
   }, [messages]);
@@ -923,17 +922,7 @@ ${freshEditorContext}`
             </div>
           ) : (
             messages.map(message => {
-              const toolParts = (message.parts ?? []).filter(isToolUIPart);
-
-              if (toolParts.length > 0) {
-                console.log("[Chat] Tool parts for message:", message.id,
-                  toolParts.map(p => ({
-                    id: (p as any).toolCallId,
-                    type: p.type,
-                    state: (p as any).state,
-                  }))
-                );
-              }
+              const toolParts = (message.parts ?? []).filter(isPluginToolPart);
 
               return (
                 <React.Fragment key={message.id}>
@@ -941,7 +930,7 @@ ${freshEditorContext}`
                   {toolParts.map(part => (
                     <ToolCallHandler
                       key={part.toolCallId}
-                      toolInvocation={part}
+                      part={part}
                       addToolResult={addToolResult}
                       app={app}
                       chatStatus={status}

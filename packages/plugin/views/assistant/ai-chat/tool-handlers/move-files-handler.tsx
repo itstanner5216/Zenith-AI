@@ -1,131 +1,73 @@
 import React, { useState } from "react";
 import { TFile } from "obsidian";
+import { App } from "obsidian";
 import { usePlugin } from "../../provider";
-import { ToolHandlerProps } from "./types";
+import type { MoveFilesPart, MoveFilesOutput } from "./types";
 
-interface FilePattern {
-  namePattern?: string;
-  extension?: string;
+interface MoveFilesHandlerProps {
+  part: MoveFilesPart;
+  onResult: (output: MoveFilesOutput) => void;
+  app: App;
 }
 
-interface MoveOperation {
-  sourcePath: string;
-  destinationPath: string;
-  pattern?: FilePattern;
-}
-
-export function MoveFilesHandler({
-  toolInvocation,
-  handleAddResult,
-}: ToolHandlerProps) {
+export function MoveFilesHandler({ part, onResult }: MoveFilesHandlerProps) {
   const plugin = usePlugin();
   const [isValidated, setIsValidated] = useState(false);
   const [moveResults, setMoveResults] = useState<string[]>([]);
-  const [filesToMove, setFilesToMove] = useState<TFile[]>([]);
 
-  // Simplified pattern matching without isRoot
-  const matchesPattern = (file: TFile, pattern?: FilePattern): boolean => {
-    if (!pattern) return true;
+  const { filePaths, destinationFolder } = part.input;
 
-    const { namePattern, extension } = pattern;
-
-    // Check file name pattern
-    if (namePattern) {
-      const globToRegex = (pattern: string): RegExp => {
-        // Escape regex metacharacters, then turn '*' into '.*' (match any sequence of chars)
-        const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const regexSource = escaped.replace(/\*/g, ".*");
-        return new RegExp(regexSource);
-      };
-      const regex = globToRegex(namePattern);
-      if (!regex.test(file.basename)) {
-        return false;
-      }
-    }
-
-    // Check extension
-    if (extension && !file.extension.toLowerCase().includes(extension.toLowerCase())) {
-      return false;
-    }
-
-    return true;
-  };
-
-  // Simplified file matching using sourcePath
-  const getMatchingFiles = (moveOp: MoveOperation): TFile[] => {
-    const allFiles = plugin.app.vault.getMarkdownFiles();
-    
-    return allFiles.filter(file => {
-      // For root path, only match files directly in root
-      if (moveOp.sourcePath === "/") {
-        return !file.path.includes("/") && matchesPattern(file, moveOp.pattern);
-      }
-      
-      // For specific source paths
-      return file.path.startsWith(moveOp.sourcePath) && matchesPattern(file, moveOp.pattern);
-    });
-  };
-
-  React.useEffect(() => {
-    if (!isValidated && !filesToMove.length) {
-      const { moves } = toolInvocation.input as any;
-      const matchedFiles = moves.flatMap((move: any) => getMatchingFiles(move));
-      setFilesToMove(matchedFiles);
-    }
-  }, [toolInvocation.input, isValidated]);
+  const getFilesToMove = (): TFile[] =>
+    filePaths
+      .map(p => plugin.app.vault.getAbstractFileByPath(p))
+      .filter((f): f is TFile => f instanceof TFile);
 
   const handleMoveFiles = async () => {
-    const { moves } = toolInvocation.input as any;
     const results: string[] = [];
+    const filesToMove = getFilesToMove();
 
-    await Promise.all(
-      moves.map(async (move: any) => {
-        try {
-          const matchingFiles = getMatchingFiles(move);
-          await plugin.app.vault.createFolder(move.destinationPath).catch((err) => {
-            if (!err.message?.includes("already exists")) {
-              console.warn(`Could not create folder ${move.destinationPath}: ${err.message}`);
-            }
-          });
-
-          await Promise.all(
-            matchingFiles.map(async (file) => {
-              const newPath = `${move.destinationPath}/${file.name}`;
-              await plugin.app.fileManager.renameFile(file, newPath);
-              results.push(`✅ Moved: ${file.path} → ${newPath}`);
-            })
-          );
-
-          if (matchingFiles.length === 0) {
-            results.push(`ℹ️ No files found matching criteria for ${move.sourcePath}`);
-          }
-        } catch (error) {
-          results.push(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
+    try {
+      await plugin.app.vault.createFolder(destinationFolder).catch(err => {
+        if (!err.message?.includes("already exists")) {
+          console.warn(`Could not create folder ${destinationFolder}: ${err.message}`);
         }
-      })
-    );
+      });
+
+      await Promise.all(
+        filesToMove.map(async file => {
+          const newPath = `${destinationFolder}/${file.name}`;
+          await plugin.app.fileManager.renameFile(file, newPath);
+          results.push(`✅ Moved: ${file.path} → ${newPath}`);
+        }),
+      );
+
+      if (filesToMove.length === 0) {
+        results.push(`ℹ️ No matching files found`);
+      }
+    } catch (error) {
+      results.push(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
 
     setMoveResults(results);
     setIsValidated(true);
-    handleAddResult(JSON.stringify({ success: true, results }));
+    onResult({ success: true, results });
   };
+
+  const filesToMove = getFilesToMove();
 
   return (
     <div className="flex flex-col space-y-4 p-4 border border-defined">
       <div className="text-foreground">
-        {(toolInvocation.input as any).message || "Ready to move files"}
+        Move {filesToMove.length} file{filesToMove.length !== 1 ? "s" : ""} to <span className="font-mono text-neon-cyan">{destinationFolder}</span>
       </div>
 
       {!isValidated && filesToMove.length > 0 && (
         <div className="text-sm text-dim">
-          Found {filesToMove.length} files to move:
           <ul className="list-disc ml-4 mt-1">
             {filesToMove.slice(0, 5).map((file, i) => (
               <li key={i}>{file.path}</li>
             ))}
-            {filesToMove.length > 5 && (
-              <li>...and {filesToMove.length - 5} more</li>
-            )}
+            {filesToMove.length > 5 && <li>...and {filesToMove.length - 5} more</li>}
           </ul>
         </div>
       )}
@@ -133,15 +75,15 @@ export function MoveFilesHandler({
       {moveResults.length > 0 && (
         <div className="text-sm space-y-1">
           {moveResults.map((result, i) => (
-            <div 
+            <div
               key={i}
-              className={`${
-                result.startsWith("✅") 
-                  ? "text-neon-cyan" 
+              className={
+                result.startsWith("✅")
+                  ? "text-neon-cyan"
                   : result.startsWith("ℹ️")
-                  ? "text-dim"
-                  : "text-neon-pink"
-              }`}
+                    ? "text-dim"
+                    : "text-neon-pink"
+              }
             >
               {result}
             </div>
@@ -153,19 +95,12 @@ export function MoveFilesHandler({
         <div className="flex space-x-2">
           <button
             onClick={handleMoveFiles}
-            className="px-4 py-2 text-xs rounded-md bg-neon-cyan text-primary-foreground font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-glow-cyan-sm hover:shadow-[0_0_10px_rgba(14,210,247,0.35)]"
+            className="px-4 py-2 text-xs rounded-md bg-neon-cyan text-primary-foreground font-semibold hover:bg-[rgba(14,210,247,0.85)] active:scale-[0.97] transition-all duration-150 shadow-glow-cyan-sm"
           >
             Move {filesToMove.length} Files
           </button>
           <button
-            onClick={() =>
-              handleAddResult(
-                JSON.stringify({
-                  success: false,
-                  message: "User cancelled file movement",
-                })
-              )
-            }
+            onClick={() => onResult({ success: false, results: [] })}
             className="px-4 py-2 text-xs rounded-md border border-accent-border text-foreground hover:bg-[var(--border-subtle)] hover:border-active hover:text-neon-cyan active:scale-[0.97] transition-all duration-150"
           >
             Cancel
@@ -174,4 +109,4 @@ export function MoveFilesHandler({
       )}
     </div>
   );
-} 
+}

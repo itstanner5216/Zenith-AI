@@ -269,9 +269,9 @@ export class AssistantViewWrapper extends ItemView {
   }
 
   async onOpen(): Promise<void> {
-    const container = this.containerEl.children[1];
-    container.addClass("fo2k-view");
-    this.root = createRoot(container);
+    this.contentEl.empty();
+    this.contentEl.addClass("fo2k-view");
+    this.root = createRoot(this.contentEl);
     this.render();
   }
 
@@ -294,7 +294,8 @@ export class AssistantViewWrapper extends ItemView {
   }
 
   async onClose(): Promise<void> {
-    this.containerEl.children[1].removeClass("fo2k-view");
     this.root?.unmount();
+    this.contentEl.empty();
+    this.contentEl.removeClass("fo2k-view");
   }
 }

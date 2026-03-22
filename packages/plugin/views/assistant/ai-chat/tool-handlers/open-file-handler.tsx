@@ -1,68 +1,42 @@
 import React, { useRef } from "react";
 import { TFile } from "obsidian";
-import { ToolHandlerProps } from "./types";
+import { App } from "obsidian";
+import type { OpenFilePart, OpenFileOutput } from "./types";
 
-interface OpenFileArgs {
-  filePath: string;
+interface OpenFileHandlerProps {
+  part: OpenFilePart;
+  onResult: (output: OpenFileOutput) => void;
+  app: App;
 }
 
-export function OpenFileHandler({
-  toolInvocation,
-  handleAddResult,
-  app,
-}: ToolHandlerProps) {
+export function OpenFileHandler({ part, onResult, app }: OpenFileHandlerProps) {
   const hasFetchedRef = useRef(false);
 
   React.useEffect(() => {
-    const execute = async () => {
-      if (!hasFetchedRef.current && toolInvocation.state !== 'output-available') {
-        hasFetchedRef.current = true;
-        const args = toolInvocation.input as OpenFileArgs;
-
-        try {
-          // Get the file from the vault
-          const file = app.vault.getAbstractFileByPath(args.filePath);
-
-          if (!(file instanceof TFile)) {
-            handleAddResult(
-              JSON.stringify({
-                success: false,
-                message: `File not found: ${args.filePath}`,
-              })
-            );
-            return;
-          }
-
-          // Open the file in a new leaf
-          const leaf = app.workspace.getLeaf("tab");
-          await leaf.openFile(file);
-
-          handleAddResult(
-            JSON.stringify({
-              success: true,
-              message: `Opened ${file.basename}`,
-            })
-          );
-        } catch (error) {
-          handleAddResult(
-            JSON.stringify({
-              success: false,
-              message: `Error opening file: ${(error as Error).message}`,
-            })
-          );
+    const run = async () => {
+      if (hasFetchedRef.current || part.state === "output-available") return;
+      hasFetchedRef.current = true;
+      try {
+        const file = app.vault.getAbstractFileByPath(part.input.filePath);
+        if (!(file instanceof TFile)) {
+          onResult({ success: false, message: `File not found: ${part.input.filePath}` });
+          return;
         }
+        const leaf = app.workspace.getLeaf("tab");
+        await leaf.openFile(file);
+        onResult({ success: true, message: `Opened ${file.basename}` });
+      } catch (error) {
+        onResult({ success: false, message: `Error opening file: ${(error as Error).message}` });
       }
     };
-
-    execute();
-  }, [toolInvocation, handleAddResult, app]);
-
-  const args = toolInvocation.input as OpenFileArgs;
-  const isComplete = toolInvocation.state === 'output-available';
+    run();
+  }, [part, onResult, app]);
 
   return (
     <div className="text-sm text-dim">
-      {!isComplete ? `Opening ${args.filePath}...` : `File opened`}
+      {part.state !== "output-available"
+        ? `Opening ${part.input.filePath}...`
+        : "File opened"}
     </div>
   );
 }

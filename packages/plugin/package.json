@@ -4,6 +4,7 @@
   "description": "Zenith-AI",
   "main": "main.js",
   "scripts": {
+    "generate:tools": "node tools/generate.js",
     "dev": "node esbuild.config.mjs",
     "build": "node esbuild.config.mjs production",
     "new-version": "node version-bump.mjs && git add manifest.json versions.json",

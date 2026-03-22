@@ -1,4 +1,4 @@
-import { streamText, stepCountIs } from "ai";
+import { streamText } from "ai";
 import type { LanguageModel, ToolSet, StepResult, ModelMessage } from "ai";
 import { createModelFromKey } from "./provider-factory";
 import type { ProviderKey, ModelConfig } from "./types";
@@ -53,9 +53,7 @@ export class AIService {
       messages: params.messages,
       system: params.systemPrompt,
       tools: params.tools,
-      // NOTE (intentional plan deviation): plan specified `maxSteps` directly;
-      // AI SDK v5 uses `stopWhen: stepCountIs(n)` instead.
-      stopWhen: params.maxSteps ? stepCountIs(params.maxSteps) : undefined,
+      maxSteps: params.maxSteps,
       abortSignal: params.abortSignal,
       onStepFinish: params.onStepFinish,
     });

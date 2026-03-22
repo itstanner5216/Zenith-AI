@@ -180,7 +180,7 @@ describe("useZenithChat behavior", () => {
 
   it("addToolResult updates matching tool part state to output-available", async () => {
     const svc = makeAIService([
-      { type: "tool-call", toolName: "search", toolCallId: "tc-1", input: { query: "test" } },
+      { type: "tool-call", toolName: "getSearchQuery", toolCallId: "tc-1", input: { query: "test" } },
     ]);
     const { result } = renderHook(() => useZenithChat({ aiService: svc as any }));
 
@@ -189,15 +189,15 @@ describe("useZenithChat behavior", () => {
     });
 
     act(() => {
-      result.current.addToolResult({ toolCallId: "tc-1", result: "found it" });
+      result.current.addToolResult("tc-1", "found it");
     });
 
     const assistant = result.current.messages.find(m => m.role === "assistant");
     const toolPart = assistant?.parts.find(
-      (p: any) => p.type.startsWith("tool-") && p.toolCallId === "tc-1"
-    ) as any;
-    expect(toolPart?.state).toBe("output-available");
-    expect(toolPart?.output).toBe("found it");
+      p => p.type === "tool-getSearchQuery" && (p as { toolCallId?: string }).toolCallId === "tc-1",
+    );
+    expect((toolPart as { state?: string })?.state).toBe("output-available");
+    expect((toolPart as { output?: unknown })?.output).toBe("found it");
   });
 });
 
