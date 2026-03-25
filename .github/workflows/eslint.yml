@@ -44,10 +44,8 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
-          pnpm add -D @microsoft/eslint-formatter-sarif@3.1.0 --ignore-workspace-root-check --no-frozen-lockfile
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
-
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
