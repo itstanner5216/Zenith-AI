@@ -25,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: '22'
           cache: "pnpm"
 
       - name: Install dependencies
@@ -35,11 +35,44 @@ jobs:
 
       - name: Run ESLint
         run: pnpm lint
-        continue-on-error: true
 
       - name: TypeScript checks
         run: pnpm exec tsc --noEmit
-        continue-on-error: true
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 10.8.1
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Run tests
+        run: |
+          set -o pipefail
+          pnpm test --verbose 2>&1 | tee test-results.txt
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.txt
 
   security-scan:
     name: Trivy Security Scan
