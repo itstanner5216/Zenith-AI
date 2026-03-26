@@ -1,6 +1,6 @@
 import type { Config } from '@jest/types';
 
-const config: Config.InitialOptions = {
+export const jestConfig: Config.InitialOptions = {
   roots: ['<rootDir>'],
 
   transform: {
@@ -25,4 +25,4 @@ const config: Config.InitialOptions = {
   testTimeout: 30000,
 };
 
-export default config;
+export default jestConfig;

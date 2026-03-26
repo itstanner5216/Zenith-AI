@@ -1,7 +1,7 @@
 import { AIService } from "./ai-service";
 import { ZenithAISettings } from "../../settings";
 import type { ProviderKey, ModelConfig } from "./types";
-import { streamText } from "ai";
+import { streamText, stepCountIs } from "ai";
 
 // Mock provider factory
 jest.mock("./provider-factory", () => ({
@@ -100,6 +100,7 @@ describe("AIService", () => {
       expect(streamText).toHaveBeenCalledWith(
         expect.objectContaining({ stopWhen: expect.any(Function) })
       );
+      expect(stepCountIs as jest.Mock).toHaveBeenCalledWith(3);
     });
 
     it("does not pass stopWhen when maxSteps is not provided", () => {
@@ -108,6 +109,7 @@ describe("AIService", () => {
       expect(streamText).toHaveBeenCalledWith(
         expect.objectContaining({ stopWhen: undefined })
       );
+      expect(stepCountIs as jest.Mock).not.toHaveBeenCalled();
     });
   });
 

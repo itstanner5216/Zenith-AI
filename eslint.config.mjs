@@ -49,9 +49,9 @@ export default [
     },
     rules: {
       ...tseslint.configs.recommended.rules,
-      // The root ESLint config is not type-aware, so disable no-unused-vars,
-      // as it's better handled by per-package type-aware linting.
-      "@typescript-eslint/no-unused-vars": "off",
+      // Warn on unused vars so SARIF captures basic TS issues.
+      // Full type-aware enforcement runs per-package via `turbo lint`.
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
 ];

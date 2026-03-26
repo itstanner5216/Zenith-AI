@@ -2,10 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -20,12 +24,19 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "strictNullChecks": true
   },
-  "typeRoots": ["./node_modules/@types"],
-  "types": ["react", "react-dom"],
+  "typeRoots": [
+    "./node_modules/@types"
+  ],
+  "types": [
+    "react",
+    "react-dom"
+  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -33,5 +44,8 @@
     ".next/types/**/*.ts",
     "types/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "__tests__"]
+  "exclude": [
+    "node_modules",
+    "__tests__"
+  ]
 }
