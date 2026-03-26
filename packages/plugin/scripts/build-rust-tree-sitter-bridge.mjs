@@ -28,12 +28,6 @@ const wasmPath = path.join(
 const pkgDir = path.join(bridgeDir, "pkg");
 const generatedJsPath = path.join(pkgDir, "rust_tree_sitter_bridge.js");
 
-function ensureExists(targetPath, message) {
-  if (!existsSync(targetPath)) {
-    throw new Error(message);
-  }
-}
-
 function run(command, args, cwd, extraEnv = {}) {
   execFileSync(command, args, {
     cwd,

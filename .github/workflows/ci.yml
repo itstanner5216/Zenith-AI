@@ -37,7 +37,9 @@ jobs:
         run: pnpm lint
 
       - name: TypeScript checks
-        run: pnpm exec tsc --noEmit
+        run: |
+          pnpm exec tsc -b tsconfig.solution.json
+          pnpm exec tsc -p packages/plugin/tsconfig.json --noEmit
 
   test:
     name: Test
@@ -65,7 +67,7 @@ jobs:
       - name: Run tests
         run: |
           set -o pipefail
-          pnpm test --verbose 2>&1 | tee test-results.txt
+          pnpm test 2>&1 | tee test-results.txt
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

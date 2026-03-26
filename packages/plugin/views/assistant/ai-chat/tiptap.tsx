@@ -1,4 +1,5 @@
-import { useEditor, EditorContent, Editor, Range } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import type { Editor, Range } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import React, { useEffect, useCallback } from "react";
 import { TFile } from "obsidian";
