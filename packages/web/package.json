@@ -9,7 +9,7 @@
     "build": "pnpm run db:migrate  && pnpm next build",
     "start": "PORT=${PORT:-3000} pnpm next start",
     "lint": "eslint .",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:watch": "jest --watch",
     "ts:check": "pnpm tsc --noEmit",
     "db:generate": "pnpm drizzle-kit generate",

@@ -17,6 +17,7 @@ export default tseslint.config(
       "**/coverage/**",
       "**/.next/**",
       "**/.expo/**",
+      "main.js",
     ],
   },
   eslint.configs.recommended,
