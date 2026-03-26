@@ -13,7 +13,9 @@ export default [
       "**/next-env.d.ts",
       "**/build/**",
       "**/coverage/**",
-      // Ignore WASM-generated artifacts — they contain non-standard JS patterns
+      // Plugin compiled output (esbuild artifact)
+      "packages/plugin/main.js",
+      // WASM-generated artifacts — contain non-standard JS patterns
       "**/rust-tree-sitter-bridge/pkg/**",
     ],
   },

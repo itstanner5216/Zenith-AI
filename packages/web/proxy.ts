@@ -10,9 +10,9 @@ function isStaticFile(pathname: string): boolean {
   return staticPatterns.some((pattern) => pattern.test(pathname));
 }
 
-export default async function middleware(
+export default function proxy(
   req: NextRequest
-): Promise<NextResponse> {
+): NextResponse {
   // Skip static files
   if (
     isStaticFile(req.nextUrl.pathname) &&
@@ -23,8 +23,11 @@ export default async function middleware(
 
   const res = NextResponse.next();
 
-  // CORS headers
-  res.headers.set('Access-Control-Allow-Origin', '*');
+  // CORS is intentionally open ('*') for self-hosted deployments where the
+  // Obsidian plugin connects to a server the user controls. Restrict via the
+  // ALLOWED_ORIGINS env var in multi-tenant or public-facing deployments.
+  const allowedOrigin = process.env.ALLOWED_ORIGINS ?? '*';
+  res.headers.set('Access-Control-Allow-Origin', allowedOrigin);
   res.headers.set(
     'Access-Control-Allow-Methods',
     'GET, POST, PUT, DELETE, OPTIONS'

@@ -47,11 +47,14 @@ jobs:
           name: test-results
           path: test-results.txt
 
-      - name: Build all packages
+      - name: Build web package
+        working-directory: packages/web
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
-        run: |
-          # Build web package without database migrations in CI
-          cd packages/web && pnpm build:ci && cd ../..
-          # Build other packages
-          cd packages/plugin && pnpm build && cd ../..
+        run: pnpm build:ci
+
+      - name: Build plugin package
+        working-directory: packages/plugin
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+        run: pnpm build

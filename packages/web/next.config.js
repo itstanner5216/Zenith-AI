@@ -5,9 +5,6 @@ const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: path.join(__dirname, '../../'),
   serverExternalPackages: ['postgres'],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   async headers() {
     return [
       {
