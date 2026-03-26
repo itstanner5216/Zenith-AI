@@ -18,6 +18,9 @@ jest.mock("ai", () => ({
       yield { type: "text-delta", textDelta: "test" };
     })(),
   })),
+  // Returns a placeholder StopCondition function; the test only verifies
+  // that stopWhen was passed a function (not what the function evaluates to).
+  stepCountIs: jest.fn((_n: number) => () => false),
 }));
 
 describe("AIService", () => {
@@ -91,19 +94,19 @@ describe("AIService", () => {
       );
     });
 
-    it("passes maxSteps when provided", () => {
+    it("passes stopWhen when maxSteps is provided", () => {
       const service = new AIService(settings);
       service.streamChat({ messages: [], maxSteps: 3 });
       expect(streamText).toHaveBeenCalledWith(
-        expect.objectContaining({ maxSteps: 3 })
+        expect.objectContaining({ stopWhen: expect.any(Function) })
       );
     });
 
-    it("does not pass maxSteps when not provided", () => {
+    it("does not pass stopWhen when maxSteps is not provided", () => {
       const service = new AIService(settings);
       service.streamChat({ messages: [] });
       expect(streamText).toHaveBeenCalledWith(
-        expect.objectContaining({ maxSteps: undefined })
+        expect.objectContaining({ stopWhen: undefined })
       );
     });
   });

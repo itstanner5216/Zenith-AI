@@ -1,4 +1,4 @@
-import { streamText } from "ai";
+import { streamText, stepCountIs } from "ai";
 import type { LanguageModel, ToolSet, StepResult, ModelMessage } from "ai";
 import { createModelFromKey } from "./provider-factory";
 import type { ProviderKey, ModelConfig } from "./types";
@@ -53,7 +53,7 @@ export class AIService {
       messages: params.messages,
       system: params.systemPrompt,
       tools: params.tools,
-      maxSteps: params.maxSteps,
+      stopWhen: params.maxSteps !== undefined ? stepCountIs(params.maxSteps) : undefined,
       abortSignal: params.abortSignal,
       onStepFinish: params.onStepFinish,
     });

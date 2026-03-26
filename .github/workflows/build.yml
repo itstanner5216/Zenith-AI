@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: |
           set -o pipefail
-          pnpm test --verbose 2>&1 | tee test-results.txt
+          pnpm test 2>&1 | tee test-results.txt
         continue-on-error: false
 
       - name: Upload test results

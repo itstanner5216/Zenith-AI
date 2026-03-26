@@ -71,3 +71,6 @@ public/_piny/piny.phone.js
 .worktrees/
 .worktrees/
 .worktrees
+
+# TypeScript solution build declarations
+packages/web/dist-types/

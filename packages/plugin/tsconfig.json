@@ -1,16 +1,20 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2019", "DOM"],
+    "types": ["node"],
     "outDir": "./dist",
     "rootDir": ".",
-    "composite": true,
     "resolveJsonModule": true,
+    "allowArbitraryExtensions": true,
     "paths": {
-      "@/*": ["*"],
-      "@/components/*": ["components/*"]
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"]
     }
   },
-  "include": ["*.ts", "services/**/*", "services/**/*.json", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "__mocks__/**/*", "tools/generated/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["*.ts", "services/**/*", "services/**/*.json", "views/**/*", "handlers/**/*", "components/**/*", "inbox/**/*", "utils/**/*", "lib/**/*", "tools/generated/**/*"],
+  "exclude": ["node_modules", "dist", "jest.setup.ts", "**/*.test.ts", "**/*.test.tsx", "__mocks__/**/*"]
 }

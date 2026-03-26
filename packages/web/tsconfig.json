@@ -21,11 +21,8 @@
     ],
     "paths": {
       "@/*": ["./*"]
-      
     },
-    "strictNullChecks": true,
-    "baseUrl": ".",
-    "composite": true
+    "strictNullChecks": true
   },
   "typeRoots": ["./node_modules/@types"],
   "types": ["react", "react-dom"],
@@ -36,5 +33,5 @@
     ".next/types/**/*.ts",
     "types/**/*.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "__tests__"]
 }
