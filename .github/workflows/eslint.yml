@@ -38,16 +38,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: '22'
           cache: "pnpm"
 
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
-          pnpm add -D @microsoft/eslint-formatter-sarif@3.1.0 --ignore-workspace-root-check
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
-
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
@@ -62,8 +60,5 @@ jobs:
         with:
           sarif_file: eslint-results.sarif
 
-      - name: TypeScript Checks
-        uses: owen-6936/ts-checks@v1.0.0
-        with:
-          node-version: "24"
-          wait-for-processing: true
+      - name: TypeScript type check
+        run: pnpm exec tsc --noEmit
