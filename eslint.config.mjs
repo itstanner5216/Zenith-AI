@@ -48,10 +48,10 @@ export default [
       "@typescript-eslint": tseslint.plugin,
     },
     rules: {
-      // Disable JS no-unused-vars in favour of per-package TS-aware equivalent
-      "no-unused-vars": "off",
-      // Disable no-undef — TypeScript's type checker handles this
-      "no-undef": "off",
+      ...tseslint.configs.recommended.rules,
+      // The root ESLint config is not type-aware, so disable no-unused-vars,
+      // as it's better handled by per-package type-aware linting.
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ];
