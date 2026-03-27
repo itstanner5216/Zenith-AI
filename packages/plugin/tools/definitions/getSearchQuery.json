@@ -1,0 +1,19 @@
+{
+  "name": "getSearchQuery",
+  "description": "Generate a semantic search query to find relevant notes in the vault.",
+  "input": {
+    "query": { "type": "string", "description": "The search query" },
+    "reasoning": { "type": "string", "description": "Why this query was chosen", "optional": true }
+  },
+  "output": {
+    "_isArray": true,
+    "_itemInterface": "SearchResult",
+    "_items": {
+      "title": { "type": "string" },
+      "path": { "type": "string" },
+      "contentPreview": { "type": "string" },
+      "contentLength": { "type": "number" },
+      "wordCount": { "type": "number" }
+    }
+  }
+}

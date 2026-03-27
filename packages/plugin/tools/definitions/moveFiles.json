@@ -1,0 +1,16 @@
+{
+  "name": "moveFiles",
+  "description": "Move files to a different folder in the vault.",
+  "input": {
+    "filePaths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Paths of files to move"
+    },
+    "destinationFolder": { "type": "string", "description": "Target folder path" }
+  },
+  "output": {
+    "success": { "type": "boolean" },
+    "results": { "type": "array", "items": { "type": "string" } }
+  }
+}

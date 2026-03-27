@@ -1,0 +1,11 @@
+{
+  "name": "openFile",
+  "description": "Open a file in the vault.",
+  "input": {
+    "filePath": { "type": "string", "description": "Path to the file to open" }
+  },
+  "output": {
+    "success": { "type": "boolean" },
+    "message": { "type": "string" }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "getLastModifiedFiles",
+  "description": "Get recently modified files in the vault.",
+  "input": {
+    "count": { "type": "number", "description": "Number of files to return", "optional": true }
+  },
+  "output": {
+    "success": { "type": "boolean" },
+    "files": {
+      "type": "array",
+      "_itemInterface": "LastModifiedFile",
+      "_items": {
+        "title": { "type": "string" },
+        "path": { "type": "string" },
+        "contentPreview": { "type": "string", "optional": true },
+        "contentLength": { "type": "number", "optional": true },
+        "wordCount": { "type": "number", "optional": true },
+        "modified": { "type": "number", "optional": true },
+        "modifiedDate": { "type": "string", "optional": true },
+        "reference": { "type": "string" }
+      }
+    },
+    "count": { "type": "number" }
+  }
+}

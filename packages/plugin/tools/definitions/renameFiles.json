@@ -1,0 +1,22 @@
+{
+  "name": "renameFiles",
+  "description": "Rename files in the vault.",
+  "input": {
+    "renames": {
+      "type": "array",
+      "description": "List of files to rename",
+      "items": {
+        "type": "object",
+        "properties": {
+          "oldPath": { "type": "string", "description": "Current file path" },
+          "newName": { "type": "string", "description": "New file name" }
+        },
+        "required": ["oldPath", "newName"]
+      }
+    }
+  },
+  "output": {
+    "success": { "type": "boolean" },
+    "results": { "type": "array", "items": { "type": "string" } }
+  }
+}
