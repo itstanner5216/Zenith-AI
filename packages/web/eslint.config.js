@@ -4,7 +4,7 @@ const globals = require('globals');
 
 module.exports = tseslint.config(
   {
-    ignores: ['.next/**', 'node_modules/**', 'next-env.d.ts'],
+    ignores: ['.next/**', 'node_modules/**', 'next-env.d.ts', 'dist-types/**'],
   },
   // CJS config files — allow require/module/exports/__dirname
   {

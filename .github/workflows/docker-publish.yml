@@ -116,7 +116,7 @@ jobs:
         run: echo "${{ steps.buildpush.outputs.digest }}" > digest-${{ matrix.tag-suffix }}.txt
 
       - name: Upload digest artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: digest-${{ matrix.tag-suffix }}
           path: digest-${{ matrix.tag-suffix }}.txt
@@ -143,12 +143,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Download digest artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: digest-amd64
 
       - name: Download digest artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: digest-arm64
 

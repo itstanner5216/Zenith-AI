@@ -7,6 +7,10 @@ on:
     branches: [master, main]
   workflow_dispatch: # Allow manual triggering from GitHub UI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,28 +18,43 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Use Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24.x'
-
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           version: 10.8.1
 
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
       - name: Install dependencies
-        run: pnpm install
-
-      - name: Run tests
-        run: pnpm test
-        continue-on-error: false
-
-      - name: Build all packages
+        run: pnpm install --frozen-lockfile
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
+
+      - name: Run tests
         run: |
-          # Build web package without database migrations in CI
-          cd packages/web && pnpm build:ci && cd ../..
-          # Build other packages
-          cd packages/plugin && pnpm build && cd ../..
+          set -o pipefail
+          pnpm test 2>&1 | tee test-results.txt
+        continue-on-error: false
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.txt
+
+      - name: Build web package
+        working-directory: packages/web
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+        run: pnpm build:ci
+
+      - name: Build plugin package
+        working-directory: packages/plugin
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+        run: pnpm build
