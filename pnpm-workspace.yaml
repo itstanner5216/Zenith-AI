@@ -5,29 +5,29 @@ packages:
 
 catalog:
   # Auth
-  "@auth/core": 0.41.1
+  "@auth/core": 0.41.2
   "@auth/drizzle-adapter": ~1.11.1
-  "next-auth": 5.0.0-beta.30
+  "next-auth": 5.0.0-beta.31
 
   # Dev tooling
-  eslint: ^10.0.0
-  prettier: ^3.4.2
+  eslint: ^10.2.1
+  prettier: ^3.8.3
   tailwindcss: ^3.4.15
-  typescript: ^6.0.2
+  typescript: ^6.0.3
 
   # Misc
   zod: ^4.3.6
 
   # AI
-  ai: ^6.0.138
-  "@ai-sdk/amazon-bedrock": ^4.0.83
-  "@ai-sdk/anthropic": ^3.0.64
-  "@ai-sdk/deepseek": ^2.0.26
-  "@ai-sdk/google": ^3.0.53
-  "@ai-sdk/groq": ^3.0.31
-  "@ai-sdk/mistral": ^3.0.27
-  "@ai-sdk/openai": ^3.0.48
-  "@ai-sdk/react": ^3.0.140
+  ai: ^6.0.168
+  "@ai-sdk/amazon-bedrock": ^4.0.96
+  "@ai-sdk/anthropic": ^3.0.71
+  "@ai-sdk/deepseek": ^2.0.29
+  "@ai-sdk/google": ^3.0.64
+  "@ai-sdk/groq": ^3.0.35
+  "@ai-sdk/mistral": ^3.0.30
+  "@ai-sdk/openai": ^3.0.53
+  "@ai-sdk/react": ^3.0.170
 
   # Tanstack & tRPC
   "@tanstack/react-query": ^5.67.1
