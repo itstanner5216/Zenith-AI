@@ -15,7 +15,7 @@ google-auth-oauthlib==1.3.0
 google-auth-httplib2==0.3.0
 
 # Multipart form support
-python-multipart==0.0.22
+python-multipart==0.0.26
 
 # PostgreSQL async client for pgvector
 asyncpg==0.31.0
