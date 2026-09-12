@@ -7,3 +7,10 @@ if (typeof TransformStream === 'undefined') {
   (global as any).TransformStream = TS;
 }
 
+// Polyfill TextDecoder/TextEncoder for jsdom environment (used by AI SDK internals)
+if (typeof TextDecoder === 'undefined' || typeof TextEncoder === 'undefined') {
+  const { TextDecoder: TD, TextEncoder: TE } = require('util');
+  (global as any).TextDecoder = TD;
+  (global as any).TextEncoder = TE;
+}
+

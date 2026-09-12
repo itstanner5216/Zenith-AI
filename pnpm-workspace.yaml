@@ -5,13 +5,13 @@ packages:
 
 catalog:
   # Auth
-  "@auth/core": 0.41.2
+  "@auth/core": 0.41.3
   "@auth/drizzle-adapter": ~1.11.1
-  "next-auth": 5.0.0-beta.31
+  "next-auth": 5.0.0-beta.32
 
   # Dev tooling
-  eslint: ^10.4.1
-  prettier: ^3.8.4
+  eslint: ^10.8.1
+  prettier: ^3.9.6
   tailwindcss: ^3.4.15
   typescript: ^6.0.3
 
@@ -39,8 +39,8 @@ catalogs:
   react19:
     react: 19.0.1
     react-dom: 19.0.1
-    "@types/react": 19.2.17
-    "@types/react-dom": 19.2.3
+    "@types/react": 19.2.18
+    "@types/react-dom": 19.2.4
   react18:
     react: 18.3.1
     react-dom: 18.3.1
